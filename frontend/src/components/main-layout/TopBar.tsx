@@ -1,13 +1,16 @@
+"use client";
+
 import type { FC } from "react";
 import Image from "next/image";
 import { Button } from "pec/components/ui/button";
-import { Moon } from "lucide-react";
-import { User } from "lucide-react";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, Moon, Sun, User } from "lucide-react";
+import { useTheme } from "pec/hooks/useTheme";
 
 export const TopBar: FC = () => {
+  const { darkMode, toggleDarkMode } = useTheme();
+
   return (
-    <header className="flex h-[8vh] w-full items-center justify-between border-b bg-white px-6 shadow-sm">
+    <header className="flex h-[8vh] w-full items-center justify-between border-b bg-white px-6 shadow-sm dark:border-gray-600 dark:bg-black">
       <div className="flex items-center space-x-3">
         <Image
           src="/logos/PectraStakingManager.svg"
@@ -16,29 +19,44 @@ export const TopBar: FC = () => {
           width={48}
           height={48}
         />
+
         <div>
-          <h1 className="text-lg font-semibold">Pectra Staking</h1>
-          <h1 className="text-lg font-semibold">Manager</h1>
+          <h1 className="text-lg font-semibold dark:text-white">
+            Pectra Staking
+          </h1>
+          <h1 className="text-lg font-semibold dark:text-white">Manager</h1>
         </div>
       </div>
 
       <div className="flex items-center space-x-6">
-        <div className="text-gray-700 hover:text-black">My Validators</div>
+        <div className="text-gray-700 hover:text-black dark:text-white dark:hover:text-gray-300">
+          My Validators
+        </div>
+
         <div className="flex items-center space-x-2">
-          <div className="text-gray-700 hover:text-black">Tools</div>
-          <ChevronDown />
+          <div className="text-gray-700 hover:text-black dark:text-white dark:hover:text-gray-300">
+            Tools
+          </div>
+          <ChevronDown className="text-gray-700 dark:text-white" />
         </div>
       </div>
 
       <div className="flex items-center space-x-4">
-        <Button className="rounded-lg border bg-gray-100 p-3 hover:bg-gray-200">
-          <Moon />
+        <Button
+          className="rounded-lg border bg-gray-100 p-3 hover:bg-gray-200 dark:border-gray-800 dark:bg-gray-900 dark:hover:bg-gray-900"
+          onClick={toggleDarkMode}
+        >
+          {darkMode ? (
+            <Sun className="text-yellow-400" />
+          ) : (
+            <Moon className="text-gray-700 dark:text-white" />
+          )}
         </Button>
 
-        <Button className="rounded-lg border bg-gray-100 p-4 hover:bg-gray-200 space-x-2">
-          <User />
-          <div className="text-sm">blinc.eth</div>
-          <ChevronDown />
+        <Button className="space-x-2 rounded-lg border bg-gray-100 p-4 hover:bg-gray-200 dark:border-gray-800 dark:bg-gray-900 dark:hover:bg-gray-900">
+          <User className="text-gray-700 dark:text-white" />
+          <div className="text-sm dark:text-white">blinc.eth</div>
+          <ChevronDown className="text-gray-700 dark:text-white" />
         </Button>
       </div>
     </header>
