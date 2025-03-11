@@ -27,3 +27,12 @@ You can check out the [create-t3-app GitHub repository](https://github.com/t3-os
 ## How do I deploy this?
 
 Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker) for more information.
+
+## How do I add components from shadcn?
+
+You can go onto their docs and check what sort of components they have and you might want this app to use. To install that component into our components/ui folder you can run the following command:
+
+pnpm dlx shadcn@latest add XXX
+pnpm dlx shadcn@latest add sonner
+pnpm dlx shadcn@latest add button
+pnpm dlx shadcn@latest add dialog etc...
