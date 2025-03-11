@@ -1,0 +1,11 @@
+{
+  "name": "pier-two",
+  "private": true,
+  "workspaces": [
+    "frontend",
+    "contracts"
+  ],
+  "scripts": {
+    "dev": "pnpm --filter frontend dev"
+  }
+}
