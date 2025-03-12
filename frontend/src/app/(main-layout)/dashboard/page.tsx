@@ -1,3 +1,4 @@
+import { ValidatorTable } from "pec/components/ui/table/validator_table";
 import type { FC } from "react";
 import { BatchDeposit } from "pec/components/dashboard/tools/BatchDeposit";
 import { BatchWithdrawal } from "pec/components/dashboard/tools/BatchWithdrawal";
@@ -24,6 +25,7 @@ const Dashboard: FC = () => {
         <TotalStake />
         <TotalDailyIncome />
       </div>
+      <ValidatorTable/>
     </div>
   );
 };
