@@ -6,6 +6,8 @@
     "contracts"
   ],
   "scripts": {
-    "dev": "pnpm --filter frontend dev"
+    "dev": "pnpm --filter frontend dev",
+    "build": "pnpm --filter frontend build",
+    "storybook": "pnpm --filter frontend storybook"
   }
 }
