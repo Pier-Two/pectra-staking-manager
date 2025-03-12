@@ -12,7 +12,7 @@ export const TopBar: FC<ITopBar> = (props) => {
   const { darkMode, toggleDarkMode } = useTheme();
 
   return (
-    <header className="flex h-[8vh] w-full items-center justify-between border-b bg-white px-6 shadow-sm dark:border-gray-600 dark:bg-black">
+    <header className="sticky top-0 z-10 flex h-[8vh] w-full items-center justify-between border-b bg-[rgba(255,255,255,0.98)] px-6 shadow-sm dark:border-gray-800 dark:bg-gray-950">
       <div className="flex items-center space-x-3">
         <Image
           src="/logos/PectraStakingManager.svg"
@@ -36,7 +36,7 @@ export const TopBar: FC<ITopBar> = (props) => {
             My Validators
           </div>
 
-          <Button className="rounded-full border bg-gray-100 p-2 text-gray-700 hover:bg-gray-100 hover:text-black dark:border-gray-800 dark:bg-gray-900 dark:text-white dark:hover:bg-gray-900 dark:hover:text-gray-300">
+          <Button className="rounded-full border bg-gray-100 p-2 text-gray-700 hover:bg-gray-100 hover:text-black dark:border-gray-800 dark:bg-black dark:text-white dark:hover:bg-gray-900 dark:hover:text-gray-300">
             {numberOfValidators}
           </Button>
         </div>
@@ -51,7 +51,7 @@ export const TopBar: FC<ITopBar> = (props) => {
 
       <div className="flex items-center space-x-4">
         <Button
-          className="rounded-lg border bg-gray-100 p-3 hover:bg-gray-200 dark:border-gray-800 dark:bg-gray-900 dark:hover:bg-gray-900"
+          className="rounded-lg border bg-gray-100 p-3 hover:bg-gray-200 dark:border-gray-800 dark:bg-black dark:hover:bg-gray-900"
           onClick={toggleDarkMode}
         >
           {darkMode ? (
@@ -61,7 +61,7 @@ export const TopBar: FC<ITopBar> = (props) => {
           )}
         </Button>
 
-        <Button className="space-x-2 rounded-lg border bg-gray-100 p-4 hover:bg-gray-200 dark:border-gray-800 dark:bg-gray-900 dark:hover:bg-gray-900">
+        <Button className="space-x-2 rounded-lg border bg-gray-100 p-4 hover:bg-gray-200 dark:border-gray-800 dark:bg-black dark:hover:bg-gray-900">
           <User className="text-gray-700 dark:text-white" />
           <div className="text-sm dark:text-white">blinc.eth</div>
           <ChevronDown className="text-gray-700 dark:text-white" />

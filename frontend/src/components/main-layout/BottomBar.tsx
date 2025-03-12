@@ -42,7 +42,7 @@ export const BottomBar: FC = () => {
   };
 
   return (
-    <footer className="flex h-[5vh] w-full items-center justify-between border-t bg-white px-6 shadow-sm dark:border-gray-600 dark:bg-black">
+    <footer className="sticky bottom-0 z-10 flex h-[5vh] w-full items-center justify-between border-t bg-[rgba(255,255,255,0.98)] px-6 shadow-sm dark:border-gray-800 dark:bg-gray-950">
       <div className="text-gray-600 dark:text-gray-300">
         Built with 🤍 by and for the Ethereum community
       </div>
