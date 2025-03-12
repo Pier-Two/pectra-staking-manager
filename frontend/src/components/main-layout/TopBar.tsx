@@ -5,8 +5,10 @@ import Image from "next/image";
 import { Button } from "pec/components/ui/button";
 import { ChevronDown, Moon, Sun, User } from "lucide-react";
 import { useTheme } from "pec/hooks/useTheme";
+import type { ITopBar } from "pec/types/topbar";
 
-export const TopBar: FC = () => {
+export const TopBar: FC<ITopBar> = (props) => {
+  const { numberOfValidators } = props;
   const { darkMode, toggleDarkMode } = useTheme();
 
   return (
@@ -29,8 +31,14 @@ export const TopBar: FC = () => {
       </div>
 
       <div className="flex items-center space-x-6">
-        <div className="text-gray-700 hover:text-black dark:text-white dark:hover:text-gray-300">
-          My Validators
+        <div className="flex items-center space-x-2">
+          <div className="text-gray-700 hover:text-black dark:text-white dark:hover:text-gray-300">
+            My Validators
+          </div>
+
+          <Button className="rounded-full border bg-gray-100 p-2 text-gray-700 hover:bg-gray-100 hover:text-black dark:border-gray-800 dark:bg-gray-900 dark:text-white dark:hover:bg-gray-900 dark:hover:text-gray-300">
+            {numberOfValidators}
+          </Button>
         </div>
 
         <div className="flex items-center space-x-2">

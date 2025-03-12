@@ -10,9 +10,9 @@ const MainLayout: FC<ChildrenProp> = (props) => {
   return (
     <ThemeProvider>
       <div className="flex min-h-screen w-screen flex-col">
-        <TopBar />
-        <div className="flex-1 overflow-y-auto dark:bg-black dark:text-white">
-          {children}
+        <TopBar numberOfValidators={4} />
+        <div className="flex flex-1 justify-center overflow-y-auto dark:bg-black dark:text-white">
+          <div className="w-[60vw] py-8">{children}</div>
         </div>
         <BottomBar />
       </div>
