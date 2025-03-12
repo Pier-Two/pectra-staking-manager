@@ -2,7 +2,7 @@ import { BottomBar } from "pec/components/main-layout/BottomBar";
 import { TopBar } from "pec/components/main-layout/TopBar";
 import { ThemeProvider } from "pec/contexts/ThemeContext";
 import type { ChildrenProp } from "pec/types/app";
-import type { FC } from "react";
+import { type FC } from "react";
 
 const MainLayout: FC<ChildrenProp> = (props) => {
   const { children } = props;
