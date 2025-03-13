@@ -16,7 +16,3 @@ export enum ValidatorStatus {
   PENDING = "Pending",
   INACTIVE = "Inactive",
 }
-
-export interface IValidatorTable {
-  data: ValidatorDetails[];
-}

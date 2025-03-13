@@ -9,7 +9,7 @@ import { ValidatorTable } from "pec/components/dashboard/validatorTable/validato
 
 const Dashboard: FC = () => {
   return (
-    <div className="dark:text-white space-y-6">
+    <div className="space-y-6 dark:text-white">
       <div className="text-2xl">Tools</div>
 
       <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
@@ -25,8 +25,10 @@ const Dashboard: FC = () => {
         <TotalStake />
         <TotalDailyIncome />
       </div>
-      
-      <ValidatorTable/>
+
+      <div className="pt-8">
+        <ValidatorTable />
+      </div>
     </div>
   );
 };
