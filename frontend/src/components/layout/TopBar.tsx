@@ -6,10 +6,15 @@ import { Button } from "pec/components/ui/button";
 import { ChevronDown, Moon, Sun, User } from "lucide-react";
 import { useTheme } from "pec/hooks/useTheme";
 import { ETopBarType, type ITopBar } from "pec/types/topbar";
+import { redirect } from "next/navigation";
 
 export const TopBar: FC<ITopBar> = (props) => {
   const { numberOfValidators, type } = props;
   const { darkMode, toggleDarkMode } = useTheme();
+
+  const navigateToValidatorsFound = () => {
+    redirect("/validatorsFound");
+  };
 
   return (
     <header className="sticky top-0 z-10 flex h-[8vh] w-full items-center justify-between border-b bg-[rgba(255,255,255,0.98)] px-6 shadow-sm dark:border-gray-800 dark:bg-gray-950">
@@ -70,7 +75,10 @@ export const TopBar: FC<ITopBar> = (props) => {
         )}
 
         {type === ETopBarType.WALLET_CONNECT && (
-          <Button className="space-x-2 rounded-lg border bg-black p-4 hover:bg-gray-900 border-gray-800">
+          <Button
+            className="space-x-2 rounded-lg border border-gray-800 bg-black p-4 hover:bg-gray-900"
+            onClick={navigateToValidatorsFound}
+          >
             <div className="text-sm text-white">Connect Wallet</div>
           </Button>
         )}
