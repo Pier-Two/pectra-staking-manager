@@ -32,4 +32,5 @@ const Dashboard: FC = () => {
     </div>
   );
 };
+
 export default Dashboard;

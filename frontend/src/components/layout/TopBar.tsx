@@ -5,10 +5,10 @@ import Image from "next/image";
 import { Button } from "pec/components/ui/button";
 import { ChevronDown, Moon, Sun, User } from "lucide-react";
 import { useTheme } from "pec/hooks/useTheme";
-import type { ITopBar } from "pec/types/topbar";
+import { ETopBarType, type ITopBar } from "pec/types/topbar";
 
 export const TopBar: FC<ITopBar> = (props) => {
-  const { numberOfValidators } = props;
+  const { numberOfValidators, type } = props;
   const { darkMode, toggleDarkMode } = useTheme();
 
   return (
@@ -61,11 +61,19 @@ export const TopBar: FC<ITopBar> = (props) => {
           )}
         </Button>
 
-        <Button className="space-x-2 rounded-lg border bg-gray-100 p-4 hover:bg-gray-200 dark:border-gray-800 dark:bg-black dark:hover:bg-gray-900">
-          <User className="text-gray-700 dark:text-white" />
-          <div className="text-sm dark:text-white">blinc.eth</div>
-          <ChevronDown className="text-gray-700 dark:text-white" />
-        </Button>
+        {type === ETopBarType.PROFILE && (
+          <Button className="space-x-2 rounded-lg border bg-gray-100 p-4 hover:bg-gray-200 dark:border-gray-800 dark:bg-black dark:hover:bg-gray-900">
+            <User className="text-gray-700 dark:text-white" />
+            <div className="text-sm dark:text-white">blinc.eth</div>
+            <ChevronDown className="text-gray-700 dark:text-white" />
+          </Button>
+        )}
+
+        {type === ETopBarType.WALLET_CONNECT && (
+          <Button className="space-x-2 rounded-lg border bg-black p-4 hover:bg-gray-900 border-gray-800">
+            <div className="text-sm text-white">Connect Wallet</div>
+          </Button>
+        )}
       </div>
     </header>
   );
