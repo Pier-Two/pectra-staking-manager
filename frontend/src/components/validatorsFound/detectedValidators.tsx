@@ -1,8 +1,8 @@
 "use client";
 
-import { FC, useState } from "react";
+import { type FC, useState } from "react";
 import Image from "next/image";
-import { IDetectedValidators } from "pec/types/validator";
+import type { IDetectedValidators } from "pec/types/validator";
 import { AlignLeft, ChevronsLeftRight } from "lucide-react";
 import { ValidatorCard } from "./validatorCard";
 
@@ -20,7 +20,7 @@ export const DetectedValidators: FC<IDetectedValidators> = (props) => {
     <>
       <div
         onClick={() => setShowValidators(!showValidators)}
-        className="flex-col-2 flex min-h-[10vh] w-full items-center justify-between gap-x-4 rounded-xl border border-gray-200 bg-white p-2 hover:cursor-pointer hover:bg-gray-100 dark:border-gray-800 dark:bg-black dark:hover:bg-gray-800"
+        className="flex-col-2 flex min-h-[10vh] w-full items-center justify-between gap-x-4 rounded-xl border border-gray-200 bg-white p-4 hover:cursor-pointer hover:bg-gray-100 dark:border-gray-800 dark:bg-black dark:hover:bg-gray-800"
       >
         <div className="flex items-center gap-x-4">
           <Image
@@ -51,8 +51,6 @@ export const DetectedValidators: FC<IDetectedValidators> = (props) => {
           ))}
         </div>
       )}
-
-      
     </>
   );
 };

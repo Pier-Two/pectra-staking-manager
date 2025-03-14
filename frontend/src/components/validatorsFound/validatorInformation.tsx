@@ -1,5 +1,5 @@
-import { FC } from "react";
-import { IValidatorInformation } from "pec/types/validator";
+import type { FC } from "react";
+import type { IValidatorInformation } from "pec/types/validator";
 import { Zap } from "lucide-react";
 
 export const ValidatorInformation: FC<IValidatorInformation> = (props) => {
@@ -10,7 +10,7 @@ export const ValidatorInformation: FC<IValidatorInformation> = (props) => {
   ).length;
 
   return (
-    <div className="flex min-h-[10vh] w-full items-center justify-between gap-x-4 rounded-xl border border-indigo-200 bg-indigo-50 p-2">
+    <div className="flex min-h-[10vh] w-full items-center justify-between gap-x-4 rounded-xl border border-indigo-200 bg-indigo-50 p-4">
       <div className="flex items-center gap-x-4">
         <Zap className="h-5 w-5 text-indigo-500" />
         {numberOfOldValidators > 0 && (

@@ -1,13 +1,17 @@
-import { FC } from "react";
-import { redirect } from "next/navigation";
+"use client";
+
+import type { FC } from "react";
+import { useRouter } from "next/navigation";
 import { Footer } from "pec/components/layout/welcome/Footer";
 import { Information } from "pec/components/layout/welcome/Information";
 import { PectraLink } from "pec/components/layout/welcome/PectraLink";
 import { Button } from "pec/components/ui/button";
 
 const Welcome: FC = () => {
+  const router = useRouter();
+  
   const navigateToValidatorsFound = () => {
-    redirect("/validatorsFound");
+    router.push("/load-validators");
   };
 
   return (
