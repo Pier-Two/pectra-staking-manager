@@ -3,7 +3,7 @@ pragma solidity 0.8.28;
 
 interface IBatchDeposit {
     struct Deposit {
-        bytes pubkey;
+        bytes pubKey;
         bytes withdrawalCredentials;
         bytes signature;
         uint256 amount;
@@ -11,7 +11,7 @@ interface IBatchDeposit {
 
     error NoDepositsProvided();
 
-    error InvalidPubkeyLength();
+    error InvalidPubKeyLength();
 
     error InvalidWithdrawalCredLength();
 

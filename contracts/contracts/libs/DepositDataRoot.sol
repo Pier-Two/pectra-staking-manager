@@ -46,7 +46,7 @@ library DepositDataRoot {
         bytes memory amount = _toLittleEndian64(uint64(deposit_amount));
 
         bytes32 pubKeyRoot = sha256(
-            abi.encodePacked(_deposit.pubkey, bytes16(0))
+            abi.encodePacked(_deposit.pubKey, bytes16(0))
         );
 
         bytes32 signature_root = sha256(

@@ -3,6 +3,7 @@ pragma solidity ^0.8.20;
 
 import "../libs/DepositDataRoot.sol";
 import "../interfaces/IBatchDeposit.sol";
+import "hardhat/console.sol";
 
 // Interface for the Ethereum Deposit Contract (EIP-6110 uses the existing deposit contract)
 interface IDepositContract {
@@ -40,8 +41,8 @@ contract BatchDeposit is IBatchDeposit {
         // Gas optimization: accumulate total required ETH for all deposits.
         uint256 totalAmount = 0;
         for (uint256 i = 0; i < _deposits.length; ++i) {
-            if (_deposits[i].pubkey.length != 48) {
-                revert InvalidPubkeyLength();
+            if (_deposits[i].pubKey.length != 48) {
+                revert InvalidPubKeyLength();
             }
             if (_deposits[i].withdrawalCredentials.length != 32) {
                 revert InvalidWithdrawalCredLength();
@@ -55,6 +56,7 @@ contract BatchDeposit is IBatchDeposit {
             if (_deposits[i].amount > 2048 ether) {
                 revert DepositValueGreaterThan2048ETH();
             }
+
             if (_deposits[i].amount % 1 gwei != 0) {
                 revert DepositValueMustBeMultipleOfGwei();
             }
@@ -71,7 +73,7 @@ contract BatchDeposit is IBatchDeposit {
 
             // Call the Ethereum deposit contract for this entry.
             depositContract.deposit{value: _deposits[i].amount}(
-                _deposits[i].pubkey,
+                _deposits[i].pubKey,
                 _deposits[i].withdrawalCredentials,
                 _deposits[i].signature,
                 depositDataRoot
