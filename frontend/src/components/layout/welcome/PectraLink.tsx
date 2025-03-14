@@ -1,4 +1,4 @@
-import { FC } from "react";
+import type { FC } from "react";
 import { ChevronRight } from "lucide-react";
 
 export const PectraLink: FC = () => {

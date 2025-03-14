@@ -1,4 +1,4 @@
-import { FC } from "react";
+import type { FC } from "react";
 import { TableCell, TableRow } from "pec/components/ui/table";
 import { Checkbox } from "pec/components/ui/checkbox";
 import { Button } from "pec/components/ui/button";
@@ -10,7 +10,7 @@ import {
 } from "pec/components/ui/dropdown-menu";
 import { AlignLeft, Check, CircleMinus, MoreVertical } from "lucide-react";
 import { ValidatorStatus } from "pec/types/validator";
-import { IValidatorRowProps } from "pec/types/validatorTable";
+import type { IValidatorRowProps } from "pec/types/validatorTable";
 
 export const ValidatorRow: FC<IValidatorRowProps> = (props) => {
   const { validator, isSelected, onToggle } = props;
@@ -60,7 +60,7 @@ export const ValidatorRow: FC<IValidatorRowProps> = (props) => {
         <div className="flex items-center gap-2">
           <div
             className={`h-2 w-2 rounded-full ${
-              validator.status === "Active"
+              validator.status === ValidatorStatus.ACTIVE
                 ? "bg-green-500"
                 : validator.status === ValidatorStatus.PENDING
                   ? "bg-yellow-500"

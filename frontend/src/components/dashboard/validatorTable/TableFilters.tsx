@@ -1,9 +1,9 @@
-import { FC } from "react";
+import type { FC } from "react";
 import { ValidatorStatus } from "pec/types/validator";
 import { Input } from "pec/components/ui/input";
 import { Button } from "pec/components/ui/button";
 import { CirclePlus, SlidersHorizontal } from "lucide-react";
-import { ITableFiltersProps } from "pec/types/validatorTable";
+import type { ITableFiltersProps } from "pec/types/validatorTable";
 
 export const TableFilters: FC<ITableFiltersProps> = (props) => {
   const { searchTerm, onSearchChange, statusFilter, onStatusFilterChange } =

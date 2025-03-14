@@ -1,5 +1,8 @@
-import { FC } from "react";
-import { ESortDirection, ITableHeaderProps } from "pec/types/validatorTable";
+import type { FC } from "react";
+import {
+  ESortDirection,
+  type ITableHeaderProps,
+} from "pec/types/validatorTable";
 import { TableHead } from "pec/components/ui/table";
 import { ChevronUp, ChevronDown, ChevronsLeftRight } from "lucide-react";
 

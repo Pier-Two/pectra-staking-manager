@@ -1,6 +1,6 @@
 "use client";
 
-import { FC } from "react";
+import type { FC } from "react";
 import { useTheme } from "pec/hooks/useTheme";
 import Image from "next/image";
 

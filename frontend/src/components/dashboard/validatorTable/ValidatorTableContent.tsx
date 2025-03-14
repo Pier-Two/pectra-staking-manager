@@ -1,10 +1,9 @@
-// src/components/validator/ValidatorTableContent.tsx
-import { FC } from "react";
+import type { FC } from "react";
 import { TableNoResults } from "./TableNoResults";
 import { ValidatorRow } from "./ValidatorRow";
 import { TableHeadersRow } from "./TableHeadersRow";
 import { Table, TableBody, TableHeader } from "pec/components/ui/table";
-import { IValidatorTableContentProps } from "pec/types/validatorTable";
+import type { IValidatorTableContentProps } from "pec/types/validatorTable";
 
 export const ValidatorTableContent: FC<IValidatorTableContentProps> = (
   props,

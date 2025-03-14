@@ -1,4 +1,4 @@
-import { FC } from "react";
+import type { FC } from "react";
 import {
   Pagination,
   PaginationContent,
@@ -8,7 +8,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "pec/components/ui/pagination";
-import { ITablePaginationProps } from "pec/types/validatorTable";
+import type { ITablePaginationProps } from "pec/types/validatorTable";
 
 const getVisiblePages = (currentPage: number, totalPages: number): number[] => {
   const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
@@ -53,7 +53,7 @@ export const TablePagination: FC<ITablePaginationProps> = (props) => {
           </PaginationItem>
 
           {visiblePages.map((page, index, arr) => {
-            const prevPage = arr[index - 1] || 0;
+            const prevPage = arr[index - 1] ?? 0;
             const shouldShowEllipsis = prevPage !== page - 1 && prevPage !== 0;
 
             return (

@@ -1,8 +1,8 @@
-// src/hooks/useValidatorTable.ts
 import { useState, useMemo } from "react";
-import { ESortDirection, SortConfig } from "pec/types/validatorTable";
+import { ESortDirection, type SortConfig } from "pec/types/validatorTable";
+import type { ValidatorDetails } from "pec/types/validator";
 
-export function useValidatorTable(data: any[], itemsPerPage: number = 10) {
+export function useValidatorTable(data: ValidatorDetails[], itemsPerPage = 10) {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<string[]>([]);
   const [currentPage, setCurrentPage] = useState(1);

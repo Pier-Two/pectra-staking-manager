@@ -1,4 +1,4 @@
-import { ValidatorDetails } from "./validator";
+import type { ValidatorDetails } from "./validator";
 
 export interface IValidatorTable {
   data: ValidatorDetails[];
@@ -46,7 +46,7 @@ export interface SortConfig {
 }
 
 export interface ITableHeadersRowProps {
-  paginatedData: any[];
+  paginatedData: ValidatorDetails[];
   selectedRows: string[];
   sortConfig: SortConfig | null;
   onToggleAll: (checked: boolean) => void;
@@ -57,9 +57,8 @@ export interface IHeaderConfig {
   label: string;
   sortKey: string;
 }
-
 export interface IValidatorTableContentProps {
-  paginatedData: any[];
+  paginatedData: ValidatorDetails[];
   selectedRows: string[];
   sortConfig: SortConfig | null;
   onToggleAll: (checked: boolean) => void;

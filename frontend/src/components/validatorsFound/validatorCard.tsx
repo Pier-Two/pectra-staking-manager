@@ -1,6 +1,6 @@
-import { FC } from "react";
+import type { FC } from "react";
 import Image from "next/image";
-import { IValidatorCard } from "pec/types/validator";
+import type { IValidatorCard } from "pec/types/validator";
 import { AlignLeft, BadgeMinus } from "lucide-react";
 
 export const ValidatorCard: FC<IValidatorCard> = (props) => {
