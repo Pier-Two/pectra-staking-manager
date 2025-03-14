@@ -15,7 +15,7 @@ const Welcome: FC = () => {
   };
 
   return (
-    <div className="flex h-full flex-col justify-center space-y-10">
+    <div className="flex h-full flex-col mt-[5vh] space-y-10">
       <div className="flex justify-center">
         <PectraLink />
       </div>

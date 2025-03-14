@@ -1,7 +1,7 @@
 import type { FC } from "react";
 
 const ConsolidationWorkflow: FC = () => {
-  return <div>ConsolidationWorkflow</div>;
+  return <div>Consolidation Workflow commencing soon!</div>;
 };
 
 export default ConsolidationWorkflow;

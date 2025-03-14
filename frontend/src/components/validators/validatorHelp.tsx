@@ -11,7 +11,7 @@ export const ValidatorHelp: FC = () => {
   const [openNewFeatures, setOpenNewFeatures] = useState(false);
 
   return (
-    <div className="flex flex-col w-full gap-y-4 rounded-xl border bg-white p-4 dark:bg-black dark:text-white">
+    <div className="flex flex-col w-full gap-y-4 rounded-xl rounded-xl border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-black">
       <div className="flex items-center justify-between">
         <div className="text-md">What is validator consolidation?</div>
         <Button

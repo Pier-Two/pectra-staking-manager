@@ -35,9 +35,10 @@ export const TopBar: FC<ITopBar> = (props) => {
         </div>
       </div>
 
-      <div className="flex items-center space-x-6">
-        <div className="flex items-center space-x-2">
-          <div className="text-gray-700 hover:text-black dark:text-white dark:hover:text-gray-300">
+      {type === ETopBarType.PROFILE && (
+        <div className="flex items-center space-x-6">
+          <div className="flex items-center space-x-2">
+            <div className="text-gray-700 hover:text-black dark:text-white dark:hover:text-gray-300">
             My Validators
           </div>
 
@@ -50,9 +51,10 @@ export const TopBar: FC<ITopBar> = (props) => {
           <div className="text-gray-700 hover:text-black dark:text-white dark:hover:text-gray-300">
             Tools
           </div>
-          <ChevronDown className="text-gray-700 dark:text-white" />
+            <ChevronDown className="text-gray-700 dark:text-white" />
+          </div>
         </div>
-      </div>
+      )}
 
       <div className="flex items-center space-x-4">
         <Button

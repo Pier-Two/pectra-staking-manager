@@ -21,7 +21,7 @@ export const ValidatorInformation: FC<IValidatorInformation> = (props) => {
               Pectra (0x02) to enable enhanced staking features.
             </div>
 
-            <div className="text-md">
+            <div className="text-md dark:text-black">
               Click start consolidation below to get started.
             </div>
           </div>

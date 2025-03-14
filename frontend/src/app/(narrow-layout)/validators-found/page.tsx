@@ -14,7 +14,7 @@ const ValidatorsFound: FC = () => {
   if (!data) return <ValidatorsFoundLoading />;
 
   const handleConsolidationRedirect = () => {
-    router.push("/consolidation/workflow");
+    router.push("/consolidation");
   };
 
   const handleDashboardRedirect = () => {
@@ -29,12 +29,20 @@ const ValidatorsFound: FC = () => {
       </div>
 
       <div className="flex flex-col gap-4">
-        <Button variant="default" onClick={handleConsolidationRedirect}>
-          <div className="text-lg"> Start consolidation</div>
+        <Button
+          className="space-x-2 rounded-xl border border-gray-800 bg-black p-4 hover:bg-gray-900 dark:bg-white dark:hover:bg-gray-200"
+          onClick={handleConsolidationRedirect}
+        >
+          <div className="text-sm text-white dark:text-black">
+            Start consolidation
+          </div>
         </Button>
 
-        <Button variant="secondary" onClick={handleDashboardRedirect}>
-          <div className="text-lg">Skip and go to Dashboard</div>
+        <Button
+          className="space-x-2 rounded-xl border border-gray-800 bg-white p-4 hover:bg-gray-200"
+          onClick={handleDashboardRedirect}
+        >
+          <div className="text-sm text-black">Skip and go toDashboard</div>
         </Button>
       </div>
     </div>

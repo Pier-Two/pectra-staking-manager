@@ -1,4 +1,7 @@
+"use client";
+
 import type { FC } from "react";
+import { useRouter } from "next/navigation";
 import {
   Card,
   CardContent,
@@ -11,9 +14,15 @@ import { Separator } from "pec/components/ui/separator";
 import { Button } from "pec/components/ui/button";
 
 export const Consolidate: FC = () => {
+  const router = useRouter();
+
+  const handleConsolidateRedirect = () => {
+    router.push("/consolidate");
+  };
+
   return (
-    <Card className="space-y-4 rounded-xl border bg-white p-3 dark:border-gray-800 dark:bg-black hover:border-yellow-400 hover:border-3 flex flex-col">
-      <CardHeader className="flex flex-row items-center gap-8 min-h-[15vh] flex-shrink-0">
+    <Card className="hover:border-3 flex flex-col space-y-4 rounded-xl border bg-white p-3 hover:border-yellow-400 dark:border-gray-800 dark:bg-black">
+      <CardHeader className="flex min-h-[15vh] flex-shrink-0 flex-row items-center gap-8">
         <Merge className="rotate-90 hover:text-yellow-500" size={70} />
         <div className="flex flex-col gap-2">
           <CardTitle>Consolidate</CardTitle>
@@ -35,7 +44,10 @@ export const Consolidate: FC = () => {
           </div>
         </div>
 
-        <Button className="rounded-lg border bg-gray-100 p-3 hover:bg-gray-200 dark:border-gray-800 dark:bg-black dark:hover:bg-gray-900">
+        <Button
+          className="rounded-lg border bg-gray-100 p-3 hover:bg-gray-200 dark:border-gray-800 dark:bg-black dark:hover:bg-gray-900"
+          onClick={handleConsolidateRedirect}
+        >
           Fix
         </Button>
       </CardContent>
