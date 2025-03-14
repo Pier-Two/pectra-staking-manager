@@ -42,7 +42,7 @@ export const DetectedValidators: FC<IDetectedValidators> = (props) => {
       </div>
 
       {showValidators && (
-        <div className="flex flex-col items-center gap-4">
+        <div className="flex flex-col w-full items-center gap-4">
           {validators.map((validator, index) => (
             <ValidatorCard
               key={index + validator.validatorIndex}

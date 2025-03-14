@@ -3,7 +3,7 @@
 import { useEffect, type FC } from "react";
 import { useRouter } from "next/navigation";
 import { api } from "pec/trpc/react";
-import { ConnectedAddress } from "pec/components/validatorsFound/connectedAddress";
+import { ConnectedAddress } from "pec/components/validators/connectedAddress";
 import { LoaderCircle } from "lucide-react";
 import { Skeleton } from "pec/components/ui/skeleton";
 

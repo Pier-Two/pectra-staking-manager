@@ -1,6 +1,6 @@
 import type { FC } from "react";
 import { api } from "pec/trpc/server";
-import { Connector } from "pec/components/validatorsFound/connector";
+import { Connector } from "pec/components/validators/connector";
 import { Button } from "pec/components/ui/button";
 import { Merge } from "lucide-react";
 import { redirect } from "next/navigation";

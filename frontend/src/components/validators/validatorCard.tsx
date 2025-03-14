@@ -8,7 +8,7 @@ export const ValidatorCard: FC<IValidatorCard> = (props) => {
   const withdrawalAddressPrefix = validator.withdrawalAddress.slice(0, 4);
 
   return (
-    <div className="flex-col-3 flex min-h-[10vh] w-[90%] items-center justify-between gap-x-4 rounded-xl border border-gray-200 bg-white p-2 dark:border-gray-800 dark:bg-black">
+    <div className="flex-col-3 flex min-h-[10vh] w-[90%] items-center justify-between gap-x-4 rounded-xl border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-black">
       <div className="flex items-center gap-x-4">
         <Image
           src="/icons/EthValidator.svg"
