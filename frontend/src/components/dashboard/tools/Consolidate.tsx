@@ -21,7 +21,10 @@ export const Consolidate: FC = () => {
   };
 
   return (
-    <Card className="hover:border-3 flex flex-col space-y-4 rounded-xl border bg-white p-3 hover:border-yellow-400 dark:border-gray-800 dark:bg-black">
+    <Card
+      className="hover:border-3 flex flex-col space-y-4 rounded-xl border bg-white p-3 hover:border-yellow-400 dark:border-gray-800 dark:bg-black dark:hover:border-yellow-400 hover:cursor-pointer"
+      onClick={handleConsolidateRedirect}
+    >
       <CardHeader className="flex min-h-[15vh] flex-shrink-0 flex-row items-center gap-8">
         <Merge className="rotate-90 hover:text-yellow-500" size={70} />
         <div className="flex flex-col gap-2">
@@ -46,7 +49,6 @@ export const Consolidate: FC = () => {
 
         <Button
           className="rounded-lg border bg-gray-100 p-3 hover:bg-gray-200 dark:border-gray-800 dark:bg-black dark:hover:bg-gray-900"
-          onClick={handleConsolidateRedirect}
         >
           Fix
         </Button>

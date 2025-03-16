@@ -11,7 +11,7 @@ import { AlignLeft, ArrowDownToDot } from "lucide-react";
 
 export const BatchDeposit: FC = () => {
   return (
-    <Card className="hover:border-3 space-y-4 rounded-xl border bg-white p-3 hover:border-blue-400 dark:border-gray-800 dark:bg-black flex flex-col">
+    <Card className="hover:border-3 space-y-4 rounded-xl border bg-white p-3 hover:border-blue-400 dark:border-gray-800 dark:bg-black dark:hover:border-blue-400 hover:cursor-pointer flex flex-col">
       <CardHeader className="flex min-h-[15vh] flex-row items-center justify-center gap-8 flex-shrink-0">
         <ArrowDownToDot className="hover:text-blue-400" size={70} />
         <div className="flex flex-col gap-2">
