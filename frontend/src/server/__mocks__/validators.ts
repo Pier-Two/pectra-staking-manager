@@ -29,7 +29,7 @@ export const MOCK_VALIDATORS: ValidatorDetails[] = [
     activeDuration: "3 years 5 days",
     apy: 10.0,
   },
-  ...Array.from({ length: 34 }, (_, i) => ({
+  ...Array.from({ length: 4 }, (_, i) => ({
     validatorIndex: 500000 + i,
     publicKey: `0x${Math.random().toString(16).slice(2, 66)}`,
     withdrawalAddress: `0x0${i}0000000000000000000000278b5e51d0b5f5aa92ac7b5cabf76dd2f86a0917`,

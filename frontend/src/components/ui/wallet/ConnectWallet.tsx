@@ -12,9 +12,7 @@ export const ConnectWalletButton = ({ className }: StyleableComponent) => {
   const connectedAccount = useActiveAccount();
 
   useEffect(() => {
-    if (connectedAccount) {
-      router.push("/validators-found");
-    }
+    if (connectedAccount) router.push("/validators-found");
   }, [connectedAccount, router]);
 
   return (

@@ -5,11 +5,12 @@ import { useRouter } from "next/navigation";
 import { api } from "pec/trpc/react";
 import { ConnectedAddress } from "pec/components/validators/ConnectedAddress";
 import { LoaderCircle } from "lucide-react";
+import { useActiveAccount } from "thirdweb/react";
 
 const LoadValidatorsPage: FC = () => {
   const router = useRouter();
-  const address = "XXX";
-  const { data } = api.validators.getValidators.useQuery({ address });
+  const connectedAccount = useActiveAccount();
+  const { data } = api.validators.getValidators.useQuery({ address: connectedAccount?.address ?? "" });
 
   useEffect(() => {
     if (data) router.push("/validators-found");
@@ -22,7 +23,7 @@ const LoadValidatorsPage: FC = () => {
         <div className="text-md">
           Matching your connected withdrawal address
         </div>
-        <ConnectedAddress address={address} />
+        <ConnectedAddress address={connectedAccount?.address ?? ""} />
 
         <div className="flex-col-2 flex min-h-[10vh] w-full items-center justify-between rounded-xl border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-black">
           <div className="flex items-center gap-x-4">

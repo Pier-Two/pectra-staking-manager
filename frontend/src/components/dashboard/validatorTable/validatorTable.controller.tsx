@@ -1,7 +1,13 @@
-import { api } from "pec/trpc/server";
-import { ValidatorTableView } from "./validatorTable.view";
+"use client";
 
-export const ValidatorTable = async () => {
-  const data = await api.validators.getValidators({ address: "XXX" });
+import { api } from "pec/trpc/react";
+import { ValidatorTableView } from "./validatorTable.view";
+import { useActiveAccount } from "thirdweb/react";
+
+export const ValidatorTable = () => {
+  const connectedAccount = useActiveAccount();
+  const { data } = api.validators.getValidators.useQuery({
+    address: connectedAccount?.address ?? "",
+  });
   return <ValidatorTableView data={data ?? []} />;
 };
