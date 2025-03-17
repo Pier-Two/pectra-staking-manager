@@ -16,6 +16,7 @@ export const env = createEnv({
    */
   server: {
     NODE_ENV: z.enum(["development", "test", "production"]),
+    THIRDWEB_SECRET_KEY: z.string(),
   },
 
   /**
@@ -25,6 +26,7 @@ export const env = createEnv({
    */
   client: {
     NEXT_PUBLIC_URL: z.string(),
+    NEXT_PUBLIC_THIRDWEB_CLIENT_ID: z.string(),
   },
 
   /**
@@ -34,6 +36,8 @@ export const env = createEnv({
   runtimeEnv: {
     NODE_ENV: process.env.NODE_ENV,
     NEXT_PUBLIC_URL: getBaseUrl(),
+    NEXT_PUBLIC_THIRDWEB_CLIENT_ID: process.env.NEXT_PUBLIC_THIRDWEB_CLIENT_ID,
+    THIRDWEB_SECRET_KEY: process.env.THIRDWEB_SECRET_KEY,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially
