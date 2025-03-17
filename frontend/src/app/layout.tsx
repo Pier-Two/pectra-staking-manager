@@ -4,6 +4,7 @@ import { Montserrat } from "next/font/google";
 import { type Metadata } from "next";
 import { TRPCReactProvider } from "pec/trpc/react";
 import { cn } from "pec/lib/utils";
+import { ThirdwebProvider } from "thirdweb/react";
 
 const montserrat = Montserrat({
   subsets: ["latin"],
@@ -20,12 +21,11 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html
-      lang="en"
-      className={cn(GeistSans.variable, montserrat.variable)}
-    >
+    <html lang="en" className={cn(GeistSans.variable, montserrat.variable)}>
       <body>
-        <TRPCReactProvider>{children}</TRPCReactProvider>
+        <TRPCReactProvider>
+          <ThirdwebProvider>{children}</ThirdwebProvider>
+        </TRPCReactProvider>
       </body>
     </html>
   );

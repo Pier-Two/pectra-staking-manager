@@ -15,8 +15,8 @@ const MainLayout: FC<ChildrenProp> = (props) => {
         <div className="flex flex-1 justify-center bg-gray-100 dark:bg-gray-950 dark:text-white">
           <div className="w-[80vw] py-8">{children}</div>
         </div>
-        <BottomBar />
       </div>
+      <BottomBar />
     </ThemeProvider>
   );
 };
