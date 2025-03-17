@@ -55,6 +55,7 @@ export const SelectSourceValidators: FC<ISelectSourceValidators> = (props) => {
 
           <div className="flex items-center justify-center">
             <ValidatorCard
+              shrink={false}
               onClick={() => handleResetDestinationValidator()}
               validator={destinationValidator}
             />

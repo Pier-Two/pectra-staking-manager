@@ -4,12 +4,12 @@ import type { IValidatorCard } from "pec/types/validator";
 import { AlignLeft, BadgeMinus } from "lucide-react";
 
 export const ValidatorCard: FC<IValidatorCard> = (props) => {
-  const { validator, onClick } = props;
+  const { shrink, validator, onClick } = props;
   const withdrawalAddressPrefix = validator.withdrawalAddress.slice(0, 4);
 
   return (
-    <div
-      className="flex-col-3 flex min-h-[10vh] w-[90%] items-center justify-between gap-x-4 rounded-xl border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-black"
+    (<div
+      className={`flex-col-3 flex min-h-[10vh] ${shrink ? "w-[90%]" : "w-full"} items-center justify-between gap-x-4 rounded-xl border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-black`}
       onClick={onClick}
     >
       <div className="flex items-center gap-x-4">
@@ -27,16 +27,14 @@ export const ValidatorCard: FC<IValidatorCard> = (props) => {
           </div>
         </div>
       </div>
-
       <div className="flex items-center gap-x-2">
         <BadgeMinus className="h-4 w-4 text-gray-800 dark:text-white" />
         <div className="text-md">{withdrawalAddressPrefix}</div>
       </div>
-
       <div className="flex items-center gap-1">
         <AlignLeft className="h-3 w-3 text-gray-500" />
         <span> {validator.balance.toFixed(2)}</span>
       </div>
-    </div>
+    </div>)
   );
 };

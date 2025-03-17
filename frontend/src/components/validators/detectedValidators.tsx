@@ -46,6 +46,7 @@ export const DetectedValidators: FC<IGenericValidators> = (props) => {
           {validators.map((validator, index) => (
             <ValidatorCard
               key={index + validator.validatorIndex}
+              shrink={true}
               validator={validator}
             />
           ))}

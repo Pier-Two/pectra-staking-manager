@@ -26,6 +26,7 @@ export interface IGenericValidators {
 
 export interface IValidatorCard {
   validator: ValidatorDetails;
+  shrink: boolean;
   onClick?: () => void;
 }
 

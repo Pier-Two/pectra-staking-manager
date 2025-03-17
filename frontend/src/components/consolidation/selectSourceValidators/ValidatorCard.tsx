@@ -10,7 +10,7 @@ export const ValidatorCard: FC<ISourceValidatorCard> = (props) => {
 
   return (
     <div
-      className={`flex-col-3 flex min-h-[10vh] w-[90%] items-center justify-between gap-x-4 rounded-xl border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-black ${checked ? "border-gray-800" : ""}`}
+      className={`flex-col-3 flex min-h-[10vh] w-full items-center justify-between gap-x-4 rounded-xl border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-black ${checked ? "border-gray-800" : ""}`}
       onClick={onClick}
     >
       <div className="flex items-center gap-x-4">

@@ -16,7 +16,7 @@ export const ValidatorList: FC<IDestinationValidatorList> = (props) => {
 
   return (
     <div className="flex flex-col items-center gap-4">
-      <div className="flex-col-3 flex w-[90%] justify-between pe-4 ps-4">
+      <div className="flex-col-3 flex w-full justify-between pe-4 ps-4">
         <div className="flex items-center gap-2">
           <div className="text-md text-gray-700 dark:text-gray-300">
             Validator
@@ -40,6 +40,7 @@ export const ValidatorList: FC<IDestinationValidatorList> = (props) => {
         <ValidatorCard
           key={`validator-${validator.validatorIndex}-${index}`}
           onClick={() => handleValidatorClick(validator)}
+          shrink={false}
           validator={validator}
         />
       ))}

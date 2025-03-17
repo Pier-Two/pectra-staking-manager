@@ -1,15 +1,10 @@
-"use client";
-
 import type { FC } from "react";
-import { useRouter } from "next/navigation";
 import { Footer } from "pec/components/layout/welcome/Footer";
 import { Information } from "pec/components/layout/welcome/Information";
 import { PectraLink } from "pec/components/layout/welcome/PectraLink";
 import { ConnectWalletButton } from "pec/components/ui/wallet/ConnectWallet";
 
 const Welcome: FC = () => {
-  const router = useRouter();
-
   return (
     <div className="mt-[5vh] flex h-full flex-col space-y-10">
       <div className="flex justify-center">

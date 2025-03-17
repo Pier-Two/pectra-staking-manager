@@ -2,7 +2,7 @@
 
 import { ConnectButton, useActiveAccount } from "thirdweb/react";
 import { client, wallets } from "pec/lib/wallet/client";
-import { StyleableComponent } from "pec/types/components";
+import type { StyleableComponent } from "pec/types/components";
 import { clsx } from "clsx";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
@@ -13,9 +13,9 @@ export const ConnectWalletButton = ({ className }: StyleableComponent) => {
 
   useEffect(() => {
     if (connectedAccount) {
-      // router.push("/testing");
+      router.push("/validators-found");
     }
-  }, [connectedAccount]);
+  }, [connectedAccount, router]);
 
   return (
     <ConnectButton

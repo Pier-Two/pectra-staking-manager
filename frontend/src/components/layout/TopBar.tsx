@@ -52,7 +52,7 @@ export const TopBar: FC<ITopBar> = (props) => {
         </div>
       )}
 
-      <div className="flex items-center space-x-4">
+      <div className="flex items-center space-x-4 pe-12">
         <Button
           className="rounded-lg border bg-gray-100 p-3 hover:bg-gray-200 dark:border-gray-800 dark:bg-black dark:hover:bg-gray-900"
           onClick={toggleDarkMode}
@@ -64,7 +64,7 @@ export const TopBar: FC<ITopBar> = (props) => {
           )}
         </Button>
 
-        <ConnectWalletButton className="!h-8 !w-8" />
+        <ConnectWalletButton className="!h-10" />
       </div>
     </header>
   );
