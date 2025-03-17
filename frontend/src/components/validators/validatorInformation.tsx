@@ -1,8 +1,8 @@
 import type { FC } from "react";
-import type { IValidatorInformation } from "pec/types/validator";
+import type { IGenericValidators } from "pec/types/validator";
 import { Zap } from "lucide-react";
 
-export const ValidatorInformation: FC<IValidatorInformation> = (props) => {
+export const ValidatorInformation: FC<IGenericValidators> = (props) => {
   const { validators } = props;
 
   const numberOfOldValidators = validators.filter((validator) =>

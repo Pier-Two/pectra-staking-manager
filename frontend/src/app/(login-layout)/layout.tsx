@@ -1,3 +1,4 @@
+import { type FC } from "react";
 import { TopBar } from "pec/components/layout/TopBar";
 import { ThemeProvider } from "pec/contexts/ThemeContext";
 import type { ChildrenProp } from "pec/types/app";

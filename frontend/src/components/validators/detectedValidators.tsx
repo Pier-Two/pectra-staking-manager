@@ -2,11 +2,11 @@
 
 import { type FC, useState } from "react";
 import Image from "next/image";
-import type { IDetectedValidators } from "pec/types/validator";
+import type { IGenericValidators } from "pec/types/validator";
 import { AlignLeft, ChevronsLeftRight } from "lucide-react";
-import { ValidatorCard } from "./validatorCard";
+import { ValidatorCard } from "./ValidatorCard";
 
-export const DetectedValidators: FC<IDetectedValidators> = (props) => {
+export const DetectedValidators: FC<IGenericValidators> = (props) => {
   const { validators } = props;
 
   const [showValidators, setShowValidators] = useState<boolean>(false);

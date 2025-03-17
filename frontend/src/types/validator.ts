@@ -20,16 +20,19 @@ export interface IConnectedAddress {
   address: string;
 }
 
-export interface IDetectedValidators {
+export interface IGenericValidators {
   validators: ValidatorDetails[];
 }
 
 export interface IValidatorCard {
   validator: ValidatorDetails;
+  onClick?: () => void;
 }
 
-export interface IValidatorInformation {
-  validators: ValidatorDetails[];
+export interface ISourceValidatorCard {
+  checked: boolean;
+  onClick: () => void;
+  validator: ValidatorDetails;
 }
 
 export enum ValidatorStatus {

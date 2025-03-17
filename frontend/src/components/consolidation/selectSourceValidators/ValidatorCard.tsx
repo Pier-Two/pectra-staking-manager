@@ -1,18 +1,21 @@
 import type { FC } from "react";
 import Image from "next/image";
-import type { IValidatorCard } from "pec/types/validator";
+import type { ISourceValidatorCard } from "pec/types/validator";
 import { AlignLeft, BadgeMinus } from "lucide-react";
+import { Checkbox } from "pec/components/ui/checkbox";
 
-export const ValidatorCard: FC<IValidatorCard> = (props) => {
-  const { validator, onClick } = props;
+export const ValidatorCard: FC<ISourceValidatorCard> = (props) => {
+  const { checked, onClick, validator } = props;
   const withdrawalAddressPrefix = validator.withdrawalAddress.slice(0, 4);
 
   return (
     <div
-      className="flex-col-3 flex min-h-[10vh] w-[90%] items-center justify-between gap-x-4 rounded-xl border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-black"
+      className={`flex-col-3 flex min-h-[10vh] w-[90%] items-center justify-between gap-x-4 rounded-xl border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-black ${checked ? "border-gray-800" : ""}`}
       onClick={onClick}
     >
       <div className="flex items-center gap-x-4">
+        <Checkbox checked={checked} />
+
         <Image
           src="/icons/EthValidator.svg"
           alt="Wallet"

@@ -11,14 +11,13 @@ export const ValidatorHelp: FC = () => {
   const [openNewFeatures, setOpenNewFeatures] = useState(false);
 
   return (
-    <div className="flex flex-col w-full gap-y-4 rounded-xl rounded-xl border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-black">
-      <div className="flex items-center justify-between">
+    <div className="flex w-full flex-col gap-y-4 rounded-xl border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-black">
+      <div
+        className="flex items-center justify-between hover:cursor-pointer"
+        onClick={() => setOpenWhatIs(!openWhatIs)}
+      >
         <div className="text-md">What is validator consolidation?</div>
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => setOpenWhatIs(!openWhatIs)}
-        >
+        <Button variant="ghost" size="icon">
           {openWhatIs ? <ChevronUp /> : <ChevronDown />}
         </Button>
       </div>
@@ -32,13 +31,12 @@ export const ValidatorHelp: FC = () => {
 
       <Separator className="bg-gray-200 dark:bg-gray-800" />
 
-      <div className="flex items-center justify-between">
+      <div
+        className="flex items-center justify-between hover:cursor-pointer"
+        onClick={() => setOpenWhyConsolidate(!openWhyConsolidate)}
+      >
         <div className="text-md">Why should I consolidate?</div>
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => setOpenWhyConsolidate(!openWhyConsolidate)}
-        >
+        <Button variant="ghost" size="icon">
           {openWhyConsolidate ? <ChevronUp /> : <ChevronDown />}
         </Button>
       </div>
@@ -52,15 +50,14 @@ export const ValidatorHelp: FC = () => {
 
       <Separator className="bg-gray-200 dark:bg-gray-800" />
 
-      <div className="flex items-center justify-between">
+      <div
+        className="flex items-center justify-between hover:cursor-pointer"
+        onClick={() => setOpenNewFeatures(!openNewFeatures)}
+      >
         <div className="text-md">
           What new staking features does consolidating enable?
         </div>
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => setOpenNewFeatures(!openNewFeatures)}
-        >
+        <Button variant="ghost" size="icon">
           {openNewFeatures ? <ChevronUp /> : <ChevronDown />}
         </Button>
       </div>

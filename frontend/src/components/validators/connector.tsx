@@ -1,9 +1,9 @@
 import type { FC } from "react";
 import type { IConnector } from "pec/types/validator";
-import { ConnectedAddress } from "./connectedAddress";
-import { DetectedValidators } from "./detectedValidators";
-import { ValidatorInformation } from "./validatorInformation";
-import { ValidatorHelp } from "./validatorHelp";
+import { ConnectedAddress } from "./ConnectedAddress";
+import { DetectedValidators } from "./DetectedValidators";
+import { ValidatorInformation } from "./ValidatorInformation";
+import { ValidatorHelp } from "./ValidatorHelp";
 
 export const Connector: FC<IConnector> = (props) => {
   const { connectedAddress, validators } = props;

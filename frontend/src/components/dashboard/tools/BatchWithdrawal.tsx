@@ -11,7 +11,7 @@ import { AlignLeft, ArrowUpFromDot } from "lucide-react";
 
 export const BatchWithdrawal: FC = () => {
   return (
-    <Card className="space-y-4 rounded-xl border bg-white p-3 dark:border-gray-800 dark:bg-black hover:border-green-400 hover:border-3 flex flex-col">
+    <Card className="space-y-4 rounded-xl border bg-white p-3 dark:border-gray-800 dark:bg-black hover:border-green-400 hover:border-3 dark:hover:border-green-400 hover:cursor-pointer flex flex-col">
       <CardHeader className="flex flex-row items-center gap-8 min-h-[15vh] flex-shrink-0">
         <ArrowUpFromDot className="hover:text-green-400" size={70} />
         <div className="flex flex-col gap-2">

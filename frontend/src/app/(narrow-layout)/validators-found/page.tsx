@@ -3,7 +3,7 @@
 import type { FC } from "react";
 import { api } from "pec/trpc/react";
 import { useRouter } from "next/navigation";
-import { Connector } from "pec/components/validators/connector";
+import { Connector } from "pec/components/validators/Connector";
 import { Button } from "pec/components/ui/button";
 import ValidatorsFoundLoading from "./loading";
 
@@ -14,7 +14,7 @@ const ValidatorsFound: FC = () => {
   if (!data) return <ValidatorsFoundLoading />;
 
   const handleConsolidationRedirect = () => {
-    router.push("/consolidation");
+    router.push("/consolidate");
   };
 
   const handleDashboardRedirect = () => {

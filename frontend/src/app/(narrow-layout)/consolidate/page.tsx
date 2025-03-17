@@ -3,7 +3,7 @@
 import type { FC } from "react";
 import { api } from "pec/trpc/react";
 import { useRouter } from "next/navigation";
-import { Connector } from "pec/components/validators/connector";
+import { Connector } from "pec/components/validators/Connector";
 import { Button } from "pec/components/ui/button";
 import { Merge } from "lucide-react";
 import ConsolidationLoading from "./loading";
@@ -30,7 +30,7 @@ const Consolidation: FC = () => {
           <Merge className="h-10 w-10 rotate-90 text-yellow-500" />
           <div className="text-3xl">Consolidate</div>
         </div>
-        <div className="w-[40vw] text-center text-gray-700">
+        <div className="w-[45vw] text-center text-gray-700">
           Combine multiple validator balances into a single large-balance
           validator, as per Pectra EIP-7251.
         </div>
