@@ -3,25 +3,14 @@
 import type { FC } from "react";
 import Image from "next/image";
 import { Button } from "pec/components/ui/button";
-import { ChevronDown, Moon, Sun, User } from "lucide-react";
+import { ChevronDown, Moon, Sun } from "lucide-react";
 import { useTheme } from "pec/hooks/useTheme";
 import { ETopBarType, type ITopBar } from "pec/types/topbar";
-import { useRouter } from "next/navigation";
 import { ConnectWalletButton } from "pec/components/ui/wallet/ConnectWallet";
 
-export interface ITopBar {
-  numberOfValidators: number;
-  type: "profile" | "wallet_connect";
-}
-
 export const TopBar: FC<ITopBar> = (props) => {
-  const router = useRouter();
   const { numberOfValidators, type } = props;
   const { darkMode, toggleDarkMode } = useTheme();
-
-  const navigateToValidatorsFound = () => {
-    router.push("/load-validators");
-  };
 
   return (
     <header className="sticky top-0 z-10 flex h-[8vh] w-full items-center justify-between border-b bg-[rgba(255,255,255,0.98)] px-6 shadow-sm dark:border-gray-800 dark:bg-gray-950">
@@ -42,7 +31,7 @@ export const TopBar: FC<ITopBar> = (props) => {
         </div>
       </div>
 
-      {type === "profile" && (
+      {type === ETopBarType.PROFILE && (
         <div className="flex items-center space-x-6">
           <div className="flex items-center space-x-2">
             <div className="text-gray-700 hover:text-black dark:text-white dark:hover:text-gray-300">

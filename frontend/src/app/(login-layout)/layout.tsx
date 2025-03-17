@@ -1,8 +1,8 @@
+import { type FC } from "react";
 import { TopBar } from "pec/components/layout/TopBar";
 import { ThemeProvider } from "pec/contexts/ThemeContext";
 import type { ChildrenProp } from "pec/types/app";
 import { ETopBarType } from "pec/types/topbar";
-import { type FC } from "react";
 
 const LoginLayout: FC<ChildrenProp> = (props) => {
   const { children } = props;
