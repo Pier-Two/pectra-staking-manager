@@ -1,39 +1,19 @@
-// SPDX-License-Identifier: MIT
-pragma solidity ^0.8.20;
+// SPDX-License-Identifier: UNLICENSED
+pragma solidity 0.8.28;
 
-import "../libs/DepositDataRoot.sol";
-import "../interfaces/IBatchDeposit.sol";
-import "hardhat/console.sol";
-
-// Interface for the Ethereum Deposit Contract (EIP-6110 uses the existing deposit contract)
-interface IDepositContract {
-    function deposit(
-        bytes calldata pubkey,
-        bytes calldata withdrawal_credentials,
-        bytes calldata signature,
-        bytes32 deposit_data_root
-    ) external payable;
-}
+import {IBatchDeposit} from "../interfaces/IBatchDeposit.sol";
+import {IDepositContract} from "../vendors/IDepositContract.sol";
+import {DepositDataRoot} from "../libs/DepositDataRoot.sol";
 
 contract BatchDeposit is IBatchDeposit {
     using DepositDataRoot for Deposit;
 
-    // Address of the official Ethereum Deposit Contract (phase 0 deposit contract)
-    // This contract is pre-deployed at a known address on mainnet.
     IDepositContract public constant depositContract =
         IDepositContract(0x00000000219ab540356cBB839Cbe05303d7705Fa);
 
-    // Event to log each deposit (indicate whether it's a top-up or new)
-    // event ValidatorDeposit(
-    //     bytes indexed validatorPubkey,
-    //     address indexed withdrawalAddress,
-    //     uint256 amount,
-    //     bool isTopUp
-    // );
-
-    /// @notice Perform multiple deposits in a single transaction.
-    /// @param _deposits An array of Deposit structs, each containing the data required to make a deposit.
-    function batchDeposit(Deposit[] calldata _deposits) external payable {
+    function batchDeposit(
+        Deposit[] calldata _deposits
+    ) external payable override {
         if (_deposits.length == 0) {
             revert NoDepositsProvided();
         }
@@ -77,6 +57,12 @@ contract BatchDeposit is IBatchDeposit {
                 _deposits[i].withdrawalCredentials,
                 _deposits[i].signature,
                 depositDataRoot
+            );
+
+            emit ValidatorDeposit(
+                _deposits[i].pubKey,
+                _deposits[i].withdrawalCredentials,
+                _deposits[i].amount
             );
         }
     }
