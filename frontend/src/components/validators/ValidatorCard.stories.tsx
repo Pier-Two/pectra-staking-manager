@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { ValidatorCard } from "./validatorCard";
+import { ValidatorCard } from "./ValidatorCard";
 import { MOCK_VALIDATORS } from "pec/server/__mocks__/validators";
 
 // More on how to set up stories at: https://storybook.js.org/docs/writing-stories#default-export

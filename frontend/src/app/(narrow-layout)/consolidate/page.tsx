@@ -3,7 +3,7 @@
 import type { FC } from "react";
 import { api } from "pec/trpc/react";
 import { useRouter } from "next/navigation";
-import { Connector } from "pec/components/validators/connector";
+import { Connector } from "pec/components/validators/Connector";
 import { Button } from "pec/components/ui/button";
 import { Merge } from "lucide-react";
 import ConsolidationLoading from "./loading";

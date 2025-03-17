@@ -3,7 +3,7 @@
 import { useEffect, type FC } from "react";
 import { useRouter } from "next/navigation";
 import { api } from "pec/trpc/react";
-import { ConnectedAddress } from "pec/components/validators/connectedAddress";
+import { ConnectedAddress } from "pec/components/validators/ConnectedAddress";
 import { LoaderCircle } from "lucide-react";
 
 const LoadValidatorsPage: FC = () => {
@@ -17,7 +17,11 @@ const LoadValidatorsPage: FC = () => {
 
   return (
     <div className="flex flex-col items-center justify-center">
-      <div className="flex w-[50vw] flex-col gap-4">
+      <div className="flex w-[50vw] flex-col items-center gap-4">
+        <div className="text-3xl">Searching for validators</div>
+        <div className="text-md">
+          Matching your connected withdrawal address
+        </div>
         <ConnectedAddress address={address} />
 
         <div className="flex-col-2 flex min-h-[10vh] w-full items-center justify-between rounded-xl border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-black">

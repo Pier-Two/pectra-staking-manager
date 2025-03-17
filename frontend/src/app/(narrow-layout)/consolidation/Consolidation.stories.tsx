@@ -1,11 +1,11 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { Connector } from "./Connector";
+import Consolidation from "./page";
 import { MOCK_VALIDATORS } from "pec/server/__mocks__/validators";
 
 // More on how to set up stories at: https://storybook.js.org/docs/writing-stories#default-export
 const meta = {
-  title: "Example/Validators/Connector",
-  component: Connector,
+  title: "Example/Consolidation",
+  component: Consolidation,
   parameters: {
     // Optional parameter to center the component in the Canvas. More info: https://storybook.js.org/docs/configure/story-layout
     layout: "centered",
@@ -14,7 +14,7 @@ const meta = {
   tags: ["autodocs"],
   // More on argTypes: https://storybook.js.org/docs/api/argtypes
   // Use `fn` to spy on the onClick arg, which will appear in the actions panel once invoked: https://storybook.js.org/docs/essentials/actions#action-args
-} satisfies Meta<typeof Connector>;
+} satisfies Meta<typeof Consolidation>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
@@ -22,7 +22,8 @@ type Story = StoryObj<typeof meta>;
 // More on writing stories with args: https://storybook.js.org/docs/writing-stories/args
 export const Primary: Story = {
   args: {
-    connectedAddress: "0x1234567890123456789012345678901234567890",
     validators: MOCK_VALIDATORS,
+    stateValidator: MOCK_VALIDATORS[0]!,
+    setStateValidator: () => {},
   },
 };
