@@ -5,8 +5,12 @@ import Image from "next/image";
 import { Button } from "pec/components/ui/button";
 import { ChevronDown, Moon, Sun } from "lucide-react";
 import { useTheme } from "pec/hooks/useTheme";
-import { ETopBarType, type ITopBar } from "pec/types/topbar";
 import { ConnectWalletButton } from "pec/components/ui/wallet/ConnectWallet";
+
+export interface ITopBar {
+  numberOfValidators: number;
+  type: "profile" | "wallet_connect";
+}
 
 export const TopBar: FC<ITopBar> = (props) => {
   const { numberOfValidators, type } = props;
@@ -31,7 +35,7 @@ export const TopBar: FC<ITopBar> = (props) => {
         </div>
       </div>
 
-      {type === ETopBarType.PROFILE && (
+      {type === "profile" && (
         <div className="flex items-center space-x-6">
           <div className="flex items-center space-x-2">
             <div className="text-gray-700 hover:text-black dark:text-white dark:hover:text-gray-300">
