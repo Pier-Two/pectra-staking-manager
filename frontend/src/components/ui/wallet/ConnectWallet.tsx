@@ -1,13 +1,21 @@
 "use client";
 
-import { ConnectButton } from "thirdweb/react";
+import { ConnectButton, useActiveAccount } from "thirdweb/react";
 import { client, wallets } from "pec/lib/wallet/client";
 import { StyleableComponent } from "pec/types/components";
 import { clsx } from "clsx";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 export const ConnectWalletButton = ({ className }: StyleableComponent) => {
-  // const queryClient = useQueryClient();
-  // const router = useRouter();
+  const router = useRouter();
+  const connectedAccount = useActiveAccount();
+
+  useEffect(() => {
+    if (connectedAccount) {
+      // router.push("/testing");
+    }
+  }, [connectedAccount]);
 
   return (
     <ConnectButton

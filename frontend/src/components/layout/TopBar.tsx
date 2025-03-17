@@ -5,8 +5,12 @@ import Image from "next/image";
 import { Button } from "pec/components/ui/button";
 import { ChevronDown, Moon, Sun, User } from "lucide-react";
 import { useTheme } from "pec/hooks/useTheme";
-import { ETopBarType, type ITopBar } from "pec/types/topbar";
 import { ConnectWalletButton } from "pec/components/ui/wallet/ConnectWallet";
+
+export interface ITopBar {
+  numberOfValidators: number;
+  type: "profile" | "wallet_connect";
+}
 
 export const TopBar: FC<ITopBar> = (props) => {
   const { numberOfValidators, type } = props;
@@ -31,7 +35,7 @@ export const TopBar: FC<ITopBar> = (props) => {
         </div>
       </div>
 
-      {type === ETopBarType.PROFILE && (
+      {type === "profile" && (
         <div className="flex items-center space-x-6">
           <div className="flex items-center space-x-2">
             <div className="text-gray-700 hover:text-black dark:text-white dark:hover:text-gray-300">
@@ -64,17 +68,7 @@ export const TopBar: FC<ITopBar> = (props) => {
           )}
         </Button>
 
-        {type === ETopBarType.PROFILE && (
-          <Button className="space-x-2 rounded-lg border bg-gray-100 p-4 hover:bg-gray-200 dark:border-gray-800 dark:bg-black dark:hover:bg-gray-900">
-            <User className="text-gray-700 dark:text-white" />
-            <div className="text-sm dark:text-white">blinc.eth</div>
-            <ChevronDown className="text-gray-700 dark:text-white" />
-          </Button>
-        )}
-
-        {type === ETopBarType.WALLET_CONNECT && (
-          <ConnectWalletButton className="!h-8 !w-8" />
-        )}
+        <ConnectWalletButton className="!h-8 !w-8" />
       </div>
     </header>
   );
