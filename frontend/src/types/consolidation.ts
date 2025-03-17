@@ -11,7 +11,8 @@ export interface IDestinationValidatorList {
 }
 
 export interface ISourceValidatorList {
-  setLocalSourceValidators: (validator: ValidatorDetails) => void;
+  sourceValidators: ValidatorDetails[]; 
+  setSourceValidators: (validator: ValidatorDetails) => void;
   validators: ValidatorDetails[];
 }
 

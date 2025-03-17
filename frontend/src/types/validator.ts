@@ -29,6 +29,12 @@ export interface IValidatorCard {
   onClick?: () => void;
 }
 
+export interface ISourceValidatorCard {
+  checked: boolean;
+  onClick: () => void;
+  validator: ValidatorDetails;
+}
+
 export enum ValidatorStatus {
   ACTIVE = "Active",
   PENDING = "Pending",

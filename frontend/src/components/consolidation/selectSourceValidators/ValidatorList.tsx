@@ -3,10 +3,10 @@
 import type { FC } from "react";
 import type { ISourceValidatorList } from "pec/types/consolidation";
 import { ChevronsUpDown } from "lucide-react";
-import { ValidatorCard } from "pec/components/validators/ValidatorCard";
+import { ValidatorCard } from "./ValidatorCard";
 
 export const ValidatorList: FC<ISourceValidatorList> = (props) => {
-  const { setLocalSourceValidators, validators } = props;
+  const { sourceValidators, setSourceValidators, validators } = props;
 
   return (
     <div className="flex flex-col items-center gap-4">
@@ -32,8 +32,9 @@ export const ValidatorList: FC<ISourceValidatorList> = (props) => {
 
       {validators.map((validator, index) => (
         <ValidatorCard
+          checked={sourceValidators.includes(validator)}
           key={`validator-${validator.validatorIndex}-${index}`}
-          onClick={() => setLocalSourceValidators(validator)}
+          onClick={() => setSourceValidators(validator)}
           validator={validator}
         />
       ))}

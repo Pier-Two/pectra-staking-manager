@@ -14,7 +14,7 @@ const ValidatorsFound: FC = () => {
   if (!data) return <ValidatorsFoundLoading />;
 
   const handleConsolidationRedirect = () => {
-    router.push("/consolidation");
+    router.push("/consolidate");
   };
 
   const handleDashboardRedirect = () => {

@@ -78,7 +78,8 @@ export const SelectSourceValidators: FC<ISelectSourceValidators> = (props) => {
       <div className="text-lg font-medium">Select all source validators</div>
 
       <ValidatorList
-        setLocalSourceValidators={handleSourceValidatorSelection}
+        sourceValidators={selectedSourceValidators}
+        setSourceValidators={handleSourceValidatorSelection}
         validators={availableSourceValidators}
       />
     </div>
