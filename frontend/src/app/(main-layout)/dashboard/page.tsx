@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, type FC } from "react";
+import type { FC } from "react";
 import { api } from "pec/trpc/react";
 import { BatchDeposit } from "pec/components/dashboard/tools/BatchDeposit";
 import { BatchWithdrawal } from "pec/components/dashboard/tools/BatchWithdrawal";
@@ -14,17 +14,15 @@ import DashboardLoading from "./loading";
 
 const Dashboard: FC = () => {
   const walletAddress = useWalletAddress();
-  const [isFetching, setIsFetching] = useState(true);
 
-  const { data } = api.validators.getValidators.useQuery({
-    address: walletAddress,
-  });
+  const { data, isFetched } = api.validators.getValidators.useQuery(
+    {
+      address: walletAddress || "",
+    },
+    { enabled: !!walletAddress },
+  );
 
-  useEffect(() => {
-    if (data) setIsFetching(false);
-  }, [data]);
-
-  if (!walletAddress || !data || isFetching) return <DashboardLoading />;
+  if (!walletAddress || !data || !isFetched) return <DashboardLoading />;
 
   return (
     <div className="space-y-6 dark:text-white">

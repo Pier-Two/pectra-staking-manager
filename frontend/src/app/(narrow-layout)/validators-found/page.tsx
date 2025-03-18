@@ -7,22 +7,19 @@ import { Connector } from "pec/components/validators/Connector";
 import { Button } from "pec/components/ui/button";
 import ValidatorsFoundLoading from "./loading";
 import { useWalletAddress } from "pec/hooks/useWallet";
-import { useEffect, useState } from "react";
 
 const ValidatorsFound: FC = () => {
   const router = useRouter();
   const walletAddress = useWalletAddress();
-  const [isFetching, setIsFetching] = useState(true);
 
-  const { data } = api.validators.getValidators.useQuery({
-    address: walletAddress || "",
-  });
+  const { data, isFetched } = api.validators.getValidators.useQuery(
+    {
+      address: walletAddress || "",
+    },
+    { enabled: !!walletAddress },
+  );
 
-  useEffect(() => {
-    if (data) setIsFetching(false);
-  }, [data]);
-
-  if (!walletAddress || !data || isFetching) return <ValidatorsFoundLoading />;
+  if (!walletAddress || !data || !isFetched) return <ValidatorsFoundLoading />;
 
   const handleConsolidationRedirect = () => {
     router.push("/consolidate");
