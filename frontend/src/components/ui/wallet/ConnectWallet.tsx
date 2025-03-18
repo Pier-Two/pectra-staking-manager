@@ -28,6 +28,9 @@ export const ConnectWalletButton = ({ className }: StyleableComponent) => {
       onConnect={() => {
         router.push("/validators-found");
       }}
+      onDisconnect={() => {
+        router.push("/welcome");
+      }}
 
       // auth={{
       //   isLoggedIn: async (address) => {
