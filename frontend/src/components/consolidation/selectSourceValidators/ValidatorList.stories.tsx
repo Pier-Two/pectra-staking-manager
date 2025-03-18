@@ -23,6 +23,7 @@ type Story = StoryObj<typeof meta>;
 export const Primary: Story = {
   args: {
     validators: MOCK_VALIDATORS,
-    setLocalSourceValidators: () => {},
+    setSourceValidators: () => {},
+    sourceValidators: MOCK_VALIDATORS,
   },
 };

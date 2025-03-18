@@ -1,9 +1,5 @@
 import type { ValidatorDetails } from "./validator";
 
-export interface IValidatorTable {
-  data: ValidatorDetails[];
-}
-
 export enum ESortDirection {
   ASC = "asc",
   DESC = "desc",

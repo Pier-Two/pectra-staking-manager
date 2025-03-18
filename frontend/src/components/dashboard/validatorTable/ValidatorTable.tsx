@@ -1,14 +1,18 @@
 "use client";
 
-import { FC } from "react";
-import { IValidatorTable } from "pec/types/validatorTable";
+import type { FC } from "react";
 import { TableFilters } from "./TableFilters";
 import { TablePagination } from "./TablePagination";
 import { ValidatorTableContent } from "./ValidatorTableContent";
 import { useValidatorTable } from "pec/hooks/useValidatorTable";
+import { useWalletAddress } from "pec/hooks/useWallet";
+import { api } from "pec/trpc/react";
 
-export const ValidatorTableView: FC<IValidatorTable> = (props) => {
-  const { data } = props;
+export const ValidatorTable: FC = () => {
+  const walletAddress = useWalletAddress();
+  const { data } = api.validators.getValidators.useQuery({
+    address: walletAddress,
+  });
 
   const {
     searchTerm,
@@ -25,7 +29,7 @@ export const ValidatorTableView: FC<IValidatorTable> = (props) => {
     handleStatusFilterChange,
     handleSearchChange,
     handlePageChange,
-  } = useValidatorTable(data);
+  } = useValidatorTable(data ?? []);
 
   const itemsPerPage = 10;
 

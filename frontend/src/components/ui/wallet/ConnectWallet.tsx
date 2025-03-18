@@ -1,19 +1,24 @@
 "use client";
 
-import { ConnectButton, useActiveAccount } from "thirdweb/react";
+import { useEffect, useRef } from "react";
+import { ConnectButton } from "thirdweb/react";
 import { client, wallets } from "pec/lib/wallet/client";
 import type { StyleableComponent } from "pec/types/components";
 import { clsx } from "clsx";
-import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useWalletAddress } from "pec/hooks/useWallet";
 
 export const ConnectWalletButton = ({ className }: StyleableComponent) => {
   const router = useRouter();
-  const connectedAccount = useActiveAccount();
+  const walletAddress = useWalletAddress();
+  const hasNavigatedRef = useRef(false);
 
   useEffect(() => {
-    if (connectedAccount) router.push("/validators-found");
-  }, [connectedAccount, router]);
+    if (walletAddress && !hasNavigatedRef.current) {
+      hasNavigatedRef.current = true;
+      router.push("/validators-found");
+    }
+  }, [walletAddress, router]);
 
   return (
     <ConnectButton

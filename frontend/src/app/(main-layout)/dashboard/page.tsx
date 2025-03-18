@@ -5,7 +5,7 @@ import { Consolidate } from "pec/components/dashboard/tools/Consolidate";
 import { ActiveValidators } from "pec/components/dashboard/validators/ActiveValidators";
 import { TotalStake } from "pec/components/dashboard/validators/TotalStake";
 import { TotalDailyIncome } from "pec/components/dashboard/validators/TotalDailyIncome";
-import { ValidatorTable } from "pec/components/dashboard/validatorTable/validatorTable.controller";
+import { ValidatorTable } from "pec/components/dashboard/validatorTable/ValidatorTable";
 
 const Dashboard: FC = () => {
   return (

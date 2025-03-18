@@ -7,14 +7,14 @@ import { Connector } from "pec/components/validators/Connector";
 import { Button } from "pec/components/ui/button";
 import { Merge } from "lucide-react";
 import ConsolidationLoading from "./loading";
-import { useActiveAccount } from "thirdweb/react";
+import { useWalletAddress } from "pec/hooks/useWallet";
 
 const Consolidation: FC = () => {
   const router = useRouter();
-  const connectedAccount = useActiveAccount();
-  if (!connectedAccount) return <ConsolidationLoading />;
+  const walletAddress = useWalletAddress();
+  if (!walletAddress) return <ConsolidationLoading />;
 
-  const { data } = api.validators.getValidators.useQuery({ address: connectedAccount.address });
+  const { data } = api.validators.getValidators.useQuery({ address: walletAddress });
   if (!data) return <ConsolidationLoading />;
 
   const handleConsolidationRedirect = () => {
@@ -36,7 +36,7 @@ const Consolidation: FC = () => {
           Combine multiple validator balances into a single large-balance
           validator, as per Pectra EIP-7251.
         </div>
-        <Connector connectedAddress={connectedAccount.address} validators={data} />
+        <Connector connectedAddress={walletAddress} validators={data} />
       </div>
 
       <div className="flex flex-col gap-4">

@@ -6,14 +6,16 @@ import { useRouter } from "next/navigation";
 import { Connector } from "pec/components/validators/Connector";
 import { Button } from "pec/components/ui/button";
 import ValidatorsFoundLoading from "./loading";
-import { useActiveAccount } from "thirdweb/react";
+import { useWalletAddress } from "pec/hooks/useWallet";
 
 const ValidatorsFound: FC = () => {
   const router = useRouter();
-  const connectedAccount = useActiveAccount();
-  if (!connectedAccount) return <ValidatorsFoundLoading />;
+  const walletAddress = useWalletAddress();
+  if (!walletAddress) return <ValidatorsFoundLoading />;
 
-  const { data } = api.validators.getValidators.useQuery({ address: connectedAccount.address });
+  const { data } = api.validators.getValidators.useQuery({
+    address: walletAddress,
+  });
   if (!data) return <ValidatorsFoundLoading />;
 
   const handleConsolidationRedirect = () => {
@@ -28,7 +30,7 @@ const ValidatorsFound: FC = () => {
     <div className="space-y-8">
       <div className="flex flex-col items-center justify-center gap-4">
         <div className="text-3xl">Validators found!</div>
-        <Connector connectedAddress={connectedAccount.address} validators={data} />
+        <Connector connectedAddress={walletAddress} validators={data} />
       </div>
 
       <div className="flex flex-col gap-4">
