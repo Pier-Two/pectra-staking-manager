@@ -2,6 +2,7 @@ import { client } from "pec/lib/wallet/client";
 import { Contracts } from "pec/types/contracts";
 import { getContract } from "thirdweb";
 import { ChainOptions } from "thirdweb/chains";
+import { HOLEKSY_CHAINID } from "./networks";
 
 export const holesky: Readonly<
   ChainOptions & {
@@ -14,8 +15,7 @@ export const holesky: Readonly<
 };
 
 export const getContracts = (id: number | undefined): Contracts => {
-  // Holesky
-  if (id === 17000) {
+  if (id === HOLEKSY_CHAINID) {
     return {
       consolidation: getContract({
         client,
