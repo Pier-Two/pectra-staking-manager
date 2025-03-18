@@ -17,7 +17,7 @@ export const Connector: FC<IConnector> = (props) => {
       </div>
 
       <ConnectedAddress address={connectedAddress} />
-      <DetectedValidators validators={validators} />
+      <DetectedValidators cardTitle="validators found" validators={validators} />
       <ValidatorInformation validators={validators} />
       <ValidatorHelp />
     </div>

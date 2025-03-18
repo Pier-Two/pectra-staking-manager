@@ -2,12 +2,12 @@
 
 import { type FC, useState } from "react";
 import Image from "next/image";
-import type { IGenericValidators } from "pec/types/validator";
+import type { IDetectedValidators } from "pec/types/validator";
 import { AlignLeft, ChevronsLeftRight } from "lucide-react";
 import { ValidatorCard } from "./ValidatorCard";
 
-export const DetectedValidators: FC<IGenericValidators> = (props) => {
-  const { validators } = props;
+export const DetectedValidators: FC<IDetectedValidators> = (props) => {
+  const { cardTitle, validators } = props;
 
   const [showValidators, setShowValidators] = useState<boolean>(false);
 
@@ -29,7 +29,7 @@ export const DetectedValidators: FC<IGenericValidators> = (props) => {
             width={24}
             height={24}
           />
-          <div className="text-md">{validators.length} validators found</div>
+          <div className="text-md">{validators.length} {cardTitle}</div>
         </div>
 
         <div className="flex items-center gap-2">
@@ -42,10 +42,11 @@ export const DetectedValidators: FC<IGenericValidators> = (props) => {
       </div>
 
       {showValidators && (
-        <div className="flex flex-col w-full items-center gap-4">
+        <div className="flex w-full flex-col items-center gap-4">
           {validators.map((validator, index) => (
             <ValidatorCard
               key={index + validator.validatorIndex}
+              allowClose={false}
               shrink={true}
               validator={validator}
             />

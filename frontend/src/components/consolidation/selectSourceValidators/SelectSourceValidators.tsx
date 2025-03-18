@@ -10,6 +10,7 @@ import { ValidatorList } from "./ValidatorList";
 
 export const SelectSourceValidators: FC<ISelectSourceValidators> = (props) => {
   const {
+    consolidatedTotal,
     destinationValidator,
     selectedSourceTotal,
     setProgress,
@@ -43,18 +44,21 @@ export const SelectSourceValidators: FC<ISelectSourceValidators> = (props) => {
 
   return (
     <div className="space-y-8">
-      <div className="text-3xl">Select Source Validator(s)</div>
-      <div className="text-md text-gray-700 dark:text-gray-300">
-        All source validator balances will be consolidated into the elected
-        destination validator.
+      <div className="space-y-2">
+        <div className="text-3xl">Select Source Validator(s)</div>
+        <div className="text-md text-gray-700 dark:text-gray-300">
+          All source validator balances will be consolidated into the elected
+          destination validator.
+        </div>
       </div>
 
-      <div className="space-y-4">
+      <div className="space-y-8">
         <div className="flex flex-col gap-2">
           <div className="text-lg font-medium">Destination validator</div>
 
           <div className="flex items-center justify-center">
             <ValidatorCard
+              allowClose
               shrink={false}
               onClick={() => handleResetDestinationValidator()}
               validator={destinationValidator}
@@ -63,6 +67,7 @@ export const SelectSourceValidators: FC<ISelectSourceValidators> = (props) => {
         </div>
 
         <DestinationValidatorDetails
+          consolidatedTotal={consolidatedTotal}
           validator={destinationValidator}
           selectedSourceTotal={selectedSourceTotal}
         />

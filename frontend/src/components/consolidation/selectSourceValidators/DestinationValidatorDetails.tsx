@@ -6,7 +6,7 @@ import { Separator } from "pec/components/ui/separator";
 export const DestinationValidatorDetails: FC<IDestinationValidatorDetails> = (
   props,
 ) => {
-  const { validator, selectedSourceTotal } = props;
+  const { consolidatedTotal, validator, selectedSourceTotal } = props;
 
   return (
     <>
@@ -55,7 +55,7 @@ export const DestinationValidatorDetails: FC<IDestinationValidatorDetails> = (
 
           <div className="flex items-center gap-1">
             <AlignLeft className="h-3 w-3 text-gray-500" />
-            <span>{validator.balance.toFixed(2)}</span>
+            <span>{consolidatedTotal.toFixed(2)}</span>
           </div>
         </div>
       </div>

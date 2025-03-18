@@ -20,13 +20,19 @@ export interface IConnectedAddress {
   address: string;
 }
 
+export interface IDetectedValidators {
+  cardTitle: string;
+  validators: ValidatorDetails[];
+}
+
 export interface IGenericValidators {
   validators: ValidatorDetails[];
 }
 
 export interface IValidatorCard {
-  validator: ValidatorDetails;
+  allowClose: boolean;
   shrink: boolean;
+  validator: ValidatorDetails;
   onClick?: () => void;
 }
 

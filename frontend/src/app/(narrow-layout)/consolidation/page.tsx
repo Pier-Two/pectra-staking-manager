@@ -1,11 +1,12 @@
 "use client";
 
-import { type FC, useState } from "react";
+import { type FC, useEffect, useState } from "react";
 import { ProgressBar } from "pec/components/consolidation/ProgressBar";
 import { SelectDestinationValidator } from "pec/components/consolidation/selectDestinationValidator/SelectDestinationValidator";
 import { MOCK_VALIDATORS } from "pec/server/__mocks__/validators";
 import type { ValidatorDetails } from "pec/types/validator";
 import { SelectSourceValidators } from "pec/components/consolidation/selectSourceValidators/SelectSourceValidators";
+import { ConsolidationSummary } from "pec/components/consolidation/summary/ConsolidationSummary";
 
 const ConsolidationWorkflow: FC = () => {
   const data = MOCK_VALIDATORS;
@@ -15,9 +16,31 @@ const ConsolidationWorkflow: FC = () => {
     useState<ValidatorDetails | null>(null);
 
   const [selectedSourceTotal, setSelectedSourceTotal] = useState<number>(0);
+  const [consolidatedTotal, setConsolidatedTotal] = useState<number>(0);
   const [selectedSourceValidators, setSelectedSourceValidators] = useState<
     ValidatorDetails[]
   >([]);
+
+  useEffect(() => {
+    if (selectedDestinationValidator)
+      setConsolidatedTotal(+selectedDestinationValidator.balance);
+    else if (consolidatedTotal > 0) setConsolidatedTotal(0);
+  }, [consolidatedTotal, selectedDestinationValidator]);
+
+  useEffect(() => {
+    if (selectedDestinationValidator) {
+      const newConsolidatedTotal =
+        selectedSourceValidators.reduce(
+          (acc, validator) => acc + validator.balance,
+          0,
+        ) + selectedDestinationValidator.balance;
+      setConsolidatedTotal(newConsolidatedTotal);
+    }
+  }, [selectedSourceValidators, selectedDestinationValidator]);
+
+  useEffect(() => {
+    if (progress === 1) setSelectedSourceValidators([]);
+  }, [progress]);
 
   return (
     <div className="flex flex-col gap-4">
@@ -33,6 +56,7 @@ const ConsolidationWorkflow: FC = () => {
 
       {selectedDestinationValidator && progress === 2 && (
         <SelectSourceValidators
+          consolidatedTotal={consolidatedTotal}
           destinationValidator={selectedDestinationValidator}
           selectedSourceTotal={selectedSourceTotal}
           selectedSourceValidators={selectedSourceValidators}
@@ -43,6 +67,17 @@ const ConsolidationWorkflow: FC = () => {
           validators={data}
         />
       )}
+
+      {selectedDestinationValidator &&
+        selectedSourceValidators.length > 0 &&
+        progress === 3 && (
+          <ConsolidationSummary
+            destinationValidator={selectedDestinationValidator}
+            setProgress={setProgress}
+            setSelectedDestinationValidator={setSelectedDestinationValidator}
+            sourceValidators={selectedSourceValidators}
+          />
+        )}
     </div>
   );
 };

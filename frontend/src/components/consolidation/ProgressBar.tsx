@@ -11,7 +11,7 @@ export const ProgressBar: FC<IProgressBar> = (props) => {
       {[1, 2, 3, 4].map((step) => (
         <div
           key={step}
-          className={`h-2 flex-1 rounded-full ${progress === step ? activeStyle : inactiveStyle}`}
+          className={`h-2 flex-1 rounded-full ${progress >= step ? activeStyle : inactiveStyle}`}
         />
       ))}
     </div>
