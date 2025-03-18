@@ -68,7 +68,7 @@ export const TopBar: FC<ITopBar> = (props) => {
           )}
         </Button>
 
-        <ConnectWalletButton className="!h-10" />
+        <ConnectWalletButton className="!h-10 !w-8" />
       </div>
     </header>
   );
