@@ -1,6 +1,5 @@
 "use client";
 
-import { Button } from "pec/components/ui/button";
 import { useConsolidation } from "pec/hooks/useConsolidation";
 import type { FC } from "react";
 
@@ -9,7 +8,7 @@ const TestingPage: FC = () => {
 
   return (
     <div>
-      <Button onClick={fee?.getConsolidationFee}>Get Consolidation Fee</Button>
+      <h1>Consolidation Fee {fee.consolidationFee}</h1>
     </div>
   );
 };
