@@ -5,15 +5,10 @@ import { TableFilters } from "./TableFilters";
 import { TablePagination } from "./TablePagination";
 import { ValidatorTableContent } from "./ValidatorTableContent";
 import { useValidatorTable } from "pec/hooks/useValidatorTable";
-import { useWalletAddress } from "pec/hooks/useWallet";
-import { api } from "pec/trpc/react";
+import type { IGenericValidators } from "pec/types/validator";
 
-export const ValidatorTable: FC = () => {
-  const walletAddress = useWalletAddress();
-  const { data } = api.validators.getValidators.useQuery({
-    address: walletAddress,
-  });
-
+export const ValidatorTable: FC<IGenericValidators> = (props) => {
+  const { validators } = props;
   const {
     searchTerm,
     statusFilter,
@@ -29,7 +24,7 @@ export const ValidatorTable: FC = () => {
     handleStatusFilterChange,
     handleSearchChange,
     handlePageChange,
-  } = useValidatorTable(data ?? []);
+  } = useValidatorTable(validators);
 
   const itemsPerPage = 10;
 
