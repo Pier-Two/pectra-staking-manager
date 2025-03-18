@@ -11,12 +11,15 @@ import { useWalletAddress } from "pec/hooks/useWallet";
 const ValidatorsFound: FC = () => {
   const router = useRouter();
   const walletAddress = useWalletAddress();
-  if (!walletAddress) return <ValidatorsFoundLoading />;
 
-  const { data } = api.validators.getValidators.useQuery({
-    address: walletAddress,
-  });
-  if (!data) return <ValidatorsFoundLoading />;
+  const { data, isFetched } = api.validators.getValidators.useQuery(
+    {
+      address: walletAddress || "",
+    },
+    { enabled: !!walletAddress },
+  );
+
+  if (!walletAddress || !data || !isFetched) return <ValidatorsFoundLoading />;
 
   const handleConsolidationRedirect = () => {
     router.push("/consolidate");
@@ -47,7 +50,7 @@ const ValidatorsFound: FC = () => {
           className="space-x-2 rounded-xl border border-gray-800 bg-white p-4 hover:bg-gray-200"
           onClick={handleDashboardRedirect}
         >
-          <div className="text-sm text-black">Skip and go toDashboard</div>
+          <div className="text-sm text-black">Skip and go to Dashboard</div>
         </Button>
       </div>
     </div>

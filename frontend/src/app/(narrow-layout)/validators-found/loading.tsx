@@ -1,18 +1,34 @@
-import { Skeleton } from "pec/components/ui/skeleton";
+"use client";
+
+import { useWalletAddress } from "pec/hooks/useWallet";
+import { ConnectedAddress } from "pec/components/validators/ConnectedAddress";
+import { LoaderCircle } from "lucide-react";
 
 const ValidatorsFoundLoading = () => {
+  const walletAddress = useWalletAddress();
+
   return (
-    <div className="flex flex-col items-center justify-center space-y-6">
-      <div className="text-3xl text-gray-400">Loading Validators...</div>
+    <div className="flex flex-col items-center justify-center">
+      <div className="flex w-[50vw] flex-col items-center gap-4">
+        <div className="text-3xl">Searching for validators</div>
+        <div className="text-md">
+          Matching your connected withdrawal address
+        </div>
+        <ConnectedAddress address={walletAddress} />
 
-      <Skeleton className="h-6 w-[40vw] rounded-lg" />
-      <Skeleton className="h-6 w-[30vw] rounded-lg" />
+        <div className="flex-col-2 flex min-h-[10vh] w-full items-center justify-between rounded-xl border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-black">
+          <div className="flex items-center gap-x-4">
+            <LoaderCircle className="h-5 w-5 animate-spin text-gray-800 dark:text-white" />
 
-      <Skeleton className="h-10 w-[20vw] rounded-lg" />
+            <div className="flex flex-col">
+              <div className="text-md">
+                Finding validators with this withdrawal address
+              </div>
+            </div>
+          </div>
+        </div>
 
-      <div className="flex w-full max-w-sm flex-col gap-4">
-        <Skeleton className="h-12 rounded-lg" />
-        <Skeleton className="h-12 rounded-lg" />
+        <div className="text-md flex justify-center">Please wait...</div>
       </div>
     </div>
   );
