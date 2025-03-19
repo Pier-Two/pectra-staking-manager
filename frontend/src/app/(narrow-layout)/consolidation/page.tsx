@@ -25,12 +25,6 @@ const ConsolidationWorkflow: FC = () => {
   const [consolidationEmail, setConsolidationEmail] = useState<string>("");
 
   useEffect(() => {
-    if (selectedDestinationValidator)
-      setConsolidatedTotal(+selectedDestinationValidator.balance);
-    else if (consolidatedTotal > 0) setConsolidatedTotal(0);
-  }, [consolidatedTotal, selectedDestinationValidator]);
-
-  useEffect(() => {
     if (selectedDestinationValidator) {
       const newConsolidatedTotal =
         selectedSourceValidators.reduce(
