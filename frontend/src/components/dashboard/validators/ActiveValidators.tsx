@@ -24,7 +24,7 @@ export const ActiveValidators: FC<IActiveValidators> = (props) => {
           </div>
         </div>
 
-        {inactiveValidators > -1 && (
+        {inactiveValidators > 0 && (
           <div className="text-sm text-gray-500 dark:text-gray-400">
             +{inactiveValidators} inactive
           </div>
