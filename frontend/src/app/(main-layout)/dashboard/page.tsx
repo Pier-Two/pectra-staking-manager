@@ -11,6 +11,7 @@ import { TotalDailyIncome } from "pec/components/dashboard/validators/TotalDaily
 import { ValidatorTable } from "pec/components/dashboard/validatorTable/ValidatorTable";
 import { useWalletAddress } from "pec/hooks/useWallet";
 import DashboardLoading from "./loading";
+import { ValidatorStatus } from "pec/types/validator";
 
 const Dashboard: FC = () => {
   const walletAddress = useWalletAddress();
@@ -23,6 +24,14 @@ const Dashboard: FC = () => {
   );
 
   if (!walletAddress || !data || !isFetched) return <DashboardLoading />;
+
+  const activeValidators = data.filter(
+    (validator) => validator.status === ValidatorStatus.ACTIVE,
+  );
+
+  const inactiveValidators = data.filter(
+    (validator) => validator.status === ValidatorStatus.INACTIVE,
+  );
 
   return (
     <div className="space-y-6 dark:text-white">
@@ -37,8 +46,11 @@ const Dashboard: FC = () => {
       <div className="text-2xl font-medium">My Validators</div>
 
       <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-        <ActiveValidators />
-        <TotalStake />
+        <ActiveValidators
+          activeValidators={activeValidators.length}
+          inactiveValidators={inactiveValidators.length}
+        />
+        <TotalStake validators={data} />
         <TotalDailyIncome />
       </div>
 
