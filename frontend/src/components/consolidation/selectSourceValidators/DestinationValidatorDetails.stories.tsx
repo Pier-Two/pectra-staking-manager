@@ -23,6 +23,7 @@ type Story = StoryObj<typeof meta>;
 export const Primary: Story = {
   args: {
     validator: MOCK_VALIDATORS[0]!,
+    consolidatedTotal: 50,
     selectedSourceTotal: 50,
   },
 };
