@@ -2,14 +2,7 @@
 
 import type { FC } from "react";
 import { useRouter } from "next/navigation";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "pec/components/ui/card";
-import { CircleAlert, Merge } from "lucide-react";
+import { CircleAlert, Merge, ArrowUpRight } from "lucide-react";
 import { Separator } from "pec/components/ui/separator";
 import { Button } from "pec/components/ui/button";
 
@@ -21,38 +14,38 @@ export const Consolidate: FC = () => {
   };
 
   return (
-    <Card
-      className="hover:border-3 flex flex-col space-y-4 rounded-xl border bg-white p-3 hover:border-yellow-400 dark:border-gray-800 dark:bg-black dark:hover:border-yellow-400 hover:cursor-pointer"
+    <div
+      className="hover:border-3 group flex flex-col space-y-4 rounded-xl border bg-white p-4 pe-8 ps-8 hover:cursor-pointer hover:border-black dark:border-gray-800 dark:bg-black dark:hover:border-yellow-400"
       onClick={handleConsolidateRedirect}
     >
-      <CardHeader className="flex min-h-[15vh] flex-shrink-0 flex-row items-center gap-8">
-        <Merge className="rotate-90 hover:text-yellow-500" size={70} />
+      <div className="flex flex-shrink-0 flex-grow flex-row items-center gap-8">
+        <Merge className="rotate-90 group-hover:text-yellow-500" size={70} />
         <div className="flex flex-col gap-2">
-          <CardTitle>Consolidate</CardTitle>
-          <CardDescription className="text-gray-500">
+          <div className="flex flex-row justify-between">
+            <div className="text-lg font-medium">Consolidate</div>
+            <ArrowUpRight className="group-hover:text-yellow-500" size={20} />
+          </div>
+
+          <div className="text-xs text-gray-500 dark:text-gray-400">
             Combine multiple Pectra validators (0x02 credentials) into one
             large-balance validator.
-          </CardDescription>
+          </div>
         </div>
-      </CardHeader>
+      </div>
 
       <Separator className="bg-gray-200 dark:bg-gray-800" />
 
-      <CardContent className="flex flex-grow items-center justify-between gap-8 text-sm">
+      <div className="flex items-center justify-between text-sm">
         <div className="flex flex-row items-center gap-x-2">
-          <CircleAlert className="text-yellow-500" />
+          <CircleAlert fill="orange" className="text-white dark:text-black" />
 
-          <div className="text-gray-700 dark:text-white">
-            XXX validators not on Pectra standard
-          </div>
+          <div>XXX validators not on Pectra standard</div>
         </div>
 
-        <Button
-          className="rounded-lg border bg-gray-100 p-3 hover:bg-gray-200 dark:border-gray-800 dark:bg-black dark:hover:bg-gray-900"
-        >
+        <Button className="rounded-lg border bg-gray-100 hover:bg-gray-200 dark:border-gray-800 dark:bg-black dark:hover:bg-gray-900">
           Fix
         </Button>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 };
