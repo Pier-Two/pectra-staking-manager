@@ -20,7 +20,7 @@ export const DetectedValidators: FC<IDetectedValidators> = (props) => {
     <>
       <div
         onClick={() => setShowValidators(!showValidators)}
-        className="flex-col-2 flex min-h-[10vh] w-full items-center justify-between gap-x-4 rounded-xl border border-gray-200 bg-white p-4 hover:cursor-pointer hover:bg-gray-100 dark:border-gray-800 dark:bg-black dark:hover:bg-gray-800"
+        className="flex-col-2 flex min-h-[10vh] w-full items-center justify-between gap-x-4 rounded-xl border border-gray-200 bg-white p-4 hover:cursor-pointer hover:bg-gray-50 dark:border-gray-800 dark:bg-black dark:hover:bg-gray-800"
       >
         <div className="flex items-center gap-x-4">
           <Image
