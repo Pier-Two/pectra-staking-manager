@@ -2,7 +2,7 @@
 
 import { useWalletAddress } from "pec/hooks/useWallet";
 import { ConnectedAddress } from "pec/components/validators/ConnectedAddress";
-import { LoaderCircle } from "lucide-react";
+import { PectraSpinner } from "pec/components/ui/pectraSpinner";
 
 const ValidatorsFoundLoading = () => {
   const walletAddress = useWalletAddress();
@@ -18,8 +18,7 @@ const ValidatorsFoundLoading = () => {
 
         <div className="flex-col-2 flex min-h-[10vh] w-full items-center justify-between rounded-xl border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-black">
           <div className="flex items-center gap-x-4">
-            <LoaderCircle className="h-5 w-5 animate-spin text-gray-800 dark:text-white" />
-
+            <PectraSpinner />
             <div className="flex flex-col">
               <div className="text-md">
                 Finding validators with this withdrawal address

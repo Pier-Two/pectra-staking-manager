@@ -1,4 +1,8 @@
-import { ValidatorStatus, type ValidatorDetails } from "pec/types/validator";
+  import {
+  ValidatorStatus,
+  TransactionStatus,
+  type ValidatorDetails,
+} from "pec/types/validator";
 
 export const MOCK_VALIDATORS: ValidatorDetails[] = [
   {
@@ -14,6 +18,8 @@ export const MOCK_VALIDATORS: ValidatorDetails[] = [
     activeSince: "01-Jan-2025",
     activeDuration: "100 days",
     apy: 3.34,
+    transactionStatus: TransactionStatus.SUBMITTED,
+    transactionHash: "0x1234567890abcdef",
   },
   {
     validatorIndex: 311400,
@@ -28,6 +34,8 @@ export const MOCK_VALIDATORS: ValidatorDetails[] = [
     activeSince: "07-03-2022",
     activeDuration: "3 years 5 days",
     apy: 10.0,
+    transactionStatus: TransactionStatus.IN_PROGRESS,
+    transactionHash: "0x1234567890abcdef",
   },
   ...Array.from({ length: 4 }, (_, i) => ({
     validatorIndex: 500000 + i,
@@ -45,5 +53,7 @@ export const MOCK_VALIDATORS: ValidatorDetails[] = [
     activeSince: i < 15 ? "2023-06-15" : "2025-01-01",
     activeDuration: i < 15 ? "8 months" : "3 months",
     apy: +(Math.random() * 10).toFixed(2),
+    transactionStatus: TransactionStatus.UPCOMING,
+    transactionHash: "0x1234567890abcdef",
   })),
 ];

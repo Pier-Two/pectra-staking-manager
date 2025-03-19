@@ -9,6 +9,8 @@ export interface ValidatorDetails {
   activeSince: string;
   activeDuration: string;
   apy: number;
+  transactionStatus: TransactionStatus;
+  transactionHash: string;
 }
 
 export interface IConnector {
@@ -36,6 +38,12 @@ export interface IValidatorCard {
   onClick?: () => void;
 }
 
+export interface ITransactionValidatorCard {
+  status: TransactionStatus;
+  transactionHash: string;
+  validator: ValidatorDetails;
+}
+
 export interface ISourceValidatorCard {
   checked: boolean;
   onClick: () => void;
@@ -46,4 +54,10 @@ export enum ValidatorStatus {
   ACTIVE = "Active",
   PENDING = "Pending",
   INACTIVE = "Inactive",
+}
+
+export enum TransactionStatus {
+  IN_PROGRESS = "In Progress",
+  UPCOMING = "Upcoming",
+  SUBMITTED = "Submitted",
 }

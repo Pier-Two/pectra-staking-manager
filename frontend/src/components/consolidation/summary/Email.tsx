@@ -7,9 +7,8 @@ import { Switch } from "pec/components/ui/switch";
 import { Input } from "pec/components/ui/input";
 
 export const Email: FC<IConsolidationEmail> = (props) => {
-  const { cardText } = props;
+  const { cardText, summaryEmail, setSummaryEmail } = props;
   const [showEmail, setShowEmail] = useState<boolean>(false);
-  const [emailAddress, setEmailAddress] = useState<string>("");
 
   return (
     <div className="flex min-h-[10vh] w-full flex-col items-center justify-between gap-x-4 space-y-4 rounded-xl border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-black">
@@ -32,8 +31,8 @@ export const Email: FC<IConsolidationEmail> = (props) => {
         <Input
           className="w-full rounded-xl border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-black"
           placeholder="Email"
-          value={emailAddress}
-          onChange={(e) => setEmailAddress(e.target.value)}
+          value={summaryEmail}
+          onChange={(e) => setSummaryEmail(e.target.value)}
         />
       )}
     </div>

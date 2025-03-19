@@ -7,6 +7,7 @@ import { MOCK_VALIDATORS } from "pec/server/__mocks__/validators";
 import type { ValidatorDetails } from "pec/types/validator";
 import { SelectSourceValidators } from "pec/components/consolidation/selectSourceValidators/SelectSourceValidators";
 import { ConsolidationSummary } from "pec/components/consolidation/summary/ConsolidationSummary";
+import { SubmitConsolidationRequests } from "pec/components/consolidation/submitRequests/SubmitConsolidationRequests";
 
 const ConsolidationWorkflow: FC = () => {
   const data = MOCK_VALIDATORS;
@@ -20,6 +21,8 @@ const ConsolidationWorkflow: FC = () => {
   const [selectedSourceValidators, setSelectedSourceValidators] = useState<
     ValidatorDetails[]
   >([]);
+  const [summaryEmail, setSummaryEmail] = useState<string>("");
+  const [consolidationEmail, setConsolidationEmail] = useState<string>("");
 
   useEffect(() => {
     if (selectedDestinationValidator)
@@ -54,30 +57,43 @@ const ConsolidationWorkflow: FC = () => {
         />
       )}
 
-      {selectedDestinationValidator && progress === 2 && (
-        <SelectSourceValidators
-          consolidatedTotal={consolidatedTotal}
-          destinationValidator={selectedDestinationValidator}
-          selectedSourceTotal={selectedSourceTotal}
-          selectedSourceValidators={selectedSourceValidators}
-          setProgress={setProgress}
-          setSelectedDestinationValidator={setSelectedDestinationValidator}
-          setSelectedSourceTotal={setSelectedSourceTotal}
-          setSelectedSourceValidators={setSelectedSourceValidators}
-          validators={data}
-        />
-      )}
+      {selectedDestinationValidator && (
+        <>
+          {progress === 2 && (
+            <SelectSourceValidators
+              consolidatedTotal={consolidatedTotal}
+              destinationValidator={selectedDestinationValidator}
+              selectedSourceTotal={selectedSourceTotal}
+              selectedSourceValidators={selectedSourceValidators}
+              setProgress={setProgress}
+              setSelectedDestinationValidator={setSelectedDestinationValidator}
+              setSelectedSourceTotal={setSelectedSourceTotal}
+              setSelectedSourceValidators={setSelectedSourceValidators}
+              validators={data}
+            />
+          )}
 
-      {selectedDestinationValidator &&
-        selectedSourceValidators.length > 0 &&
-        progress === 3 && (
-          <ConsolidationSummary
-            destinationValidator={selectedDestinationValidator}
-            setProgress={setProgress}
-            setSelectedDestinationValidator={setSelectedDestinationValidator}
-            sourceValidators={selectedSourceValidators}
-          />
-        )}
+          {selectedSourceValidators.length > 0 && progress === 3 && (
+            <ConsolidationSummary
+              destinationValidator={selectedDestinationValidator}
+              setProgress={setProgress}
+              setSelectedDestinationValidator={setSelectedDestinationValidator}
+              setSummaryEmail={setSummaryEmail}
+              sourceValidators={selectedSourceValidators}
+              summaryEmail={summaryEmail}
+            />
+          )}
+
+          {selectedSourceValidators.length > 0 && progress === 4 && (
+            <SubmitConsolidationRequests
+              consolidationEmail={consolidationEmail}
+              destinationValidator={selectedDestinationValidator}
+              setConsolidationEmail={setConsolidationEmail}
+              sourceValidators={selectedSourceValidators}
+            />
+          )}
+        </>
+      )}
     </div>
   );
 };

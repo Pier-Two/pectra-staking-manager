@@ -12,11 +12,17 @@ export const ConsolidationSummary: FC<IConsolidationSummary> = (props) => {
     setSelectedDestinationValidator,
     sourceValidators,
     setProgress,
+    summaryEmail,
+    setSummaryEmail,
   } = props;
 
   const handleResetDestinationValidator = () => {
     setSelectedDestinationValidator(null);
     setProgress(1);
+  };
+
+  const handleGenerateTransactions = () => {
+    setProgress(4);
   };
 
   return (
@@ -58,17 +64,24 @@ export const ConsolidationSummary: FC<IConsolidationSummary> = (props) => {
           destinationValidator={destinationValidator}
           sourceValidators={sourceValidators}
         />
-        <Email cardText="Email me when consolidation completes" />
+        <Email
+          cardText="Email me when consolidation completes"
+          summaryEmail={summaryEmail}
+          setSummaryEmail={setSummaryEmail}
+        />
       </div>
 
       <div className="space-y-2">
-        <Button className="w-full space-x-2 rounded-xl border border-gray-800 bg-black p-4 hover:bg-gray-900 dark:bg-white dark:hover:bg-gray-200">
+        <Button
+          className="w-full space-x-2 rounded-xl border border-gray-800 bg-black p-4 hover:bg-gray-900 dark:bg-white dark:hover:bg-gray-200"
+          onClick={() => handleGenerateTransactions()}
+        >
           <div className="text-sm text-white dark:text-black">
             Generate transactions
           </div>
         </Button>
 
-        <div className="text-sm text-center text-gray-700 dark:text-gray-300">
+        <div className="text-center text-sm text-gray-700 dark:text-gray-300">
           You will be required to sign {sourceValidators.length + 1}{" "}
           consolidation transactions.
         </div>
