@@ -78,17 +78,21 @@ export const TopBar: FC<ITopBar> = (props) => {
 
       <div className="flex items-center space-x-4 pe-12">
         <Button
-          className="rounded-full border bg-gray-100 p-3 hover:bg-gray-200 dark:border-gray-800 dark:bg-black dark:hover:bg-gray-900"
+          className={`rounded-full border ${
+            darkMode
+              ? "border-yellow-400 dark:bg-black dark:hover:bg-gray-900"
+              : "border-indigo-400 bg-gray-100 hover:bg-gray-200"
+          } p-3`}
           onClick={toggleDarkMode}
         >
           {darkMode ? (
             <Sun className="text-yellow-400" />
           ) : (
-            <Moon className="text-gray-700 dark:text-white" />
+            <Moon className="text-gray-700" />
           )}
         </Button>
 
-        <ConnectWalletButton className="!h-10 !w-8" />
+        <ConnectWalletButton className="!w-[50%]" />
       </div>
     </header>
   );
