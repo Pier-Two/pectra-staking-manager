@@ -37,7 +37,7 @@ const Dashboard: FC = () => {
     <div className="space-y-6 dark:text-white">
       <div className="text-2xl font-medium">Tools</div>
 
-      <div className="grid grid-cols-1 grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
         <Consolidate />
         <BatchDeposit />
         <BatchWithdrawal />
