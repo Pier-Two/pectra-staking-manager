@@ -43,15 +43,20 @@ export const BottomBar: FC = () => {
 
   return (
     <footer className="sticky bottom-0 z-10 flex h-[5vh] w-full items-center justify-between border-t bg-[rgba(255,255,255,0.98)] px-6 shadow-sm dark:border-gray-800 dark:bg-gray-950">
-      <div className="text-gray-600 dark:text-gray-300">
+      <div className="text-sm text-gray-600 dark:text-gray-300">
         Built with 🤍 by and for the Ethereum community
       </div>
 
-      <div className="flex items-center space-x-3 text-gray-600 dark:text-gray-300">
-        <div>Powered by: </div>
-        {renderLogo("PierTwo")}
-        {renderLogo("Labrys")}
-        {renderLogo("Hashlock")}
+      <div className="flex items-center gap-8 text-sm text-gray-600 dark:text-gray-300">
+        <div className="flex items-center gap-2">
+          <div>Product by: </div>
+          {renderLogo("PierTwo")}
+        </div>
+
+        <div className="flex items-center gap-2">
+          <div>Produced by: </div>
+          {renderLogo("Labrys")}
+        </div>
       </div>
     </footer>
   );
