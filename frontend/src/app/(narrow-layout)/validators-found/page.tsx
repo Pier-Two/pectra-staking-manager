@@ -52,6 +52,10 @@ const ValidatorsFound: FC = () => {
         >
           <div className="text-sm text-black">Skip and go to Dashboard</div>
         </Button>
+
+        <div className="flex justify-center text-sm">
+          You can access consolidation anytime.
+        </div>
       </div>
     </div>
   );
