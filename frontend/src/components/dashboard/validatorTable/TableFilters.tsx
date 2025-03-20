@@ -2,7 +2,7 @@ import type { FC } from "react";
 import { ValidatorStatus } from "pec/types/validator";
 import { Input } from "pec/components/ui/input";
 import { Button } from "pec/components/ui/button";
-import { CirclePlus, SlidersHorizontal } from "lucide-react";
+import { CirclePlus } from "lucide-react";
 import type { ITableFiltersProps } from "pec/types/validatorTable";
 
 export const TableFilters: FC<ITableFiltersProps> = (props) => {
@@ -30,7 +30,7 @@ export const TableFilters: FC<ITableFiltersProps> = (props) => {
                 key={status}
                 variant="default"
                 className={`cursor-pointer font-normal dark:bg-black ${
-                  statusFilter.includes(status) ? "text-blue-500" : ""
+                  statusFilter.includes(status) ? "text-blue-600" : ""
                 }`}
                 onClick={() => onStatusFilterChange(status)}
               >
@@ -40,13 +40,13 @@ export const TableFilters: FC<ITableFiltersProps> = (props) => {
           </div>
         </div>
 
-        <Button
+        {/* <Button
           className="rounded-xl bg-white border-gray-200 dark:border-gray-800 dark:bg-black"
           variant="outline"
         >
           <SlidersHorizontal className="h-3 w-3 dark:text-white" />
           View
-        </Button>
+        </Button> */}
       </div>
     </div>
   );

@@ -12,12 +12,11 @@ export const TableHeadersRow: FC<ITableHeadersRowProps> = (props) => {
     props;
 
   const headers: IHeaderConfig[] = [
-    { label: "Validator", sortKey: "id" },
-    { label: "Active since", sortKey: "activeDate" },
-    { label: "Balance", sortKey: "balance" },
-    { label: "APY", sortKey: "apy" },
+    { label: "Validator", sortKey: "validatorIndex" },
+    { label: "Active since", sortKey: "activeSince" },
+    { label: "Credentials", sortKey: "withdrawalAddress" },
     { label: "Status", sortKey: "status" },
-    { label: "Credentials", sortKey: "credentials" },
+    { label: "Balance", sortKey: "balance" },
   ];
 
   return (

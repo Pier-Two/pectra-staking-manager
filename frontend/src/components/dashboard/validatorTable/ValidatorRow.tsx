@@ -1,4 +1,5 @@
 import type { FC } from "react";
+import Image from "next/image";
 import { TableCell, TableRow } from "pec/components/ui/table";
 import { Checkbox } from "pec/components/ui/checkbox";
 import { Button } from "pec/components/ui/button";
@@ -8,7 +9,14 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "pec/components/ui/dropdown-menu";
-import { AlignLeft, Check, CircleMinus, MoreVertical } from "lucide-react";
+import {
+  AlignLeft,
+  CircleCheck,
+  CircleMinus,
+  CirclePlay,
+  MoreVertical,
+  OctagonMinus,
+} from "lucide-react";
 import { ValidatorStatus } from "pec/types/validator";
 import type { IValidatorRowProps } from "pec/types/validatorTable";
 
@@ -16,10 +24,12 @@ export const ValidatorRow: FC<IValidatorRowProps> = (props) => {
   const { validator, isSelected, onToggle } = props;
 
   return (
-    <TableRow className="border-none hover:bg-gray-50 dark:hover:bg-gray-800">
+    <TableRow
+      className={`hover:bg-indigo-100 ${isSelected ? "bg-indigo-100" : "bg-white dark:bg-black"}`}
+    >
       <TableCell>
         <Checkbox
-          className="rounded"
+          className={`rounded text-black dark:text-black ${isSelected ? "bg-blue-300" : "bg-white dark:bg-black"}`}
           checked={isSelected}
           onCheckedChange={(checked) => onToggle(!!checked)}
           aria-label={`Select validator ${validator.validatorIndex}`}
@@ -27,12 +37,20 @@ export const ValidatorRow: FC<IValidatorRowProps> = (props) => {
       </TableCell>
 
       <TableCell>
-        <div className="flex flex-col">
-          <span>◆ {validator.validatorIndex}</span>
-          <span className="text-xs text-gray-500">
-            {validator.publicKey.slice(0, 7)}...
-            {validator.publicKey.slice(-5)}
-          </span>
+        <div className="flex flex-row gap-2">
+          <Image
+            src="/icons/EthValidator.svg"
+            alt="Wallet"
+            width={24}
+            height={24}
+          />
+          <div className="flex flex-col">
+            <div className="font-semibold">{validator.validatorIndex}</div>
+            <span className="text-xs text-gray-500">
+              {validator.publicKey.slice(0, 7)}...
+              {validator.publicKey.slice(-5)}
+            </span>
+          </div>
         </div>
       </TableCell>
 
@@ -47,42 +65,32 @@ export const ValidatorRow: FC<IValidatorRowProps> = (props) => {
 
       <TableCell>
         <div className="flex items-center gap-1">
-          <AlignLeft className="h-3 w-3 text-gray-500" />
-          <span> {validator.balance}</span>
+          {validator.withdrawalAddress.includes("0x02") ? (
+            <CircleCheck className="h-4 w-4 fill-green-500 text-white dark:text-black" />
+          ) : (
+            <OctagonMinus className="h-4 w-4 text-gray-500 dark:text-white" />
+          )}
+          <div className="font-semibold">
+            {validator.withdrawalAddress.slice(0, 4)}
+          </div>
         </div>
       </TableCell>
 
       <TableCell>
-        <span>{validator.apy}%</span>
-      </TableCell>
-
-      <TableCell>
         <div className="flex items-center gap-2">
-          <div
-            className={`h-2 w-2 rounded-full ${
-              validator.status === ValidatorStatus.ACTIVE
-                ? "bg-green-500"
-                : validator.status === ValidatorStatus.PENDING
-                  ? "bg-yellow-500"
-                  : "bg-red-500"
-            }`}
-          />
+          {validator.status === ValidatorStatus.ACTIVE ? (
+            <CirclePlay className="h-4 w-4 fill-green-500 text-white dark:text-black" />
+          ) : (
+            <CircleMinus className="h-4 w-4 fill-red-500 text-white dark:text-black" />
+          )}
           <span>{validator.status}</span>
         </div>
       </TableCell>
 
       <TableCell>
         <div className="flex items-center gap-1">
-          {validator.withdrawalAddress.includes("0x02") ? (
-            <Check className="h-4 w-4 text-green-500" />
-          ) : (
-            <CircleMinus className="h-4 w-4 fill-red-500 text-red-500 text-white" />
-          )}
-          <div>
-            {validator.withdrawalAddress.includes("0x02")
-              ? "0x02 (Pectra)"
-              : "0x01 (Old)"}
-          </div>
+          <AlignLeft className="h-3 w-3" />
+          <div className="font-semibold">{validator.balance}</div>
         </div>
       </TableCell>
 
