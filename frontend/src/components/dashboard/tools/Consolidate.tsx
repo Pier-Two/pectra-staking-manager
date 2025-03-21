@@ -18,7 +18,7 @@ export const Consolidate: FC = () => {
       className="hover:border-3 group flex flex-col space-y-4 rounded-xl border p-4 pe-8 ps-8 hover:cursor-pointer text-white"
       onClick={handleConsolidateRedirect}
       style={{
-        backgroundImage: "url(/cards/backgrounds/ConsolidateBackground.png)",
+        backgroundImage: "url(/cards/backgrounds/Consolidate.png)",
         backgroundSize: "cover",
         backgroundPosition: "center",
       }}
