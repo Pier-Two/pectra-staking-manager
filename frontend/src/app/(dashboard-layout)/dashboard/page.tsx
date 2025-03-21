@@ -34,28 +34,36 @@ const Dashboard: FC = () => {
   );
 
   return (
-    <div className="space-y-6 dark:text-white">
-      <div className="text-2xl font-medium">Tools</div>
+    <div className="flex w-full flex-col items-center space-y-10 dark:text-white">
+      <div className="w-[70vw] space-y-6">
+        <div className="text-2xl font-medium text-indigo-800 dark:text-indigo-200">
+          Tools
+        </div>
 
-      <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-        <Consolidate />
-        <BatchDeposit />
-        <BatchWithdrawal />
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+          <Consolidate />
+          <BatchDeposit />
+          <BatchWithdrawal />
+        </div>
       </div>
 
-      <div className="text-2xl font-medium">My Validators</div>
+      <div className="flex w-full items-center justify-center bg-white">
+        <div className="w-[70vw] pt-8 space-y-4">
+          <div className="text-2xl font-medium text-indigo-800 dark:text-indigo-200">My Validators</div>
 
-      <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-        <ActiveValidators
-          activeValidators={activeValidators.length}
-          inactiveValidators={inactiveValidators.length}
-        />
-        <TotalStake validators={data} />
-        <TotalDailyIncome />
-      </div>
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+            <ActiveValidators
+              activeValidators={activeValidators.length}
+              inactiveValidators={inactiveValidators.length}
+            />
+            <TotalStake validators={data} />
+            <TotalDailyIncome />
+          </div>
 
-      <div className="pt-8">
-        <ValidatorTable validators={data} />
+          <div className="pt-8">
+            <ValidatorTable validators={data} />
+          </div>
+        </div>
       </div>
     </div>
   );
