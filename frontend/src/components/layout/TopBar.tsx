@@ -59,7 +59,12 @@ export const TopBar: FC<ITopBar> = (props) => {
 
             <Badge
               variant="outline"
-              className="rounded-lg bg-gradient-to-r from-[#00FFA7] via-[#5164DC] to-[#313C86] px-1 text-white"
+              className="h-6 w-6 rounded-lg border border-transparent bg-white text-gray-800 dark:bg-gray-950 dark:text-white items-center justify-center"
+              style={{
+                borderImage:
+                  "linear-gradient(to right, #00FFA7, #5164DC, #313C86) 1",
+                borderImageSlice: "1",
+              }}
             >
               {numberOfValidators}
             </Badge>
