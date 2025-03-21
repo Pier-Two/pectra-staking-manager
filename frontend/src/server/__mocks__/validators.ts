@@ -50,7 +50,7 @@ export const MOCK_VALIDATORS: ValidatorDetails[] = [
     activeSince: "20-Mar-2025",
     activeDuration: "50 days",
     apy: 3.25,
-    transactionStatus: TransactionStatus.UPCOMING,
+    transactionStatus: TransactionStatus.SUBMITTED,
     transactionHash: "",
   },
   {
@@ -66,8 +66,8 @@ export const MOCK_VALIDATORS: ValidatorDetails[] = [
     activeSince: "20-Mar-2025",
     activeDuration: "50 days",
     apy: 3.45,
-    transactionStatus: TransactionStatus.SUBMITTED,
-    transactionHash: "0xabcdef1234567890",
+    transactionStatus: TransactionStatus.IN_PROGRESS,
+    transactionHash: "",
   },
   {
     validatorIndex: 504321,

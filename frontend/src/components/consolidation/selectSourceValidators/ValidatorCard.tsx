@@ -10,11 +10,14 @@ export const ValidatorCard: FC<ISourceValidatorCard> = (props) => {
 
   return (
     <div
-      className={`flex-col-3 flex min-h-[10vh] w-full items-center justify-between gap-x-4 rounded-xl border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-black ${checked ? "border-gray-800" : ""}`}
+      className={`flex-col-3 flex w-full items-center justify-between gap-x-4 rounded-xl border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-black hover:border-indigo-500 dark:hover:border-gray-600 ${checked ? "border-indigo-500 dark:border-indigo-400" : ""}`}
       onClick={onClick}
     >
       <div className="flex items-center gap-x-4">
-        <Checkbox checked={checked} />
+        <Checkbox
+          className="rounded-lg data-[state=checked]:bg-indigo-500 data-[state=checked]:text-white data-[state=checked]:dark:text-black"
+          checked={checked}
+        />
 
         <Image
           src="/icons/EthValidator.svg"

@@ -59,7 +59,7 @@ export const TopBar: FC<ITopBar> = (props) => {
 
             <Badge
               variant="outline"
-              className="rounded-lg bg-gradient-to-r from-[#FDBA74] via-[#A5B4FC] to-[#86EFAC] px-1 text-white"
+              className="rounded-lg bg-gradient-to-r from-[#00FFA7] via-[#5164DC] to-[#313C86] px-1 text-white"
             >
               {numberOfValidators}
             </Badge>
@@ -80,13 +80,13 @@ export const TopBar: FC<ITopBar> = (props) => {
         <Button
           className={`rounded-full border ${
             darkMode
-              ? "border-yellow-400 dark:bg-black dark:hover:bg-gray-900"
+              ? "border-gray-700 dark:bg-black dark:hover:bg-gray-900"
               : "border-indigo-400 bg-gray-100 hover:bg-gray-200"
           } p-3`}
           onClick={toggleDarkMode}
         >
           {darkMode ? (
-            <Sun className="text-yellow-400" />
+            <Sun className="text-white" />
           ) : (
             <Moon className="text-gray-700" />
           )}

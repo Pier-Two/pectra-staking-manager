@@ -4,7 +4,7 @@ import {
   TransactionStatus,
   type ITransactionValidatorCard,
 } from "pec/types/validator";
-import { PectraSpinner } from "../ui/pectraSpinner";
+import { PectraSpinner } from "../ui/custom/pectraSpinner";
 import { CircleCheck, ExternalLink } from "lucide-react";
 
 export const TransactionValidatorCard: FC<ITransactionValidatorCard> = (
@@ -19,7 +19,7 @@ export const TransactionValidatorCard: FC<ITransactionValidatorCard> = (
   const inProgressStatus = (
     <div className="flex items-center gap-1">
       <PectraSpinner />
-      <span className="text-black">Sign transaction</span>
+      <span className="text-black dark:text-white">Sign transaction</span>
     </div>
   );
 
@@ -29,18 +29,14 @@ export const TransactionValidatorCard: FC<ITransactionValidatorCard> = (
         {transactionHash.slice(0, 6)}...{transactionHash.slice(-4)}
       </span>
       <ExternalLink className="h-3 w-3 text-indigo-500" />
-      <CircleCheck fill="green" className="text-white" />
-      <span className="text-black">Submitted</span>
+      <CircleCheck className="text-white dark:text-black fill-green-500" />
+      <span className="text-black dark:text-white">Submitted</span>
     </div>
   );
 
   return (
     <div
-      className={`flex min-h-[10vh] items-center justify-between gap-x-4 rounded-xl border ${
-        status === TransactionStatus.IN_PROGRESS
-          ? "border-gray-500"
-          : "border-gray-200"
-      } bg-white p-4 dark:border-gray-800 dark:bg-black`}
+      className={`flex items-center justify-between gap-x-4 rounded-xl border border-indigo-300 p-4 dark:border-gray-800 dark:bg-black`}
     >
       <div className="flex items-center gap-x-4">
         <Image

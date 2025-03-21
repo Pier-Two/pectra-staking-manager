@@ -2,7 +2,7 @@
 
 import { useWalletAddress } from "pec/hooks/useWallet";
 import { ConnectedAddress } from "pec/components/validators/ConnectedAddress";
-import { PectraSpinner } from "pec/components/ui/pectraSpinner";
+import { PectraSpinner } from "pec/components/ui/custom/pectraSpinner";
 
 const ValidatorsFoundLoading = () => {
   const walletAddress = useWalletAddress();

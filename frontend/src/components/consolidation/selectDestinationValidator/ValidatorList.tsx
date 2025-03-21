@@ -39,7 +39,8 @@ export const ValidatorList: FC<IDestinationValidatorList> = (props) => {
       {validators.map((validator, index) => (
         <ValidatorCard
           key={`validator-${validator.validatorIndex}-${index}`}
-          allowClose={false}
+          hasBackground={true}
+          hasHover={true}
           onClick={() => handleValidatorClick(validator)}
           shrink={false}
           validator={validator}

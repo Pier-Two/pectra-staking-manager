@@ -20,7 +20,7 @@ export const DetectedValidators: FC<IDetectedValidators> = (props) => {
     <>
       <div
         onClick={() => setShowValidators(!showValidators)}
-        className="flex-col-2 flex min-h-[10vh] w-full items-center justify-between gap-x-4 rounded-xl border border-gray-200 bg-white p-4 hover:cursor-pointer hover:bg-gray-50 dark:border-gray-800 dark:bg-black dark:hover:bg-gray-800"
+        className="flex-col-2 flex w-full items-center justify-between gap-x-4 rounded-xl border border-gray-200 bg-white p-6 hover:cursor-pointer hover:bg-gray-50 dark:border-gray-800 dark:bg-black"
       >
         <div className="flex items-center gap-x-4">
           <Image
@@ -34,19 +34,20 @@ export const DetectedValidators: FC<IDetectedValidators> = (props) => {
 
         <div className="flex items-center gap-2">
           <div className="flex items-center gap-1">
-            <AlignLeft className="h-3 w-3 text-gray-500" />
-            <span> {totalBalance.toFixed(2)}</span>
+            <AlignLeft className="h-3 w-3 text-gray-500 dark:text-white" />
+            <span>{totalBalance.toFixed(2)}</span>
           </div>
           <ChevronsLeftRight className="h-5 w-5 rotate-90 text-gray-800 dark:text-white" />
         </div>
       </div>
 
       {showValidators && (
-        <div className="flex w-full flex-col items-center gap-4">
+        <div className="mt-4 flex w-full flex-col items-center gap-4">
           {validators.map((validator, index) => (
             <ValidatorCard
               key={index + validator.validatorIndex}
-              allowClose={false}
+              hasBackground={false}
+              hasHover={false}
               shrink={true}
               validator={validator}
             />

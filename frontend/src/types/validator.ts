@@ -32,7 +32,8 @@ export interface IGenericValidators {
 }
 
 export interface IValidatorCard {
-  allowClose: boolean;
+  hasBackground: boolean;
+  hasHover: boolean;
   shrink: boolean;
   validator: ValidatorDetails;
   onClick?: () => void;

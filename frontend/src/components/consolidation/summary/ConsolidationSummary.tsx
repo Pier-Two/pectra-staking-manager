@@ -3,13 +3,17 @@ import type { IConsolidationSummary } from "pec/types/consolidation";
 import { ValidatorCard } from "pec/components/validators/ValidatorCard";
 import { DetectedValidators } from "pec/components/validators/DetectedValidators";
 import { Overview } from "./Overview";
-import { Button } from "pec/components/ui/button";
 import { Email } from "./Email";
+import { PrimaryButton } from "pec/components/ui/custom/PrimaryButton";
+import { SecondaryButton } from "pec/components/ui/custom/SecondaryButton";
+import { Pencil } from "lucide-react";
+import { EIconPosition } from "pec/types/components";
 
 export const ConsolidationSummary: FC<IConsolidationSummary> = (props) => {
   const {
     destinationValidator,
     setSelectedDestinationValidator,
+    setSelectedSourceValidators,
     sourceValidators,
     setProgress,
     summaryEmail,
@@ -23,6 +27,11 @@ export const ConsolidationSummary: FC<IConsolidationSummary> = (props) => {
 
   const handleGenerateTransactions = () => {
     setProgress(4);
+  };
+
+  const handleResetSourceValidators = () => {
+    setSelectedSourceValidators([]);
+    setProgress(2);
   };
 
   return (
@@ -39,22 +48,40 @@ export const ConsolidationSummary: FC<IConsolidationSummary> = (props) => {
         <div className="flex flex-col gap-2">
           <div className="text-lg font-medium">Destination validator</div>
 
-          <div className="flex items-center justify-center">
+          <div className="flex flex-col items-center justify-center gap-4">
             <ValidatorCard
-              allowClose={true}
+              hasBackground={true}
+              hasHover={false}
               shrink={false}
-              onClick={() => handleResetDestinationValidator()}
               validator={destinationValidator}
+            />
+
+            <SecondaryButton
+              className="w-full"
+              label="Change destination"
+              icon={<Pencil className="h-4 w-4" />}
+              iconPosition={EIconPosition.LEFT}
+              onClick={() => handleResetDestinationValidator()}
+              disabled={false}
             />
           </div>
         </div>
       </div>
 
-      <div className="space-y-2">
+      <div className="space-y-4">
         <div className="text-lg font-medium">Source validators</div>
         <DetectedValidators
           cardTitle="selected"
           validators={sourceValidators}
+        />
+
+        <SecondaryButton
+          className="w-full"
+          label="Change source"
+          icon={<Pencil className="h-4 w-4" />}
+          iconPosition={EIconPosition.LEFT}
+          onClick={() => handleResetSourceValidators()}
+          disabled={false}
         />
       </div>
 
@@ -64,22 +91,22 @@ export const ConsolidationSummary: FC<IConsolidationSummary> = (props) => {
           destinationValidator={destinationValidator}
           sourceValidators={sourceValidators}
         />
+
         <Email
-          cardText="Email me when consolidation completes"
+          cardText="Notify me when complete"
+          cardTitle="Add your email to receive an email when your consolidation is complete"
           summaryEmail={summaryEmail}
           setSummaryEmail={setSummaryEmail}
         />
       </div>
 
       <div className="space-y-2">
-        <Button
-          className="w-full space-x-2 rounded-xl border border-gray-800 bg-black p-4 hover:bg-gray-900 dark:bg-white dark:hover:bg-gray-200"
+        <PrimaryButton
+          className="w-full"
+          label="Generate transactions"
           onClick={() => handleGenerateTransactions()}
-        >
-          <div className="text-sm text-white dark:text-black">
-            Generate transactions
-          </div>
-        </Button>
+          disabled={false}
+        />
 
         <div className="text-center text-sm text-gray-700 dark:text-gray-300">
           You will be required to sign {sourceValidators.length + 1}{" "}

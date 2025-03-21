@@ -16,24 +16,11 @@ const ConsolidationWorkflow: FC = () => {
   const [selectedDestinationValidator, setSelectedDestinationValidator] =
     useState<ValidatorDetails | null>(null);
 
-  const [selectedSourceTotal, setSelectedSourceTotal] = useState<number>(0);
-  const [consolidatedTotal, setConsolidatedTotal] = useState<number>(0);
   const [selectedSourceValidators, setSelectedSourceValidators] = useState<
     ValidatorDetails[]
   >([]);
   const [summaryEmail, setSummaryEmail] = useState<string>("");
   const [consolidationEmail, setConsolidationEmail] = useState<string>("");
-
-  useEffect(() => {
-    if (selectedDestinationValidator) {
-      const newConsolidatedTotal =
-        selectedSourceValidators.reduce(
-          (acc, validator) => acc + validator.balance,
-          0,
-        ) + selectedDestinationValidator.balance;
-      setConsolidatedTotal(newConsolidatedTotal);
-    }
-  }, [selectedSourceValidators, selectedDestinationValidator]);
 
   useEffect(() => {
     if (progress === 1) setSelectedSourceValidators([]);
@@ -55,13 +42,10 @@ const ConsolidationWorkflow: FC = () => {
         <>
           {progress === 2 && (
             <SelectSourceValidators
-              consolidatedTotal={consolidatedTotal}
               destinationValidator={selectedDestinationValidator}
-              selectedSourceTotal={selectedSourceTotal}
               selectedSourceValidators={selectedSourceValidators}
               setProgress={setProgress}
               setSelectedDestinationValidator={setSelectedDestinationValidator}
-              setSelectedSourceTotal={setSelectedSourceTotal}
               setSelectedSourceValidators={setSelectedSourceValidators}
               validators={data}
             />
@@ -72,6 +56,7 @@ const ConsolidationWorkflow: FC = () => {
               destinationValidator={selectedDestinationValidator}
               setProgress={setProgress}
               setSelectedDestinationValidator={setSelectedDestinationValidator}
+              setSelectedSourceValidators={setSelectedSourceValidators}
               setSummaryEmail={setSummaryEmail}
               sourceValidators={selectedSourceValidators}
               summaryEmail={summaryEmail}

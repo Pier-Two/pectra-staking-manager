@@ -23,26 +23,18 @@ export interface ISelectDestinationValidator {
 }
 
 export interface ISelectSourceValidators {
-  consolidatedTotal: number;
   destinationValidator: ValidatorDetails;
-  selectedSourceTotal: number;
   selectedSourceValidators: ValidatorDetails[];
   setProgress: (progress: number) => void;
   setSelectedDestinationValidator: (validator: ValidatorDetails | null) => void;
-  setSelectedSourceTotal: (total: number) => void;
   setSelectedSourceValidators: (validators: ValidatorDetails[]) => void;
   validators: ValidatorDetails[];
-}
-
-export interface IDestinationValidatorDetails {
-  consolidatedTotal: number;
-  validator: ValidatorDetails;
-  selectedSourceTotal: number;
 }
 
 export interface IConsolidationSummary {
   destinationValidator: ValidatorDetails;
   setSelectedDestinationValidator: (validator: ValidatorDetails | null) => void;
+  setSelectedSourceValidators: (validators: ValidatorDetails[]) => void;
   setProgress: (progress: number) => void;
   summaryEmail: string;
   setSummaryEmail: (email: string) => void;
@@ -56,6 +48,7 @@ export interface IConsolidationOverview {
 
 export interface IConsolidationEmail {
   cardText: string;
+  cardTitle: string;
   summaryEmail: string;
   setSummaryEmail: (email: string) => void;
 }

@@ -4,17 +4,20 @@ import type { FC } from "react";
 import { api } from "pec/trpc/react";
 import { useRouter } from "next/navigation";
 import { Connector } from "pec/components/validators/Connector";
-import { Button } from "pec/components/ui/button";
 import { Merge } from "lucide-react";
 import ConsolidationLoading from "./loading";
 import { useWalletAddress } from "pec/hooks/useWallet";
+import { PrimaryButton } from "pec/components/ui/custom/PrimaryButton";
+import { SecondaryButton } from "pec/components/ui/custom/SecondaryButton";
 
 const Consolidation: FC = () => {
   const router = useRouter();
   const walletAddress = useWalletAddress();
   if (!walletAddress) return <ConsolidationLoading />;
 
-  const { data } = api.validators.getValidators.useQuery({ address: walletAddress });
+  const { data } = api.validators.getValidators.useQuery({
+    address: walletAddress,
+  });
   if (!data) return <ConsolidationLoading />;
 
   const handleConsolidationRedirect = () => {
@@ -27,12 +30,13 @@ const Consolidation: FC = () => {
 
   return (
     <div className="space-y-8">
-      <div className="flex flex-col items-center justify-center gap-4">
-        <div className="flex items-center gap-x-4">
+      <div className="flex flex-col gap-4">
+        <div className="flex gap-x-4">
           <Merge className="h-10 w-10 rotate-90 text-yellow-500" />
           <div className="text-3xl">Consolidate</div>
         </div>
-        <div className="w-[45vw] text-center text-gray-700">
+
+        <div className="w-[45vw] text-gray-700">
           Combine multiple validator balances into a single large-balance
           validator, as per Pectra EIP-7251.
         </div>
@@ -40,21 +44,17 @@ const Consolidation: FC = () => {
       </div>
 
       <div className="flex flex-col gap-4">
-        <Button
-          className="space-x-2 rounded-xl border border-gray-800 bg-black p-4 hover:bg-gray-900 dark:bg-white dark:hover:bg-gray-200"
+        <PrimaryButton
+          label="Start consolidation"
           onClick={handleConsolidationRedirect}
-        >
-          <div className="text-sm text-white dark:text-black">
-            Start consolidation
-          </div>
-        </Button>
+          disabled={false}
+        />
 
-        <Button
-          className="space-x-2 rounded-xl border border-gray-800 bg-white p-4 hover:bg-gray-200"
+        <SecondaryButton
+          label="Back to Dashboard"
           onClick={handleDashboardRedirect}
-        >
-          <div className="text-sm text-black">Back to Dashboard</div>
-        </Button>
+          disabled={false}
+        />
       </div>
     </div>
   );

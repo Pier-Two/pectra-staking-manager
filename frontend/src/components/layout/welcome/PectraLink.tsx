@@ -3,7 +3,7 @@ import { ChevronRight } from "lucide-react";
 
 export const PectraLink: FC = () => {
   return (
-    <div className="p-[1px] rounded-xl bg-gradient-to-r from-[#FDBA74] via-[#A5B4FC] to-[#86EFAC] w-[20vw] text-xs overflow-auto">
+    <div className="p-[1px] rounded-xl bg-gradient-to-r from-[#00FFA7] via-[#5164DC] to-[#313C86] w-[20vw] text-xs overflow-auto">
       <a
         href="https://ethereum.org/en/roadmap/pectra/"
         target="_blank"

@@ -1,15 +1,15 @@
 import type { FC } from "react";
 import Image from "next/image";
 import type { IValidatorCard } from "pec/types/validator";
-import { AlignLeft, BadgeMinus, X } from "lucide-react";
+import { AlignLeft, BadgeMinus } from "lucide-react";
 
 export const ValidatorCard: FC<IValidatorCard> = (props) => {
-  const { allowClose, shrink, validator, onClick } = props;
+  const { hasBackground, hasHover, shrink, validator, onClick } = props;
   const withdrawalAddressPrefix = validator.withdrawalAddress.slice(0, 4);
 
   return (
     <div
-      className={`${allowClose ? "flex-col-4" : "flex-col-3"} flex min-h-[10vh] ${shrink ? "w-[90%]" : "w-full"} items-center justify-between gap-x-4 rounded-xl border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-black ${allowClose ? "hover:cursor-pointer hover:border-red-500" : ""}`}
+      className={`flex-col-3 flex ${shrink ? "w-[90%]" : "w-full"} items-center justify-between gap-x-4 rounded-xl border p-4 border-indigo-200 dark:border-gray-800 ${hasBackground ? "bg-white dark:bg-black" : ""} ${hasHover ? "hover:border-indigo-500 dark:hover:border-gray-600" : ""}`}
       onClick={onClick}
     >
       <div className="flex items-center gap-x-4">
@@ -34,15 +34,9 @@ export const ValidatorCard: FC<IValidatorCard> = (props) => {
       </div>
 
       <div className="flex items-center gap-1">
-        <AlignLeft className="h-3 w-3 text-gray-500" />
-        <span> {validator.balance.toFixed(2)}</span>
+        <AlignLeft className="h-3 w-3 text-gray-500 dark:text-white" />
+        <span>{validator.balance.toFixed(2)}</span>
       </div>
-
-      {allowClose && (
-        <div className="flex items-center gap-x-2">
-          <X className="h-4 w-4 text-red-500 dark:text-white" />
-        </div>
-      )}
     </div>
   );
 };

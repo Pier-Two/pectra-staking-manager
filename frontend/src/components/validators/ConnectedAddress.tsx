@@ -7,7 +7,7 @@ export const ConnectedAddress: FC<IConnectedAddress> = (props) => {
   const { address } = props;
 
   return (
-    <div className="flex-col-2 flex w-full min-h-[10vh] items-center justify-between rounded-xl border bg-white dark:bg-black border-gray-200 p-4 dark:border-gray-800">
+    <div className="flex-col-2 flex w-full min-h-[10vh] items-center justify-between rounded-xl p-4 border border-indigo-200 dark:border-gray-800">
       <div className="flex items-center gap-x-4">
         <Image src="/icons/Wallet.svg" alt="Wallet" width={24} height={24} />
 

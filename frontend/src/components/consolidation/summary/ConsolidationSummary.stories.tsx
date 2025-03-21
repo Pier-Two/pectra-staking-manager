@@ -24,6 +24,7 @@ export const Primary: Story = {
   args: {
     destinationValidator: MOCK_VALIDATORS[0]!,
     setSelectedDestinationValidator: () => {},
+    setSelectedSourceValidators: () => {},
     sourceValidators: MOCK_VALIDATORS,
     setProgress: () => {},
     summaryEmail: "test@test.com",
