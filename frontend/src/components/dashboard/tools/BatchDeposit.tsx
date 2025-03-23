@@ -1,34 +1,29 @@
 import type { FC } from "react";
-import { Separator } from "pec/components/ui/separator";
-import { AlignLeft, ArrowDownToDot, ArrowUpRight } from "lucide-react";
+import { ArrowDownToDot } from "lucide-react";
+import { PrimaryButton } from "pec/components/ui/custom/PrimaryButton";
 
 export const BatchDeposit: FC = () => {
   return (
-    <div className="hover:border-3 group flex flex-col space-y-4 rounded-xl border bg-white p-4 pe-8 ps-8 hover:cursor-pointer hover:border-black dark:border-gray-800 dark:bg-black dark:hover:border-blue-400">
-      <div className="flex flex-shrink-0 flex-row items-center gap-8">
-        <ArrowDownToDot className="group-hover:text-blue-400" size={70} />
-        <div className="flex flex-col gap-2">
-          <div className="flex flex-row justify-between">
-            <div className="text-lg font-medium">Batch Deposit</div>
-            <ArrowUpRight className="group-hover:text-blue-400" size={20} />
-          </div>
-
-          <div className="text-xs text-gray-500 dark:text-gray-400">
-            Deposit to multiple active validators at once, via PierTwo&apos;s
-            batch deposit contract.
-          </div>
-        </div>
+    <div className="hover:border-3 group flex flex-col space-y-4 rounded-xl border border-indigo-200 bg-white p-4 pe-8 ps-8 text-white hover:cursor-pointer dark:border-gray-700 dark:bg-black">
+      <div className="flex flex-row items-center gap-x-2 text-indigo-800 dark:text-indigo-200">
+        <ArrowDownToDot size={30} />
+        <div className="text-2xl font-medium">Batch Deposit</div>
       </div>
 
-      <Separator className="bg-gray-200 dark:bg-gray-800" />
-
-      <div className="flex items-center justify-between text-sm">
-        <div>Available to deposit</div>
-
-        <div className="flex flex-row items-center gap-1">
-          <AlignLeft className="h-4 w-4" />
-          <div>XXX</div>
+      <div className="flex flex-col gap-y-4 pt-8">
+        <div className="text-gray-900 dark:text-white">
+          Deposit multiple active validators at once, via PierTwo's batch
+          deposit contract.
         </div>
+
+        <PrimaryButton
+          className="w-[40%]"
+          label="Deposit now"
+          disabled={false}
+          onClick={function (): void {
+            throw new Error("Function not implemented.");
+          }}
+        />
       </div>
     </div>
   );

@@ -18,7 +18,7 @@ export const ValidatorTableContent: FC<IValidatorTableContentProps> = (
   } = props;
 
   return (
-    <Table className="rounded-xl border bg-white text-gray-800 dark:bg-black dark:text-white">
+    <Table className="rounded-xl bg-gray-50 text-gray-800 dark:bg-black dark:text-white">
       <TableHeader>
         <TableHeadersRow
           paginatedData={paginatedData}
@@ -29,7 +29,7 @@ export const ValidatorTableContent: FC<IValidatorTableContentProps> = (
         />
       </TableHeader>
 
-      <TableBody className="">
+      <TableBody>
         {paginatedData.length > 0 ? (
           paginatedData.map((validator) => (
             <ValidatorRow

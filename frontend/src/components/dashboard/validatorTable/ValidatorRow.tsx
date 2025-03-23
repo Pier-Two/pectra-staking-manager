@@ -25,11 +25,11 @@ export const ValidatorRow: FC<IValidatorRowProps> = (props) => {
 
   return (
     <TableRow
-      className={`hover:bg-indigo-100 ${isSelected ? "bg-indigo-100" : "bg-white dark:bg-black"}`}
+      className={`border-none hover:bg-indigo-50 dark:hover:bg-gray-900 ${isSelected ? "bg-indigo-50 dark:bg-gray-900" : "bg-gray-50 dark:bg-black"}`}
     >
       <TableCell>
         <Checkbox
-          className={`rounded text-black dark:text-black ${isSelected ? "bg-blue-300" : "bg-white dark:bg-black"}`}
+          className={`rounded text-black dark:text-black ${isSelected ? "bg-blue-300 dark:bg-indigo-400" : "bg-white dark:bg-gray-700"}`}
           checked={isSelected}
           onCheckedChange={(checked) => onToggle(!!checked)}
           aria-label={`Select validator ${validator.validatorIndex}`}

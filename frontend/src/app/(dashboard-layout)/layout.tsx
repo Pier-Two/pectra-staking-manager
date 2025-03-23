@@ -11,8 +11,8 @@ const DashboardLayout: FC<ChildrenProp> = (props) => {
     <ThemeProvider>
       <div className="flex min-h-screen w-screen flex-col">
         <TopBar numberOfValidators={4} type={"profile"} />
-        <div className="flex flex-1 justify-center bg-indigo-50 dark:bg-gray-950 dark:text-white">
-          <div className="w-full py-8">
+        <div className="flex flex-1 justify-center bg-gray-50 dark:bg-black dark:text-white">
+          <div className="w-full pb-8">
             {children}
           </div>
         </div>

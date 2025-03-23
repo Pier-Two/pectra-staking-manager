@@ -14,14 +14,14 @@ export const TableFilters: FC<ITableFiltersProps> = (props) => {
       <div className="w-full sm:w-96">
         <Input
           placeholder="Search validators..."
-          className="rounded-xl border-gray-200 text-gray-500 bg-white dark:border-gray-800 dark:text-white dark:bg-black"
+          className="rounded-xl border-gray-200 bg-white text-gray-500 dark:border-gray-800 dark:bg-black dark:text-white"
           value={searchTerm}
           onChange={(e) => onSearchChange(e.target.value)}
         />
       </div>
 
       <div className="flex gap-2">
-        <div className="flex items-center gap-4 rounded-xl bg-white border-2 border-dashed border-gray-200 pe-4 ps-4 dark:border-gray-800 dark:bg-black">
+        <div className="flex items-center gap-4 rounded-xl border-2 border-dashed border-gray-200 bg-white pe-4 ps-4 dark:border-gray-800 dark:bg-black">
           <CirclePlus className="h-3 w-3 dark:text-white" />
           <span>Status</span>
           <div className="flex gap-1">
@@ -30,7 +30,9 @@ export const TableFilters: FC<ITableFiltersProps> = (props) => {
                 key={status}
                 variant="default"
                 className={`cursor-pointer font-normal dark:bg-black ${
-                  statusFilter.includes(status) ? "text-blue-600" : ""
+                  statusFilter.includes(status)
+                    ? "text-indigo-500 dark:text-indigo-200"
+                    : ""
                 }`}
                 onClick={() => onStatusFilterChange(status)}
               >
