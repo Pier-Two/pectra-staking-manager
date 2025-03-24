@@ -4,7 +4,6 @@ import type { FC } from "react";
 import { api } from "pec/trpc/react";
 import { useRouter } from "next/navigation";
 import { Connector } from "pec/components/validators/Connector";
-import { Button } from "pec/components/ui/button";
 import ValidatorsFoundLoading from "./loading";
 import { useWalletAddress } from "pec/hooks/useWallet";
 import { PrimaryButton } from "pec/components/ui/custom/PrimaryButton";
