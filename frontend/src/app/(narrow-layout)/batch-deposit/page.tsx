@@ -89,6 +89,19 @@ const BatchDeposit: FC = () => {
     );
   };
 
+  const handleDepositAmountChange = (validator: IBatchDepositValidators) => {
+    const newValidators = selectedValidators.map((v) =>
+      v.validator.validatorIndex === validator.validator.validatorIndex
+        ? validator
+        : v,
+    );
+
+    setSelectedValidators(newValidators);
+    setTotalAllocated(
+      newValidators.reduce((acc, v) => acc + v.depositAmount, 0),
+    );
+  };
+
   return (
     <div className="space-y-8">
       <div className="flex flex-col gap-4">
@@ -120,6 +133,7 @@ const BatchDeposit: FC = () => {
         <SelectValidators
           clearSelectedValidators={clearSelectedValidators}
           distributionMethod={distributionMethod}
+          handleDepositAmountChange={handleDepositAmountChange}
           selectedValidators={selectedValidators}
           setSelectedValidators={handleSelectValidator}
           totalAllocated={totalAllocated}

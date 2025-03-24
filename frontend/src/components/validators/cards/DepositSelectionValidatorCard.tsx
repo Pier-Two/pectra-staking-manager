@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type FC } from "react";
+import { type FC, useState, useEffect } from "react";
 import Image from "next/image";
 import type { IBatchDepositValidatorCard } from "pec/types/validator";
 import { AlignLeft, CircleCheck, CirclePlus } from "lucide-react";
@@ -11,18 +11,28 @@ export const DepositSelectionValidatorCard: FC<IBatchDepositValidatorCard> = (
   props,
 ) => {
   const {
+    clearedSelectedValidators,
     depositAmount,
     distributionMethod,
     selected,
+    setClearedSelectedValidators,
     totalAllocated,
     totalToDistribute,
     validator,
     onClick,
+    onDepositChange,
   } = props;
 
   const { balance } = validator;
 
   const [amount, setAmount] = useState<number>(0);
+
+  useEffect(() => {
+    if (clearedSelectedValidators) {
+      setAmount(0);
+      setClearedSelectedValidators(false);
+    }
+  }, [clearedSelectedValidators, setClearedSelectedValidators]);
 
   const handleDeselectValidator = () => {
     if (selected) {
@@ -43,6 +53,23 @@ export const DepositSelectionValidatorCard: FC<IBatchDepositValidatorCard> = (
       value > totalToDistribute ||
       totalAllocated + value > totalToDistribute
     ) {
+      setAmount(0);
+      return;
+    }
+
+    onDepositChange({
+      validator,
+      depositAmount: value,
+    });
+  };
+
+  const handleStateDepositAmountChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const inputStr = e.target.value;
+    const value = parseFloat(inputStr);
+
+    if (isNaN(value) || value < 0) {
       setAmount(0);
       return;
     }
@@ -88,7 +115,7 @@ export const DepositSelectionValidatorCard: FC<IBatchDepositValidatorCard> = (
         <div className="text-sm">{balance.toFixed(3)}</div>
       </div>
 
-      <div className="flex items-center gap-1 p-2">
+      <div className={`flex items-center p-2 ${selected && distributionMethod === EDistributionMethod.MANUAL ? "gap-2" : "gap-1"}`}>
         <AlignLeft className="h-4 w-4" />
 
         {(distributionMethod === EDistributionMethod.SPLIT ||
@@ -98,12 +125,12 @@ export const DepositSelectionValidatorCard: FC<IBatchDepositValidatorCard> = (
 
         {selected && distributionMethod === EDistributionMethod.MANUAL && (
           <Input
-            className="w-full border-none"
+            className="w-full rounded-xl border border-indigo-800 dark:border-indigo-300"
             placeholder="Enter deposit amount"
             value={amount}
             type="number"
-            onChange={handleDepositAmountChange}
-            onBlur={() => onClick(validator, distributionMethod, amount)}
+            onChange={handleStateDepositAmountChange}
+            onBlur={handleDepositAmountChange}
           />
         )}
       </div>

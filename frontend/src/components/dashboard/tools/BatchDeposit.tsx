@@ -13,7 +13,10 @@ export const BatchDeposit: FC = () => {
   };
 
   return (
-    <div className="hover:border-3 group flex flex-col space-y-4 rounded-xl border border-indigo-200 bg-white p-4 pe-8 ps-8 text-white hover:cursor-pointer dark:border-gray-700 dark:bg-black">
+    <div
+      className="hover:border-3 group flex flex-col space-y-4 rounded-xl border border-indigo-200 bg-white p-4 pe-8 ps-8 text-white hover:cursor-pointer dark:border-gray-700 dark:bg-black"
+      onClick={handleBatchDepositRedirect}
+    >
       <div className="flex flex-row items-center gap-x-2 text-indigo-800 dark:text-indigo-200">
         <ArrowDownToDot size={30} />
         <div className="text-2xl font-medium">Batch Deposit</div>

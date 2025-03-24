@@ -27,6 +27,7 @@ export interface IDistributionInformation {
 export interface ISelectValidators {
   clearSelectedValidators: () => void;
   distributionMethod: EDistributionMethod;
+  handleDepositAmountChange: (validator: IBatchDepositValidators) => void;
   selectedValidators: IBatchDepositValidators[];
   setSelectedValidators: (validator: IBatchDepositValidators) => void;
   totalAllocated: number;

@@ -1,4 +1,4 @@
-import { type FC } from "react";
+import { type FC, useState } from "react";
 import {
   EDistributionMethod,
   type ISelectValidators,
@@ -13,12 +13,16 @@ export const SelectValidators: FC<ISelectValidators> = (props) => {
   const {
     clearSelectedValidators,
     distributionMethod,
+    handleDepositAmountChange,
     selectedValidators,
     setSelectedValidators,
     totalAllocated,
     totalToDistribute,
     validators,
   } = props;
+
+  const [clearedSelectedValidators, setClearedSelectedValidators] =
+    useState<boolean>(false);
 
   const calculateDepositAmount = (
     distributionMethod: EDistributionMethod,
@@ -39,8 +43,6 @@ export const SelectValidators: FC<ISelectValidators> = (props) => {
       depositAmount,
     );
 
-    console.log("calculatedDepositAmount: ", calculatedDepositAmount);
-
     setSelectedValidators({
       validator,
       depositAmount: calculatedDepositAmount,
@@ -49,19 +51,20 @@ export const SelectValidators: FC<ISelectValidators> = (props) => {
 
   const handleClearSelectedValidators = () => {
     clearSelectedValidators();
+    setClearedSelectedValidators(true);
   };
 
   return (
     <>
       <div className="flex flex-row justify-between">
         <div className="text-lg">Select Validators</div>
-        <div className="flex flex-row gap-4 items-center">
+        <div className="flex flex-row items-center gap-4">
           <div className="text-sm text-gray-700 dark:text-gray-300">
             {selectedValidators.length} / {validators.length} selected
           </div>
 
           <TertiaryButton
-            className="text-indigo-800 border-indigo-200"
+            className="border-indigo-200 text-indigo-800"
             label={"Clear"}
             icon={<X />}
             iconPosition={EIconPosition.LEFT}
@@ -95,7 +98,10 @@ export const SelectValidators: FC<ISelectValidators> = (props) => {
         {validators.map((validator, index) => (
           <DepositSelectionValidatorCard
             key={`depositValidator-${validator.validatorIndex}-${index}`}
+            clearedSelectedValidators={clearedSelectedValidators}
+            setClearedSelectedValidators={setClearedSelectedValidators}
             onClick={handleValidatorClick}
+            onDepositChange={handleDepositAmountChange}
             validator={validator}
             depositAmount={
               selectedValidators.find(
