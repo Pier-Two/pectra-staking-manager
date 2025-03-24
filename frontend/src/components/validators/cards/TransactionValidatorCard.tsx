@@ -4,7 +4,7 @@ import {
   TransactionStatus,
   type ITransactionValidatorCard,
 } from "pec/types/validator";
-import { PectraSpinner } from "../ui/custom/pectraSpinner";
+import { PectraSpinner } from "../../ui/custom/pectraSpinner";
 import { CircleCheck, ExternalLink } from "lucide-react";
 
 export const TransactionValidatorCard: FC<ITransactionValidatorCard> = (

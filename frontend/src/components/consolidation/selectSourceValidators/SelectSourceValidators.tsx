@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState, type FC } from "react";
 import type { ISelectSourceValidators } from "pec/types/consolidation";
-import { ValidatorCard } from "pec/components/validators/ValidatorCard";
+import { ValidatorCard } from "pec/components/validators/cards/ValidatorCard";
 import type { ValidatorDetails } from "pec/types/validator";
 import { ValidatorList } from "./ValidatorList";
 import { PrimaryButton } from "pec/components/ui/custom/PrimaryButton";

@@ -3,7 +3,7 @@
 import type { FC } from "react";
 import { useRouter } from "next/navigation";
 import type { IConsolidationSubmission } from "pec/types/consolidation";
-import { TransactionValidatorCard } from "pec/components/validators/TransactionValidatorCard";
+import { TransactionValidatorCard } from "pec/components/validators/cards/TransactionValidatorCard";
 import { TransactionStatus } from "pec/types/validator";
 import { Email } from "../summary/Email";
 import { ArrowRightIcon } from "lucide-react";

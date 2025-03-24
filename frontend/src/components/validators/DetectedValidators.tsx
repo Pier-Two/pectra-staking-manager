@@ -4,7 +4,7 @@ import { type FC, useState } from "react";
 import Image from "next/image";
 import type { IDetectedValidators } from "pec/types/validator";
 import { AlignLeft, ChevronsLeftRight } from "lucide-react";
-import { ValidatorCard } from "./ValidatorCard";
+import { ValidatorCard } from "./cards/ValidatorCard";
 
 export const DetectedValidators: FC<IDetectedValidators> = (props) => {
   const { cardTitle, validators } = props;
