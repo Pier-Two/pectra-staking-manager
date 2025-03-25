@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
 import { useActiveAccount } from "thirdweb/react";
 import { getWalletBalance } from "thirdweb/wallets";
 import { client } from "pec/lib/wallet/client";
+import { useQuery } from "@tanstack/react-query";
 
 export const useWalletAddress = () => {
   const connectedAccount = useActiveAccount();
@@ -10,43 +10,39 @@ export const useWalletAddress = () => {
 
 export const useWalletBalance = () => {
   const connectedAccount = useActiveAccount();
-  const [balance, setBalance] = useState<bigint>(BigInt(0));
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchBalance = async () => {
-      if (!connectedAccount?.address) return;
+  const fetchBalance = async () => {
+    if (!connectedAccount?.address) return BigInt(0);
 
-      setLoading(true);
-      setError(null);
+    const fetchedBalance = await getWalletBalance({
+      address: connectedAccount.address,
+      client,
+      chain: {
+        id: 1,
+        name: "Ethereum",
+        rpc: "https://mainnet.infura.io/v3/YOUR_INFURA_PROJECT_ID",
+      },
+    });
 
-      try {
-        const fetchedBalance = await getWalletBalance({
-          address: connectedAccount.address,
-          client,
-          chain: {
-            id: 1,
-            name: "Ethereum",
-            rpc: "https://mainnet.infura.io/v3/YOUR_INFURA_PROJECT_ID",
-          },
-        });
+    return fetchedBalance.value;
+  };
 
-        setBalance(fetchedBalance.value);
-      } catch (err) {
-        setError("Failed to fetch balance");
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    void fetchBalance();
-  }, [connectedAccount?.address]);
+  const {
+    data: balance = BigInt(0),
+    isLoading: loading,
+    error,
+    refetch,
+  } = useQuery({
+    queryKey: ["walletBalance", connectedAccount?.address],
+    queryFn: fetchBalance,
+    enabled: !!connectedAccount?.address,
+    retry: 2,
+  });
 
   return {
     balance,
     loading,
-    error,
+    error: error ? "Failed to fetch balance" : null,
+    refetch,
   };
 };
