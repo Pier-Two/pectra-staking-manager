@@ -15,7 +15,7 @@ import {
   useController,
   type FieldValues,
   type UseFormRegister,
-  FieldErrors,
+  type FieldErrors,
 } from "react-hook-form";
 import {
   Dialog,
@@ -166,7 +166,7 @@ export const DepositSignDataCard: FC<ExtendedProps> = (props) => {
                 disabled={stage === EBatchDepositStage.TRANSACTIONS_CONFIRMED}
                 {...register(`transactions.${index}.rawDepositData`)}
               />
-              
+
               {errors.transactions?.[index]?.rawDepositData && (
                 <div className="text-red-500">
                   {errors.transactions[index].rawDepositData.message}
