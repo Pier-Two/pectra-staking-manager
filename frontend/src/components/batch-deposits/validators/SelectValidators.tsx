@@ -1,0 +1,73 @@
+import { type FC, useState } from "react";
+import type { ISelectValidatorsProps } from "pec/types/batch-deposits";
+import { DepositSelectionValidatorCard } from "../../validators/cards/DepositSelectionValidatorCard";
+import type { ValidatorDetails } from "pec/types/validator";
+import { ValidatorHeader } from "./ValidatorHeader";
+import { ValidatorListHeaders } from "./ValidatorListHeaders";
+
+export const SelectValidators: FC<ISelectValidatorsProps> = (props) => {
+  const {
+    clearSelectedValidators,
+    distributionMethod,
+    handleDepositAmountChange,
+    selectedValidators,
+    setSelectedValidators,
+    totalAllocated,
+    totalToDistribute,
+    validators,
+  } = props;
+
+  const [clearedSelectedValidators, setClearedSelectedValidators] =
+    useState<boolean>(false);
+
+  const handleValidatorClick = (
+    validator: ValidatorDetails,
+    depositAmount: number,
+  ) => {
+    setSelectedValidators({
+      validator,
+      depositAmount,
+    });
+  };
+
+  const handleClearValidators = () => {
+    clearSelectedValidators();
+    setClearedSelectedValidators(true);
+  };
+
+  return (
+    <>
+      <ValidatorHeader
+        selectedCount={selectedValidators.length}
+        totalCount={validators.length}
+        onClear={handleClearValidators}
+      />
+
+      <div className="flex flex-col items-center gap-4">
+        <ValidatorListHeaders labels={["Validator", "Balance", "Deposit"]} />
+
+        {validators.map((validator, index) => (
+          <DepositSelectionValidatorCard
+            key={`depositValidator-${validator.validatorIndex}-${index}`}
+            clearedSelectedValidators={clearedSelectedValidators}
+            setClearedSelectedValidators={setClearedSelectedValidators}
+            onClick={handleValidatorClick}
+            onDepositChange={handleDepositAmountChange}
+            validator={validator}
+            depositAmount={
+              selectedValidators.find(
+                (v) => v.validator.validatorIndex === validator.validatorIndex,
+              )?.depositAmount ?? 0
+            }
+            distributionMethod={distributionMethod}
+            selected={selectedValidators.some(
+              (v) => v.validator.validatorIndex === validator.validatorIndex,
+            )}
+            totalAllocated={totalAllocated}
+            totalToDistribute={totalToDistribute}
+          />
+        ))}
+      </div>
+    </>
+  );
+};

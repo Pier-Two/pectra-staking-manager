@@ -27,7 +27,10 @@ export const Primary: Story = {
     distributionMethod: EDistributionMethod.MANUAL,
     selected: true,
     totalAllocated: 0,
-    totalToDistribute: 1000000,
+    totalToDistribute: 0,
     onClick: () => {},
+    onDepositChange: () => {},
+    setClearedSelectedValidators: () => {},
+    clearedSelectedValidators: false,
   },
 };

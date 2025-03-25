@@ -2,30 +2,28 @@
 
 import { type FC, useState, useEffect } from "react";
 import Image from "next/image";
-import type { IBatchDepositValidatorCard } from "pec/types/validator";
 import { AlignLeft, CircleCheck, CirclePlus } from "lucide-react";
-import { EDistributionMethod } from "pec/types/batch-deposits";
 import { Input } from "pec/components/ui/input";
+import {
+  EDistributionMethod,
+  type IDepositSelectionValidatorCard,
+} from "pec/types/batch-deposits";
 
-export const DepositSelectionValidatorCard: FC<IBatchDepositValidatorCard> = (
-  props,
-) => {
-  const {
-    clearedSelectedValidators,
-    depositAmount,
-    distributionMethod,
-    selected,
-    setClearedSelectedValidators,
-    totalAllocated,
-    totalToDistribute,
-    validator,
-    onClick,
-    onDepositChange,
-  } = props;
-
-  const { balance } = validator;
-
-  const [amount, setAmount] = useState<number>(0);
+export const DepositSelectionValidatorCard: FC<
+  IDepositSelectionValidatorCard
+> = ({
+  clearedSelectedValidators,
+  depositAmount,
+  distributionMethod,
+  selected,
+  setClearedSelectedValidators,
+  totalAllocated,
+  totalToDistribute,
+  validator,
+  onClick,
+  onDepositChange,
+}) => {
+  const [amount, setAmount] = useState<number>(depositAmount);
 
   useEffect(() => {
     if (clearedSelectedValidators) {
@@ -34,9 +32,14 @@ export const DepositSelectionValidatorCard: FC<IBatchDepositValidatorCard> = (
     }
   }, [clearedSelectedValidators, setClearedSelectedValidators]);
 
-  const handleDeselectValidator = () => {
+  useEffect(() => {
+    setAmount(depositAmount);
+  }, [depositAmount]);
+
+  const handleDeselect = (e: React.MouseEvent) => {
+    e.stopPropagation();
     if (selected) {
-      onClick(validator, distributionMethod, depositAmount);
+      onClick(validator, 0);
       setAmount(0);
     }
   };
@@ -44,52 +47,46 @@ export const DepositSelectionValidatorCard: FC<IBatchDepositValidatorCard> = (
   const handleDepositAmountChange = (
     e: React.ChangeEvent<HTMLInputElement>,
   ) => {
-    const inputStr = e.target.value;
-    const value = parseFloat(inputStr);
+    const value = parseFloat(e.target.value);
 
-    if (
-      isNaN(value) ||
-      value < 0 ||
-      value > totalToDistribute ||
-      totalAllocated + value > totalToDistribute
-    ) {
-      setAmount(0);
-      return;
-    }
+    const isValidAmount =
+      !isNaN(value) &&
+      value >= 0 &&
+      value <= totalToDistribute &&
+      value + totalAllocated <= totalToDistribute;
 
+    const depositAmount = isValidAmount ? value : 0;
+
+    setAmount(depositAmount);
     onDepositChange({
       validator,
-      depositAmount: value,
+      depositAmount,
     });
   };
 
-  const handleStateDepositAmountChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
-  ) => {
-    const inputStr = e.target.value;
-    const value = parseFloat(inputStr);
-
-    if (isNaN(value) || value < 0) {
+  const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.value === "") {
       setAmount(0);
       return;
     }
 
+    const value = parseFloat(e.target.value);
+    if (isNaN(value) || value < 0) return;
     setAmount(value);
-    e.target.value = value.toString();
   };
 
   return (
     <div
-      className={`flex-col-3 flex w-full items-center justify-between gap-x-4 rounded-xl border bg-white p-4 hover:border-indigo-500 dark:border-gray-800 dark:bg-black dark:hover:border-gray-600 ${selected ? "border-indigo-500 dark:border-indigo-500" : "cursor-pointer"} group`}
-      onClick={() =>
-        !selected && onClick(validator, distributionMethod, depositAmount)
-      }
+      className={`flex-col-3 flex w-full items-center justify-between gap-x-4 rounded-xl border bg-white p-4 hover:border-indigo-500 dark:border-gray-800 dark:bg-black dark:hover:border-gray-600 ${
+        selected ? "border-indigo-500 dark:border-gray-600" : "cursor-pointer"
+      } group`}
+      onClick={() => !selected && onClick(validator, amount)}
     >
       <div className="flex items-center gap-x-4">
         {selected ? (
           <CircleCheck
-            className={`h-4 w-4 fill-green-500 text-white dark:text-black ${selected ? "hover:cursor-pointer" : ""}`}
-            onClick={handleDeselectValidator}
+            className="h-4 w-4 fill-green-500 text-white hover:cursor-pointer dark:text-black"
+            onClick={handleDeselect}
           />
         ) : (
           <CirclePlus className="h-4 w-4 text-indigo-500 group-hover:fill-indigo-500 group-hover:text-white" />
@@ -97,7 +94,7 @@ export const DepositSelectionValidatorCard: FC<IBatchDepositValidatorCard> = (
 
         <Image
           src="/icons/EthValidator.svg"
-          alt="Wallet"
+          alt="Validator"
           width={24}
           height={24}
         />
@@ -112,10 +109,12 @@ export const DepositSelectionValidatorCard: FC<IBatchDepositValidatorCard> = (
 
       <div className="flex items-center gap-1 p-2">
         <AlignLeft className="h-4 w-4" />
-        <div className="text-sm">{balance.toFixed(3)}</div>
+        <div className="text-sm">{validator.balance.toFixed(3)}</div>
       </div>
 
-      <div className={`flex items-center p-2 ${selected && distributionMethod === EDistributionMethod.MANUAL ? "gap-2" : "gap-1"}`}>
+      <div
+        className={`flex items-center p-2 ${selected && distributionMethod === EDistributionMethod.MANUAL ? "gap-2" : "gap-1"}`}
+      >
         <AlignLeft className="h-4 w-4" />
 
         {(distributionMethod === EDistributionMethod.SPLIT ||
@@ -125,12 +124,13 @@ export const DepositSelectionValidatorCard: FC<IBatchDepositValidatorCard> = (
 
         {selected && distributionMethod === EDistributionMethod.MANUAL && (
           <Input
-            className="w-full rounded-xl border border-indigo-800 dark:border-indigo-300"
+            className="w-full rounded-xl border border-indigo-800 dark:border-gray-600"
             placeholder="Enter deposit amount"
-            value={amount}
+            value={amount || ""}
             type="number"
-            onChange={handleStateDepositAmountChange}
+            onChange={handleAmountChange}
             onBlur={handleDepositAmountChange}
+            onClick={(e) => e.stopPropagation()}
           />
         )}
       </div>

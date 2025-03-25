@@ -24,10 +24,11 @@ export const Primary: Story = {
   args: {
     disableButton: false,
     distributionMethod: EDistributionMethod.SPLIT,
-    setDistributionMethod: () => {},
-    setTotalToDistribute: () => {},
+    onDistributionMethodChange: () => {},
+    onTotalAmountChange: () => {},
     selectedValidators: [],
     totalAllocated: 0,
+    totalToDistribute: 0,
     walletBalance: 0,
   },
 };

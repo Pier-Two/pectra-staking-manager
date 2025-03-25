@@ -1,145 +1,182 @@
 "use client";
 
 import { type FC, useState, useEffect } from "react";
-import { api } from "pec/trpc/react";
-import { useWalletAddress } from "pec/hooks/useWallet";
-import BatchDepositLoading from "./loading";
 import { ArrowDownToDot } from "lucide-react";
 import { SignatureDetails } from "pec/components/batch-deposits/SignatureDetails";
 import { MOCK_VALIDATORS } from "pec/server/__mocks__/validators";
 import {
   type IBatchDepositValidators,
+  type IBatchDepositState,
   EDistributionMethod,
+  EBatchDepositStage,
 } from "pec/types/batch-deposits";
-import { DistributionMethod } from "pec/components/batch-deposits/DistributionMethod";
-import { SelectValidators } from "pec/components/batch-deposits/SelectValidators";
+import { DistributionMethod } from "pec/components/batch-deposits/distribution/DistributionMethod";
+import { SelectValidators } from "pec/components/batch-deposits/validators/SelectValidators";
+import { DepositList } from "pec/components/batch-deposits/validators/DepositList";
 
 const BatchDeposit: FC = () => {
-  // const walletAddress = useWalletAddress();
-  //const { balance, loading, error } = useWalletBalance();
-  // if (!walletAddress) return <BatchDepositLoading />;
-
-  // const { data } = api.validators.getValidators.useQuery({
-  //   address: walletAddress,
-  // });
-  // if (!data) return <BatchDepositLoading />;
-
   const data = MOCK_VALIDATORS;
-  const balance = 0;
+  const balance = 100;
 
-  const [disableButton, setDisableButton] = useState<boolean>(true);
-  const [totalToDistribute, setTotalToDistribute] = useState<number>(0);
-  const [totalAllocated, setTotalAllocated] = useState<number>(0);
+  const [stage, setStage] = useState<EBatchDepositStage>(
+    EBatchDepositStage.SIGN_DATA,
+  );
+
+  const [state, setState] = useState<IBatchDepositState>({
+    distributionMethod: EDistributionMethod.SPLIT,
+    selectedValidators: data.map((v) => ({
+      validator: v,
+      depositAmount: 0,
+    })),
+    totalToDistribute: 0,
+    totalAllocated: 0,
+    disableButton: true,
+  });
 
   useEffect(() => {
     const shouldBeDisabled =
-      totalAllocated !== totalToDistribute ||
-      totalToDistribute === 0 ||
-      totalAllocated === 0;
+      state.totalAllocated !== state.totalToDistribute ||
+      state.totalToDistribute === 0 ||
+      state.totalAllocated === 0;
 
-    if (disableButton !== shouldBeDisabled) setDisableButton(shouldBeDisabled);
-  }, [totalAllocated, totalToDistribute, disableButton]);
+    setState((prev) => ({ ...prev, disableButton: shouldBeDisabled }));
+  }, [state.totalAllocated, state.totalToDistribute]);
 
-  const [distributionMethod, setDistributionMethod] =
-    useState<EDistributionMethod>(EDistributionMethod.SPLIT);
-
-  const [selectedValidators, setSelectedValidators] = useState<
-    IBatchDepositValidators[]
-  >([]);
-
-  const changeDistributionMethod = () => {
-    setSelectedValidators([]);
-    setTotalAllocated(0);
-    setTotalToDistribute(0);
-  };
-
-  const clearSelectedValidators = () => {
-    setSelectedValidators([]);
-    setTotalAllocated(0);
-  };
-
-  const evenlySplitSelectedValidators = (
+  const evenlySplitValidators = (
     validators: IBatchDepositValidators[],
-  ) => {
+  ): IBatchDepositValidators[] => {
     if (validators.length === 0) return [];
-    const depositAmount = totalToDistribute / validators.length;
+    const depositAmount = state.totalToDistribute / validators.length;
     return validators.map((v) => ({ ...v, depositAmount }));
   };
 
+  const handleDistributionMethodChange = (method: EDistributionMethod) => {
+    setState((prev) => ({
+      ...prev,
+      distributionMethod: method,
+      selectedValidators: [],
+      totalAllocated: 0,
+      totalToDistribute: 0,
+    }));
+  };
+
+  const handleTotalAmountChange = (amount: number) => {
+    setState((prev) => ({ ...prev, totalToDistribute: amount }));
+  };
+
+  const handleClearValidators = () => {
+    setState((prev) => ({
+      ...prev,
+      selectedValidators: [],
+      totalAllocated: 0,
+    }));
+  };
+
   const handleSelectValidator = (validator: IBatchDepositValidators) => {
-    const isRemoving = selectedValidators.some(
-      (v) => v.validator.validatorIndex === validator.validator.validatorIndex,
-    );
+    setState((prev) => {
+      const isRemoving = prev.selectedValidators.some(
+        (v) =>
+          v.validator.validatorIndex === validator.validator.validatorIndex,
+      );
 
-    const newValidators = isRemoving
-      ? selectedValidators.filter(
-          (v) =>
-            v.validator.validatorIndex !== validator.validator.validatorIndex,
-        )
-      : [...selectedValidators, validator];
+      const newValidators = isRemoving
+        ? prev.selectedValidators.filter(
+            (v) =>
+              v.validator.validatorIndex !== validator.validator.validatorIndex,
+          )
+        : [...prev.selectedValidators, validator];
 
-    const finalValidators =
-      distributionMethod === EDistributionMethod.SPLIT
-        ? evenlySplitSelectedValidators(newValidators)
-        : newValidators;
+      const finalValidators =
+        prev.distributionMethod === EDistributionMethod.SPLIT
+          ? evenlySplitValidators(newValidators)
+          : newValidators;
 
-    setSelectedValidators(finalValidators);
-    setTotalAllocated(
-      finalValidators.reduce((acc, v) => acc + v.depositAmount, 0),
-    );
+      return {
+        ...prev,
+        selectedValidators: finalValidators,
+        totalAllocated: finalValidators.reduce(
+          (acc, v) => acc + v.depositAmount,
+          0,
+        ),
+      };
+    });
   };
 
   const handleDepositAmountChange = (validator: IBatchDepositValidators) => {
-    const newValidators = selectedValidators.map((v) =>
-      v.validator.validatorIndex === validator.validator.validatorIndex
-        ? validator
-        : v,
-    );
+    setState((prev) => {
+      const newValidators = prev.selectedValidators.map((v) =>
+        v.validator.validatorIndex === validator.validator.validatorIndex
+          ? validator
+          : v,
+      );
 
-    setSelectedValidators(newValidators);
-    setTotalAllocated(
-      newValidators.reduce((acc, v) => acc + v.depositAmount, 0),
-    );
+      return {
+        ...prev,
+        selectedValidators: newValidators,
+        totalAllocated: newValidators.reduce(
+          (acc, v) => acc + v.depositAmount,
+          0,
+        ),
+      };
+    });
   };
 
   return (
     <div className="space-y-8">
       <div className="flex flex-col gap-4">
-        <div className="flex gap-x-4">
+        <div className="flex gap-x-4 text-indigo-800 dark:text-indigo-300">
           <ArrowDownToDot className="h-10 w-10" />
           <div className="text-3xl">Batch Deposit</div>
         </div>
 
-        <div className="w-[45vw] text-gray-700">
+        <div className="w-[45vw] text-gray-700 dark:text-gray-300">
           Top up your existing validators in one transaction.
         </div>
       </div>
 
-      <SignatureDetails />
+      {stage === EBatchDepositStage.DATA_CAPTURE && (
+        <>
+          <SignatureDetails
+            title="Validators signatures required to submit deposits"
+            text="To submit deposits, you'll need to generate and provide signatures with your validator key pairs (not withdrawal address). You will be prompted to create these signatures once deposit data is generated."
+          />
 
-      <DistributionMethod
-        changeDistributionMethod={changeDistributionMethod}
-        distributionMethod={distributionMethod}
-        setDistributionMethod={setDistributionMethod}
-        setTotalToDistribute={setTotalToDistribute}
-        selectedValidators={selectedValidators}
-        disableButton={disableButton}
-        totalAllocated={totalAllocated}
-        walletBalance={balance}
-        totalToDistribute={totalToDistribute}
-      />
+          <DistributionMethod
+            disableButton={state.disableButton}
+            distributionMethod={state.distributionMethod}
+            onDistributionMethodChange={handleDistributionMethodChange}
+            onTotalAmountChange={handleTotalAmountChange}
+            selectedValidators={state.selectedValidators}
+            setStage={setStage}
+            totalAllocated={state.totalAllocated}
+            totalToDistribute={state.totalToDistribute}
+            walletBalance={balance}
+          />
 
-      {totalToDistribute !== 0 && (
-        <SelectValidators
-          clearSelectedValidators={clearSelectedValidators}
-          distributionMethod={distributionMethod}
-          handleDepositAmountChange={handleDepositAmountChange}
-          selectedValidators={selectedValidators}
-          setSelectedValidators={handleSelectValidator}
-          totalAllocated={totalAllocated}
-          totalToDistribute={totalToDistribute}
-          validators={data}
-        />
+          {state.totalToDistribute !== 0 && (
+            <SelectValidators
+              clearSelectedValidators={handleClearValidators}
+              distributionMethod={state.distributionMethod}
+              handleDepositAmountChange={handleDepositAmountChange}
+              selectedValidators={state.selectedValidators}
+              setSelectedValidators={handleSelectValidator}
+              totalAllocated={state.totalAllocated}
+              totalToDistribute={state.totalToDistribute}
+              validators={data}
+            />
+          )}
+        </>
+      )}
+
+      {stage === EBatchDepositStage.SIGN_DATA && (
+        <>
+          <SignatureDetails
+            title="Sign deposit data"
+            text="For each deposit, copy the generated deposit data, sign it with your validator key and add the signed data. Once provided, the system will verify the deposit data before requesting ETH."
+          />
+
+          <DepositList deposits={state.selectedValidators} />
+        </>
       )}
     </div>
   );
