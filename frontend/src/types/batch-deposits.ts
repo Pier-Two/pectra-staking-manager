@@ -6,9 +6,13 @@ export interface IBatchDepositValidators {
 }
 
 export interface IDistributionInformation {
+  buttonText: string;
   disableButton: boolean;
+  onClick: () => void;
+  resetBatchDeposit: () => void;
   selectedValidators: IBatchDepositValidators[];
-  setStage: (stage: EBatchDepositStage) => void;
+  stage: EBatchDepositStage;
+  setStage?: (stage: EBatchDepositStage) => void;
   totalAllocated: number;
   totalToDistribute: number;
 }
@@ -38,7 +42,9 @@ export interface IDistributionMethodProps {
   distributionMethod: EDistributionMethod;
   onDistributionMethodChange: (method: EDistributionMethod) => void;
   onTotalAmountChange: (amount: number) => void;
+  resetBatchDeposit: () => void;
   selectedValidators: IBatchDepositValidators[];
+  stage: EBatchDepositStage;
   setStage: (stage: EBatchDepositStage) => void;
   totalAllocated: number;
   totalToDistribute: number;
@@ -97,6 +103,11 @@ export interface ISignatureDetails {
 
 export interface IDepositList {
   deposits: IBatchDepositValidators[];
+  resetBatchDeposit: () => void;
+  setStage: (stage: EBatchDepositStage) => void;
+  stage: EBatchDepositStage;
+  totalAllocated: number;
+  totalToDistribute: number;
 }
 
 export interface IValidatorListHeaders {
@@ -104,6 +115,13 @@ export interface IValidatorListHeaders {
 }
 export interface IDepositSignDataCard {
   deposit: IBatchDepositValidators;
+  index: number;
+  stage: EBatchDepositStage;
+}
+
+export interface IBatchDepositTransactionData {
+  rawDepositData: string;
+  signedDepositData: string;
 }
 
 export enum EDistributionMethod {
@@ -114,4 +132,6 @@ export enum EDistributionMethod {
 export enum EBatchDepositStage {
   DATA_CAPTURE = "DATA_CAPTURE",
   SIGN_DATA = "SIGN_DATA",
+  TRANSACTIONS_SUBMITTED = "TRANSACTIONS_SUBMITTED",
+  TRANSACTIONS_CONFIRMED = "TRANSACTIONS_CONFIRMED",
 }

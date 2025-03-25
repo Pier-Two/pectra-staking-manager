@@ -3,14 +3,24 @@
 import { type FC, useEffect, useState } from "react";
 import { ProgressBar } from "pec/components/consolidation/ProgressBar";
 import { SelectDestinationValidator } from "pec/components/consolidation/selectDestinationValidator/SelectDestinationValidator";
-import { MOCK_VALIDATORS } from "pec/server/__mocks__/validators";
 import type { ValidatorDetails } from "pec/types/validator";
 import { SelectSourceValidators } from "pec/components/consolidation/selectSourceValidators/SelectSourceValidators";
 import { ConsolidationSummary } from "pec/components/consolidation/summary/ConsolidationSummary";
 import { SubmitConsolidationRequests } from "pec/components/consolidation/submitRequests/SubmitConsolidationRequests";
+import { useWalletAddress } from "pec/hooks/useWallet";
+import { api } from "pec/trpc/react";
+import ConsolidationLoading from "../consolidate/loading";
 
 const ConsolidationWorkflow: FC = () => {
-  const data = MOCK_VALIDATORS;
+  const walletAddress = useWalletAddress();
+
+  const { data, isFetched } = api.validators.getValidators.useQuery(
+    {
+      address: walletAddress || "",
+    },
+    { enabled: !!walletAddress },
+  );
+
   const [progress, setProgress] = useState<number>(1);
 
   const [selectedDestinationValidator, setSelectedDestinationValidator] =
@@ -25,6 +35,8 @@ const ConsolidationWorkflow: FC = () => {
   useEffect(() => {
     if (progress === 1) setSelectedSourceValidators([]);
   }, [progress]);
+
+  if (!walletAddress || !data || !isFetched) return <ConsolidationLoading />;
 
   return (
     <div className="flex flex-col gap-4">

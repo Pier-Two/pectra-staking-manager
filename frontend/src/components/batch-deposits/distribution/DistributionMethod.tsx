@@ -2,6 +2,7 @@
 
 import { type FC, useState } from "react";
 import {
+  EBatchDepositStage,
   EDistributionMethod,
   type IDistributionMethodProps,
   type IDistributionOption,
@@ -31,7 +32,9 @@ export const DistributionMethod: FC<IDistributionMethodProps> = (props) => {
     distributionMethod,
     onDistributionMethodChange,
     onTotalAmountChange,
+    resetBatchDeposit,
     selectedValidators,
+    stage,
     setStage,
     totalAllocated,
     totalToDistribute,
@@ -78,8 +81,12 @@ export const DistributionMethod: FC<IDistributionMethodProps> = (props) => {
 
       <div className="space-y-2">
         <DistributionInformation
+          buttonText="Next"
           disableButton={disableButton}
+          onClick={() => setStage(EBatchDepositStage.SIGN_DATA)}
+          resetBatchDeposit={resetBatchDeposit}
           selectedValidators={selectedValidators}
+          stage={stage}
           setStage={setStage}
           totalAllocated={totalAllocated}
           totalToDistribute={totalToDistribute}

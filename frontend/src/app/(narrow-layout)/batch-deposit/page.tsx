@@ -3,7 +3,6 @@
 import { type FC, useState, useEffect } from "react";
 import { ArrowDownToDot } from "lucide-react";
 import { SignatureDetails } from "pec/components/batch-deposits/SignatureDetails";
-import { MOCK_VALIDATORS } from "pec/server/__mocks__/validators";
 import {
   type IBatchDepositValidators,
   type IBatchDepositState,
@@ -13,21 +12,30 @@ import {
 import { DistributionMethod } from "pec/components/batch-deposits/distribution/DistributionMethod";
 import { SelectValidators } from "pec/components/batch-deposits/validators/SelectValidators";
 import { DepositList } from "pec/components/batch-deposits/validators/DepositList";
+import BatchDepositLoading from "./loading";
+import { useWalletAddress } from "pec/hooks/useWallet";
+import { api } from "pec/trpc/react";
 
 const BatchDeposit: FC = () => {
-  const data = MOCK_VALIDATORS;
+  const walletAddress = useWalletAddress();
+
+  const { data, isFetched } = api.validators.getValidators.useQuery(
+    {
+      address: walletAddress || "",
+    },
+    { enabled: !!walletAddress },
+  );
+
+  // TODO Max - Can we get the balance from the wallet?
   const balance = 100;
 
   const [stage, setStage] = useState<EBatchDepositStage>(
-    EBatchDepositStage.SIGN_DATA,
+    EBatchDepositStage.DATA_CAPTURE,
   );
 
   const [state, setState] = useState<IBatchDepositState>({
     distributionMethod: EDistributionMethod.SPLIT,
-    selectedValidators: data.map((v) => ({
-      validator: v,
-      depositAmount: 0,
-    })),
+    selectedValidators: [],
     totalToDistribute: 0,
     totalAllocated: 0,
     disableButton: true,
@@ -41,6 +49,8 @@ const BatchDeposit: FC = () => {
 
     setState((prev) => ({ ...prev, disableButton: shouldBeDisabled }));
   }, [state.totalAllocated, state.totalToDistribute]);
+
+  if (!walletAddress || !data || !isFetched) return <BatchDepositLoading />;
 
   const evenlySplitValidators = (
     validators: IBatchDepositValidators[],
@@ -121,6 +131,17 @@ const BatchDeposit: FC = () => {
     });
   };
 
+  const handleResetBatchDeposit = () => {
+    setState({
+      distributionMethod: EDistributionMethod.SPLIT,
+      selectedValidators: [],
+      totalToDistribute: 0,
+      totalAllocated: 0,
+      disableButton: true,
+    });
+    setStage(EBatchDepositStage.DATA_CAPTURE);
+  };
+
   return (
     <div className="space-y-8">
       <div className="flex flex-col gap-4">
@@ -146,7 +167,9 @@ const BatchDeposit: FC = () => {
             distributionMethod={state.distributionMethod}
             onDistributionMethodChange={handleDistributionMethodChange}
             onTotalAmountChange={handleTotalAmountChange}
+            resetBatchDeposit={handleResetBatchDeposit}
             selectedValidators={state.selectedValidators}
+            stage={stage}
             setStage={setStage}
             totalAllocated={state.totalAllocated}
             totalToDistribute={state.totalToDistribute}
@@ -168,14 +191,21 @@ const BatchDeposit: FC = () => {
         </>
       )}
 
-      {stage === EBatchDepositStage.SIGN_DATA && (
+      {stage !== EBatchDepositStage.DATA_CAPTURE && (
         <>
           <SignatureDetails
             title="Sign deposit data"
             text="For each deposit, copy the generated deposit data, sign it with your validator key and add the signed data. Once provided, the system will verify the deposit data before requesting ETH."
           />
 
-          <DepositList deposits={state.selectedValidators} />
+          <DepositList
+            deposits={state.selectedValidators}
+            resetBatchDeposit={handleResetBatchDeposit}
+            setStage={setStage}
+            stage={stage}
+            totalAllocated={state.totalAllocated}
+            totalToDistribute={state.totalToDistribute}
+          />
         </>
       )}
     </div>
