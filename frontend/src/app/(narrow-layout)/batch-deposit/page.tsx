@@ -84,17 +84,18 @@ const BatchDeposit: FC = () => {
 
   const handleSelectValidator = (validator: IBatchDepositValidators) => {
     setState((prev) => {
-      const isRemoving = prev.selectedValidators.some(
+      const validatorIndex = prev.selectedValidators.findIndex(
         (v) =>
           v.validator.validatorIndex === validator.validator.validatorIndex,
       );
 
-      const newValidators = isRemoving
-        ? prev.selectedValidators.filter(
-            (v) =>
-              v.validator.validatorIndex !== validator.validator.validatorIndex,
-          )
-        : [...prev.selectedValidators, validator];
+      let newValidators;
+      if (validatorIndex !== -1) {
+        newValidators = [...prev.selectedValidators];
+        newValidators.splice(validatorIndex, 1);
+      } else {
+        newValidators = [...prev.selectedValidators, validator];
+      }
 
       const finalValidators =
         prev.distributionMethod === EDistributionMethod.SPLIT
