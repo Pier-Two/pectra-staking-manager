@@ -10,7 +10,13 @@ import { PrimaryButton } from "pec/components/ui/custom/PrimaryButton";
 import { SecondaryButton } from "pec/components/ui/custom/SecondaryButton";
 import { AlignLeft, Copy, Check, Pencil, Trash2, Eye } from "lucide-react";
 import { EIconPosition } from "pec/types/components";
-import { type Control, useController, type FieldValues } from "react-hook-form";
+import {
+  type Control,
+  useController,
+  type FieldValues,
+  type UseFormRegister,
+  FieldErrors,
+} from "react-hook-form";
 import {
   Dialog,
   DialogContent,
@@ -19,12 +25,15 @@ import {
   DialogTitle,
 } from "pec/components/ui/dialog";
 import { Badge } from "pec/components/ui/badge";
+import type { BatchDepositGenerateTransaction } from "pec/lib/api/schemas/batch-deposit";
 interface ExtendedProps extends IDepositSignDataCard {
   control: Control<FieldValues>;
+  errors: FieldErrors<BatchDepositGenerateTransaction>;
+  register: UseFormRegister<BatchDepositGenerateTransaction>;
 }
 
 export const DepositSignDataCard: FC<ExtendedProps> = (props) => {
-  const { deposit, control, index, stage } = props;
+  const { deposit, control, index, register, stage, errors } = props;
   const { validator, depositAmount } = deposit;
 
   const [openDialog, setOpenDialog] = useState(false);
@@ -152,11 +161,17 @@ export const DepositSignDataCard: FC<ExtendedProps> = (props) => {
           <div className="flex flex-col space-y-8">
             <div className="flex flex-col space-y-4">
               <div className="text-md">Raw deposit data</div>
-              <input
+              <textarea
                 className="min-h-40 rounded-xl border border-gray-300 bg-gray-100 p-2 text-black dark:border-gray-800 dark:bg-black dark:text-white"
                 disabled={stage === EBatchDepositStage.TRANSACTIONS_CONFIRMED}
-                {...rawDataField}
+                {...register(`transactions.${index}.rawDepositData`)}
               />
+              
+              {errors.transactions?.[index]?.rawDepositData && (
+                <div className="text-red-500">
+                  {errors.transactions[index].rawDepositData.message}
+                </div>
+              )}
 
               <SecondaryButton
                 label="Deposit Data"
@@ -169,11 +184,17 @@ export const DepositSignDataCard: FC<ExtendedProps> = (props) => {
 
             <div className="flex flex-col space-y-4">
               <div className="text-md">Signed deposit data</div>
-              <input
+              <textarea
                 className="min-h-40 rounded-xl border border-gray-300 bg-white p-2 text-black dark:border-gray-800 dark:bg-black dark:text-white"
                 disabled={stage === EBatchDepositStage.TRANSACTIONS_CONFIRMED}
-                {...signedDataField}
+                {...register(`transactions.${index}.signedDepositData`)}
               />
+
+              {errors.transactions?.[index]?.signedDepositData && (
+                <div className="text-red-500">
+                  {errors.transactions[index].signedDepositData.message}
+                </div>
+              )}
 
               <SecondaryButton
                 label="Signed Data"

@@ -11,18 +11,20 @@ import {
 
 export const DepositSelectionValidatorCard: FC<
   IDepositSelectionValidatorCard
-> = ({
-  clearedSelectedValidators,
-  depositAmount,
-  distributionMethod,
-  selected,
-  setClearedSelectedValidators,
-  totalAllocated,
-  totalToDistribute,
-  validator,
-  onClick,
-  onDepositChange,
-}) => {
+> = (props) => {
+  const {
+    clearedSelectedValidators,
+    depositAmount,
+    distributionMethod,
+    selected,
+    setClearedSelectedValidators,
+    totalAllocated,
+    totalToDistribute,
+    validator,
+    onClick,
+    onDepositChange,
+  } = props;
+
   const [amount, setAmount] = useState<number>(depositAmount);
 
   useEffect(() => {

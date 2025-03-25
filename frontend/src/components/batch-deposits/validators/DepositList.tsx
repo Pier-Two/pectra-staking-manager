@@ -7,16 +7,13 @@ import {
 } from "react-hook-form";
 import {
   EBatchDepositStage,
-  type IBatchDepositTransactionData,
   type IDepositList,
 } from "pec/types/batch-deposits";
 import { ValidatorListHeaders } from "./ValidatorListHeaders";
 import { DepositSignDataCard } from "pec/components/validators/cards/DepositSignDataCard";
 import { DistributionInformation } from "../distribution/DistributionInformation";
-
-type FormValues = {
-  transactions: IBatchDepositTransactionData[];
-};
+import { BatchDepositGenerateTransactionSchema, type BatchDepositGenerateTransaction } from "pec/lib/api/schemas/batch-deposit";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 export const DepositList: FC<IDepositList> = (props) => {
   const {
@@ -29,10 +26,12 @@ export const DepositList: FC<IDepositList> = (props) => {
   } = props;
 
   const {
+    register,
     control,
     handleSubmit,
-    formState: { isValid },
-  } = useForm<FormValues>({
+    formState: { isValid, errors },
+  } = useForm<BatchDepositGenerateTransaction>({
+    resolver: zodResolver(BatchDepositGenerateTransactionSchema),
     defaultValues: {
       transactions: deposits.map(() => ({
         rawDepositData: "",
@@ -47,7 +46,7 @@ export const DepositList: FC<IDepositList> = (props) => {
     name: "transactions",
   });
 
-  const onSubmit = (data: FormValues) => {
+  const onSubmit = (data: BatchDepositGenerateTransaction) => {
     // TODO Max
     // Handle the submission of transaction data
     // Set the stage to TRANSACTIONS_CONFIRMED when all transactions are submitted
@@ -82,7 +81,9 @@ export const DepositList: FC<IDepositList> = (props) => {
             control={control as unknown as Control<FieldValues>}
             deposit={deposit}
             index={index}
+            register={register}
             stage={stage}
+            errors={errors}
           />
         ) : null;
       })}

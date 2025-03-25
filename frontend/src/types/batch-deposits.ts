@@ -119,11 +119,6 @@ export interface IDepositSignDataCard {
   stage: EBatchDepositStage;
 }
 
-export interface IBatchDepositTransactionData {
-  rawDepositData: string;
-  signedDepositData: string;
-}
-
 export enum EDistributionMethod {
   SPLIT = "SPLIT",
   MANUAL = "MANUAL",
