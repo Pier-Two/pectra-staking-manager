@@ -1,6 +1,9 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { DistributionMethod } from "./DistributionMethod";
-import { EDistributionMethod } from "pec/types/batch-deposits";
+import {
+  EBatchDepositStage,
+  EDistributionMethod,
+} from "pec/types/batch-deposits";
 
 // More on how to set up stories at: https://storybook.js.org/docs/writing-stories#default-export
 const meta = {
@@ -30,5 +33,8 @@ export const Primary: Story = {
     totalAllocated: 0,
     totalToDistribute: 0,
     walletBalance: 0,
+    resetBatchDeposit: () => {},
+    stage: EBatchDepositStage.DATA_CAPTURE,
+    setStage: () => {},
   },
 };
