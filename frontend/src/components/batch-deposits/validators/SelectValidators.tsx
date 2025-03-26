@@ -5,20 +5,27 @@ import type { ValidatorDetails } from "pec/types/validator";
 import { ValidatorHeader } from "./ValidatorHeader";
 import { ValidatorListHeaders } from "./ValidatorListHeaders";
 
-export const SelectValidators: FC<ISelectValidatorsProps> = (props) => {
-  const {
-    clearSelectedValidators,
-    distributionMethod,
-    handleDepositAmountChange,
-    selectedValidators,
-    setSelectedValidators,
-    totalAllocated,
-    totalToDistribute,
-    validators,
-  } = props;
+export const SelectValidators: FC<ISelectValidatorsProps> = ({
+  clearSelectedValidators,
+  distributionMethod,
+  handleDepositAmountChange,
+  selectedValidators,
+  setSelectedValidators,
+  totalAllocated,
+  totalToDistribute,
+  validators,
+}) => {
+  const [amountValues, setAmountValues] = useState<number[]>(
+    selectedValidators.map((v) => v.depositAmount),
+  );
 
-  const [clearedSelectedValidators, setClearedSelectedValidators] =
-    useState<boolean>(false);
+  const handleSetAmountValues = (index: number, amount: number) => {
+    setAmountValues((prev) => {
+      const newAmountValues = [...prev];
+      newAmountValues[index] = amount;
+      return newAmountValues;
+    });
+  };
 
   const handleValidatorClick = (
     validator: ValidatorDetails,
@@ -32,7 +39,7 @@ export const SelectValidators: FC<ISelectValidatorsProps> = (props) => {
 
   const handleClearValidators = () => {
     clearSelectedValidators();
-    setClearedSelectedValidators(true);
+    setAmountValues(Array(selectedValidators.length).fill(0));
   };
 
   return (
@@ -49,8 +56,8 @@ export const SelectValidators: FC<ISelectValidatorsProps> = (props) => {
         {validators.map((validator, index) => (
           <DepositSelectionValidatorCard
             key={`depositValidator-${validator.validatorIndex}-${index}`}
-            clearedSelectedValidators={clearedSelectedValidators}
-            setClearedSelectedValidators={setClearedSelectedValidators}
+            amount={amountValues[index] ?? 0}
+            setAmount={(amount) => handleSetAmountValues(index, amount)}
             onClick={handleValidatorClick}
             onDepositChange={handleDepositAmountChange}
             validator={validator}

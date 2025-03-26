@@ -1,6 +1,6 @@
 "use client";
 
-import { type FC, useState, useEffect } from "react";
+import { type FC, useState } from "react";
 import { ArrowDownToDot } from "lucide-react";
 import { SignatureDetails } from "pec/components/batch-deposits/SignatureDetails";
 import {

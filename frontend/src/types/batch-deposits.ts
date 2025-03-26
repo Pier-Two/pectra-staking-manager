@@ -67,11 +67,11 @@ export interface IValidatorHeaderProps {
 }
 
 export interface IDepositSelectionValidatorCard {
-  clearedSelectedValidators: boolean;
-  depositAmount: number;
+  amount: number;
   distributionMethod: EDistributionMethod;
+  depositAmount: number;
   selected: boolean;
-  setClearedSelectedValidators: (cleared: boolean) => void;
+  setAmount: (amount: number) => void;
   totalAllocated: number;
   totalToDistribute: number;
   validator: ValidatorDetails;

@@ -22,6 +22,7 @@ type Story = StoryObj<typeof meta>;
 // More on writing stories with args: https://storybook.js.org/docs/writing-stories/args
 export const Primary: Story = {
   args: {
+    amount: 0,
     validator: MOCK_VALIDATORS[0]!,
     depositAmount: 0,
     distributionMethod: EDistributionMethod.MANUAL,
@@ -30,7 +31,6 @@ export const Primary: Story = {
     totalToDistribute: 0,
     onClick: () => {},
     onDepositChange: () => {},
-    setClearedSelectedValidators: () => {},
-    clearedSelectedValidators: false,
+    setAmount: () => {},
   },
 };

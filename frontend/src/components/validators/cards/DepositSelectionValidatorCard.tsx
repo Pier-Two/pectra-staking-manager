@@ -1,6 +1,6 @@
 "use client";
 
-import { type FC, useState, useEffect } from "react";
+import { type FC,  } from "react";
 import Image from "next/image";
 import { AlignLeft, CircleCheck, CirclePlus } from "lucide-react";
 import { Input } from "pec/components/ui/input";
@@ -13,30 +13,17 @@ export const DepositSelectionValidatorCard: FC<
   IDepositSelectionValidatorCard
 > = (props) => {
   const {
-    clearedSelectedValidators,
     depositAmount,
     distributionMethod,
     selected,
-    setClearedSelectedValidators,
+    amount,
+    setAmount,
     totalAllocated,
     totalToDistribute,
     validator,
     onClick,
     onDepositChange,
   } = props;
-
-  const [amount, setAmount] = useState<number>(depositAmount);
-
-  useEffect(() => {
-    if (clearedSelectedValidators) {
-      setAmount(0);
-      setClearedSelectedValidators(false);
-    }
-  }, [clearedSelectedValidators, setClearedSelectedValidators]);
-
-  useEffect(() => {
-    setAmount(depositAmount);
-  }, [depositAmount]);
 
   const handleDeselect = (e: React.MouseEvent) => {
     e.stopPropagation();
