@@ -34,7 +34,6 @@ export interface IBatchDepositState {
   selectedValidators: IBatchDepositValidators[];
   totalToDistribute: number;
   totalAllocated: number;
-  disableButton: boolean;
 }
 
 export interface IDistributionMethodProps {

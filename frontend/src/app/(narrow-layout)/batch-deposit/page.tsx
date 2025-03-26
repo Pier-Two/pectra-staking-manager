@@ -38,17 +38,12 @@ const BatchDeposit: FC = () => {
     selectedValidators: [],
     totalToDistribute: 0,
     totalAllocated: 0,
-    disableButton: true,
   });
 
-  useEffect(() => {
-    const shouldBeDisabled =
-      state.totalAllocated !== state.totalToDistribute ||
-      state.totalToDistribute === 0 ||
-      state.totalAllocated === 0;
-
-    setState((prev) => ({ ...prev, disableButton: shouldBeDisabled }));
-  }, [state.totalAllocated, state.totalToDistribute]);
+  const shouldBeDisabled =
+    state.totalAllocated !== state.totalToDistribute ||
+    state.totalToDistribute === 0 ||
+    state.totalAllocated === 0;
 
   if (!walletAddress || !data || !isFetched) return <BatchDepositLoading />;
 
@@ -138,7 +133,6 @@ const BatchDeposit: FC = () => {
       selectedValidators: [],
       totalToDistribute: 0,
       totalAllocated: 0,
-      disableButton: true,
     });
     setStage(EBatchDepositStage.DATA_CAPTURE);
   };
@@ -164,7 +158,7 @@ const BatchDeposit: FC = () => {
           />
 
           <DistributionMethod
-            disableButton={state.disableButton}
+            disableButton={shouldBeDisabled}
             distributionMethod={state.distributionMethod}
             onDistributionMethodChange={handleDistributionMethodChange}
             onTotalAmountChange={handleTotalAmountChange}
