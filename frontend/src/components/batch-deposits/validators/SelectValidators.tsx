@@ -4,6 +4,7 @@ import { DepositSelectionValidatorCard } from "../../validators/cards/DepositSel
 import type { ValidatorDetails } from "pec/types/validator";
 import { ValidatorHeader } from "./ValidatorHeader";
 import { ValidatorListHeaders } from "./ValidatorListHeaders";
+import { keyBy } from "lodash";
 
 export const SelectValidators: FC<ISelectValidatorsProps> = ({
   clearSelectedValidators,
@@ -42,6 +43,11 @@ export const SelectValidators: FC<ISelectValidatorsProps> = ({
     setAmountValues(Array(selectedValidators.length).fill(0));
   };
 
+  const selectedValidatorRecord = keyBy(
+    selectedValidators,
+    (v) => v.validator.validatorIndex,
+  );
+
   return (
     <>
       <ValidatorHeader
@@ -62,14 +68,11 @@ export const SelectValidators: FC<ISelectValidatorsProps> = ({
             onDepositChange={handleDepositAmountChange}
             validator={validator}
             depositAmount={
-              selectedValidators.find(
-                (v) => v.validator.validatorIndex === validator.validatorIndex,
-              )?.depositAmount ?? 0
+              selectedValidatorRecord[validator.validatorIndex]
+                ?.depositAmount ?? 0
             }
             distributionMethod={distributionMethod}
-            selected={selectedValidators.some(
-              (v) => v.validator.validatorIndex === validator.validatorIndex,
-            )}
+            selected={!!selectedValidatorRecord[validator.validatorIndex]}
             totalAllocated={totalAllocated}
             totalToDistribute={totalToDistribute}
           />
