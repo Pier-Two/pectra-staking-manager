@@ -1,0 +1,19 @@
+import type { FC } from "react";
+import type { ISignatureDetails } from "pec/types/batch-deposits";
+import { KeyRound } from "lucide-react";
+
+export const SignatureDetails: FC<ISignatureDetails> = (props) => {
+  const { title, text } = props;
+
+  return (
+    <div className="flex min-h-[10vh] w-full items-center justify-between gap-x-4 rounded-xl border border-indigo-300 bg-indigo-50 p-4 dark:border-indigo-900 dark:bg-gray-900">
+      <div className="flex gap-x-4">
+        <KeyRound className="h-8 w-8 fill-indigo-500 text-white" />
+        <div className="flex flex-col gap-y-2">
+          <div className="text-md text-indigo-700">{title}</div>
+          <div className="text-sm">{text}</div>
+        </div>
+      </div>
+    </div>
+  );
+};

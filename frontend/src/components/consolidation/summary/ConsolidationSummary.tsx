@@ -1,6 +1,6 @@
 import type { FC } from "react";
 import type { IConsolidationSummary } from "pec/types/consolidation";
-import { ValidatorCard } from "pec/components/validators/ValidatorCard";
+import { ValidatorCard } from "pec/components/validators/cards/ValidatorCard";
 import { DetectedValidators } from "pec/components/validators/DetectedValidators";
 import { Overview } from "./Overview";
 import { Email } from "./Email";

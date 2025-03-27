@@ -24,7 +24,7 @@ export const Tools = () => {
   };
 
   const handleBatchWithdrawalNavigation = () => {
-    router.push("/batch-withdrawal");
+    router.push("/withdraw");
   };
 
   return (

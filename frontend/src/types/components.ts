@@ -6,7 +6,7 @@ export interface ICustomButton extends StyleableComponent {
   label: string;
   icon?: React.ReactNode;
   iconPosition?: EIconPosition;
-  onClick: () => void;
+  onClick?: () => void;
   disabled: boolean;
 }
 

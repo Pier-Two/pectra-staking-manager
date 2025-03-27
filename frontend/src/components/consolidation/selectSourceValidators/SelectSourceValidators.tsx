@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState, type FC } from "react";
 import type { ISelectSourceValidators } from "pec/types/consolidation";
-import { ValidatorCard } from "pec/components/validators/ValidatorCard";
+import { ValidatorCard } from "pec/components/validators/cards/ValidatorCard";
 import type { ValidatorDetails } from "pec/types/validator";
 import { ValidatorList } from "./ValidatorList";
 import { PrimaryButton } from "pec/components/ui/custom/PrimaryButton";
@@ -16,6 +16,7 @@ import {
 import { DetectedValidators } from "pec/components/validators/DetectedValidators";
 import { AlignLeft, Pencil, Zap } from "lucide-react";
 import { EIconPosition } from "pec/types/components";
+import { DECIMAL_PLACES } from "pec/lib/constants";
 
 export const SelectSourceValidators: FC<ISelectSourceValidators> = (props) => {
   const {
@@ -146,7 +147,7 @@ export const SelectSourceValidators: FC<ISelectSourceValidators> = (props) => {
 
         <div className="flex items-center gap-1 text-black dark:text-white">
           <AlignLeft className="h-3 w-3" />
-          <span>{newDestinationBalance.toFixed(2)} /</span>
+          <span>{newDestinationBalance.toFixed(DECIMAL_PLACES)} /</span>
         </div>
 
         <div className="flex items-center gap-1">

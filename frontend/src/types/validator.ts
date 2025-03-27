@@ -1,3 +1,5 @@
+import type { EDistributionMethod, IBatchDepositValidators } from "./batch-deposits";
+
 export interface ValidatorDetails {
   validatorIndex: number;
   publicKey: string;
@@ -27,6 +29,10 @@ export interface IDetectedValidators {
   validators: ValidatorDetails[];
 }
 
+export interface IGenericValidator {
+  validator: ValidatorDetails;
+}
+
 export interface IGenericValidators {
   validators: ValidatorDetails[];
 }
@@ -43,6 +49,19 @@ export interface ITransactionValidatorCard {
   status: TransactionStatus;
   transactionHash: string;
   validator: ValidatorDetails;
+}
+
+export interface IBatchDepositValidatorCard {
+  clearedSelectedValidators: boolean;
+  depositAmount: number;
+  distributionMethod: EDistributionMethod;
+  selected: boolean;
+  setClearedSelectedValidators: (cleared: boolean) => void;
+  totalAllocated: number;
+  totalToDistribute: number;
+  validator: ValidatorDetails;
+  onClick: (validator: ValidatorDetails, distributionMethod: EDistributionMethod, depositAmount: number) => void;
+  onDepositChange: (validator: IBatchDepositValidators) => void;
 }
 
 export interface ISourceValidatorCard {

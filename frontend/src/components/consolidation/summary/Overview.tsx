@@ -8,6 +8,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "pec/components/ui/tooltip";
+import { DECIMAL_PLACES } from "pec/lib/constants";
 
 export const Overview: FC<IConsolidationOverview> = (props) => {
   const { destinationValidator, sourceValidators } = props;
@@ -26,7 +27,7 @@ export const Overview: FC<IConsolidationOverview> = (props) => {
 
         <div className="flex items-center gap-1">
           <AlignLeft className="h-3 w-3 text-gray-500 dark:text-white" />
-          <span>{newTotalBalance.toFixed(2)}</span>
+          <span>{newTotalBalance.toFixed(DECIMAL_PLACES)}</span>
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>

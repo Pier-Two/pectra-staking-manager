@@ -3,7 +3,7 @@
 import type { FC } from "react";
 import type { IDestinationValidatorList } from "pec/types/consolidation";
 import { ChevronsUpDown } from "lucide-react";
-import { ValidatorCard } from "pec/components/validators/ValidatorCard";
+import { ValidatorCard } from "pec/components/validators/cards/ValidatorCard";
 import type { ValidatorDetails } from "pec/types/validator";
 
 export const ValidatorList: FC<IDestinationValidatorList> = (props) => {
