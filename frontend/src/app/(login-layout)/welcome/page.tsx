@@ -1,13 +1,26 @@
+"use client";
+
 import type { FC } from "react";
+import { useRouter } from "next/navigation";
 import { Footer } from "pec/components/layout/welcome/Footer";
 import { Information } from "pec/components/layout/welcome/Information";
 import { PectraLink } from "pec/components/layout/welcome/PectraLink";
 import { ConnectWalletButton } from "pec/components/ui/wallet/ConnectWallet";
 import { ChartLink } from "pec/components/layout/welcome/ChartLink";
+import { useWalletAddress } from "pec/hooks/useWallet";
+import { PrimaryButton } from "pec/components/ui/custom/PrimaryButton";
 
 const Welcome: FC = () => {
+  const router = useRouter();
+  const walletAddress = useWalletAddress();
+  const hasWalletAddress = !!walletAddress;
+
+  const handleEnterSite = () => {
+    router.push("/validators-found");
+  };
+
   return (
-    <div className="mt-[5vh] flex h-full flex-col space-y-20">
+    <div className="mt-[2vh] flex h-full flex-col space-y-20">
       <div className="flex flex-col items-center justify-center gap-4">
         <PectraLink />
         <div className="text-6xl font-bold">This is the Future of</div>
@@ -23,8 +36,17 @@ const Welcome: FC = () => {
           Connect your withdrawal address to access validators
         </div>
 
-        <div className="flex flex-col items-center justify-center gap-4 w-[25vw]">
-          <ConnectWalletButton />
+        <div className="flex w-[25vw] flex-col items-center justify-center gap-4">
+          {hasWalletAddress ? (
+            <PrimaryButton
+              className="w-full h-12"
+              label={"Enter site"}
+              onClick={handleEnterSite}
+              disabled={false}
+            />
+          ) : (
+            <ConnectWalletButton />
+          )}
           <ChartLink numberOfUpgrades={123456} upgradePercentage={15} />
         </div>
       </div>
