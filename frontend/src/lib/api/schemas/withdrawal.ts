@@ -27,7 +27,6 @@ export type WithdrawalData = z.infer<typeof WithdrawalDataSchema>;
 export const WithdrawalSchema = z.object({
   selectedValidators: z.array(ValidatorDataSchema),
   stage: z.nativeEnum(EWithdrawalStage),
-  withdrawalTotal: z.number().min(0),
   withdrawals: z.array(WithdrawalDataSchema),
 });
 

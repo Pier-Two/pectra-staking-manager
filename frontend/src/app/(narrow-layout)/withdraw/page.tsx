@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, type FC } from "react";
+import { useMemo, type FC } from "react";
 import { api } from "pec/trpc/react";
 import { useWalletAddress } from "pec/hooks/useWallet";
 import { useForm, useFieldArray, useWatch } from "react-hook-form";
@@ -32,7 +32,6 @@ const Withdrawal: FC = () => {
   const initialValues: WithdrawalType = {
     selectedValidators: [],
     stage: EWithdrawalStage.DATA_CAPTURE,
-    withdrawalTotal: 0,
     withdrawals:
       data?.map((validator) => ({
         validator,
@@ -73,23 +72,17 @@ const Withdrawal: FC = () => {
     name: "selectedValidators",
   });
 
-  const withdrawalTotal = useWatch({
-    control,
-    name: "withdrawalTotal",
-  });
-
   const stage = useWatch({
     control,
     name: "stage",
   });
 
-  useEffect(() => {
-    const total = watchedWithdrawals.reduce(
+  const withdrawalTotal = useMemo(() => {
+    return watchedWithdrawals.reduce(
       (acc, withdrawal) => acc + (withdrawal.amount ?? 0),
       0,
     );
-    setValue("withdrawalTotal", +total);
-  }, [watchedWithdrawals, setValue]);
+  }, [watchedWithdrawals]);
 
   if (!walletAddress || !data || !isFetched) return <WithdrawalLoading />;
 
@@ -104,11 +97,6 @@ const Withdrawal: FC = () => {
   };
 
   const handleMaxAllocation = () => {
-    const maxWithdrawal = data.reduce(
-      (acc, validator) => acc + Math.max(validator.balance - 32, 0),
-      0,
-    );
-    setValue("withdrawalTotal", maxWithdrawal);
     setValue(
       "withdrawals",
       data.map((validator) => ({
@@ -116,6 +104,7 @@ const Withdrawal: FC = () => {
         amount: Math.max(validator.balance - 32, 0),
       })),
     );
+
     setValue(
       "selectedValidators",
       data.map((validator) => validator),

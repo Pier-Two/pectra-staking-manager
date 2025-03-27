@@ -15,9 +15,21 @@ import { DepositList } from "pec/components/batch-deposits/validators/DepositLis
 import BatchDepositLoading from "./loading";
 import { useWalletAddress } from "pec/hooks/useWallet";
 import { api } from "pec/trpc/react";
-
+import { useActiveChainWithDefault } from "pec/hooks/useChain";
+import { useWalletBalance } from "thirdweb/react";
+import { client } from "pec/lib/wallet/client";
 const BatchDeposit: FC = () => {
   const walletAddress = useWalletAddress();
+  const chain = useActiveChainWithDefault();
+  const {
+    data: balance,
+    isLoading,
+    isError,
+  } = useWalletBalance({
+    chain,
+    address: walletAddress || "",
+    client,
+  });
 
   const { data, isFetched } = api.validators.getValidators.useQuery(
     {
@@ -25,9 +37,6 @@ const BatchDeposit: FC = () => {
     },
     { enabled: !!walletAddress },
   );
-
-  // TODO Max - Can we get the balance from the wallet?
-  const balance = 100;
 
   const [stage, setStage] = useState<EBatchDepositStage>(
     EBatchDepositStage.DATA_CAPTURE,
@@ -45,7 +54,15 @@ const BatchDeposit: FC = () => {
     state.totalToDistribute === 0 ||
     state.totalAllocated === 0;
 
-  if (!walletAddress || !data || !isFetched) return <BatchDepositLoading />;
+  const componentLoading =
+    !walletAddress ||
+    !chain ||
+    !balance ||
+    !data ||
+    !isFetched ||
+    isLoading ||
+    isError;
+  if (componentLoading) return <BatchDepositLoading />;
 
   const evenlySplitValidators = (
     validators: IBatchDepositValidators[],
@@ -152,36 +169,45 @@ const BatchDeposit: FC = () => {
 
       {stage === EBatchDepositStage.DATA_CAPTURE && (
         <>
-          <SignatureDetails
-            title="Validators signatures required to submit deposits"
-            text="To submit deposits, you'll need to generate and provide signatures with your validator key pairs (not withdrawal address). You will be prompted to create these signatures once deposit data is generated."
-          />
-
-          <DistributionMethod
-            disableButton={shouldBeDisabled}
-            distributionMethod={state.distributionMethod}
-            onDistributionMethodChange={handleDistributionMethodChange}
-            onTotalAmountChange={handleTotalAmountChange}
-            resetBatchDeposit={handleResetBatchDeposit}
-            selectedValidators={state.selectedValidators}
-            stage={stage}
-            setStage={setStage}
-            totalAllocated={state.totalAllocated}
-            totalToDistribute={state.totalToDistribute}
-            walletBalance={balance}
-          />
-
-          {state.totalToDistribute !== 0 && (
-            <SelectValidators
-              clearSelectedValidators={handleClearValidators}
-              distributionMethod={state.distributionMethod}
-              handleDepositAmountChange={handleDepositAmountChange}
-              selectedValidators={state.selectedValidators}
-              setSelectedValidators={handleSelectValidator}
-              totalAllocated={state.totalAllocated}
-              totalToDistribute={state.totalToDistribute}
-              validators={data}
+          {Number(balance.value) === 0 ? (
+            <SignatureDetails
+              title="Insufficient balance"
+              text="Please top up your wallet with ETH before submitting deposits."
             />
+          ) : (
+            <>
+              <SignatureDetails
+                title="Validators signatures required to submit deposits"
+                text="To submit deposits, you'll need to generate and provide signatures with your validator key pairs (not withdrawal address). You will be prompted to create these signatures once deposit data is generated."
+              />
+
+              <DistributionMethod
+                disableButton={shouldBeDisabled}
+                distributionMethod={state.distributionMethod}
+                onDistributionMethodChange={handleDistributionMethodChange}
+                onTotalAmountChange={handleTotalAmountChange}
+                resetBatchDeposit={handleResetBatchDeposit}
+                selectedValidators={state.selectedValidators}
+                stage={stage}
+                setStage={setStage}
+                totalAllocated={state.totalAllocated}
+                totalToDistribute={state.totalToDistribute}
+                walletBalance={Number(balance.value) ?? 0}
+              />
+
+              {state.totalToDistribute !== 0 && (
+                <SelectValidators
+                  clearSelectedValidators={handleClearValidators}
+                  distributionMethod={state.distributionMethod}
+                  handleDepositAmountChange={handleDepositAmountChange}
+                  selectedValidators={state.selectedValidators}
+                  setSelectedValidators={handleSelectValidator}
+                  totalAllocated={state.totalAllocated}
+                  totalToDistribute={state.totalToDistribute}
+                  validators={data}
+                />
+              )}
+            </>
           )}
         </>
       )}
