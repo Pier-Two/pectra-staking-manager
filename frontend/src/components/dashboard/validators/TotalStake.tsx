@@ -1,6 +1,7 @@
 import type { FC } from "react";
 import { AlignLeft } from "lucide-react";
 import type { IGenericValidators } from "pec/types/validator";
+import { DECIMAL_PLACES } from "pec/lib/constants";
 
 export const TotalStake: FC<IGenericValidators> = (props) => {
   const { validators } = props;
@@ -20,12 +21,12 @@ export const TotalStake: FC<IGenericValidators> = (props) => {
       <div className="flex flex-row items-center gap-1 text-indigo-800 dark:text-indigo-200">
       <AlignLeft />
           <div className="text-xl font-bold">
-            {totalStake.toFixed(3)}
+            {totalStake.toFixed(DECIMAL_PLACES)}
           </div>
         </div>
 
         <div className="text-sm">
-          Average {averageStake.toFixed(3)} per validator
+          Average {averageStake.toFixed(DECIMAL_PLACES)} per validator
         </div>
       </div>
     </div>

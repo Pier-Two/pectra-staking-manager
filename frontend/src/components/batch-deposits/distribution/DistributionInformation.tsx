@@ -12,6 +12,7 @@ import {
 import { PectraSpinner } from "pec/components/ui/custom/pectraSpinner";
 import { EIconPosition } from "pec/types/components";
 import { SecondaryButton } from "pec/components/ui/custom/SecondaryButton";
+import { DECIMAL_PLACES } from "pec/lib/constants";
 
 export const DistributionInformation: FC<IDistributionInformation> = (
   props,
@@ -31,7 +32,7 @@ export const DistributionInformation: FC<IDistributionInformation> = (
   const distributionStats = [
     {
       icon: <AlignLeft className="h-4 w-4" />,
-      value: totalToDistribute.toFixed(3),
+      value: totalToDistribute.toFixed(DECIMAL_PLACES),
       label: "Total to distribute",
     },
     {
@@ -41,7 +42,7 @@ export const DistributionInformation: FC<IDistributionInformation> = (
     },
     {
       icon: <AlignLeft className="h-4 w-4" />,
-      value: totalAllocated.toFixed(2),
+      value: totalAllocated.toFixed(DECIMAL_PLACES),
       label: "Allocated",
     },
   ];

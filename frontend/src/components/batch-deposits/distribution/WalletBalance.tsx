@@ -1,6 +1,7 @@
 import type { FC } from "react";
 import type { IWalletBalance } from "pec/types/batch-deposits";
 import { AlignLeft } from "lucide-react";
+import { DECIMAL_PLACES } from "pec/lib/constants";
 
 export const WalletBalance: FC<IWalletBalance> = (props) => {
   const { balance } = props;
@@ -13,7 +14,7 @@ export const WalletBalance: FC<IWalletBalance> = (props) => {
       
       <div className="flex items-center gap-1 p-2">
         <AlignLeft className="h-4 w-4" />
-        <div className="text-sm">{balance.toFixed(3)}</div>
+        <div className="text-sm">{balance.toFixed(DECIMAL_PLACES)}</div>
       </div>
     </div>
   );

@@ -3,7 +3,7 @@
 import type { FC } from "react";
 import { api } from "pec/trpc/react";
 import { BatchDeposit } from "pec/components/dashboard/tools/BatchDeposit";
-import { BatchWithdrawal } from "pec/components/dashboard/tools/BatchWithdrawal";
+import { Withdrawal } from "pec/components/dashboard/tools/Withdrawal";
 import { Consolidate } from "pec/components/dashboard/tools/Consolidate";
 import { ActiveValidators } from "pec/components/dashboard/validators/ActiveValidators";
 import { TotalStake } from "pec/components/dashboard/validators/TotalStake";
@@ -44,7 +44,7 @@ const Dashboard: FC = () => {
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
           <Consolidate />
           <BatchDeposit />
-          <BatchWithdrawal />
+          <Withdrawal />
         </div>
       </div>
       </div>

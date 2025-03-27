@@ -26,6 +26,7 @@ import {
 } from "pec/components/ui/dialog";
 import { Badge } from "pec/components/ui/badge";
 import type { BatchDepositGenerateTransaction } from "pec/lib/api/schemas/batch-deposit";
+import { DECIMAL_PLACES } from "pec/lib/constants";
 interface ExtendedProps extends IDepositSignDataCard {
   control: Control<FieldValues>;
   errors: FieldErrors<BatchDepositGenerateTransaction>;
@@ -91,7 +92,7 @@ export const DepositSignDataCard: FC<ExtendedProps> = (props) => {
 
         <div className="flex items-center gap-1 p-2">
           <AlignLeft className="h-4 w-4" />
-          <div className="text-sm">{depositAmount.toFixed(3)}</div>
+          <div className="text-sm">{depositAmount.toFixed(DECIMAL_PLACES)}</div>
         </div>
 
         {(stage === EBatchDepositStage.TRANSACTIONS_SUBMITTED ||

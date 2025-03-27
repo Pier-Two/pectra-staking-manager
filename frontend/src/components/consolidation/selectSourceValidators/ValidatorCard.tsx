@@ -3,6 +3,7 @@ import Image from "next/image";
 import type { ISourceValidatorCard } from "pec/types/validator";
 import { AlignLeft, BadgeMinus } from "lucide-react";
 import { Checkbox } from "pec/components/ui/checkbox";
+import { DECIMAL_PLACES } from "pec/lib/constants";
 
 export const ValidatorCard: FC<ISourceValidatorCard> = (props) => {
   const { checked, onClick, validator } = props;
@@ -41,7 +42,7 @@ export const ValidatorCard: FC<ISourceValidatorCard> = (props) => {
 
       <div className="flex items-center gap-1">
         <AlignLeft className="h-3 w-3 text-gray-500" />
-        <span> {validator.balance.toFixed(2)}</span>
+        <span> {validator.balance.toFixed(DECIMAL_PLACES)}</span>
       </div>
     </div>
   );

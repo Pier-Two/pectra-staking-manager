@@ -2,6 +2,7 @@ import { useActiveAccount } from "thirdweb/react";
 import { getWalletBalance } from "thirdweb/wallets";
 import { client } from "pec/lib/wallet/client";
 import { useQuery } from "@tanstack/react-query";
+import { useActiveChainWithDefault } from "./useChain";
 
 export const useWalletAddress = () => {
   const connectedAccount = useActiveAccount();
@@ -10,25 +11,21 @@ export const useWalletAddress = () => {
 
 export const useWalletBalance = () => {
   const connectedAccount = useActiveAccount();
-
+  const activeChain = useActiveChainWithDefault();
   const fetchBalance = async () => {
     if (!connectedAccount?.address) return BigInt(0);
 
     const fetchedBalance = await getWalletBalance({
       address: connectedAccount.address,
       client,
-      chain: {
-        id: 1,
-        name: "Ethereum",
-        rpc: "https://mainnet.infura.io/v3/YOUR_INFURA_PROJECT_ID",
-      },
+      chain: activeChain,
     });
 
     return fetchedBalance.value;
   };
 
   const {
-    data: balance = BigInt(0),
+    data: balance,
     isLoading: loading,
     error,
     refetch,

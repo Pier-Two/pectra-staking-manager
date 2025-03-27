@@ -8,6 +8,7 @@ import {
   EDistributionMethod,
   type IDepositSelectionValidatorCard,
 } from "pec/types/batch-deposits";
+import { DECIMAL_PLACES } from "pec/lib/constants";
 
 export const DepositSelectionValidatorCard: FC<
   IDepositSelectionValidatorCard
@@ -98,7 +99,7 @@ export const DepositSelectionValidatorCard: FC<
 
       <div className="flex items-center gap-1 p-2">
         <AlignLeft className="h-4 w-4" />
-        <div className="text-sm">{validator.balance.toFixed(3)}</div>
+        <div className="text-sm">{validator.balance.toFixed(DECIMAL_PLACES)}</div>
       </div>
 
       <div
@@ -108,7 +109,7 @@ export const DepositSelectionValidatorCard: FC<
 
         {(distributionMethod === EDistributionMethod.SPLIT ||
           (distributionMethod === EDistributionMethod.MANUAL && !selected)) && (
-          <div className="text-sm">{depositAmount.toFixed(3)}</div>
+          <div className="text-sm">{depositAmount.toFixed(DECIMAL_PLACES)}</div>
         )}
 
         {selected && distributionMethod === EDistributionMethod.MANUAL && (

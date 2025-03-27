@@ -12,19 +12,20 @@ import {
 import { ValidatorListHeaders } from "./ValidatorListHeaders";
 import { DepositSignDataCard } from "pec/components/validators/cards/DepositSignDataCard";
 import { DistributionInformation } from "../distribution/DistributionInformation";
-import { BatchDepositGenerateTransactionSchema, type BatchDepositGenerateTransaction } from "pec/lib/api/schemas/batch-deposit";
+import {
+  BatchDepositGenerateTransactionSchema,
+  type BatchDepositGenerateTransaction,
+} from "pec/lib/api/schemas/batch-deposit";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-export const DepositList: FC<IDepositList> = (props) => {
-  const {
-    deposits,
-    resetBatchDeposit,
-    setStage,
-    stage,
-    totalAllocated,
-    totalToDistribute,
-  } = props;
-
+export const DepositList: FC<IDepositList> = ({
+  deposits,
+  resetBatchDeposit,
+  setStage,
+  stage,
+  totalAllocated,
+  totalToDistribute,
+}) => {
   const {
     register,
     control,
