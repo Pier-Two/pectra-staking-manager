@@ -6,9 +6,11 @@ export const ValidatorListHeaders: FC<IValidatorListHeaders> = (props) => {
   const { labels } = props;
 
   return (
-    <div className="flex-col-3 flex w-full justify-between">
-      {labels.map((label) => (
-        <ColumnHeader key={label} label={label} showSort />
+    <div className="flex w-full items-center px-4">
+      {labels.map((label, index) => (
+        <div key={label} className={`flex-1 ${index === 0 ? "flex-[1.2]" : ""}`} >
+          <ColumnHeader key={label} label={label} showSort />
+        </div>
       ))}
     </div>
   );

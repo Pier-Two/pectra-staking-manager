@@ -67,12 +67,12 @@ export const DepositSelectionValidatorCard: FC<
 
   return (
     <div
-      className={`flex-col-3 flex w-full items-center justify-between gap-x-4 rounded-xl border bg-white p-4 hover:border-indigo-500 dark:border-gray-800 dark:bg-black dark:hover:border-gray-600 ${
+      className={`flex w-full items-center justify-between gap-x-4 rounded-xl border bg-white p-4 hover:border-indigo-500 dark:border-gray-800 dark:bg-black dark:hover:border-gray-600 ${
         selected ? "border-indigo-500 dark:border-gray-600" : "cursor-pointer"
       } group`}
       onClick={() => !selected && onClick(validator, amount)}
     >
-      <div className="flex items-center gap-x-4">
+      <div className="flex-[1.2] flex items-center gap-x-4">
         {selected ? (
           <CircleCheck
             className="h-4 w-4 fill-green-500 text-white hover:cursor-pointer dark:text-black"
@@ -97,32 +97,34 @@ export const DepositSelectionValidatorCard: FC<
         </div>
       </div>
 
-      <div className="flex items-center gap-1 p-2">
+      <div className="flex-1 flex items-center gap-1 p-2">
         <AlignLeft className="h-4 w-4" />
         <div className="text-sm">{validator.balance.toFixed(DECIMAL_PLACES)}</div>
       </div>
 
-      <div
-        className={`flex items-center p-2 ${selected && distributionMethod === EDistributionMethod.MANUAL ? "gap-2" : "gap-1"}`}
-      >
-        <AlignLeft className="h-4 w-4" />
+      <div className="flex-1 flex items-center p-2">
+        <div
+          className={`flex w-full items-center ${selected && distributionMethod === EDistributionMethod.MANUAL ? "gap-2" : "gap-1"}`}
+        >
+          <AlignLeft className="h-4 w-4" />
 
-        {(distributionMethod === EDistributionMethod.SPLIT ||
-          (distributionMethod === EDistributionMethod.MANUAL && !selected)) && (
-          <div className="text-sm">{depositAmount.toFixed(DECIMAL_PLACES)}</div>
-        )}
+          {(distributionMethod === EDistributionMethod.SPLIT ||
+            (distributionMethod === EDistributionMethod.MANUAL && !selected)) && (
+            <div className="text-sm">{depositAmount.toFixed(DECIMAL_PLACES)}</div>
+          )}
 
-        {selected && distributionMethod === EDistributionMethod.MANUAL && (
-          <Input
-            className="w-full rounded-xl border border-indigo-800 dark:border-gray-600"
-            placeholder="Enter deposit amount"
-            value={amount || ""}
-            type="number"
-            onChange={handleAmountChange}
-            onBlur={handleDepositAmountChange}
-            onClick={(e) => e.stopPropagation()}
-          />
-        )}
+          {selected && distributionMethod === EDistributionMethod.MANUAL && (
+            <Input
+              className="w-full rounded-xl border border-indigo-800 dark:border-gray-600"
+              placeholder="Enter deposit amount"
+              value={amount || ""}
+              type="number"
+              onChange={handleAmountChange}
+              onBlur={handleDepositAmountChange}
+              onClick={(e) => e.stopPropagation()}
+            />
+          )}
+        </div>
       </div>
     </div>
   );
