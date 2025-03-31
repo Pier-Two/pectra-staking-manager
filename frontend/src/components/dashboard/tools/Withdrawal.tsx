@@ -29,7 +29,7 @@ export const Withdrawal: FC = () => {
         </div>
 
         <PrimaryButton
-          className="w-auto group-hover:bg-white group-hover:text-indigo-800"
+          className="w-auto group-hover:bg-white group-hover:text-indigo-800 dark:group-hover:bg-white dark:group-hover:text-indigo-800"
           label="Withdraw now"
           disabled={false}
           onClick={handleWithdrawalNavigation}
