@@ -10,10 +10,7 @@ export const ValidatorTableContent: FC<IValidatorTableContentProps> = (
 ) => {
   const {
     paginatedData,
-    selectedRows,
     sortConfig,
-    onToggleAll,
-    onToggleRow,
     onSort,
   } = props;
 
@@ -21,10 +18,7 @@ export const ValidatorTableContent: FC<IValidatorTableContentProps> = (
     <Table className="rounded-xl bg-gray-50 text-gray-800 dark:bg-black dark:text-white">
       <TableHeader>
         <TableHeadersRow
-          paginatedData={paginatedData}
-          selectedRows={selectedRows}
           sortConfig={sortConfig}
-          onToggleAll={onToggleAll}
           onSort={onSort}
         />
       </TableHeader>
@@ -35,12 +29,6 @@ export const ValidatorTableContent: FC<IValidatorTableContentProps> = (
             <ValidatorRow
               key={validator.publicKey}
               validator={validator}
-              isSelected={selectedRows.includes(
-                validator.validatorIndex.toString(),
-              )}
-              onToggle={(checked) =>
-                onToggleRow(validator.validatorIndex.toString(), checked)
-              }
             />
           ))
         ) : (

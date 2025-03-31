@@ -110,15 +110,16 @@ export const SelectSourceValidators: FC<ISelectSourceValidators> = (props) => {
         className="w-full space-y-8"
         onValueChange={setActiveTab}
       >
-        <TabsList className="grid w-full grid-cols-2 rounded-xl bg-gray-200">
+        <TabsList className="grid w-full grid-cols-2 rounded-xl bg-gray-200 dark:bg-gray-900">
           <TabsTrigger
-            className="rounded-xl data-[state=active]:bg-white"
+            className="rounded-xl data-[state=active]:bg-white dark:data-[state=active]:text-black"
             value="maxConsolidate"
           >
             Max consolidate
           </TabsTrigger>
+
           <TabsTrigger
-            className="rounded-xl data-[state=active]:bg-white"
+            className="rounded-xl data-[state=active]:bg-white dark:data-[state=active]:text-black"
             value="manuallySelect"
           >
             Manually select

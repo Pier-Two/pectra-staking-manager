@@ -4,6 +4,7 @@ import { useContracts } from "./useContracts";
 import { eth_call } from "thirdweb";
 import { useQuery } from "@tanstack/react-query";
 import { useRpcClient } from "./useRpcClient";
+import { fromHex, formatEther } from "viem";
 
 export const useConsolidation = () => {
   const contracts = useContracts();
@@ -20,7 +21,8 @@ export const useConsolidation = () => {
         to: contracts.consolidation.address,
       });
 
-      return result;
+      const convertedBigInt = fromHex(result, "bigint");
+      return +formatEther(convertedBigInt);
     },
   });
 

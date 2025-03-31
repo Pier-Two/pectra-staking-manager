@@ -39,7 +39,7 @@ const Welcome: FC = () => {
         <div className="flex w-[25vw] flex-col items-center justify-center gap-4">
           {hasWalletAddress ? (
             <PrimaryButton
-              className="w-full h-12"
+              className="w-full h-12 text-lg"
               label={"Enter site"}
               onClick={handleEnterSite}
               disabled={false}
@@ -47,7 +47,7 @@ const Welcome: FC = () => {
           ) : (
             <ConnectWalletButton />
           )}
-          <ChartLink numberOfUpgrades={123456} upgradePercentage={15} />
+          {/* <ChartLink numberOfUpgrades={123456} upgradePercentage={15} /> */}
         </div>
       </div>
 

@@ -30,7 +30,7 @@ export const WithdrawalSelectionValidatorCard: FC<ExtendedProps> = ({
       className={`flex w-full items-center justify-between gap-x-4 rounded-xl border bg-white p-4 ${
         locked ? "opacity-50" : "group hover:border-indigo-500 dark:hover:border-gray-600"
       } dark:border-gray-800 dark:bg-black ${
-        selected ? "border-indigo-500 dark:border-gray-600" : ""
+        selected ? "border-indigo-500 dark:border-2 dark:border-indigo-900" : ""
       } ${locked || selected ? "" : "cursor-pointer"}`}
       onClick={selected || locked ? undefined : handleSelect}
     >

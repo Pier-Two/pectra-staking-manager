@@ -13,13 +13,10 @@ export const ValidatorTable: FC<IGenericValidators> = (props) => {
     searchTerm,
     statusFilter,
     currentPage,
-    selectedRows,
     sortConfig,
     filteredData,
     paginatedData,
     totalPages,
-    handleToggleAll,
-    handleToggleRow,
     handleSort,
     handleStatusFilterChange,
     handleSearchChange,
@@ -39,10 +36,7 @@ export const ValidatorTable: FC<IGenericValidators> = (props) => {
 
       <ValidatorTableContent
         paginatedData={paginatedData}
-        selectedRows={selectedRows}
         sortConfig={sortConfig}
-        onToggleAll={handleToggleAll}
-        onToggleRow={handleToggleRow}
         onSort={handleSort}
       />
 

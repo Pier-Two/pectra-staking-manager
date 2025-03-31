@@ -1,3 +1,5 @@
+"use client";
+
 import type { FC } from "react";
 import type { IConsolidationOverview } from "pec/types/consolidation";
 import { Separator } from "pec/components/ui/separator";
@@ -9,13 +11,19 @@ import {
   TooltipTrigger,
 } from "pec/components/ui/tooltip";
 import { DECIMAL_PLACES } from "pec/lib/constants";
+import { useConsolidation } from "pec/hooks/useConsolidation";
+import ConsolidationLoading from "pec/app/(narrow-layout)/consolidate/loading";
 
 export const Overview: FC<IConsolidationOverview> = (props) => {
   const { destinationValidator, sourceValidators } = props;
+  const { consolidationFee } = useConsolidation();
+  if (!consolidationFee) return <ConsolidationLoading />;
+
   const totalSourceValidators = sourceValidators.length;
   const newTotalBalance =
     destinationValidator.balance +
     sourceValidators.reduce((acc, validator) => acc + validator.balance, 0);
+  const estimatedGasFee = consolidationFee * totalSourceValidators;
 
   return (
     <div className="flex min-h-[10vh] w-full flex-col justify-between gap-x-4 space-y-4 rounded-xl border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-black">
@@ -55,7 +63,7 @@ export const Overview: FC<IConsolidationOverview> = (props) => {
 
           <div className="flex items-center gap-1">
             <AlignLeft className="h-3 w-3 text-gray-500" />
-            <span>XXX</span>
+            <span>{estimatedGasFee.toFixed(DECIMAL_PLACES) ?? "Unknown"}</span>
           </div>
         </div>
 

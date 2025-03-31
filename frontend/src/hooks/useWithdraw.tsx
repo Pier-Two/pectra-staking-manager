@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useRpcClient } from "./useRpcClient";
 import { useContracts } from "./useContracts";
 import { eth_call } from "thirdweb";
+import { fromHex, formatEther } from "viem";
 
 export const useWithdraw = () => {
   const rpcClient = useRpcClient();
@@ -18,7 +19,8 @@ export const useWithdraw = () => {
         to: contracts.withdrawal.address,
       });
 
-      return result;
+      const convertedBigInt = fromHex(result, "bigint");
+      return +formatEther(convertedBigInt);
     },
   });
 

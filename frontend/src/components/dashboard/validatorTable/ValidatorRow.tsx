@@ -1,7 +1,9 @@
+"use client";
+
 import type { FC } from "react";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { TableCell, TableRow } from "pec/components/ui/table";
-import { Checkbox } from "pec/components/ui/checkbox";
 import { Button } from "pec/components/ui/button";
 import {
   DropdownMenu,
@@ -11,6 +13,8 @@ import {
 } from "pec/components/ui/dropdown-menu";
 import {
   AlignLeft,
+  ArrowDownToDot,
+  ArrowUpFromDot,
   CircleCheck,
   CircleMinus,
   CirclePlay,
@@ -19,23 +23,31 @@ import {
 } from "lucide-react";
 import { ValidatorStatus } from "pec/types/validator";
 import type { IValidatorRowProps } from "pec/types/validatorTable";
+import { Separator } from "pec/components/ui/separator";
 
 export const ValidatorRow: FC<IValidatorRowProps> = (props) => {
-  const { validator, isSelected, onToggle } = props;
+  const { validator } = props;
+  const router = useRouter();
+
+  const handleDepositNavigation = () => {
+    router.push("/batch-deposit");
+  };
+
+  const handleWithdrawalNavigation = () => {
+    router.push("/withdraw");
+  };
+
+  const handleBeaconscanNavigation = () => {
+    window.open(
+      `https://beaconscan.com/validator/${validator.validatorIndex}`,
+      "_blank",
+    );
+  };
 
   return (
     <TableRow
-      className={`border-none hover:bg-indigo-50 dark:hover:bg-gray-900 ${isSelected ? "bg-indigo-50 dark:bg-gray-900" : "bg-gray-50 dark:bg-black"}`}
+      className={`border-none bg-gray-50 hover:bg-indigo-50 dark:bg-black dark:hover:bg-gray-900`}
     >
-      <TableCell>
-        <Checkbox
-          className={`rounded text-black dark:text-black ${isSelected ? "bg-blue-300 dark:bg-indigo-400" : "bg-white dark:bg-gray-700"}`}
-          checked={isSelected}
-          onCheckedChange={(checked) => onToggle(!!checked)}
-          aria-label={`Select validator ${validator.validatorIndex}`}
-        />
-      </TableCell>
-
       <TableCell>
         <div className="flex flex-row gap-2">
           <Image
@@ -103,14 +115,29 @@ export const ValidatorRow: FC<IValidatorRowProps> = (props) => {
             </Button>
           </DropdownMenuTrigger>
 
-          <DropdownMenuContent className="bg-white" align="end">
-            <DropdownMenuItem className="cursor-pointer hover:bg-gray-500">
+          <DropdownMenuContent className="bg-white space-y-2 rounded-xl p-2 dark:bg-gray-900 dark:text-white dark:border-gray-500" align="end">
+            <DropdownMenuItem
+              className="cursor-pointer hover:bg-gray-100"
+              onClick={handleDepositNavigation}
+            >
+              <ArrowDownToDot className="h-4 w-4 text-indigo-500 dark:text-indigo-300" />
               Deposit
             </DropdownMenuItem>
-            <DropdownMenuItem className="cursor-pointer hover:bg-gray-500">
+
+            <DropdownMenuItem
+              className="cursor-pointer hover:bg-gray-100"
+              onClick={handleWithdrawalNavigation}
+            >
+              <ArrowUpFromDot className="h-4 w-4 text-green-500 dark:text-green-300" />
               Withdraw
             </DropdownMenuItem>
-            <DropdownMenuItem className="cursor-pointer hover:bg-gray-500">
+
+            <Separator className="bg-gray-200 dark:bg-gray-800" />
+
+            <DropdownMenuItem
+              className="cursor-pointer hover:bg-gray-100"
+              onClick={handleBeaconscanNavigation}
+            >
               View on Beaconscan
             </DropdownMenuItem>
           </DropdownMenuContent>

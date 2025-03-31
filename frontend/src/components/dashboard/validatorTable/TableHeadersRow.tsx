@@ -1,6 +1,5 @@
 import type { FC } from "react";
 import { TableHead, TableRow } from "pec/components/ui/table";
-import { Checkbox } from "pec/components/ui/checkbox";
 import { TableHeader } from "./TableHeader";
 import type {
   IHeaderConfig,
@@ -8,7 +7,7 @@ import type {
 } from "pec/types/validatorTable";
 
 export const TableHeadersRow: FC<ITableHeadersRowProps> = (props) => {
-  const { paginatedData, selectedRows, sortConfig, onToggleAll, onSort } =
+  const { sortConfig, onSort } =
     props;
 
   const headers: IHeaderConfig[] = [
@@ -21,18 +20,6 @@ export const TableHeadersRow: FC<ITableHeadersRowProps> = (props) => {
 
   return (
     <TableRow>
-      <TableHead className="w-12">
-        <Checkbox
-          className="rounded"
-          checked={
-            paginatedData.length > 0 &&
-            selectedRows.length === paginatedData.length
-          }
-          onCheckedChange={onToggleAll}
-          aria-label="Select all"
-        />
-      </TableHead>
-
       {headers.map((header) => (
         <TableHeader
           key={header.sortKey}

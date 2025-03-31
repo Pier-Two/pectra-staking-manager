@@ -68,7 +68,7 @@ export const DepositSelectionValidatorCard: FC<
   return (
     <div
       className={`flex w-full items-center justify-between gap-x-4 rounded-xl border bg-white p-4 hover:border-indigo-500 dark:border-gray-800 dark:bg-black dark:hover:border-gray-600 ${
-        selected ? "border-indigo-500 dark:border-gray-600" : "cursor-pointer"
+        selected ? "border-indigo-500 dark:border-2 dark:border-indigo-900" : "cursor-pointer"
       } group`}
       onClick={() => !selected && onClick(validator, amount)}
     >

@@ -23,7 +23,7 @@ export const ValidatorHelp: FC = () => {
       </div>
 
       {openWhatIs && (
-        <div className="text-sm text-gray-500 dark:text-gray-300">
+        <div className="text-sm text-gray-500 dark:text-gray-400">
           Validator consolidation is the process of combining multiple
           validators into a single validator.
         </div>
@@ -42,7 +42,7 @@ export const ValidatorHelp: FC = () => {
       </div>
 
       {openWhyConsolidate && (
-        <div className="text-sm text-gray-500 dark:text-gray-300">
+        <div className="text-sm text-gray-500 dark:text-gray-400">
           Consolidating your validators allows you to take advantage of enhanced
           staking features.
         </div>
@@ -63,7 +63,7 @@ export const ValidatorHelp: FC = () => {
       </div>
 
       {openNewFeatures && (
-        <div className="break-words text-sm text-gray-500 dark:text-gray-300">
+        <div className="break-words text-sm text-gray-500 dark:text-gray-400">
           Allows Ethereum validators to increase their maximum effective balance
           from 32 ETH to 2,048 ETH. This enhancement enables validators to
           combine multiple smaller stakes into a single larger one, simplifying
