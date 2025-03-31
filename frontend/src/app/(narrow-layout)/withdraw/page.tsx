@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, type FC } from "react";
+import { useMemo, type FC, useState } from "react";
 import { api } from "pec/trpc/react";
 import { useWalletAddress } from "pec/hooks/useWallet";
 import { useForm, useFieldArray, useWatch } from "react-hook-form";
@@ -18,6 +18,7 @@ import {
 } from "pec/lib/api/schemas/withdrawal";
 import type { ValidatorDetails } from "pec/types/validator";
 import { ValidatorHeader } from "pec/components/batch-deposits/validators/ValidatorHeader";
+import type { SortDirection } from "pec/components/batch-deposits/validators/ColumnHeader";
 
 const Withdrawal: FC = () => {
   const walletAddress = useWalletAddress();
@@ -84,6 +85,43 @@ const Withdrawal: FC = () => {
     );
   }, [watchedWithdrawals]);
 
+  const [sortColumn, setSortColumn] = useState<string | null>(null);
+  const [sortDirection, setSortDirection] = useState<SortDirection>(null);
+
+  const handleSort = (column: string) => {
+    if (sortColumn === column) {
+      setSortDirection((prev) => {
+        if (prev === null) return "asc";
+        if (prev === "asc") return "desc";
+        return "asc";
+      });
+    } else {
+      setSortColumn(column);
+      setSortDirection("asc");
+    }
+  };
+
+  const sortedValidators = (() => {
+    if (!sortColumn || !sortDirection || !data) return data;
+
+    return [...data].sort((a, b) => {
+      switch (sortColumn) {
+        case "Validator":
+          return sortDirection === "asc"
+            ? a.validatorIndex - b.validatorIndex
+            : b.validatorIndex - a.validatorIndex;
+
+        case "Balance":
+          return sortDirection === "asc"
+            ? a.balance - b.balance
+            : b.balance - a.balance;
+
+        default:
+          return 0;
+      }
+    });
+  })();
+
   if (!walletAddress || !data || !isFetched) return <WithdrawalLoading />;
 
   const handleValidatorSelect = (validator: ValidatorDetails) => {
@@ -124,6 +162,12 @@ const Withdrawal: FC = () => {
       console.log("onSubmit for withdrawal HIT: ", filteredData);
     }
   };
+
+  const columnHeaders = [
+    { label: "Validator", showSort: true },
+    { label: "Balance", showSort: true },
+    { label: "Withdrawal", showSort: false },
+  ];
 
   return (
     <form
@@ -181,10 +225,13 @@ const Withdrawal: FC = () => {
 
         <div className="flex flex-col items-center gap-4">
           <ValidatorListHeaders
-            labels={["Validator", "Balance", "Withdrawal"]}
+            columnHeaders={columnHeaders}
+            onSort={handleSort}
+            sortColumn={sortColumn ?? ""}
+            sortDirection={sortDirection}
           />
 
-          {data.map((validator, index) => {
+          {sortedValidators?.map((validator, index) => {
             return (
               <WithdrawalSelectionValidatorCard
                 key={`${index}-${validator.validatorIndex}`}

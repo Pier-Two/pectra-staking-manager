@@ -1,4 +1,5 @@
 import type { ValidatorDetails } from "./validator";
+import type { SortDirection } from "pec/components/batch-deposits/validators/ColumnHeader";
 
 export interface IBatchDepositValidators {
   validator: ValidatorDetails;
@@ -63,7 +64,9 @@ export interface ISelectValidatorsProps {
 
 export interface IValidatorHeaderProps {
   label: string;
-  showSort?: boolean;
+  showSort: boolean;
+  sortDirection: SortDirection;
+  onSort: () => void;
 }
 
 export interface IDepositSelectionValidatorCard {
@@ -109,9 +112,18 @@ export interface IDepositList {
   totalToDistribute: number;
 }
 
-export interface IValidatorListHeaders {
-  labels: string[];
+interface IColumnHeader {
+  label: string;
+  showSort: boolean;
 }
+
+export interface IValidatorListHeaders {
+  columnHeaders: IColumnHeader[];
+  sortColumn: string;
+  sortDirection: SortDirection;
+  onSort: (column: string) => void;
+}
+
 export interface IDepositSignDataCard {
   deposit: IBatchDepositValidators;
   index: number;
