@@ -71,7 +71,7 @@ export const Tools = () => {
                 <div className="flex flex-col gap-2">
                   <div className="flex flex-row justify-between">
                     <div className="text-lg font-medium text-black dark:text-white">
-                      Batch Deposit
+                      Deposit
                     </div>
                   </div>
 
@@ -92,7 +92,7 @@ export const Tools = () => {
                 <div className="flex flex-col gap-2">
                   <div className="flex flex-row justify-between">
                     <div className="text-lg font-medium text-black dark:text-white">
-                      Batch Withdrawal
+                      Withdraw
                     </div>
                   </div>
 

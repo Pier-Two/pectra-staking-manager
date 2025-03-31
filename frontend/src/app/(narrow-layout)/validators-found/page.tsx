@@ -8,6 +8,8 @@ import ValidatorsFoundLoading from "./loading";
 import { useWalletAddress } from "pec/hooks/useWallet";
 import { PrimaryButton } from "pec/components/ui/custom/PrimaryButton";
 import { SecondaryButton } from "pec/components/ui/custom/SecondaryButton";
+import { ArrowRightIcon } from "lucide-react";
+import { EIconPosition } from "pec/types/components";
 
 const ValidatorsFound: FC = () => {
   const router = useRouter();
@@ -46,10 +48,12 @@ const ValidatorsFound: FC = () => {
 
         <SecondaryButton
           label="Skip and go to Dashboard"
+          icon={<ArrowRightIcon />}
+          iconPosition={EIconPosition.RIGHT}
           onClick={handleDashboardRedirect}
           disabled={false}
         />
-        
+
         <div className="flex justify-center text-sm">
           You can access consolidation anytime.
         </div>

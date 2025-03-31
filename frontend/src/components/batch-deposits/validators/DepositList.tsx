@@ -72,7 +72,25 @@ export const DepositList: FC<IDepositList> = ({
       />
 
       <div className="text-lg">Deposits</div>
-      <ValidatorListHeaders labels={["Validator", "Deposit", "Deposit Data"]} />
+      <ValidatorListHeaders
+        columnHeaders={[
+          {
+            label: "Validator",
+            showSort: true,
+          },
+          {
+            label: "Deposit",
+            showSort: true,
+          },
+          {
+            label: "Deposit Data",
+            showSort: false,
+          },
+        ]}
+        sortColumn={""}
+        sortDirection={null}
+        onSort={() => {}}
+      />
 
       {fields.map((field, index) => {
         const deposit = deposits[index] ?? null;
