@@ -20,6 +20,10 @@ export const TopBar: FC<ITopBar> = (props) => {
   const { darkMode, toggleDarkMode } = useTheme();
   const router = useRouter();
 
+  const handleWelcomeNavigation = () => {
+    router.push("/welcome");
+  };
+
   const handleDashboardNavigation = () => {
     router.push("/dashboard");
   };
@@ -32,7 +36,7 @@ export const TopBar: FC<ITopBar> = (props) => {
     <header className="sticky top-0 z-10 flex min-h-[10vh] w-full items-center justify-between border-b bg-white px-6 shadow-sm dark:border-gray-800 dark:bg-gray-950">
       <div
         className="flex items-center space-x-3 hover:cursor-pointer"
-        onClick={handleDashboardNavigation}
+        onClick={handleWelcomeNavigation}
       >
         <Image
           src="/logos/PectraStakingManager.svg"
@@ -59,7 +63,7 @@ export const TopBar: FC<ITopBar> = (props) => {
 
             <Badge
               variant="outline"
-              className="h-6 w-6 rounded-lg border border-transparent bg-white text-gray-800 dark:bg-gray-950 dark:text-white items-center justify-center"
+              className="h-6 w-6 items-center justify-center rounded-lg border border-transparent bg-white text-gray-800 dark:bg-gray-950 dark:text-white"
               style={{
                 borderImage:
                   "linear-gradient(to right, #00FFA7, #5164DC, #313C86) 1",
@@ -71,6 +75,13 @@ export const TopBar: FC<ITopBar> = (props) => {
           </div>
 
           <Tools />
+
+          <div
+            className="text-gray-700 hover:cursor-pointer hover:font-medium hover:text-black dark:text-gray-300 dark:hover:text-white"
+            onClick={handleDashboardNavigation}
+          >
+            Dashboard
+          </div>
 
           <div
             className="text-gray-700 hover:cursor-pointer hover:font-medium hover:text-black dark:text-gray-300 dark:hover:text-white"
