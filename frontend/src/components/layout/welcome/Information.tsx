@@ -19,7 +19,7 @@ export const Information: FC = () => {
             className="flex flex-row items-center gap-2 border p-2 rounded-xl border-gray-300 bg-white dark:border-gray-700 dark:bg-black"
           >
             <CircleCheck className="h-4 w-4 text-white fill-indigo-500" />
-            {benefit}
+            <div className="text-xs">{benefit}</div>
           </div>
         ))}
       </div>
