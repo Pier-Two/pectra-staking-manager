@@ -3,7 +3,7 @@
 import type { FC } from "react";
 import Image from "next/image";
 import type { IWithdrawalSelectionValidatorCard } from "pec/types/withdrawal";
-import { CircleCheck, CirclePlus, AlignLeft } from "lucide-react";
+import { CircleCheck, CirclePlus, AlignLeft, CircleMinus } from "lucide-react";
 import type { FieldErrors, UseFormRegister } from "react-hook-form";
 import type { WithdrawalType } from "pec/lib/api/schemas/withdrawal";
 import { DECIMAL_PLACES } from "pec/lib/constants";
@@ -28,18 +28,27 @@ export const WithdrawalSelectionValidatorCard: FC<ExtendedProps> = ({
   return (
     <div
       className={`flex w-full items-center justify-between gap-x-4 rounded-xl border bg-white p-4 ${
-        locked ? "opacity-50" : "group hover:border-indigo-500 dark:hover:border-gray-600"
+        locked
+          ? "opacity-50"
+          : "group hover:border-indigo-500 dark:hover:border-gray-600"
       } dark:border-gray-800 dark:bg-black ${
         selected ? "border-indigo-500 dark:border-2 dark:border-indigo-900" : ""
       } ${locked || selected ? "" : "cursor-pointer"}`}
       onClick={selected || locked ? undefined : handleSelect}
     >
-      <div className="flex-[1.2] flex items-center gap-x-4">
+      <div className="flex flex-[1.2] items-center gap-x-4">
         {selected && !locked ? (
-          <CircleCheck
-            className="h-4 w-4 fill-green-500 text-white hover:cursor-pointer dark:text-black"
-            onClick={handleSelect}
-          />
+          <div className="group/icon">
+            <CircleCheck
+              className="h-4 w-4 fill-green-500 text-white hover:cursor-pointer group-hover/icon:hidden dark:text-black"
+              onClick={handleSelect}
+            />
+
+            <CircleMinus
+              className="hidden h-4 w-4 fill-red-500 text-white hover:cursor-pointer group-hover/icon:block dark:text-black"
+              onClick={handleSelect}
+            />
+          </div>
         ) : (
           <CirclePlus className="h-4 w-4 text-indigo-500 group-hover:fill-indigo-500 group-hover:text-white" />
         )}
@@ -59,7 +68,7 @@ export const WithdrawalSelectionValidatorCard: FC<ExtendedProps> = ({
         </div>
       </div>
 
-      <div className="flex-1 flex flex-col">
+      <div className="flex flex-1 flex-col">
         <div className="flex items-center gap-1">
           <AlignLeft className="h-4 w-4" />
           <div className="text-sm">{balance.toFixed(DECIMAL_PLACES)}</div>
@@ -76,7 +85,7 @@ export const WithdrawalSelectionValidatorCard: FC<ExtendedProps> = ({
       <div className="flex-1">
         {selected ? (
           <div className="flex">
-            <div className="flex flex-col w-full">
+            <div className="flex w-full flex-col">
               <div className="flex flex-row items-center gap-2">
                 <AlignLeft className="h-4 w-4" />
 
@@ -85,7 +94,6 @@ export const WithdrawalSelectionValidatorCard: FC<ExtendedProps> = ({
                   disabled={locked}
                   type="number"
                   step="any"
-                  
                   // Registers the withdrawal amount input field with React Hook Form
                   // - Converts empty input to 0
                   // - Prevents changes if `locked` is true
