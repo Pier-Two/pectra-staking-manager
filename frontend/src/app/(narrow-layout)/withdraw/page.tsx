@@ -137,15 +137,15 @@ const Withdrawal: FC = () => {
   const handleMaxAllocation = () => {
     setValue(
       "withdrawals",
-      data.map((validator) => ({
+      sortedValidators?.map((validator) => ({
         validator,
         amount: Math.max(validator.balance - 32, 0),
-      })),
+      })) ?? [],
     );
 
     setValue(
       "selectedValidators",
-      data.map((validator) => validator),
+      sortedValidators?.map((validator) => validator) ?? [],
     );
   };
 
