@@ -12,7 +12,7 @@ export const Information: FC = () => {
     <div className="flex flex-col gap-4 text-black dark:text-white">
       <div className="text-center">Use this tool to enable and manage:</div>
 
-      <div className="flex flex-row justify-between gap-4">
+      <div className="flex flex-row justify-between gap-3">
         {benefits.map((benefit) => (
           <div
             key={benefit}

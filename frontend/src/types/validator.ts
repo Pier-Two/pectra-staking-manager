@@ -17,6 +17,7 @@ export interface ValidatorDetails {
 
 export interface IConnector {
   connectedAddress: string;
+  textAlignment: "left" | "center";
   validators: ValidatorDetails[];
 }
 

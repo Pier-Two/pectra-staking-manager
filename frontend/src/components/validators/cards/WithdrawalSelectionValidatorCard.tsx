@@ -27,7 +27,7 @@ export const WithdrawalSelectionValidatorCard: FC<ExtendedProps> = ({
 
   return (
     <div
-      className={`flex w-full items-center justify-between gap-x-4 rounded-xl border bg-white p-4 ${
+      className={`flex w-full items-center justify-between gap-x-4 rounded-xl border bg-white px-4 py-3 ${
         locked
           ? "opacity-50"
           : "group hover:border-indigo-500 dark:hover:border-gray-600"
@@ -61,8 +61,8 @@ export const WithdrawalSelectionValidatorCard: FC<ExtendedProps> = ({
         />
 
         <div className="flex flex-col">
-          <div className="text-md">{validatorIndex}</div>
-          <div className="text-sm text-gray-700 dark:text-gray-300">
+          <div className="text-sm">{validatorIndex}</div>
+          <div className="text-xs text-gray-700 dark:text-gray-300">
             {publicKey.slice(0, 5)}...{publicKey.slice(-4)}
           </div>
         </div>
@@ -117,7 +117,7 @@ export const WithdrawalSelectionValidatorCard: FC<ExtendedProps> = ({
               </div>
 
               {errors.withdrawals?.[index]?.amount && (
-                <div className="mt-1 text-sm text-red-500">
+                <div className="mt-1 text-xs text-red-500">
                   Please enter an amount less than or equal to your available
                   balance.
                 </div>
@@ -128,7 +128,7 @@ export const WithdrawalSelectionValidatorCard: FC<ExtendedProps> = ({
           <div className="flex items-center gap-1">
             <AlignLeft className="h-4 w-4" />
             <input
-              className="w-full rounded-xl border-none p-2 text-sm text-gray-700 dark:border-gray-800 dark:bg-black dark:text-gray-300"
+              className="w-full rounded-xl bg-white border-none p-2 text-sm text-gray-700 dark:border-gray-800 dark:bg-black dark:text-gray-300"
               disabled
               type="number"
               value={0}

@@ -9,7 +9,7 @@ export const TotalAmountInput: FC<ITotalAmountInput> = (props) => {
 
   return (
     <div className="space-y-2">
-      <div className="text-lg">Total Amount</div>
+      <div className="text-md font-medium">Total Amount</div>
       <div className="space-y-1">
         <div className="flex w-full items-center rounded-xl bg-white p-4 text-black dark:bg-black dark:text-white">
           <AlignLeft className="h-4 w-4" />
@@ -25,7 +25,7 @@ export const TotalAmountInput: FC<ITotalAmountInput> = (props) => {
         <WalletBalance balance={walletBalance} />
 
         {amount === 0 && (
-          <div className="text-sm text-red-700 dark:text-red-300">
+          <div className="text-xs text-red-700 dark:text-red-300">
             Please select an amount to distribute.
           </div>
         )}

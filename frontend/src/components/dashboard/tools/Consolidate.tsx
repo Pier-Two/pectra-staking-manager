@@ -23,7 +23,7 @@ export const Consolidate: FC = () => {
       </div>
 
       <div className="flex flex-col gap-y-4 pt-8">
-        <div>
+        <div className="text-sm">
           Combine multiple Pectra validators (0x02 credentials) into one
           large-balance validator.
         </div>

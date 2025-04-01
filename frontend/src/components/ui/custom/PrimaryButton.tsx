@@ -8,7 +8,7 @@ export const PrimaryButton: FC<ICustomButton> = (props) => {
   return (
     <Button
       className={clsx(
-        "rounded-full bg-indigo-500 text-white hover:bg-indigo-400 dark:hover:bg-indigo-600 text-wrap",
+        "rounded-full bg-indigo-500 text-white hover:bg-indigo-400 dark:hover:bg-indigo-600 text-wrap text-sm",
         className,
       )}
       onClick={onClick}

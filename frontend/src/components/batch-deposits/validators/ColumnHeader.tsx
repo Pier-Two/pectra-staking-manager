@@ -14,7 +14,7 @@ export const ColumnHeader: FC<IValidatorHeaderProps> = (props) => {
       }`}
       onClick={showSort ? onSort : undefined}
     >
-      <div className="text-md text-gray-700 dark:text-gray-300">{label}</div>
+      <div className="text-sm text-gray-700 dark:text-gray-300">{label}</div>
       {showSort && sortDirection === "asc" && (
         <ChevronUp className="h-4 w-4 text-gray-700 dark:text-gray-300" />
       )}

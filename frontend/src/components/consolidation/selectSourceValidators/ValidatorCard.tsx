@@ -28,8 +28,8 @@ export const ValidatorCard: FC<ISourceValidatorCard> = (props) => {
         />
 
         <div className="flex flex-col">
-          <div className="text-md">{validator.validatorIndex}</div>
-          <div className="text-sm text-gray-700 dark:text-gray-300">
+          <div className="text-sm">{validator.validatorIndex}</div>
+          <div className="text-xs text-gray-700 dark:text-gray-300">
             {validator.publicKey.slice(0, 6)}...{validator.publicKey.slice(-4)}
           </div>
         </div>
@@ -37,12 +37,12 @@ export const ValidatorCard: FC<ISourceValidatorCard> = (props) => {
 
       <div className="flex items-center gap-x-2">
         <BadgeMinus className="h-4 w-4 text-gray-800 dark:text-white" />
-        <div className="text-md">{withdrawalAddressPrefix}</div>
+        <div className="text-sm">{withdrawalAddressPrefix}</div>
       </div>
 
       <div className="flex items-center gap-1">
         <AlignLeft className="h-3 w-3 text-gray-500" />
-        <span> {validator.balance.toFixed(DECIMAL_PLACES)}</span>
+        <div className="text-sm">{validator.balance.toFixed(DECIMAL_PLACES)}</div>
       </div>
     </div>
   );

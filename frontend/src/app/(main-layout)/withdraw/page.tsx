@@ -177,17 +177,17 @@ const Withdrawal: FC = () => {
       <div className="space-y-8">
         <div className="flex flex-col gap-4">
           <div className="flex gap-x-4 text-indigo-800 dark:text-indigo-300">
-            <ArrowUpFromDot className="h-10 w-10" />
-            <div className="text-3xl">Partial Withdrawal</div>
+            <ArrowUpFromDot className="h-8 w-8" />
+            <div className="text-2xl font-medium">Withdrawal</div>
           </div>
 
-          <div className="w-[45vw] text-gray-700 dark:text-gray-300">
+          <div className="text-sm text-gray-700 dark:text-gray-300">
             Submit onchain execution layer withdrawal requests against
             validators, as per Pectra EIP-7002.
           </div>
         </div>
 
-        <div className="flex flex-row items-center gap-4">
+        <div className="flex flex-row items-center gap-3 ms-4">
           <Image
             className="h-4 w-4"
             src="/icons/Wallet.svg"
@@ -196,8 +196,8 @@ const Withdrawal: FC = () => {
             height={16}
           />
 
-          <div>Withdrawal address</div>
-          <div className="text-gray-500 dark:text-gray-300">
+          <div className="text-sm">Withdrawal address</div>
+          <div className="text-sm text-gray-500 dark:text-gray-300">
             {walletAddress.slice(0, 5)}...{walletAddress.slice(-5)}
           </div>
         </div>
@@ -231,6 +231,7 @@ const Withdrawal: FC = () => {
             sortDirection={sortDirection}
           />
 
+          <div className="w-full flex flex-col gap-y-2">
           {sortedValidators?.map((validator, index) => {
             return (
               <WithdrawalSelectionValidatorCard
@@ -247,6 +248,7 @@ const Withdrawal: FC = () => {
               />
             );
           })}
+          </div>
         </div>
       </div>
     </form>

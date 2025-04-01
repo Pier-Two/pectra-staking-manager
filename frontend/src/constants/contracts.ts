@@ -10,7 +10,8 @@ export const hoodi: Readonly<
   }
 > = {
   name: "Hoodi testnet",
-  rpc: "https://rpc.hoodi.ethpandaops.io",
+  // rpc: "https://rpc.hoodi.ethpandaops.io",
+  rpc: "https://0xrpc.io/hoodi",
   id: 560048,
   nativeCurrency: {
     name: "Hoodi",

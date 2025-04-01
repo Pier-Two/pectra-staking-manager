@@ -33,13 +33,13 @@ export const SubmitConsolidationRequests: FC<IConsolidationSubmission> = (
   return (
     <div className="space-y-8">
       <div className="space-y-4">
-        <div className="text-3xl">
+        <div className="text-2xl font-medium">
           {everyTransactionSubmitted
             ? "Done!"
             : "Submit Consolidation Requests"}
         </div>
 
-        <div className="text-md text-gray-700 dark:text-gray-300">
+        <div className="text-sm text-gray-700 dark:text-gray-300">
           {everyTransactionSubmitted
             ? "Your requests have all been submitted onchain. Please allow up to 24h for your request to be processed."
             : "Sign each transaction to process your request."}
@@ -66,7 +66,7 @@ export const SubmitConsolidationRequests: FC<IConsolidationSubmission> = (
         )}
 
         <div className="flex flex-col gap-2">
-          <div className="text-lg font-medium">Destination validator</div>
+          <div className="text-d font-medium">Destination validator</div>
           <TransactionValidatorCard
             status={destinationValidator.transactionStatus}
             transactionHash={destinationValidator.transactionHash}
@@ -75,7 +75,7 @@ export const SubmitConsolidationRequests: FC<IConsolidationSubmission> = (
         </div>
 
         <div className="flex flex-col gap-2">
-          <div className="text-lg font-medium">Source validators</div>
+          <div className="text-md font-medium">Source validators</div>
 
           {sourceValidators.map((validator) => (
             <TransactionValidatorCard

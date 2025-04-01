@@ -8,13 +8,13 @@ export const WalletBalance: FC<IWalletBalance> = (props) => {
 
   return (
     <div className="flex flex-row items-center gap-1">
-      <div className="text-sm text-gray-500 dark:text-gray-500">
+      <div className="text-xs text-gray-500 dark:text-gray-500">
         Available balance:
       </div>
       
       <div className="flex items-center gap-1 p-2">
         <AlignLeft className="h-4 w-4" />
-        <div className="text-sm">{balance.toFixed(DECIMAL_PLACES)}</div>
+        <div className="text-xs">{balance.toFixed(DECIMAL_PLACES)}</div>
       </div>
     </div>
   );

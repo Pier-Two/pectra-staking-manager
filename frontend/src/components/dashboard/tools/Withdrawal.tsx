@@ -23,7 +23,7 @@ export const Withdrawal: FC = () => {
       </div>
 
       <div className="flex flex-col gap-y-4 pt-8">
-        <div>
+        <div className="text-sm">
           Submit onchain execution layer withdrawal requests against validators,
           as per Pectra EIP-7002.
         </div>

@@ -23,7 +23,7 @@ export const BatchDeposit: FC = () => {
       </div>
 
       <div className="flex flex-col gap-y-4 pt-8">
-        <div>
+        <div className="text-sm">
           Deposit multiple active validators at once, via PierTwo&apos;s batch
           deposit contract.
         </div>

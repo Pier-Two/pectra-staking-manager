@@ -33,7 +33,7 @@ export const TopBar: FC<ITopBar> = (props) => {
   };
 
   return (
-    <header className="sticky top-0 z-10 flex min-h-[10vh] w-full items-center justify-between border-b bg-white px-6 shadow-sm dark:border-gray-800 dark:bg-gray-950">
+    <header className="sticky top-0 z-10 flex min-h-[10vh] w-full items-center justify-between border-b bg-gray-50 px-6 shadow-sm dark:border-gray-800 dark:bg-gray-950">
       <div
         className="flex items-center space-x-3 hover:cursor-pointer"
         onClick={handleWelcomeNavigation}
@@ -46,7 +46,7 @@ export const TopBar: FC<ITopBar> = (props) => {
           height={48}
         />
 
-        <div>
+        <div className="flex flex-col">
           <h1 className="text-lg font-semibold dark:text-white">
             Pectra Staking
           </h1>

@@ -34,9 +34,9 @@ const ValidatorsFound: FC = () => {
 
   return (
     <div className="space-y-8">
-      <div className="flex flex-col gap-4">
-        <div className="text-3xl">Validators found!</div>
-        <Connector connectedAddress={walletAddress} validators={data} />
+      <div className="flex flex-col gap-2">
+        <div className="text-2xl text-center font-medium">Validators found!</div>
+        <Connector connectedAddress={walletAddress} textAlignment="center" validators={data} />
       </div>
 
       <div className="flex flex-col gap-4">
@@ -54,7 +54,7 @@ const ValidatorsFound: FC = () => {
           disabled={false}
         />
 
-        <div className="flex justify-center text-sm">
+        <div className="flex justify-center text-xs">
           You can access consolidation anytime.
         </div>
       </div>

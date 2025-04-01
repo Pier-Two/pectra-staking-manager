@@ -107,24 +107,26 @@ export const SelectValidators: FC<ISelectValidatorsProps> = ({
           sortDirection={sortDirection}
         />
 
-        {sortedValidators.map((validator, index) => (
-          <DepositSelectionValidatorCard
-            key={`depositValidator-${validator.validatorIndex}-${index}`}
-            amount={amountValues[index] ?? 0}
-            setAmount={(amount) => handleSetAmountValues(index, amount)}
-            onClick={handleValidatorClick}
-            onDepositChange={handleDepositAmountChange}
-            validator={validator}
-            depositAmount={
-              selectedValidatorRecord[validator.validatorIndex]
-                ?.depositAmount ?? 0
-            }
-            distributionMethod={distributionMethod}
-            selected={!!selectedValidatorRecord[validator.validatorIndex]}
-            totalAllocated={totalAllocated}
-            totalToDistribute={totalToDistribute}
-          />
-        ))}
+        <div className="flex w-full flex-col gap-y-2">
+          {sortedValidators.map((validator, index) => (
+            <DepositSelectionValidatorCard
+              key={`depositValidator-${validator.validatorIndex}-${index}`}
+              amount={amountValues[index] ?? 0}
+              setAmount={(amount) => handleSetAmountValues(index, amount)}
+              onClick={handleValidatorClick}
+              onDepositChange={handleDepositAmountChange}
+              validator={validator}
+              depositAmount={
+                selectedValidatorRecord[validator.validatorIndex]
+                  ?.depositAmount ?? 0
+              }
+              distributionMethod={distributionMethod}
+              selected={!!selectedValidatorRecord[validator.validatorIndex]}
+              totalAllocated={totalAllocated}
+              totalToDistribute={totalToDistribute}
+            />
+          ))}
+        </div>
       </div>
     </>
   );
