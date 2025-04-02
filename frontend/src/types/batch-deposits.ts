@@ -8,6 +8,10 @@ export interface IBatchDepositValidators {
   amount: number;
 }
 
+export interface IDepositWorkflowProps {
+  data: ValidatorDetails[];
+  balance: number;
+}
 export interface IDistributionInformation {
   buttonText: string;
   disableButton: boolean;

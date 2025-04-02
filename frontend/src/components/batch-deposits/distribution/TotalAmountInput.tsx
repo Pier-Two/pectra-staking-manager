@@ -4,15 +4,17 @@ import { AlignLeft } from "lucide-react";
 import { WalletBalance } from "./WalletBalance";
 import type { DepositType } from "pec/lib/api/schemas/deposit";
 import type { FieldErrors, UseFormRegister } from "react-hook-form";
-
 interface ExtendedProps extends ITotalAmountInput {
   errors: FieldErrors<DepositType>;
   register: UseFormRegister<DepositType>;
 }
 
-export const TotalAmountInput: FC<ExtendedProps> = (props) => {
-  const { amount, walletBalance, register, errors } = props;
-
+export const TotalAmountInput: FC<ExtendedProps> = ({
+  amount,
+  walletBalance,
+  register,
+  errors,
+}) => {
   return (
     <div className="space-y-2">
       <div className="text-md font-medium">Total Amount</div>

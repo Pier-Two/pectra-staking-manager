@@ -14,21 +14,17 @@ import { EIconPosition } from "pec/types/components";
 import { SecondaryButton } from "pec/components/ui/custom/SecondaryButton";
 import { DECIMAL_PLACES } from "pec/lib/constants";
 
-export const DistributionInformation: FC<IDistributionInformation> = (
-  props,
-) => {
-  const {
-    buttonText,
-    disableButton,
-    onSubmit,
-    resetBatchDeposit,
-    selectedValidators,
-    stage,
-    setValue,
-    totalAllocated,
-    totalToDistribute,
-  } = props;
-
+export const DistributionInformation: FC<IDistributionInformation> = ({
+  buttonText,
+  disableButton,
+  onSubmit,
+  resetBatchDeposit,
+  selectedValidators,
+  stage,
+  setValue,
+  totalAllocated,
+  totalToDistribute,
+}) => {
   const distributionStats = [
     {
       icon: <AlignLeft className="h-4 w-4" />,
