@@ -10,6 +10,8 @@ import {
 import { DistributionInformation } from "./DistributionInformation";
 import { DistributionOption } from "./DistributionOption";
 import { TotalAmountInput } from "./TotalAmountInput";
+import type { DepositType } from "pec/lib/api/schemas/deposit";
+import type { FieldErrors, UseFormRegister } from "react-hook-form";
 
 const DISTRIBUTION_OPTIONS: IDistributionOption[] = [
   {
@@ -26,35 +28,30 @@ const DISTRIBUTION_OPTIONS: IDistributionOption[] = [
   },
 ];
 
-export const DistributionMethod: FC<IDistributionMethodProps> = (props) => {
+interface ExtendedProps extends IDistributionMethodProps {
+  errors: FieldErrors<DepositType>;
+  register: UseFormRegister<DepositType>;
+}
+
+export const DistributionMethod: FC<ExtendedProps> = (props) => {
   const {
     disableButton,
     distributionMethod,
     onDistributionMethodChange,
-    onTotalAmountChange,
+    onSubmit,
     resetBatchDeposit,
     selectedValidators,
     stage,
-    setStage,
+    setValue,
     totalAllocated,
     totalToDistribute,
     walletBalance,
+    errors,
+    register,
   } = props;
-
-  const [amount, setAmount] = useState<number>(0);
 
   const handleDistributionMethodChange = (method: EDistributionMethod) => {
     onDistributionMethodChange(method);
-    setAmount(0);
-  };
-
-  const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = parseFloat(e.target.value);
-    const newAmount =
-      isNaN(value) || value < 0 || value > walletBalance ? 0 : value;
-
-    setAmount(newAmount);
-    onTotalAmountChange(newAmount);
   };
 
   return (
@@ -74,20 +71,21 @@ export const DistributionMethod: FC<IDistributionMethodProps> = (props) => {
       </div>
 
       <TotalAmountInput
-        amount={amount}
+        amount={totalToDistribute}
+        errors={errors}
+        register={register}
         walletBalance={walletBalance}
-        onChange={handleAmountChange}
       />
 
       <div className="space-y-2">
         <DistributionInformation
-          buttonText="Next"
+          buttonText="Deposit"
           disableButton={disableButton}
-          onClick={() => setStage(EBatchDepositStage.SIGN_DATA)}
+          onSubmit={onSubmit}
           resetBatchDeposit={resetBatchDeposit}
           selectedValidators={selectedValidators}
           stage={stage}
-          setStage={setStage}
+          setValue={setValue}
           totalAllocated={totalAllocated}
           totalToDistribute={totalToDistribute}
         />

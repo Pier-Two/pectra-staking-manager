@@ -20,11 +20,11 @@ export const DistributionInformation: FC<IDistributionInformation> = (
   const {
     buttonText,
     disableButton,
-    onClick,
+    onSubmit,
     resetBatchDeposit,
     selectedValidators,
     stage,
-    setStage,
+    setValue,
     totalAllocated,
     totalToDistribute,
   } = props;
@@ -32,7 +32,7 @@ export const DistributionInformation: FC<IDistributionInformation> = (
   const distributionStats = [
     {
       icon: <AlignLeft className="h-4 w-4" />,
-      value: totalToDistribute.toFixed(DECIMAL_PLACES),
+      value: totalToDistribute?.toFixed(DECIMAL_PLACES) ?? 0,
       label: "Total to distribute",
     },
     {
@@ -42,14 +42,14 @@ export const DistributionInformation: FC<IDistributionInformation> = (
     },
     {
       icon: <AlignLeft className="h-4 w-4" />,
-      value: totalAllocated.toFixed(DECIMAL_PLACES),
+      value: totalAllocated?.toFixed(DECIMAL_PLACES) ?? 0,
       label: "Allocated",
     },
   ];
 
   const handleClick = () => {
-    if (setStage) setStage(EBatchDepositStage.TRANSACTIONS_SUBMITTED);
-    onClick();
+    if (setValue) setValue("stage", EBatchDepositStage.TRANSACTIONS_SUBMITTED);
+    onSubmit();
   };
 
   const handleViewTransaction = () => {
