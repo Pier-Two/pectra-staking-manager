@@ -37,16 +37,16 @@ export const ConsolidationSummary: FC<IConsolidationSummary> = (props) => {
   return (
     <div className="space-y-8">
       <div className="space-y-2">
-        <div className="text-3xl">Consolidation Summary</div>
+        <div className="text-2xl font-medium">Consolidation Summary</div>
 
-        <div className="text-md text-gray-700 dark:text-gray-300">
+        <div className="text-sm text-gray-700 dark:text-gray-300">
           Review and submit your consolidation request.
         </div>
       </div>
 
       <div className="space-y-2">
         <div className="flex flex-col gap-2">
-          <div className="text-lg font-medium">Destination validator</div>
+          <div className="text-md font-medium">Destination validator</div>
 
           <div className="flex flex-col items-center justify-center gap-4">
             <ValidatorCard
@@ -69,7 +69,7 @@ export const ConsolidationSummary: FC<IConsolidationSummary> = (props) => {
       </div>
 
       <div className="space-y-4">
-        <div className="text-lg font-medium">Source validators</div>
+        <div className="text-md font-medium">Source validators</div>
         <DetectedValidators
           cardTitle="selected"
           validators={sourceValidators}
@@ -86,15 +86,15 @@ export const ConsolidationSummary: FC<IConsolidationSummary> = (props) => {
       </div>
 
       <div className="space-y-2">
-        <div className="text-lg font-medium">Summary</div>
+        <div className="text-md font-medium">Summary</div>
         <Overview
           destinationValidator={destinationValidator}
           sourceValidators={sourceValidators}
         />
 
         <Email
-          cardText="Notify me when complete"
-          cardTitle="Add your email to receive an email when your consolidation is complete"
+          cardText="Add your email to receive an email when your consolidation is complete."
+          cardTitle="Notify me when complete"
           summaryEmail={summaryEmail}
           setSummaryEmail={setSummaryEmail}
         />

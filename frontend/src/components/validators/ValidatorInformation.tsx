@@ -10,12 +10,12 @@ export const ValidatorInformation: FC<IGenericValidators> = (props) => {
   ).length;
 
   return (
-    <div className="flex min-h-[10vh] w-full items-center justify-between gap-x-4 rounded-xl border border-indigo-300 bg-indigo-50 dark:bg-gray-900 dark:border-indigo-900 p-4">
+    <div className="flex w-full items-center justify-between gap-x-4 rounded-xl border border-indigo-200 bg-indigo-50 dark:bg-gray-900 dark:border-indigo-900 p-4">
       <div className="flex items-center gap-x-4">
-        <Zap className="h-5 w-5 text-indigo-500 fill-indigo-500" />
+        <Zap className="h-8 w-8 text-indigo-500 fill-indigo-500" />
         {numberOfOldValidators > 0 && (
           <div className="flex flex-col gap-y-2">
-            <div className="text-md text-indigo-700">
+            <div className="text-sm text-indigo-700 dark:text-indigo-500">
               {numberOfOldValidators} of your validators are using the old
               credentials (0x01). It is recommended to consolidate them to
               Pectra (0x02) to enable enhanced staking features.

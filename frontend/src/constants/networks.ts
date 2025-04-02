@@ -1,1 +1,1 @@
-export const HOLEKSY_CHAINID = 17000;
+export const HOODI_CHAINID = 560048;

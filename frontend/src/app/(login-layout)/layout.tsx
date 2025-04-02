@@ -10,8 +10,8 @@ const LoginLayout: FC<ChildrenProp> = (props) => {
     <ThemeProvider>
       <div className="flex min-h-screen w-screen flex-col">
         <TopBar numberOfValidators={4} type={"wallet_connect"} />
-        <div className="flex flex-1 justify-center bg-gray-100 dark:bg-gray-950 dark:text-white">
-          <div className="w-[60vw] py-8">{children}</div>
+        <div className="flex flex-1 justify-center bg-indigo-50 dark:bg-gray-950 dark:text-white">
+          <div className="w-[40vw] py-8">{children}</div>
         </div>
       </div>
     </ThemeProvider>

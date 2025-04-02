@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, type FC } from "react";
+import { useMemo, type FC, useState } from "react";
 import { api } from "pec/trpc/react";
 import { useWalletAddress } from "pec/hooks/useWallet";
 import { useForm, useFieldArray, useWatch } from "react-hook-form";
@@ -18,6 +18,9 @@ import {
 } from "pec/lib/api/schemas/withdrawal";
 import type { ValidatorDetails } from "pec/types/validator";
 import { ValidatorHeader } from "pec/components/batch-deposits/validators/ValidatorHeader";
+import type { SortDirection } from "pec/components/batch-deposits/validators/ColumnHeader";
+import { WITHDRAWAL_COLUMN_HEADERS } from "pec/constants/columnHeaders";
+import { orderBy } from "lodash";
 
 const Withdrawal: FC = () => {
   const walletAddress = useWalletAddress();
@@ -84,6 +87,27 @@ const Withdrawal: FC = () => {
     );
   }, [watchedWithdrawals]);
 
+  const [sortColumn, setSortColumn] = useState<string | null>(null);
+  const [sortDirection, setSortDirection] = useState<SortDirection>(null);
+
+  const handleSort = (column: string) => {
+    if (sortColumn === column) {
+      setSortDirection((prev) => {
+        if (prev === null) return "asc";
+        if (prev === "asc") return "desc";
+        return "asc";
+      });
+    } else {
+      setSortColumn(column);
+      setSortDirection("asc");
+    }
+  };
+
+  const sortedValidators = (() => {
+    if (!sortColumn || !sortDirection || !data) return data;
+    return orderBy(data, ["validatorIndex", "balance"], [sortDirection]);
+  })();
+
   if (!walletAddress || !data || !isFetched) return <WithdrawalLoading />;
 
   const handleValidatorSelect = (validator: ValidatorDetails) => {
@@ -99,15 +123,15 @@ const Withdrawal: FC = () => {
   const handleMaxAllocation = () => {
     setValue(
       "withdrawals",
-      data.map((validator) => ({
+      sortedValidators?.map((validator) => ({
         validator,
         amount: Math.max(validator.balance - 32, 0),
-      })),
+      })) ?? [],
     );
 
     setValue(
       "selectedValidators",
-      data.map((validator) => validator),
+      sortedValidators?.map((validator) => validator) ?? [],
     );
   };
 
@@ -133,17 +157,17 @@ const Withdrawal: FC = () => {
       <div className="space-y-8">
         <div className="flex flex-col gap-4">
           <div className="flex gap-x-4 text-indigo-800 dark:text-indigo-300">
-            <ArrowUpFromDot className="h-10 w-10" />
-            <div className="text-3xl">Partial Withdrawal</div>
+            <ArrowUpFromDot className="h-8 w-8" />
+            <div className="text-2xl font-medium">Withdrawal</div>
           </div>
 
-          <div className="w-[45vw] text-gray-700 dark:text-gray-300">
+          <div className="text-sm text-gray-700 dark:text-gray-300">
             Submit onchain execution layer withdrawal requests against
             validators, as per Pectra EIP-7002.
           </div>
         </div>
 
-        <div className="flex flex-row items-center gap-4">
+        <div className="ms-4 flex flex-row items-center gap-3">
           <Image
             className="h-4 w-4"
             src="/icons/Wallet.svg"
@@ -152,8 +176,8 @@ const Withdrawal: FC = () => {
             height={16}
           />
 
-          <div>Withdrawal address</div>
-          <div className="text-gray-500 dark:text-gray-300">
+          <div className="text-sm">Withdrawal address</div>
+          <div className="text-sm text-gray-500 dark:text-gray-300">
             {walletAddress.slice(0, 5)}...{walletAddress.slice(-5)}
           </div>
         </div>
@@ -181,25 +205,30 @@ const Withdrawal: FC = () => {
 
         <div className="flex flex-col items-center gap-4">
           <ValidatorListHeaders
-            labels={["Validator", "Balance", "Withdrawal"]}
+            columnHeaders={WITHDRAWAL_COLUMN_HEADERS}
+            onSort={handleSort}
+            sortColumn={sortColumn ?? ""}
+            sortDirection={sortDirection}
           />
 
-          {data.map((validator, index) => {
-            return (
-              <WithdrawalSelectionValidatorCard
-                key={`${index}-${validator.validatorIndex}`}
-                availableAmount={Math.max(validator.balance - 32, 0)}
-                errors={errors}
-                handleSelect={() => handleValidatorSelect(validator)}
-                index={index}
-                register={register}
-                selected={watchedSelectedValidators.some(
-                  (v) => v.validatorIndex === validator.validatorIndex,
-                )}
-                validator={validator}
-              />
-            );
-          })}
+          <div className="flex w-full flex-col gap-y-2">
+            {sortedValidators?.map((validator, index) => {
+              return (
+                <WithdrawalSelectionValidatorCard
+                  key={`${index}-${validator.validatorIndex}`}
+                  availableAmount={Math.max(validator.balance - 32, 0)}
+                  errors={errors}
+                  handleSelect={() => handleValidatorSelect(validator)}
+                  index={index}
+                  register={register}
+                  selected={watchedSelectedValidators.some(
+                    (v) => v.validatorIndex === validator.validatorIndex,
+                  )}
+                  validator={validator}
+                />
+              );
+            })}
+          </div>
         </div>
       </div>
     </form>

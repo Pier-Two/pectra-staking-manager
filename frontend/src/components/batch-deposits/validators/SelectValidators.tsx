@@ -4,7 +4,9 @@ import { DepositSelectionValidatorCard } from "../../validators/cards/DepositSel
 import type { ValidatorDetails } from "pec/types/validator";
 import { ValidatorHeader } from "./ValidatorHeader";
 import { ValidatorListHeaders } from "./ValidatorListHeaders";
-import { keyBy } from "lodash";
+import { keyBy, orderBy } from "lodash";
+import { type SortDirection } from "./ColumnHeader";
+import { DEPOSIT_COLUMN_HEADERS } from "pec/constants/columnHeaders";
 
 export const SelectValidators: FC<ISelectValidatorsProps> = ({
   clearSelectedValidators,
@@ -19,6 +21,8 @@ export const SelectValidators: FC<ISelectValidatorsProps> = ({
   const [amountValues, setAmountValues] = useState<number[]>(
     selectedValidators.map((v) => v.depositAmount),
   );
+  const [sortColumn, setSortColumn] = useState<string | null>(null);
+  const [sortDirection, setSortDirection] = useState<SortDirection>(null);
 
   const handleSetAmountValues = (index: number, amount: number) => {
     setAmountValues((prev) => {
@@ -41,12 +45,51 @@ export const SelectValidators: FC<ISelectValidatorsProps> = ({
   const handleClearValidators = () => {
     clearSelectedValidators();
     setAmountValues(Array(selectedValidators.length).fill(0));
+    setSortColumn(null);
+    setSortDirection(null);
   };
 
   const selectedValidatorRecord = keyBy(
     selectedValidators,
     (v) => v.validator.validatorIndex,
   );
+
+  const handleSort = (column: string) => {
+    if (sortColumn === column) {
+      setSortDirection((prev) => {
+        if (prev === null) return "asc";
+        if (prev === "asc") return "desc";
+        return "asc";
+      });
+    } else {
+      setSortColumn(column);
+      setSortDirection("asc");
+    }
+  };
+
+  // const sortedValidators = [...validators].sort((a, b) => {
+  //   if (!sortColumn || !sortDirection) return 0;
+
+  //   switch (sortColumn) {
+  //     case "Validator":
+  //       return sortDirection === "asc"
+  //         ? a.validatorIndex - b.validatorIndex
+  //         : b.validatorIndex - a.validatorIndex;
+
+  //     case "Balance":
+  //       return sortDirection === "asc"
+  //         ? a.balance - b.balance
+  //         : b.balance - a.balance;
+
+  //     default:
+  //       return 0;
+  //   }
+  // });
+
+  const sortedValidators = (() => {
+    if (!sortColumn || !sortDirection || !validators) return validators;
+    return orderBy(validators, ["validatorIndex", "balance"], [sortDirection]);
+  })();
 
   return (
     <>
@@ -57,26 +100,33 @@ export const SelectValidators: FC<ISelectValidatorsProps> = ({
       />
 
       <div className="flex flex-col items-center gap-4">
-        <ValidatorListHeaders labels={["Validator", "Balance", "Deposit"]} />
+        <ValidatorListHeaders
+          columnHeaders={DEPOSIT_COLUMN_HEADERS}
+          onSort={handleSort}
+          sortColumn={sortColumn ?? ""}
+          sortDirection={sortDirection}
+        />
 
-        {validators.map((validator, index) => (
-          <DepositSelectionValidatorCard
-            key={`depositValidator-${validator.validatorIndex}-${index}`}
-            amount={amountValues[index] ?? 0}
-            setAmount={(amount) => handleSetAmountValues(index, amount)}
-            onClick={handleValidatorClick}
-            onDepositChange={handleDepositAmountChange}
-            validator={validator}
-            depositAmount={
-              selectedValidatorRecord[validator.validatorIndex]
-                ?.depositAmount ?? 0
-            }
-            distributionMethod={distributionMethod}
-            selected={!!selectedValidatorRecord[validator.validatorIndex]}
-            totalAllocated={totalAllocated}
-            totalToDistribute={totalToDistribute}
-          />
-        ))}
+        <div className="flex w-full flex-col gap-y-2">
+          {sortedValidators.map((validator, index) => (
+            <DepositSelectionValidatorCard
+              key={`depositValidator-${validator.validatorIndex}-${index}`}
+              amount={amountValues[index] ?? 0}
+              setAmount={(amount) => handleSetAmountValues(index, amount)}
+              onClick={handleValidatorClick}
+              onDepositChange={handleDepositAmountChange}
+              validator={validator}
+              depositAmount={
+                selectedValidatorRecord[validator.validatorIndex]
+                  ?.depositAmount ?? 0
+              }
+              distributionMethod={distributionMethod}
+              selected={!!selectedValidatorRecord[validator.validatorIndex]}
+              totalAllocated={totalAllocated}
+              totalToDistribute={totalToDistribute}
+            />
+          ))}
+        </div>
       </div>
     </>
   );

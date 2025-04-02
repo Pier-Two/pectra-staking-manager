@@ -20,8 +20,8 @@ export const DistributionOption: FC<IDistributionOptionProps> = (props) => {
         <Circle className="h-10 w-10 text-indigo-500" />
       )}
       <div className="flex flex-col gap-2 p-1">
-        <div className="text-md font-medium">{option.title}</div>
-        <div className="text-sm text-gray-700 dark:text-gray-300">
+        <div className="text-sm font-medium">{option.title}</div>
+        <div className="text-xs text-gray-700 dark:text-gray-300">
           {option.description}
         </div>
       </div>

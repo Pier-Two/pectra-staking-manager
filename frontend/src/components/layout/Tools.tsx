@@ -39,7 +39,7 @@ export const Tools = () => {
           </div>
         </DropdownMenuTrigger>
 
-        <DropdownMenuContent className="rounded-xl bg-white p-8 dark:bg-black">
+        <DropdownMenuContent className="rounded-xl bg-white p-8 border:indigo-200 dark:bg-black dark:border-gray-800 shadow-lg">
           <div className="flex flex-col gap-6">
             <DropdownMenuItem>
               <div
@@ -71,7 +71,7 @@ export const Tools = () => {
                 <div className="flex flex-col gap-2">
                   <div className="flex flex-row justify-between">
                     <div className="text-lg font-medium text-black dark:text-white">
-                      Batch Deposit
+                      Deposit
                     </div>
                   </div>
 
@@ -92,7 +92,7 @@ export const Tools = () => {
                 <div className="flex flex-col gap-2">
                   <div className="flex flex-row justify-between">
                     <div className="text-lg font-medium text-black dark:text-white">
-                      Batch Withdrawal
+                      Withdraw
                     </div>
                   </div>
 

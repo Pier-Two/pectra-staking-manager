@@ -40,7 +40,7 @@ const Consolidation: FC = () => {
           Combine multiple validator balances into a single large-balance
           validator, as per Pectra EIP-7251.
         </div>
-        <Connector connectedAddress={walletAddress} validators={data} />
+        <Connector connectedAddress={walletAddress} textAlignment="left" validators={data} />
       </div>
 
       <div className="flex flex-col gap-4">

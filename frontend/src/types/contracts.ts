@@ -1,6 +1,6 @@
-import { Address, ThirdwebContract } from "thirdweb";
+import type { Address, ThirdwebContract } from "thirdweb";
 
-export type SupportedNetworks = "Holesky";
+export type SupportedNetworks = "Hoodi";
 
 export interface Contracts {
   consolidation: ThirdwebContract<[], Address>;

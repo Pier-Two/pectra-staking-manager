@@ -21,7 +21,7 @@ export const DetectedValidators: FC<IDetectedValidators> = (props) => {
     <>
       <div
         onClick={() => setShowValidators(!showValidators)}
-        className="flex-col-2 flex w-full items-center justify-between gap-x-4 rounded-xl border border-gray-200 bg-white p-6 hover:cursor-pointer hover:bg-gray-50 dark:border-gray-800 dark:bg-black"
+        className="flex-col-2 flex w-full items-center justify-between gap-x-4 rounded-xl border border-gray-200 bg-white px-4 py-6 hover:cursor-pointer hover:border-indigo-300 dark:border-gray-800 dark:bg-black"
       >
         <div className="flex items-center gap-x-4">
           <Image
@@ -43,7 +43,7 @@ export const DetectedValidators: FC<IDetectedValidators> = (props) => {
       </div>
 
       {showValidators && (
-        <div className="mt-4 flex w-full flex-col items-center gap-4">
+        <div className="flex w-full flex-col items-center gap-2 mt-2">
           {validators.map((validator, index) => (
             <ValidatorCard
               key={index + validator.validatorIndex}

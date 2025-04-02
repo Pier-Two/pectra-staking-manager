@@ -1,5 +1,5 @@
-import { holesky } from "pec/constants/contracts";
-import { HOLEKSY_CHAINID } from "pec/constants/networks";
+import { hoodi } from "pec/constants/contracts";
+import { HOODI_CHAINID } from "pec/constants/networks";
 import { client } from "pec/lib/wallet/client";
 import { getRpcClient } from "thirdweb";
 import { useActiveWalletChain } from "thirdweb/react";
@@ -9,9 +9,9 @@ export const useRpcClient = () => {
 
   if (!chain) return null;
 
-  if (chain.id === HOLEKSY_CHAINID) {
+  if (chain.id === HOODI_CHAINID) {
     return getRpcClient({
-      chain: holesky,
+      chain: hoodi,
       client,
     });
   }

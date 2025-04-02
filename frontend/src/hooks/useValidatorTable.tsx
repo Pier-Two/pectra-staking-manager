@@ -6,7 +6,6 @@ export function useValidatorTable(data: ValidatorDetails[], itemsPerPage = 10) {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<string[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [selectedRows, setSelectedRows] = useState<string[]>([]);
   const [sortConfig, setSortConfig] = useState<SortConfig | null>(null);
 
   const filteredData = useMemo(() => {
@@ -54,19 +53,6 @@ export function useValidatorTable(data: ValidatorDetails[], itemsPerPage = 10) {
 
   const totalPages = Math.ceil(filteredData.length / itemsPerPage);
 
-  const handleToggleAll = (checked: boolean) => {
-    if (checked)
-      setSelectedRows(
-        paginatedData.map((item) => item.validatorIndex.toString()),
-      );
-    else setSelectedRows([]);
-  };
-
-  const handleToggleRow = (id: string, checked: boolean) => {
-    if (checked) setSelectedRows([...selectedRows, id]);
-    else setSelectedRows(selectedRows.filter((rowId) => rowId !== id));
-  };
-
   const handleSort = (key: string) => {
     let direction = ESortDirection.ASC;
 
@@ -100,15 +86,12 @@ export function useValidatorTable(data: ValidatorDetails[], itemsPerPage = 10) {
     searchTerm,
     statusFilter,
     currentPage,
-    selectedRows,
     sortConfig,
     filteredData,
     paginatedData,
     totalPages,
 
     // Handlers
-    handleToggleAll,
-    handleToggleRow,
     handleSort,
     handleStatusFilterChange,
     handleSearchChange,

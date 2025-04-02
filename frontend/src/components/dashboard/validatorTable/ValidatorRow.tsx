@@ -1,7 +1,8 @@
+"use client";
+
 import type { FC } from "react";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { TableCell, TableRow } from "pec/components/ui/table";
-import { Checkbox } from "pec/components/ui/checkbox";
 import { Button } from "pec/components/ui/button";
 import {
   DropdownMenu,
@@ -11,6 +12,8 @@ import {
 } from "pec/components/ui/dropdown-menu";
 import {
   AlignLeft,
+  ArrowDownToDot,
+  ArrowUpFromDot,
   CircleCheck,
   CircleMinus,
   CirclePlay,
@@ -19,24 +22,32 @@ import {
 } from "lucide-react";
 import { ValidatorStatus } from "pec/types/validator";
 import type { IValidatorRowProps } from "pec/types/validatorTable";
+import { Separator } from "pec/components/ui/separator";
 
 export const ValidatorRow: FC<IValidatorRowProps> = (props) => {
-  const { validator, isSelected, onToggle } = props;
+  const { validator } = props;
+  const router = useRouter();
+
+  const handleDepositNavigation = () => {
+    router.push("/batch-deposit");
+  };
+
+  const handleWithdrawalNavigation = () => {
+    router.push("/withdraw");
+  };
+
+  const handleBeaconscanNavigation = () => {
+    window.open(
+      `https://beaconscan.com/validator/${validator.validatorIndex}`,
+      "_blank",
+    );
+  };
 
   return (
-    <TableRow
-      className={`border-none hover:bg-indigo-50 dark:hover:bg-gray-900 ${isSelected ? "bg-indigo-50 dark:bg-gray-900" : "bg-gray-50 dark:bg-black"}`}
+    <div
+      className={`flex w-full flex-row items-center rounded-xl border bg-indigo-50 p-4 text-sm hover:border-indigo-300 dark:bg-black dark:hover:bg-gray-900`}
     >
-      <TableCell>
-        <Checkbox
-          className={`rounded text-black dark:text-black ${isSelected ? "bg-blue-300 dark:bg-indigo-400" : "bg-white dark:bg-gray-700"}`}
-          checked={isSelected}
-          onCheckedChange={(checked) => onToggle(!!checked)}
-          aria-label={`Select validator ${validator.validatorIndex}`}
-        />
-      </TableCell>
-
-      <TableCell>
+      <div className="flex-1">
         <div className="flex flex-row gap-2">
           <Image
             src="/icons/EthValidator.svg"
@@ -45,25 +56,25 @@ export const ValidatorRow: FC<IValidatorRowProps> = (props) => {
             height={24}
           />
           <div className="flex flex-col">
-            <div className="font-semibold">{validator.validatorIndex}</div>
-            <span className="text-xs text-gray-500">
+            <div className="font-medium">{validator.validatorIndex}</div>
+            <div className="text-xs text-gray-500">
               {validator.publicKey.slice(0, 7)}...
               {validator.publicKey.slice(-5)}
-            </span>
+            </div>
           </div>
         </div>
-      </TableCell>
+      </div>
 
-      <TableCell>
+      <div className="flex-1">
         <div className="flex flex-col">
           <span>{validator.activeSince}</span>
           <span className="text-xs text-gray-500">
             {validator.activeDuration}
           </span>
         </div>
-      </TableCell>
+      </div>
 
-      <TableCell>
+      <div className="flex-1">
         <div className="flex items-center gap-1">
           {validator.withdrawalAddress.includes("0x02") ? (
             <CircleCheck className="h-4 w-4 fill-green-500 text-white dark:text-black" />
@@ -74,9 +85,9 @@ export const ValidatorRow: FC<IValidatorRowProps> = (props) => {
             {validator.withdrawalAddress.slice(0, 4)}
           </div>
         </div>
-      </TableCell>
+      </div>
 
-      <TableCell>
+      <div className="flex-1">
         <div className="flex items-center gap-2">
           {validator.status === ValidatorStatus.ACTIVE ? (
             <CirclePlay className="h-4 w-4 fill-green-500 text-white dark:text-black" />
@@ -85,37 +96,53 @@ export const ValidatorRow: FC<IValidatorRowProps> = (props) => {
           )}
           <span>{validator.status}</span>
         </div>
-      </TableCell>
+      </div>
 
-      <TableCell>
+      <div className="flex-1 flex flex-row justify-between">
         <div className="flex items-center gap-1">
           <AlignLeft className="h-3 w-3" />
           <div className="font-semibold">{validator.balance}</div>
         </div>
-      </TableCell>
 
-      <TableCell>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="icon">
-              <MoreVertical className="h-4 w-4" />
+              <MoreVertical className="rotate-90 h-4 w-4" />
               <span className="sr-only">Open menu</span>
             </Button>
           </DropdownMenuTrigger>
 
-          <DropdownMenuContent className="bg-white" align="end">
-            <DropdownMenuItem className="cursor-pointer hover:bg-gray-500">
+          <DropdownMenuContent
+            className="space-y-2 rounded-xl bg-white p-2 dark:border-gray-500 dark:bg-gray-900 dark:text-white"
+            align="end"
+          >
+            <DropdownMenuItem
+              className="cursor-pointer hover:bg-gray-100"
+              onClick={handleDepositNavigation}
+            >
+              <ArrowDownToDot className="h-4 w-4 text-indigo-500 dark:text-indigo-300" />
               Deposit
             </DropdownMenuItem>
-            <DropdownMenuItem className="cursor-pointer hover:bg-gray-500">
+
+            <DropdownMenuItem
+              className="cursor-pointer hover:bg-gray-100"
+              onClick={handleWithdrawalNavigation}
+            >
+              <ArrowUpFromDot className="h-4 w-4 text-green-500 dark:text-green-300" />
               Withdraw
             </DropdownMenuItem>
-            <DropdownMenuItem className="cursor-pointer hover:bg-gray-500">
+
+            <Separator className="bg-gray-200 dark:bg-gray-800" />
+
+            <DropdownMenuItem
+              className="cursor-pointer hover:bg-gray-100"
+              onClick={handleBeaconscanNavigation}
+            >
               View on Beaconscan
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
-      </TableCell>
-    </TableRow>
+      </div>
+    </div>
   );
 };

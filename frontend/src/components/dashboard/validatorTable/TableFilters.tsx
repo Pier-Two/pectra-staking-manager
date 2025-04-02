@@ -11,10 +11,10 @@ export const TableFilters: FC<ITableFiltersProps> = (props) => {
 
   return (
     <div className="flex flex-col justify-between gap-4 sm:flex-row">
-      <div className="w-full sm:w-96">
+      <div className="w-full">
         <Input
           placeholder="Search validators..."
-          className="rounded-xl border-gray-200 bg-white text-gray-500 dark:border-gray-800 dark:bg-black dark:text-white"
+          className="rounded-xl border-indigo-200 bg-white text-gray-500 dark:border-gray-800 dark:bg-black dark:text-white"
           value={searchTerm}
           onChange={(e) => onSearchChange(e.target.value)}
         />

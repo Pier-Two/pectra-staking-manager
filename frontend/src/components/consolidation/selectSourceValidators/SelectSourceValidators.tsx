@@ -72,8 +72,8 @@ export const SelectSourceValidators: FC<ISelectSourceValidators> = (props) => {
   return (
     <div className="space-y-6">
       <div className="space-y-2">
-        <div className="text-3xl">Source Validator(s)</div>
-        <div className="text-md text-gray-700 dark:text-gray-300">
+        <div className="text-2xl font-medium">Source Validator(s)</div>
+        <div className="text-sm text-gray-700 dark:text-gray-300">
           All source validator balances will be consolidated into the elected
           destination validator.
         </div>
@@ -81,7 +81,7 @@ export const SelectSourceValidators: FC<ISelectSourceValidators> = (props) => {
 
       <div className="space-y-8">
         <div className="flex flex-col gap-2">
-          <div className="text-lg font-medium">Destination validator</div>
+          <div className="text-md font-medium">Destination validator</div>
 
           <div className="flex flex-col items-center justify-center gap-4">
             <ValidatorCard
@@ -103,22 +103,23 @@ export const SelectSourceValidators: FC<ISelectSourceValidators> = (props) => {
         </div>
       </div>
 
-      <div className="text-lg font-medium">Select source validator(s)</div>
+      <div className="text-md font-medium">Select source validator(s)</div>
 
       <Tabs
         defaultValue="maxConsolidate"
         className="w-full space-y-8"
         onValueChange={setActiveTab}
       >
-        <TabsList className="grid w-full grid-cols-2 rounded-xl bg-gray-200">
+        <TabsList className="grid w-full grid-cols-2 rounded-xl bg-gray-200 dark:bg-gray-900">
           <TabsTrigger
-            className="rounded-xl data-[state=active]:bg-white"
+            className="rounded-xl data-[state=active]:bg-white text-gray-800 data-[state=active]:text-indigo-800 dark:data-[state=active]:text-black"
             value="maxConsolidate"
           >
             Max consolidate
           </TabsTrigger>
+
           <TabsTrigger
-            className="rounded-xl data-[state=active]:bg-white"
+            className="rounded-xl data-[state=active]:bg-white text-gray-800 data-[state=active]:text-indigo-800 dark:data-[state=active]:text-black"
             value="manuallySelect"
           >
             Manually select
@@ -141,8 +142,8 @@ export const SelectSourceValidators: FC<ISelectSourceValidators> = (props) => {
         </TabsContent>
       </Tabs>
 
-      <div className="flex flex-row items-center justify-center gap-2 text-gray-600 dark:text-gray-400">
-        <Zap className="h-5 w-5 fill-indigo-500 text-indigo-500" />
+      <div className="flex flex-row items-center justify-center gap-2 text-gray-600 dark:text-gray-400 text-sm">
+        <Zap className="h-4 w-4 fill-indigo-500 text-indigo-500" />
         <div>New destination balance:</div>
 
         <div className="flex items-center gap-1 text-black dark:text-white">

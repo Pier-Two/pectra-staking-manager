@@ -18,6 +18,7 @@ import { api } from "pec/trpc/react";
 import { useActiveChainWithDefault } from "pec/hooks/useChain";
 import { useWalletBalance } from "thirdweb/react";
 import { client } from "pec/lib/wallet/client";
+
 const BatchDeposit: FC = () => {
   const walletAddress = useWalletAddress();
   const chain = useActiveChainWithDefault();
@@ -158,11 +159,11 @@ const BatchDeposit: FC = () => {
     <div className="space-y-8">
       <div className="flex flex-col gap-4">
         <div className="flex gap-x-4 text-indigo-800 dark:text-indigo-300">
-          <ArrowDownToDot className="h-10 w-10" />
-          <div className="text-3xl">Batch Deposit</div>
+          <ArrowDownToDot className="h-8 w-8" />
+          <div className="text-2xl font-medium">Batch Deposit</div>
         </div>
 
-        <div className="w-[45vw] text-gray-700 dark:text-gray-300">
+        <div className="text-sm text-gray-700 dark:text-gray-300">
           Top up your existing validators in one transaction.
         </div>
       </div>

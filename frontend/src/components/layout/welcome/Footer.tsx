@@ -9,7 +9,7 @@ export const Footer: FC = () => {
 
   return (
     <div className="flex flex-col items-center">
-      <div className="flex flex-row gap-20 text-gray-500">
+      <div className="flex flex-row gap-20 text-gray-500 dark:text-gray-400">
         <div className="flex flex-col items-center gap-2">
           <div className="text-sm">Product by</div>
           <Image

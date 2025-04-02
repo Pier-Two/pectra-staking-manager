@@ -60,7 +60,7 @@ export const DistributionMethod: FC<IDistributionMethodProps> = (props) => {
   return (
     <div className="space-y-6">
       <div className="space-y-4">
-        <div className="text-lg">Distribution Method</div>
+        <div className="text-md font-medium">Distribution Method</div>
         <div className="flex flex-row justify-between gap-8">
           {DISTRIBUTION_OPTIONS.map((option) => (
             <DistributionOption

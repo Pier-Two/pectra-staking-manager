@@ -8,7 +8,7 @@ export const TertiaryButton: FC<ICustomButton> = (props) => {
   return (
     <Button
       className={clsx(
-        "rounded-full border border-white text-white hover:cursor-pointer text-wrap",
+        "rounded-full border border-white text-white hover:cursor-pointer text-wrap text-sm",
         className,
       )}
       onClick={onClick}

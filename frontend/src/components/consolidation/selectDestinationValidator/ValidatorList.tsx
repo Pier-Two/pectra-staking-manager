@@ -2,7 +2,6 @@
 
 import type { FC } from "react";
 import type { IDestinationValidatorList } from "pec/types/consolidation";
-import { ChevronsUpDown } from "lucide-react";
 import { ValidatorCard } from "pec/components/validators/cards/ValidatorCard";
 import type { ValidatorDetails } from "pec/types/validator";
 
@@ -15,24 +14,22 @@ export const ValidatorList: FC<IDestinationValidatorList> = (props) => {
   };
 
   return (
-    <div className="flex flex-col items-center gap-4">
-      <div className="flex-col-3 flex w-full justify-between">
+    <div className="flex flex-col items-center gap-2">
+      <div className="flex-col-3 flex w-full justify-between px-4">
         <div className="flex items-center gap-2">
-          <div className="text-md text-gray-700 dark:text-gray-300">
+          <div className="text-sm text-gray-700 dark:text-gray-300">
             Validator
           </div>
-          <ChevronsUpDown className="h-4 w-4 text-gray-700 dark:text-gray-300" />
         </div>
 
-        <div className="text-md text-gray-700 dark:text-gray-300">
+        <div className="text-sm text-gray-700 dark:text-gray-300">
           Credential
         </div>
 
         <div className="flex items-center gap-2">
-          <div className="text-md text-gray-700 dark:text-gray-300">
+          <div className="text-sm text-gray-700 dark:text-gray-300">
             Balance
           </div>
-          <ChevronsUpDown className="h-4 w-4 text-gray-700 dark:text-gray-300" />
         </div>
       </div>
 

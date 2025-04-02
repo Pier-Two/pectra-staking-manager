@@ -13,30 +13,30 @@ export const TransactionValidatorCard: FC<ITransactionValidatorCard> = (
   const { status, validator, transactionHash } = props;
 
   const upcomingStatus = (
-    <div className="text-gray-700 dark:text-gray-300">Upcoming</div>
+    <div className="text-sm text-gray-700 dark:text-gray-300">Upcoming</div>
   );
 
   const inProgressStatus = (
-    <div className="flex items-center gap-1">
+    <div className="flex items-center gap-1 text-sm">
       <PectraSpinner />
       <span className="text-black dark:text-white">Sign transaction</span>
     </div>
   );
 
   const submittedStatus = (
-    <div className="flex items-center gap-1">
+    <div className="flex items-center gap-1 text-sm">
       <span className="text-sm text-indigo-500">
         {transactionHash.slice(0, 6)}...{transactionHash.slice(-4)}
       </span>
       <ExternalLink className="h-3 w-3 text-indigo-500" />
-      <CircleCheck className="text-white dark:text-black fill-green-500" />
+      <CircleCheck className="h-4 w-4 fill-green-500 text-indigo-50 dark:text-black" />
       <span className="text-black dark:text-white">Submitted</span>
     </div>
   );
 
   return (
     <div
-      className={`flex items-center justify-between gap-x-4 rounded-xl border border-indigo-300 p-4 dark:border-gray-800 dark:bg-black`}
+      className={`flex items-center justify-between gap-x-4 rounded-xl border p-4 dark:border-gray-800 dark:bg-black ${status === TransactionStatus.IN_PROGRESS ? "border-indigo-400" : ""}`}
     >
       <div className="flex items-center gap-x-4">
         <Image
@@ -47,8 +47,8 @@ export const TransactionValidatorCard: FC<ITransactionValidatorCard> = (
         />
 
         <div className="flex flex-col">
-          <div className="text-md">{validator.validatorIndex}</div>
-          <div className="text-sm text-gray-700 dark:text-gray-300">
+          <div className="text-sm">{validator.validatorIndex}</div>
+          <div className="text-xs text-gray-700 dark:text-gray-300">
             {validator.publicKey.slice(0, 5)}...{validator.publicKey.slice(-4)}
           </div>
         </div>
