@@ -4,8 +4,9 @@ import { DepositSelectionValidatorCard } from "../../validators/cards/DepositSel
 import type { ValidatorDetails } from "pec/types/validator";
 import { ValidatorHeader } from "./ValidatorHeader";
 import { ValidatorListHeaders } from "./ValidatorListHeaders";
-import { keyBy } from "lodash";
+import { keyBy, orderBy } from "lodash";
 import { type SortDirection } from "./ColumnHeader";
+import { DEPOSIT_COLUMN_HEADERS } from "pec/constants/columnHeaders";
 
 export const SelectValidators: FC<ISelectValidatorsProps> = ({
   clearSelectedValidators,
@@ -66,30 +67,29 @@ export const SelectValidators: FC<ISelectValidatorsProps> = ({
     }
   };
 
-  const sortedValidators = [...validators].sort((a, b) => {
-    if (!sortColumn || !sortDirection) return 0;
+  // const sortedValidators = [...validators].sort((a, b) => {
+  //   if (!sortColumn || !sortDirection) return 0;
 
-    switch (sortColumn) {
-      case "Validator":
-        return sortDirection === "asc"
-          ? a.validatorIndex - b.validatorIndex
-          : b.validatorIndex - a.validatorIndex;
+  //   switch (sortColumn) {
+  //     case "Validator":
+  //       return sortDirection === "asc"
+  //         ? a.validatorIndex - b.validatorIndex
+  //         : b.validatorIndex - a.validatorIndex;
 
-      case "Balance":
-        return sortDirection === "asc"
-          ? a.balance - b.balance
-          : b.balance - a.balance;
+  //     case "Balance":
+  //       return sortDirection === "asc"
+  //         ? a.balance - b.balance
+  //         : b.balance - a.balance;
 
-      default:
-        return 0;
-    }
-  });
+  //     default:
+  //       return 0;
+  //   }
+  // });
 
-  const columnHeaders = [
-    { label: "Validator", showSort: true },
-    { label: "Balance", showSort: true },
-    { label: "Deposit", showSort: false },
-  ];
+  const sortedValidators = (() => {
+    if (!sortColumn || !sortDirection || !validators) return validators;
+    return orderBy(validators, ["validatorIndex", "balance"], [sortDirection]);
+  })();
 
   return (
     <>
@@ -101,7 +101,7 @@ export const SelectValidators: FC<ISelectValidatorsProps> = ({
 
       <div className="flex flex-col items-center gap-4">
         <ValidatorListHeaders
-          columnHeaders={columnHeaders}
+          columnHeaders={DEPOSIT_COLUMN_HEADERS}
           onSort={handleSort}
           sortColumn={sortColumn ?? ""}
           sortDirection={sortDirection}

@@ -19,6 +19,8 @@ import {
 import type { ValidatorDetails } from "pec/types/validator";
 import { ValidatorHeader } from "pec/components/batch-deposits/validators/ValidatorHeader";
 import type { SortDirection } from "pec/components/batch-deposits/validators/ColumnHeader";
+import { WITHDRAWAL_COLUMN_HEADERS } from "pec/constants/columnHeaders";
+import { orderBy } from "lodash";
 
 const Withdrawal: FC = () => {
   const walletAddress = useWalletAddress();
@@ -103,23 +105,7 @@ const Withdrawal: FC = () => {
 
   const sortedValidators = (() => {
     if (!sortColumn || !sortDirection || !data) return data;
-
-    return [...data].sort((a, b) => {
-      switch (sortColumn) {
-        case "Validator":
-          return sortDirection === "asc"
-            ? a.validatorIndex - b.validatorIndex
-            : b.validatorIndex - a.validatorIndex;
-
-        case "Balance":
-          return sortDirection === "asc"
-            ? a.balance - b.balance
-            : b.balance - a.balance;
-
-        default:
-          return 0;
-      }
-    });
+    return orderBy(data, ["validatorIndex", "balance"], [sortDirection]);
   })();
 
   if (!walletAddress || !data || !isFetched) return <WithdrawalLoading />;
@@ -163,12 +149,6 @@ const Withdrawal: FC = () => {
     }
   };
 
-  const columnHeaders = [
-    { label: "Validator", showSort: true },
-    { label: "Balance", showSort: true },
-    { label: "Withdrawal", showSort: false },
-  ];
-
   return (
     <form
       className="flex flex-col gap-y-4"
@@ -187,7 +167,7 @@ const Withdrawal: FC = () => {
           </div>
         </div>
 
-        <div className="flex flex-row items-center gap-3 ms-4">
+        <div className="ms-4 flex flex-row items-center gap-3">
           <Image
             className="h-4 w-4"
             src="/icons/Wallet.svg"
@@ -225,29 +205,29 @@ const Withdrawal: FC = () => {
 
         <div className="flex flex-col items-center gap-4">
           <ValidatorListHeaders
-            columnHeaders={columnHeaders}
+            columnHeaders={WITHDRAWAL_COLUMN_HEADERS}
             onSort={handleSort}
             sortColumn={sortColumn ?? ""}
             sortDirection={sortDirection}
           />
 
-          <div className="w-full flex flex-col gap-y-2">
-          {sortedValidators?.map((validator, index) => {
-            return (
-              <WithdrawalSelectionValidatorCard
-                key={`${index}-${validator.validatorIndex}`}
-                availableAmount={Math.max(validator.balance - 32, 0)}
-                errors={errors}
-                handleSelect={() => handleValidatorSelect(validator)}
-                index={index}
-                register={register}
-                selected={watchedSelectedValidators.some(
-                  (v) => v.validatorIndex === validator.validatorIndex,
-                )}
-                validator={validator}
-              />
-            );
-          })}
+          <div className="flex w-full flex-col gap-y-2">
+            {sortedValidators?.map((validator, index) => {
+              return (
+                <WithdrawalSelectionValidatorCard
+                  key={`${index}-${validator.validatorIndex}`}
+                  availableAmount={Math.max(validator.balance - 32, 0)}
+                  errors={errors}
+                  handleSelect={() => handleValidatorSelect(validator)}
+                  index={index}
+                  register={register}
+                  selected={watchedSelectedValidators.some(
+                    (v) => v.validatorIndex === validator.validatorIndex,
+                  )}
+                  validator={validator}
+                />
+              );
+            })}
           </div>
         </div>
       </div>

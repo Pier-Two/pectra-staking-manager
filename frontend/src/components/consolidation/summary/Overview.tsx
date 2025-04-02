@@ -3,7 +3,7 @@
 import type { FC } from "react";
 import type { IConsolidationOverview } from "pec/types/consolidation";
 import { Separator } from "pec/components/ui/separator";
-import { AlignLeft, Info } from "lucide-react";
+import { AlignLeft, Info, Loader2 } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
@@ -12,6 +12,7 @@ import {
 } from "pec/components/ui/tooltip";
 import { DECIMAL_PLACES } from "pec/lib/constants";
 import { useConsolidation } from "pec/hooks/useConsolidation";
+import { PectraSpinner } from "pec/components/ui/custom/pectraSpinner";
 
 export const Overview: FC<IConsolidationOverview> = (props) => {
   const { destinationValidator, sourceValidators } = props;
@@ -23,11 +24,11 @@ export const Overview: FC<IConsolidationOverview> = (props) => {
     sourceValidators.reduce((acc, validator) => acc + validator.balance, 0);
   const estimatedGasFee = consolidationFee
     ? consolidationFee * totalSourceValidators
-    : 0;
+    : null;
 
   return (
     <div className="flex min-h-[10vh] w-full flex-col justify-between gap-x-4 space-y-4 rounded-xl border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-black">
-      <div className="text-sm flex gap-x-2 text-black dark:text-white">
+      <div className="flex gap-x-2 text-sm text-black dark:text-white">
         <span>
           Consolidate {totalSourceValidators} validators into one validator with
           a new total balance of
@@ -63,7 +64,16 @@ export const Overview: FC<IConsolidationOverview> = (props) => {
 
           <div className="flex items-center gap-1">
             <AlignLeft className="h-3 w-3" />
-            <div className="text-sm font-medium">{estimatedGasFee.toFixed(DECIMAL_PLACES) ?? "Unknown"}</div>
+            {consolidationFee === null ? (
+              <div className="flex items-center gap-2">
+                <PectraSpinner />
+                <span className="text-sm">Calculating...</span>
+              </div>
+            ) : (
+              <div className="text-sm font-medium">
+                {estimatedGasFee?.toFixed(DECIMAL_PLACES) ?? "0"}
+              </div>
+            )}
           </div>
         </div>
 
