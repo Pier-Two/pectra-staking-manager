@@ -20,7 +20,7 @@ export const useWithdraw = () => {
       });
 
       const convertedBigInt = fromHex(result, "bigint");
-      return +formatEther(convertedBigInt);
+      return Number(formatEther(convertedBigInt));
     },
   });
 
