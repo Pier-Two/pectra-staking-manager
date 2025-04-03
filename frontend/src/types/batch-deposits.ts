@@ -15,11 +15,11 @@ export interface IDepositWorkflowProps {
 export interface IDistributionInformation {
   buttonText: string;
   disableButton: boolean;
-  onSubmit: () => void;
+  onSubmit?: () => void;
   resetBatchDeposit: () => void;
   selectedValidators: ValidatorDetails[];
   stage: EBatchDepositStage;
-  setValue: UseFormSetValue<DepositType>;
+  setValue?: UseFormSetValue<DepositType>;
   totalAllocated: number;
   totalToDistribute: number;
 }
@@ -109,8 +109,6 @@ export interface ISignatureDetails {
 export interface IDepositList {
   deposits: IBatchDepositValidators[];
   resetBatchDeposit: () => void;
-  setStage: (stage: EBatchDepositStage) => void;
-  stage: EBatchDepositStage;
   totalAllocated: number;
   totalToDistribute: number;
 }
@@ -129,7 +127,6 @@ export interface IValidatorListHeaders {
 
 export interface IDepositSignDataCard {
   deposit: IBatchDepositValidators;
-  index: number;
   stage: EBatchDepositStage;
 }
 

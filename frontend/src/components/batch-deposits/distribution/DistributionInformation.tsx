@@ -45,7 +45,7 @@ export const DistributionInformation: FC<IDistributionInformation> = ({
 
   const handleClick = () => {
     if (setValue) setValue("stage", EBatchDepositStage.TRANSACTIONS_SUBMITTED);
-    onSubmit();
+    if (onSubmit) onSubmit();
   };
 
   const handleViewTransaction = () => {

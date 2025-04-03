@@ -15,6 +15,7 @@ import { SignatureDetails } from "./SignatureDetails";
 import { ArrowDownToDot } from "lucide-react";
 import { DistributionMethod } from "./distribution/DistributionMethod";
 import { SelectValidators } from "./validators/SelectValidators";
+import { DepositList } from "./validators/DepositList";
 
 export const DepositWorkflow: FC<IDepositWorkflowProps> = ({
   data,
@@ -262,14 +263,12 @@ export const DepositWorkflow: FC<IDepositWorkflowProps> = ({
               text="For each deposit, copy the generated deposit data, sign it with your validator key and add the signed data. Once provided, the system will verify the deposit data before requesting ETH."
             />
 
-            {/* <DepositList
-              deposits={watchedDeposits}
+            <DepositList
+              deposits={watchedDeposits as IBatchDepositValidators[]}
               resetBatchDeposit={handleResetBatchDeposit}
-              setStage={setStage}
-              stage={stage}
-              totalAllocated={state.totalAllocated}
-              totalToDistribute={state.totalToDistribute}
-            /> */}
+              totalAllocated={totalAllocated}
+              totalToDistribute={totalToDistribute}
+            />
           </>
         )}
       </div>

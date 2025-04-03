@@ -13,7 +13,7 @@ const BatchDeposit: FC = () => {
   const walletAddress = useWalletAddress();
   const chain = useActiveChainWithDefault();
   const {
-    data: xbalance,
+    data: balance,
     isLoading,
     isError,
   } = useWalletBalance({
@@ -21,10 +21,6 @@ const BatchDeposit: FC = () => {
     address: walletAddress || "",
     client,
   });
-
-  const balance = {
-    value: 100,
-  };
 
   const { data, isFetched } = api.validators.getValidators.useQuery(
     {
