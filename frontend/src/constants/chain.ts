@@ -13,7 +13,7 @@ export const HOODI_CHAIN_DETAILS: Readonly<
     symbol: "ETH",
     decimals: 18,
   },
-};
+} as const;
 
 export const SUPPORTED_NETWORKS_IDS = [
   HOODI_CHAIN_DETAILS.id,

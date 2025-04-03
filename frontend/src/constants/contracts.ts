@@ -1,7 +1,6 @@
 import { client } from "pec/lib/wallet/client";
 import type { Contracts } from "pec/types/contracts";
 import { getContract } from "thirdweb";
-import { HOODI_CHAINID } from "./networks";
 import {
   batchDepositDeployedAddresses,
   batchDepositABI,
@@ -10,7 +9,7 @@ import { HOODI_CHAIN_DETAILS } from "./chain";
 import { mainnet } from "thirdweb/chains";
 
 export const getContracts = (id: number | undefined): Contracts => {
-  if (id === HOODI_CHAINID || id === mainnet.id) {
+  if (id === HOODI_CHAIN_DETAILS.id || id === mainnet.id) {
     return {
       consolidation: getContract({
         client,
@@ -19,7 +18,8 @@ export const getContracts = (id: number | undefined): Contracts => {
       }),
       batchDeposit: getContract({
         client,
-        address: batchDepositDeployedAddresses[HOODI_CHAINID],
+        address:
+          batchDepositDeployedAddresses[HOODI_CHAIN_DETAILS.id as 560048],
         chain: HOODI_CHAIN_DETAILS,
         abi: batchDepositABI,
       }),

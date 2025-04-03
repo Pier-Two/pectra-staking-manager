@@ -1,5 +1,4 @@
-import { hoodi } from "pec/constants/contracts";
-import { HOODI_CHAINID } from "pec/constants/networks";
+import { HOODI_CHAIN_DETAILS } from "pec/constants/chain";
 import { client } from "pec/lib/wallet/client";
 import { getRpcClient } from "thirdweb";
 import { useActiveWalletChain } from "thirdweb/react";
@@ -9,9 +8,9 @@ export const useRpcClient = () => {
 
   if (!chain) return null;
 
-  if (chain.id === HOODI_CHAINID) {
+  if (chain.id === HOODI_CHAIN_DETAILS.id) {
     return getRpcClient({
-      chain: hoodi,
+      chain: HOODI_CHAIN_DETAILS,
       client,
     });
   }
