@@ -16,11 +16,13 @@ import { ArrowDownToDot } from "lucide-react";
 import { DistributionMethod } from "./distribution/DistributionMethod";
 import { SelectValidators } from "./validators/SelectValidators";
 import { DepositList } from "./validators/DepositList";
+import { useContracts } from "pec/hooks/useContracts";
 
 export const DepositWorkflow: FC<IDepositWorkflowProps> = ({
   data,
   balance,
 }) => {
+  const {} = useContracts();
   const initialValues: DepositType = {
     selectedValidators: [],
     stage: EBatchDepositStage.DATA_CAPTURE,

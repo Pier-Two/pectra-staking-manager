@@ -2,6 +2,10 @@ export interface StyleableComponent {
   className?: string;
 }
 
+export interface ParentComponent {
+  children: React.ReactNode;
+}
+
 export interface ICustomButton extends StyleableComponent {
   label: string;
   icon?: React.ReactNode;
