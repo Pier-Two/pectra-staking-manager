@@ -4,9 +4,11 @@ import { TertiaryButton } from "pec/components/ui/custom/TertiaryButton";
 import { EIconPosition } from "pec/types/components";
 import { X } from "lucide-react";
 
-export const ValidatorHeader: FC<IValidatorHeader> = (props) => {
-  const { selectedCount, totalCount, onClear } = props;
-
+export const ValidatorHeader: FC<IValidatorHeader> = ({
+  selectedCount,
+  totalCount,
+  onClear,
+}) => {
   return (
     <div className="flex flex-row justify-between">
       <div className="text-md font-medium">Select Validators</div>

@@ -14,25 +14,21 @@ import { EIconPosition } from "pec/types/components";
 import { SecondaryButton } from "pec/components/ui/custom/SecondaryButton";
 import { DECIMAL_PLACES } from "pec/lib/constants";
 
-export const DistributionInformation: FC<IDistributionInformation> = (
-  props,
-) => {
-  const {
-    buttonText,
-    disableButton,
-    onClick,
-    resetBatchDeposit,
-    selectedValidators,
-    stage,
-    setStage,
-    totalAllocated,
-    totalToDistribute,
-  } = props;
-
+export const DistributionInformation: FC<IDistributionInformation> = ({
+  buttonText,
+  disableButton,
+  onSubmit,
+  resetBatchDeposit,
+  selectedValidators,
+  stage,
+  setValue,
+  totalAllocated,
+  totalToDistribute,
+}) => {
   const distributionStats = [
     {
       icon: <AlignLeft className="h-4 w-4" />,
-      value: totalToDistribute.toFixed(DECIMAL_PLACES),
+      value: totalToDistribute?.toFixed(DECIMAL_PLACES) ?? 0,
       label: "Total to distribute",
     },
     {
@@ -42,14 +38,14 @@ export const DistributionInformation: FC<IDistributionInformation> = (
     },
     {
       icon: <AlignLeft className="h-4 w-4" />,
-      value: totalAllocated.toFixed(DECIMAL_PLACES),
+      value: totalAllocated?.toFixed(DECIMAL_PLACES) ?? 0,
       label: "Allocated",
     },
   ];
 
   const handleClick = () => {
-    if (setStage) setStage(EBatchDepositStage.TRANSACTIONS_SUBMITTED);
-    onClick();
+    if (setValue) setValue("stage", EBatchDepositStage.TRANSACTIONS_SUBMITTED);
+    if (onSubmit) onSubmit();
   };
 
   const handleViewTransaction = () => {

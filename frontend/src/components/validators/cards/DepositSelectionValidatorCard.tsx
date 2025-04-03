@@ -1,82 +1,47 @@
 "use client";
 
-import { type FC,  } from "react";
+import { type FC } from "react";
 import Image from "next/image";
 import { AlignLeft, CircleCheck, CirclePlus } from "lucide-react";
-import { Input } from "pec/components/ui/input";
 import {
   EDistributionMethod,
   type IDepositSelectionValidatorCard,
 } from "pec/types/batch-deposits";
 import { DECIMAL_PLACES } from "pec/lib/constants";
+import type { FieldErrors, UseFormRegister } from "react-hook-form";
+import type { DepositType } from "pec/lib/api/schemas/deposit";
 
-export const DepositSelectionValidatorCard: FC<
-  IDepositSelectionValidatorCard
-> = (props) => {
-  const {
-    depositAmount,
-    distributionMethod,
-    selected,
-    amount,
-    setAmount,
-    totalAllocated,
-    totalToDistribute,
-    validator,
-    onClick,
-    onDepositChange,
-  } = props;
+interface ExtendedProps extends IDepositSelectionValidatorCard {
+  errors: FieldErrors<DepositType>;
+  register: UseFormRegister<DepositType>;
+}
 
-  const handleDeselect = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    if (selected) {
-      onClick(validator, 0);
-      setAmount(0);
-    }
-  };
-
-  const handleDepositAmountChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
-  ) => {
-    const value = parseFloat(e.target.value);
-
-    const isValidAmount =
-      !isNaN(value) &&
-      value >= 0 &&
-      value <= totalToDistribute &&
-      value + totalAllocated <= totalToDistribute;
-
-    const depositAmount = isValidAmount ? value : 0;
-
-    setAmount(depositAmount);
-    onDepositChange({
-      validator,
-      depositAmount,
-    });
-  };
-
-  const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.value === "") {
-      setAmount(0);
-      return;
-    }
-
-    const value = parseFloat(e.target.value);
-    if (isNaN(value) || value < 0) return;
-    setAmount(value);
-  };
-
+export const DepositSelectionValidatorCard: FC<ExtendedProps> = ({
+  distributionMethod,
+  depositAmount,
+  errors,
+  handleSelect,
+  index,
+  register,
+  selected,
+  totalAllocated,
+  totalToDistribute,
+  validator,
+}) => {
   return (
     <div
       className={`flex w-full items-center justify-between gap-x-4 rounded-xl border bg-white p-4 hover:border-indigo-500 dark:border-gray-800 dark:bg-black dark:hover:border-gray-600 ${
-        selected ? "border-indigo-500 dark:border-2 dark:border-indigo-900" : "cursor-pointer"
+        selected
+          ? "border-indigo-500 dark:border-2 dark:border-indigo-900"
+          : "cursor-pointer"
       } group`}
-      onClick={() => !selected && onClick(validator, amount)}
+      onClick={selected ? undefined : handleSelect}
     >
-      <div className="flex-[1.2] flex items-center gap-x-4">
+      <div className="flex flex-[1.2] items-center gap-x-4">
         {selected ? (
           <CircleCheck
             className="h-4 w-4 fill-green-500 text-white hover:cursor-pointer dark:text-black"
-            onClick={handleDeselect}
+            onClick={handleSelect}
           />
         ) : (
           <CirclePlus className="h-4 w-4 text-indigo-500 group-hover:fill-indigo-500 group-hover:text-white" />
@@ -97,34 +62,57 @@ export const DepositSelectionValidatorCard: FC<
         </div>
       </div>
 
-      <div className="flex-1 flex items-center gap-1 p-2">
+      <div className="flex flex-1 items-center gap-1 p-2">
         <AlignLeft className="h-4 w-4" />
-        <div className="text-sm">{validator.balance.toFixed(DECIMAL_PLACES)}</div>
+        <div className="text-sm">
+          {validator.balance.toFixed(DECIMAL_PLACES)}
+        </div>
       </div>
 
-      <div className="flex-1 flex items-center p-2">
+      <div className="flex flex-1 flex-col items-center p-2">
         <div
           className={`flex w-full items-center ${selected && distributionMethod === EDistributionMethod.MANUAL ? "gap-2" : "gap-1"}`}
         >
           <AlignLeft className="h-4 w-4" />
 
-          {(distributionMethod === EDistributionMethod.SPLIT ||
-            (distributionMethod === EDistributionMethod.MANUAL && !selected)) && (
-            <div className="text-sm">{depositAmount.toFixed(DECIMAL_PLACES)}</div>
-          )}
-
-          {selected && distributionMethod === EDistributionMethod.MANUAL && (
-            <Input
-              className="w-full rounded-xl border border-indigo-800 dark:border-gray-600"
-              placeholder="Enter deposit amount"
-              value={amount || ""}
-              type="number"
-              onChange={handleAmountChange}
-              onBlur={handleDepositAmountChange}
-              onClick={(e) => e.stopPropagation()}
-            />
-          )}
+          <input
+            className={`w-full rounded-xl border border-indigo-800 p-1 dark:border-gray-600 ${
+              !selected ? "border-none bg-white dark:bg-black" : ""
+            }`}
+            disabled={
+              !selected || distributionMethod === EDistributionMethod.SPLIT
+            }
+            type="number"
+            step="any"
+            value={depositAmount}
+            // Registers the deposit amount input field with React Hook Form
+            // - Converts empty input to 0
+            // - Ensures valid numeric input
+            // - Blocks deposits that would exceed the total to distribute
+            // - Blocks deposits that would take the total allocated above the total to distribute
+            // - Returns undefined for invalid values, preventing form submission and showing errors
+            {...register(`deposits.${index}.amount`, {
+              valueAsNumber: true,
+              setValueAs: (value) => {
+                if (value === "") return 0;
+                const numValue = Number(value);
+                if (isNaN(numValue)) return 0;
+                if (numValue === 0) return 0;
+                if (numValue > totalToDistribute) return undefined;
+                if (totalAllocated > totalToDistribute) return undefined;
+                if (numValue + totalAllocated > totalToDistribute)
+                  return undefined;
+                return numValue;
+              },
+            })}
+          />
         </div>
+
+        {errors.deposits?.[index]?.amount && (
+          <div className="mt-1 text-xs text-red-500">
+            Please enter an acceptable deposit amount.
+          </div>
+        )}
       </div>
     </div>
   );

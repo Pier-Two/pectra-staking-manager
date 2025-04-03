@@ -2,9 +2,12 @@ import type { FC } from "react";
 import { ColumnHeader } from "./ColumnHeader";
 import type { IValidatorListHeaders } from "pec/types/batch-deposits";
 
-export const ValidatorListHeaders: FC<IValidatorListHeaders> = (props) => {
-  const { columnHeaders, onSort, sortColumn, sortDirection } = props;
-
+export const ValidatorListHeaders: FC<IValidatorListHeaders> = ({
+  columnHeaders,
+  onSort,
+  sortColumn,
+  sortDirection,
+}) => {
   return (
     <div className="flex w-full items-center px-4">
       {columnHeaders.map((columnHeader, index) => (

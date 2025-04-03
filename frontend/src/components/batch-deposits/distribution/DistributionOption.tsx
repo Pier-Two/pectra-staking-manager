@@ -2,9 +2,11 @@ import type { FC } from "react";
 import type { IDistributionOptionProps } from "pec/types/batch-deposits";
 import { Circle, CircleDot } from "lucide-react";
 
-export const DistributionOption: FC<IDistributionOptionProps> = (props) => {
-  const { option, isSelected, onClick } = props;
-
+export const DistributionOption: FC<IDistributionOptionProps> = ({
+  option,
+  isSelected,
+  onClick,
+}) => {
   return (
     <div
       className={`flex w-full flex-row gap-4 rounded-xl bg-white p-4 dark:bg-black ${

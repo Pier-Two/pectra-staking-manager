@@ -1,57 +1,43 @@
 import { type FC, useState } from "react";
 import type { ISelectValidatorsProps } from "pec/types/batch-deposits";
 import { DepositSelectionValidatorCard } from "../../validators/cards/DepositSelectionValidatorCard";
-import type { ValidatorDetails } from "pec/types/validator";
 import { ValidatorHeader } from "./ValidatorHeader";
 import { ValidatorListHeaders } from "./ValidatorListHeaders";
 import { keyBy, orderBy } from "lodash";
 import { type SortDirection } from "./ColumnHeader";
 import { DEPOSIT_COLUMN_HEADERS } from "pec/constants/columnHeaders";
+import type { DepositType } from "pec/lib/api/schemas/deposit";
+import type { FieldErrors, UseFormRegister } from "react-hook-form";
 
-export const SelectValidators: FC<ISelectValidatorsProps> = ({
+interface ExtendedProps extends ISelectValidatorsProps {
+  errors: FieldErrors<DepositType>;
+  register: UseFormRegister<DepositType>;
+}
+
+export const SelectValidators: FC<ExtendedProps> = ({
   clearSelectedValidators,
   distributionMethod,
-  handleDepositAmountChange,
+  errors,
+  register,
+  handleValidatorSelect,
   selectedValidators,
-  setSelectedValidators,
   totalAllocated,
   totalToDistribute,
+  watchedDeposits,
   validators,
 }) => {
-  const [amountValues, setAmountValues] = useState<number[]>(
-    selectedValidators.map((v) => v.depositAmount),
-  );
   const [sortColumn, setSortColumn] = useState<string | null>(null);
   const [sortDirection, setSortDirection] = useState<SortDirection>(null);
 
-  const handleSetAmountValues = (index: number, amount: number) => {
-    setAmountValues((prev) => {
-      const newAmountValues = [...prev];
-      newAmountValues[index] = amount;
-      return newAmountValues;
-    });
-  };
-
-  const handleValidatorClick = (
-    validator: ValidatorDetails,
-    depositAmount: number,
-  ) => {
-    setSelectedValidators({
-      validator,
-      depositAmount,
-    });
-  };
-
   const handleClearValidators = () => {
     clearSelectedValidators();
-    setAmountValues(Array(selectedValidators.length).fill(0));
     setSortColumn(null);
     setSortDirection(null);
   };
 
   const selectedValidatorRecord = keyBy(
     selectedValidators,
-    (v) => v.validator.validatorIndex,
+    (v) => v.validatorIndex,
   );
 
   const handleSort = (column: string) => {
@@ -66,25 +52,6 @@ export const SelectValidators: FC<ISelectValidatorsProps> = ({
       setSortDirection("asc");
     }
   };
-
-  // const sortedValidators = [...validators].sort((a, b) => {
-  //   if (!sortColumn || !sortDirection) return 0;
-
-  //   switch (sortColumn) {
-  //     case "Validator":
-  //       return sortDirection === "asc"
-  //         ? a.validatorIndex - b.validatorIndex
-  //         : b.validatorIndex - a.validatorIndex;
-
-  //     case "Balance":
-  //       return sortDirection === "asc"
-  //         ? a.balance - b.balance
-  //         : b.balance - a.balance;
-
-  //     default:
-  //       return 0;
-  //   }
-  // });
 
   const sortedValidators = (() => {
     if (!sortColumn || !sortDirection || !validators) return validators;
@@ -111,15 +78,12 @@ export const SelectValidators: FC<ISelectValidatorsProps> = ({
           {sortedValidators.map((validator, index) => (
             <DepositSelectionValidatorCard
               key={`depositValidator-${validator.validatorIndex}-${index}`}
-              amount={amountValues[index] ?? 0}
-              setAmount={(amount) => handleSetAmountValues(index, amount)}
-              onClick={handleValidatorClick}
-              onDepositChange={handleDepositAmountChange}
+              index={index}
+              depositAmount={watchedDeposits[index]?.amount ?? 0}
+              errors={errors}
+              handleSelect={() => handleValidatorSelect(validator)}
+              register={register}
               validator={validator}
-              depositAmount={
-                selectedValidatorRecord[validator.validatorIndex]
-                  ?.depositAmount ?? 0
-              }
               distributionMethod={distributionMethod}
               selected={!!selectedValidatorRecord[validator.validatorIndex]}
               totalAllocated={totalAllocated}

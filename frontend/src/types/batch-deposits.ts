@@ -1,19 +1,25 @@
+import type { UseFormSetValue } from "react-hook-form";
 import type { ValidatorDetails } from "./validator";
 import type { SortDirection } from "pec/components/batch-deposits/validators/ColumnHeader";
+import type { DepositType } from "pec/lib/api/schemas/deposit";
 
 export interface IBatchDepositValidators {
   validator: ValidatorDetails;
-  depositAmount: number;
+  amount: number;
 }
 
+export interface IDepositWorkflowProps {
+  data: ValidatorDetails[];
+  balance: number;
+}
 export interface IDistributionInformation {
   buttonText: string;
   disableButton: boolean;
-  onClick: () => void;
+  onSubmit?: () => void;
   resetBatchDeposit: () => void;
-  selectedValidators: IBatchDepositValidators[];
+  selectedValidators: ValidatorDetails[];
   stage: EBatchDepositStage;
-  setStage?: (stage: EBatchDepositStage) => void;
+  setValue?: UseFormSetValue<DepositType>;
   totalAllocated: number;
   totalToDistribute: number;
 }
@@ -41,11 +47,11 @@ export interface IDistributionMethodProps {
   disableButton: boolean;
   distributionMethod: EDistributionMethod;
   onDistributionMethodChange: (method: EDistributionMethod) => void;
-  onTotalAmountChange: (amount: number) => void;
+  onSubmit: () => void;
   resetBatchDeposit: () => void;
-  selectedValidators: IBatchDepositValidators[];
+  selectedValidators: ValidatorDetails[];
   stage: EBatchDepositStage;
-  setStage: (stage: EBatchDepositStage) => void;
+  setValue: UseFormSetValue<DepositType>;
   totalAllocated: number;
   totalToDistribute: number;
   walletBalance: number;
@@ -54,11 +60,11 @@ export interface IDistributionMethodProps {
 export interface ISelectValidatorsProps {
   clearSelectedValidators: () => void;
   distributionMethod: EDistributionMethod;
-  handleDepositAmountChange: (validator: IBatchDepositValidators) => void;
-  selectedValidators: IBatchDepositValidators[];
-  setSelectedValidators: (validator: IBatchDepositValidators) => void;
+  handleValidatorSelect: (validator: ValidatorDetails) => void;
+  selectedValidators: ValidatorDetails[];
   totalAllocated: number;
   totalToDistribute: number;
+  watchedDeposits: IBatchDepositValidators[];
   validators: ValidatorDetails[];
 }
 
@@ -70,22 +76,19 @@ export interface IValidatorHeaderProps {
 }
 
 export interface IDepositSelectionValidatorCard {
-  amount: number;
   distributionMethod: EDistributionMethod;
   depositAmount: number;
+  handleSelect: () => void;
+  index: number;
   selected: boolean;
-  setAmount: (amount: number) => void;
   totalAllocated: number;
   totalToDistribute: number;
   validator: ValidatorDetails;
-  onClick: (validator: ValidatorDetails, depositAmount: number) => void;
-  onDepositChange: (deposit: IBatchDepositValidators) => void;
 }
 
 export interface ITotalAmountInput {
   amount: number;
   walletBalance: number;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 export interface IWalletBalance {
@@ -106,8 +109,6 @@ export interface ISignatureDetails {
 export interface IDepositList {
   deposits: IBatchDepositValidators[];
   resetBatchDeposit: () => void;
-  setStage: (stage: EBatchDepositStage) => void;
-  stage: EBatchDepositStage;
   totalAllocated: number;
   totalToDistribute: number;
 }
@@ -126,7 +127,6 @@ export interface IValidatorListHeaders {
 
 export interface IDepositSignDataCard {
   deposit: IBatchDepositValidators;
-  index: number;
   stage: EBatchDepositStage;
 }
 

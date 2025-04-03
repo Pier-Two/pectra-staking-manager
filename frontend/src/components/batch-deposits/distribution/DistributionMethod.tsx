@@ -1,60 +1,38 @@
 "use client";
 
-import { type FC, useState } from "react";
-import {
-  EBatchDepositStage,
+import { type FC } from "react";
+import type {
   EDistributionMethod,
-  type IDistributionMethodProps,
-  type IDistributionOption,
+  IDistributionMethodProps,
 } from "pec/types/batch-deposits";
 import { DistributionInformation } from "./DistributionInformation";
 import { DistributionOption } from "./DistributionOption";
 import { TotalAmountInput } from "./TotalAmountInput";
+import type { DepositType } from "pec/lib/api/schemas/deposit";
+import type { FieldErrors, UseFormRegister } from "react-hook-form";
+import { DISTRIBUTION_OPTIONS } from "pec/constants/deposit";
+interface ExtendedProps extends IDistributionMethodProps {
+  errors: FieldErrors<DepositType>;
+  register: UseFormRegister<DepositType>;
+}
 
-const DISTRIBUTION_OPTIONS: IDistributionOption[] = [
-  {
-    method: EDistributionMethod.SPLIT,
-    title: "Split evenly",
-    description:
-      "Enter a single total amount and have it deposited evenly across selected validators",
-  },
-  {
-    method: EDistributionMethod.MANUAL,
-    title: "Manual entry",
-    description:
-      "Enter individual deposit amount for each selected validator and submit one transaction for total.",
-  },
-];
-
-export const DistributionMethod: FC<IDistributionMethodProps> = (props) => {
-  const {
-    disableButton,
-    distributionMethod,
-    onDistributionMethodChange,
-    onTotalAmountChange,
-    resetBatchDeposit,
-    selectedValidators,
-    stage,
-    setStage,
-    totalAllocated,
-    totalToDistribute,
-    walletBalance,
-  } = props;
-
-  const [amount, setAmount] = useState<number>(0);
-
+export const DistributionMethod: FC<ExtendedProps> = ({
+  disableButton,
+  distributionMethod,
+  onDistributionMethodChange,
+  onSubmit,
+  resetBatchDeposit,
+  selectedValidators,
+  stage,
+  setValue,
+  totalAllocated,
+  totalToDistribute,
+  walletBalance,
+  errors,
+  register,
+}) => {
   const handleDistributionMethodChange = (method: EDistributionMethod) => {
     onDistributionMethodChange(method);
-    setAmount(0);
-  };
-
-  const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = parseFloat(e.target.value);
-    const newAmount =
-      isNaN(value) || value < 0 || value > walletBalance ? 0 : value;
-
-    setAmount(newAmount);
-    onTotalAmountChange(newAmount);
   };
 
   return (
@@ -74,20 +52,21 @@ export const DistributionMethod: FC<IDistributionMethodProps> = (props) => {
       </div>
 
       <TotalAmountInput
-        amount={amount}
+        amount={totalToDistribute}
+        errors={errors}
+        register={register}
         walletBalance={walletBalance}
-        onChange={handleAmountChange}
       />
 
       <div className="space-y-2">
         <DistributionInformation
-          buttonText="Next"
+          buttonText="Deposit"
           disableButton={disableButton}
-          onClick={() => setStage(EBatchDepositStage.SIGN_DATA)}
+          onSubmit={onSubmit}
           resetBatchDeposit={resetBatchDeposit}
           selectedValidators={selectedValidators}
           stage={stage}
-          setStage={setStage}
+          setValue={setValue}
           totalAllocated={totalAllocated}
           totalToDistribute={totalToDistribute}
         />
