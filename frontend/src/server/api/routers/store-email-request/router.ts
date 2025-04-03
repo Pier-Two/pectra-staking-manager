@@ -1,9 +1,9 @@
 import { z } from "zod";
 
 import { createTRPCRouter, publicProcedure } from "pec/server/api/trpc";
-import { MOCK_VALIDATORS } from "pec/server/__mocks__/validators";
 import { storeConsolidationRequest } from "./consolidation";
 import { processWithdrawals, storeWithdrawalRequest } from "./withdrawal";
+import { processDeposits, storeDepositRequest } from "./deposit";
 
 export const storeEmailRequestRouter = createTRPCRouter({
   storeWithdrawalRequest: publicProcedure
@@ -19,15 +19,14 @@ export const storeEmailRequestRouter = createTRPCRouter({
 
   storeDepositRequest: publicProcedure
     .input(z.object({ validatorIndex: z.number(), txHash: z.string() }))
-    .query(({}) => {
-      // await DepositModel.create({
-      //   data: {
-      //     validatorIndex,
-      //     txHash,
-      //   },
-      // });
-      return MOCK_VALIDATORS;
+    .query(({ input }) => {
+      const { validatorIndex, txHash } = input;
+      return storeDepositRequest(validatorIndex, txHash);
     }),
+
+  processDeposits: publicProcedure.query(async () => {
+    return await processDeposits();
+  }),
 
   // ! Leave this for now
   storeConsolidationRequest: publicProcedure
