@@ -1,4 +1,4 @@
-import { batchDepositABI } from "@piertwo/contracts";
+import type { batchDepositABI } from "@piertwo/contracts";
 import type { Address, ThirdwebContract } from "thirdweb";
 
 export type SupportedNetworks = "Hoodi";

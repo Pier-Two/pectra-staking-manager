@@ -2,7 +2,7 @@
 
 import { SUPPORTED_NETWORKS_IDS } from "pec/constants/chain";
 import { useActiveChainWithDefault } from "pec/hooks/useChain";
-import { ParentComponent } from "pec/types/components";
+import type { ParentComponent } from "pec/types/components";
 import { ThirdwebProvider } from "thirdweb/react";
 
 export const NetworkContextProvider = ({ children }: ParentComponent) => {
