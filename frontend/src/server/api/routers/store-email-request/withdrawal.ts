@@ -60,7 +60,7 @@ export const processWithdrawals = async (): Promise<IResponse> => {
     if (withdrawals.length === 0)
       return {
         success: true,
-        message: "No active withdrawals found for this validator.",
+        message: "No active withdrawals found, nothing to process.",
       };
 
     for (const withdrawal of withdrawals) {
