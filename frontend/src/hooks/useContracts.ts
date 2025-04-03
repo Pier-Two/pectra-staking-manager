@@ -1,8 +1,8 @@
 import { getContracts } from "pec/constants/contracts";
-import { useActiveWalletChain } from "thirdweb/react";
+import { useActiveChainWithDefault } from "./useChain";
 
 export const useContracts = () => {
-  const chain = useActiveWalletChain();
-  if (!chain) return null;
+  const chain = useActiveChainWithDefault();
+
   return getContracts(chain.id);
 };

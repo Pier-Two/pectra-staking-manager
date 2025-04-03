@@ -1,5 +1,6 @@
 {
-  "name": "contracts",
+  "name": "@piertwo/contracts",
+  "main": "index.ts",
   "devDependencies": {
     "@nomicfoundation/hardhat-ethers": "^3.0.8",
     "@nomicfoundation/hardhat-toolbox-viem": "^3.0.0",
