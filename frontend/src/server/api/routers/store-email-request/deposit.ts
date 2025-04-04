@@ -1,9 +1,12 @@
 import axios, { type AxiosResponse } from "axios";
-import { BEACONCHAIN_OK_STATUS } from "pec/lib/constants";
+import { chunk, groupBy } from "lodash";
+import { BEACONCHAIN_OK_STATUS, CHUNK_SIZE } from "pec/lib/constants";
+import type { Deposit } from "pec/lib/database/classes/deposit";
 import { DepositModel } from "pec/lib/database/models";
 import { generateErrorResponse } from "pec/lib/utils";
 import { ACTIVE_STATUS, INACTIVE_STATUS } from "pec/types/app";
 import type { IResponse } from "pec/types/response";
+import { z } from "zod";
 
 interface DepositResponse {
   status: string;
@@ -25,6 +28,19 @@ interface DepositData {
   valid_signature: boolean;
   withdrawal_credentials: string;
 }
+
+const DepositDataSchema = z.object({
+  amount: z.number(),
+  block_number: z.number(),
+  block_ts: z.number(),
+  from_address: z.string(),
+  merkletree_index: z.string(),
+});
+
+const DepositResponseSchema = z.object({
+  status: z.literal(BEACONCHAIN_OK_STATUS),
+  data: z.array(DepositDataSchema),
+});
 
 export const storeDepositRequest = async (
   validatorIndex: number,
@@ -63,25 +79,48 @@ export const processDeposits = async (): Promise<IResponse> => {
         message: "No active deposits found, nothing to process.",
       };
 
-    for (const deposit of deposits) {
-      const { validatorIndex, txHash } = deposit;
+    const chunkedDeposits = chunkDeposits(deposits);
+
+    for (const chunk of chunkedDeposits) {
+      const validatorIndexString = chunk
+        .map((item) => item.validatorIndex)
+        .join(",");
+
       const response = await axios.get<DepositResponse>(
-        `https://beaconcha.in/api/v1/validator/${validatorIndex}/deposits`,
+        `https://beaconcha.in/api/v1/validator/${validatorIndexString}/deposits`,
       );
 
       if (!isResponseValid(response))
         return generateErrorResponse(response.status);
 
-      const deposits = response.data.data;
-      const depositExists = deposits.find(
-        (deposit) => deposit.tx_hash === txHash,
-      );
+      const groupedDeposits = groupDepositsByValidator(response.data);
 
-      if (depositExists) {
+      for (const validatorIndex in groupedDeposits) {
+        const validatorDeposits = groupedDeposits[validatorIndex];
+        if (!validatorDeposits) continue;
+
+        const targetDeposit = await DepositModel.findOne({
+          validatorIndex: Number(validatorIndex),
+          status: ACTIVE_STATUS,
+        });
+
+        if (!targetDeposit) continue;
+        const targetTransactionHash = targetDeposit.txHash;
+
+        const depositExists = validatorDeposits.find(
+          (deposit) => deposit.tx_hash === targetTransactionHash,
+        );
+
+        if (!depositExists) continue;
+
         //SEND EMAIL - DEPOSIT COMPLETE
         await DepositModel.updateOne(
           { validatorIndex },
-          { status: INACTIVE_STATUS },
+          {
+            $set: {
+              status: INACTIVE_STATUS,
+            },
+          },
         );
       }
     }
@@ -95,14 +134,20 @@ export const processDeposits = async (): Promise<IResponse> => {
   }
 };
 
+const groupDepositsByValidator = (data: DepositResponse) => {
+  return groupBy(data.data, "validatorindex");
+};
+
+const chunkDeposits = (deposits: Deposit[]) => {
+  const formatted = deposits.map((deposit) => ({
+    validatorIndex: deposit.validatorIndex,
+  }));
+
+  return chunk(formatted, CHUNK_SIZE);
+};
+
 const isResponseValid = (response: AxiosResponse<DepositResponse>): boolean => {
-  return (
-    response &&
-    response.status === 200 &&
-    response.data &&
-    typeof response.data === "object" &&
-    response.data.status === BEACONCHAIN_OK_STATUS &&
-    response.data.data &&
-    Array.isArray(response.data.data)
-  );
+  if (!response || response.status !== 200) return false;
+  const result = DepositResponseSchema.safeParse(response.data);
+  return result.success;
 };

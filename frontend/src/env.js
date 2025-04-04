@@ -20,6 +20,8 @@ export const env = createEnv({
     MONGODB_URI: z.string(),
     QSTASH_TOKEN: z.string(),
     QSTASH_URL: z.string(),
+    QSTASH_CURRENT_SIGNING_KEY: z.string(),
+    QSTASH_NEXT_SIGNING_KEY: z.string(),
     VERCEL_URL: z.string(),
   },
 
@@ -45,6 +47,8 @@ export const env = createEnv({
     MONGODB_URI: process.env.MONGODB_URI,
     QSTASH_TOKEN: process.env.QSTASH_TOKEN,
     QSTASH_URL: process.env.QSTASH_URL,
+    QSTASH_CURRENT_SIGNING_KEY: process.env.QSTASH_CURRENT_SIGNING_KEY,
+    QSTASH_NEXT_SIGNING_KEY: process.env.QSTASH_NEXT_SIGNING_KEY,
     VERCEL_URL: process.env.VERCEL_URL,
   },
   /**
