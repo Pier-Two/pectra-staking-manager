@@ -1,7 +1,10 @@
 import { z } from "zod";
 
 import { createTRPCRouter, publicProcedure } from "pec/server/api/trpc";
-import { storeConsolidationRequest } from "./consolidation";
+import {
+  processConsolidations,
+  storeConsolidationRequest,
+} from "./consolidation";
 import { processWithdrawals, storeWithdrawalRequest } from "./withdrawal";
 import { processDeposits, storeDepositRequest } from "./deposit";
 
@@ -34,4 +37,8 @@ export const storeEmailRequestRouter = createTRPCRouter({
     .query(({}) => {
       return storeConsolidationRequest();
     }),
+
+  processConsolidations: publicProcedure.query(async () => {
+    return await processConsolidations();
+  }),
 });

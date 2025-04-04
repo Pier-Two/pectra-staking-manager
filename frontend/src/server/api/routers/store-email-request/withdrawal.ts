@@ -77,7 +77,7 @@ export const processWithdrawals = async (): Promise<IResponse> => {
       const lastWithdrawalIndex = Number(lastWithdrawal?.withdrawalindex) ?? 0;
 
       if (lastWithdrawalIndex !== 0 && lastWithdrawalIndex > withdrawalIndex) {
-        //SEND EMAIL
+        //SEND EMAIL - WITHDRAWAL COMPLETE
         await WithdrawalModel.updateOne(
           { validatorIndex },
           {
