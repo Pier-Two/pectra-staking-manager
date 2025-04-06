@@ -17,6 +17,12 @@ export const env = createEnv({
   server: {
     NODE_ENV: z.enum(["development", "test", "production"]),
     THIRDWEB_SECRET_KEY: z.string(),
+    MONGODB_URI: z.string(),
+    QSTASH_TOKEN: z.string(),
+    QSTASH_URL: z.string(),
+    QSTASH_CURRENT_SIGNING_KEY: z.string(),
+    QSTASH_NEXT_SIGNING_KEY: z.string(),
+    VERCEL_URL: z.string(),
   },
 
   /**
@@ -38,6 +44,12 @@ export const env = createEnv({
     NEXT_PUBLIC_URL: getBaseUrl(),
     NEXT_PUBLIC_THIRDWEB_CLIENT_ID: process.env.NEXT_PUBLIC_THIRDWEB_CLIENT_ID,
     THIRDWEB_SECRET_KEY: process.env.THIRDWEB_SECRET_KEY,
+    MONGODB_URI: process.env.MONGODB_URI,
+    QSTASH_TOKEN: process.env.QSTASH_TOKEN,
+    QSTASH_URL: process.env.QSTASH_URL,
+    QSTASH_CURRENT_SIGNING_KEY: process.env.QSTASH_CURRENT_SIGNING_KEY,
+    QSTASH_NEXT_SIGNING_KEY: process.env.QSTASH_NEXT_SIGNING_KEY,
+    VERCEL_URL: process.env.VERCEL_URL,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially
