@@ -12,4 +12,7 @@ import { UserType } from "pec/lib/api/schemas/database/user";
 export class User implements UserType {
   @prop({ required: true, unique: true })
   public email!: string;
+
+  @prop({ required: true, unique: true })
+  public walletAddress!: string;
 }
