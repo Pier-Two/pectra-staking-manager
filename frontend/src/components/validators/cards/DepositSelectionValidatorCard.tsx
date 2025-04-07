@@ -1,15 +1,16 @@
 "use client";
 
-import { type FC } from "react";
-import Image from "next/image";
 import { AlignLeft, CircleCheck, CirclePlus } from "lucide-react";
+import Image from "next/image";
+import type { DepositType } from "pec/lib/api/schemas/deposit";
+import { DECIMAL_PLACES } from "pec/lib/constants";
 import {
   EDistributionMethod,
   type IDepositSelectionValidatorCard,
 } from "pec/types/batch-deposits";
-import { DECIMAL_PLACES } from "pec/lib/constants";
+import { type FC } from "react";
 import type { FieldErrors, UseFormRegister } from "react-hook-form";
-import type { DepositType } from "pec/lib/api/schemas/deposit";
+import { formatEther } from "viem";
 
 interface ExtendedProps extends IDepositSelectionValidatorCard {
   errors: FieldErrors<DepositType>;
@@ -65,7 +66,7 @@ export const DepositSelectionValidatorCard: FC<ExtendedProps> = ({
       <div className="flex flex-1 items-center gap-1 p-2">
         <AlignLeft className="h-4 w-4" />
         <div className="text-sm">
-          {validator.balance.toFixed(DECIMAL_PLACES)}
+          {Number(formatEther(validator.balance)).toFixed(DECIMAL_PLACES)}
         </div>
       </div>
 

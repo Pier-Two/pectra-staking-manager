@@ -5,6 +5,23 @@ import { client, wallets } from "pec/lib/wallet/client";
 import type { StyleableComponent } from "pec/types/components";
 import { clsx } from "clsx";
 import { useRouter } from "next/navigation";
+import { defineChain, mainnet } from "thirdweb/chains";
+
+const hoodiChain = defineChain({
+  id: 560048,
+  rpc: "https://0xrpc.io/hoodi",
+  blockExplorers: [
+    {
+      name: "Hoodiscan",
+      url: "https://hoodi.etherscan.io/",
+    },
+  ],
+  nativeCurrency: {
+    name: "Ether",
+    symbol: "ETH",
+    decimals: 18,
+  },
+});
 
 export const ConnectWalletButton = ({ className }: StyleableComponent) => {
   const router = useRouter();
@@ -19,6 +36,7 @@ export const ConnectWalletButton = ({ className }: StyleableComponent) => {
         ),
       }}
       autoConnect
+      chains={[hoodiChain, mainnet]}
       client={client}
       wallets={wallets}
       connectModal={{

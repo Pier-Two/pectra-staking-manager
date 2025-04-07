@@ -32,15 +32,17 @@ const Welcome: FC = () => {
       <Information />
 
       <div className="mt-12 flex w-full flex-col items-center justify-center gap-2">
-        <div className="text-center text-xs">
-          Connect your withdrawal address to access validators
-        </div>
+        {!hasWalletAddress && (
+          <div className="text-center text-xs">
+            Connect your withdrawal address to access validators
+          </div>
+        )}
 
         <div className="flex flex-col items-center justify-center gap-4">
           {hasWalletAddress ? (
             <PrimaryButton
               className="h-10 w-full"
-              label={"Enter site"}
+              label={"View Validators"}
               onClick={handleEnterSite}
               disabled={false}
             />

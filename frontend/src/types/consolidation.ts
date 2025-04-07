@@ -2,6 +2,7 @@ import type { ValidatorDetails } from "./validator";
 
 export interface IProgressBar {
   progress: number;
+  setProgress?: (step: number) => void;
 }
 
 export interface IDestinationValidatorList {

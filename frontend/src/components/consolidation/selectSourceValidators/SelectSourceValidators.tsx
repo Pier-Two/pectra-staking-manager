@@ -1,10 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState, type FC } from "react";
-import type { ISelectSourceValidators } from "pec/types/consolidation";
-import { ValidatorCard } from "pec/components/validators/cards/ValidatorCard";
-import type { ValidatorDetails } from "pec/types/validator";
-import { ValidatorList } from "./ValidatorList";
+import { AlignLeft, Pencil, Zap } from "lucide-react";
 import { PrimaryButton } from "pec/components/ui/custom/PrimaryButton";
 import { SecondaryButton } from "pec/components/ui/custom/SecondaryButton";
 import {
@@ -13,10 +9,15 @@ import {
   TabsList,
   TabsTrigger,
 } from "pec/components/ui/tabs";
+import { ValidatorCard } from "pec/components/validators/cards/ValidatorCard";
 import { DetectedValidators } from "pec/components/validators/DetectedValidators";
-import { AlignLeft, Pencil, Zap } from "lucide-react";
-import { EIconPosition } from "pec/types/components";
 import { DECIMAL_PLACES } from "pec/lib/constants";
+import { EIconPosition } from "pec/types/components";
+import type { ISelectSourceValidators } from "pec/types/consolidation";
+import type { ValidatorDetails } from "pec/types/validator";
+import { useEffect, useMemo, useState, type FC } from "react";
+import { formatEther } from "viem";
+import { ValidatorList } from "./ValidatorList";
 
 export const SelectSourceValidators: FC<ISelectSourceValidators> = (props) => {
   const {
@@ -65,7 +66,7 @@ export const SelectSourceValidators: FC<ISelectSourceValidators> = (props) => {
     return (
       selectedSourceValidators.reduce((acc, validator) => {
         return acc + validator.balance;
-      }, 0) + destinationValidator.balance
+      }, 0n) + destinationValidator.balance
     );
   }, [selectedSourceValidators, destinationValidator]);
 
@@ -112,14 +113,14 @@ export const SelectSourceValidators: FC<ISelectSourceValidators> = (props) => {
       >
         <TabsList className="grid w-full grid-cols-2 rounded-xl bg-gray-200 dark:bg-gray-900">
           <TabsTrigger
-            className="rounded-xl data-[state=active]:bg-white text-gray-800 data-[state=active]:text-indigo-800 dark:data-[state=active]:text-black"
+            className="rounded-xl text-gray-800 data-[state=active]:bg-white data-[state=active]:text-indigo-800 dark:data-[state=active]:text-black"
             value="maxConsolidate"
           >
             Max consolidate
           </TabsTrigger>
 
           <TabsTrigger
-            className="rounded-xl data-[state=active]:bg-white text-gray-800 data-[state=active]:text-indigo-800 dark:data-[state=active]:text-black"
+            className="rounded-xl text-gray-800 data-[state=active]:bg-white data-[state=active]:text-indigo-800 dark:data-[state=active]:text-black"
             value="manuallySelect"
           >
             Manually select
@@ -142,13 +143,17 @@ export const SelectSourceValidators: FC<ISelectSourceValidators> = (props) => {
         </TabsContent>
       </Tabs>
 
-      <div className="flex flex-row items-center justify-center gap-2 text-gray-600 dark:text-gray-400 text-sm">
+      <div className="flex flex-row items-center justify-center gap-2 text-sm text-gray-600 dark:text-gray-400">
         <Zap className="h-4 w-4 fill-indigo-500 text-indigo-500" />
         <div>New destination balance:</div>
 
         <div className="flex items-center gap-1 text-black dark:text-white">
           <AlignLeft className="h-3 w-3" />
-          <span>{newDestinationBalance.toFixed(DECIMAL_PLACES)} /</span>
+          <span>
+            {Number(formatEther(newDestinationBalance)).toFixed(
+              DECIMAL_PLACES,
+            )}{" "}
+          </span>
         </div>
 
         <div className="flex items-center gap-1">

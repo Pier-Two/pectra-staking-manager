@@ -7,8 +7,8 @@ export interface ValidatorDetails {
   validatorIndex: number;
   publicKey: string;
   withdrawalAddress: string;
-  balance: number;
-  effectiveBalance: number;
+  balance: bigint;
+  effectiveBalance: bigint;
   status: ValidatorStatus;
   numberOfWithdrawals: number;
   activeSince: string;

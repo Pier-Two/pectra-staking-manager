@@ -9,7 +9,7 @@ export interface IBatchDepositValidators {
 }
 
 export interface IDepositWorkflowProps {
-  data: ValidatorDetails[];
+  data?: ValidatorDetails[];
   balance: number;
 }
 export interface IDistributionInformation {

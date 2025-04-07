@@ -18,42 +18,44 @@ const Dashboard: FC = () => {
 
   const { data, isFetched } = api.validators.getValidators.useQuery(
     {
-      address: walletAddress || "",
+      address: walletAddress,
     },
     { enabled: !!walletAddress },
   );
 
   if (!walletAddress || !data || !isFetched) return <DashboardLoading />;
 
-  const activeValidators = data.filter(
-    (validator) => validator.status === ValidatorStatus.ACTIVE,
+  const activeValidators = data?.filter(
+    (validator) => validator?.status === ValidatorStatus.ACTIVE,
   );
 
-  const inactiveValidators = data.filter(
-    (validator) => validator.status === ValidatorStatus.INACTIVE,
+  const inactiveValidators = data?.filter(
+    (validator) => validator?.status === ValidatorStatus.INACTIVE,
   );
 
   return (
-    <div className="flex w-full flex-col items-center space-y-10 dark:text-white ">
-      <div className="flex w-full items-center justify-center bg-indigo-50 dark:bg-gray-900 p-12">
-      <div className="w-[78vw] space-y-6 ">
-        <div className="text-2xl font-medium text-indigo-800 dark:text-indigo-200">
-          Tools
-        </div>
+    <div className="flex w-full flex-col items-center space-y-10 dark:text-white">
+      <div className="flex w-full items-center justify-center bg-indigo-50 p-12 dark:bg-gray-900">
+        <div className="w-[78vw] space-y-6">
+          <div className="text-2xl font-medium text-indigo-800 dark:text-indigo-200">
+            Tools
+          </div>
 
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-          <Consolidate />
-          <BatchDeposit />
-          <Withdrawal />
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+            <Consolidate />
+            <BatchDeposit />
+            <Withdrawal />
+          </div>
         </div>
-      </div>
       </div>
 
       <div className="flex w-full items-center justify-center">
         <div className="w-[75vw] space-y-4">
-          <div className="text-2xl font-medium text-indigo-800 dark:text-indigo-200">My Validators</div>
+          <div className="text-2xl font-medium text-indigo-800 dark:text-indigo-200">
+            My Validators
+          </div>
 
-          <div className="text-sm grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid grid-cols-1 gap-8 text-sm md:grid-cols-2 lg:grid-cols-3">
             <ActiveValidators
               activeValidators={activeValidators.length}
               inactiveValidators={inactiveValidators.length}

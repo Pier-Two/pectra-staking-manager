@@ -19,14 +19,6 @@ export const TopBar: FC<ITopBar> = (props) => {
     router.push("/welcome");
   };
 
-  const handleDashboardNavigation = () => {
-    router.push("/dashboard");
-  };
-
-  const handleChartsNavigation = () => {
-    router.push("/charts");
-  };
-
   return (
     <header className="sticky flex w-full items-center justify-between border-b bg-gray-50 p-4 shadow-sm dark:border-gray-800 dark:bg-gray-950">
       <div className="order-2 flex items-center md:order-1">
@@ -58,7 +50,7 @@ export const TopBar: FC<ITopBar> = (props) => {
           <SidebarTrigger />
         </div>
 
-        <div className="hidden flex-row items-center gap-2 md:flex">
+        <div className="mr-12 hidden flex-row items-center gap-2 md:flex">
           <DarkMode />
           <ConnectWalletButton className="!w-[100px]" />
         </div>

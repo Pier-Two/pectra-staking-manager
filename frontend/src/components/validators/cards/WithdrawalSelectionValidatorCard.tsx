@@ -1,12 +1,13 @@
 "use client";
 
-import type { FC } from "react";
+import { AlignLeft, CircleCheck, CircleMinus, CirclePlus } from "lucide-react";
 import Image from "next/image";
-import type { IWithdrawalSelectionValidatorCard } from "pec/types/withdrawal";
-import { CircleCheck, CirclePlus, AlignLeft, CircleMinus } from "lucide-react";
-import type { FieldErrors, UseFormRegister } from "react-hook-form";
 import type { WithdrawalType } from "pec/lib/api/schemas/withdrawal";
 import { DECIMAL_PLACES } from "pec/lib/constants";
+import type { IWithdrawalSelectionValidatorCard } from "pec/types/withdrawal";
+import type { FC } from "react";
+import type { FieldErrors, UseFormRegister } from "react-hook-form";
+import { formatEther } from "viem";
 
 interface ExtendedProps extends IWithdrawalSelectionValidatorCard {
   errors: FieldErrors<WithdrawalType>;
@@ -71,7 +72,9 @@ export const WithdrawalSelectionValidatorCard: FC<ExtendedProps> = ({
       <div className="flex flex-1 flex-col">
         <div className="flex items-center gap-1">
           <AlignLeft className="h-4 w-4" />
-          <div className="text-sm">{balance.toFixed(DECIMAL_PLACES)}</div>
+          <div className="text-sm">
+            {Number(formatEther(balance)).toFixed(DECIMAL_PLACES)}
+          </div>
         </div>
 
         <div className="flex items-center gap-1 py-1 text-gray-700 dark:text-gray-300">
@@ -128,7 +131,7 @@ export const WithdrawalSelectionValidatorCard: FC<ExtendedProps> = ({
           <div className="flex items-center gap-1">
             <AlignLeft className="h-4 w-4" />
             <input
-              className="w-full rounded-xl bg-white border-none p-2 text-sm text-gray-700 dark:border-gray-800 dark:bg-black dark:text-gray-300"
+              className="w-full rounded-xl border-none bg-white p-2 text-sm text-gray-700 dark:border-gray-800 dark:bg-black dark:text-gray-300"
               disabled
               type="number"
               value={0}

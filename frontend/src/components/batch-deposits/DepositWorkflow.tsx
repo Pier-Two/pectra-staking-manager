@@ -1,36 +1,38 @@
 "use client";
 
-import type { FC } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { ArrowDownToDot } from "lucide-react";
+import { useContracts } from "pec/hooks/useContracts";
 import { DepositSchema, type DepositType } from "pec/lib/api/schemas/deposit";
+import type { IDepositWorkflowProps } from "pec/types/batch-deposits";
 import {
+  EBatchDepositStage,
   EDistributionMethod,
   type IBatchDepositValidators,
 } from "pec/types/batch-deposits";
-import { EBatchDepositStage } from "pec/types/batch-deposits";
-import type { IDepositWorkflowProps } from "pec/types/batch-deposits";
 import type { ValidatorDetails } from "pec/types/validator";
+import type { FC } from "react";
 import { useFieldArray, useForm, useWatch } from "react-hook-form";
-import { SignatureDetails } from "./SignatureDetails";
-import { ArrowDownToDot } from "lucide-react";
 import { DistributionMethod } from "./distribution/DistributionMethod";
-import { SelectValidators } from "./validators/SelectValidators";
+import { SignatureDetails } from "./SignatureDetails";
 import { DepositList } from "./validators/DepositList";
-import { useContracts } from "pec/hooks/useContracts";
+import { SelectValidators } from "./validators/SelectValidators";
 
 export const DepositWorkflow: FC<IDepositWorkflowProps> = ({
   data,
   balance,
 }) => {
   const {} = useContracts();
+
   const initialValues: DepositType = {
     selectedValidators: [],
     stage: EBatchDepositStage.DATA_CAPTURE,
-    deposits:
-      data?.map((validator) => ({
-        validator,
-        amount: 0,
-      })) ?? [],
+    deposits: data
+      ? data?.map((validator) => ({
+          validator,
+          amount: 0,
+        }))
+      : [],
     totalToDistribute: 0,
     distributionMethod: EDistributionMethod.SPLIT,
   };
@@ -105,10 +107,12 @@ export const DepositWorkflow: FC<IDepositWorkflowProps> = ({
     setValue("totalToDistribute", 0);
     setValue(
       "deposits",
-      data.map((validator) => ({
-        validator,
-        amount: 0,
-      })),
+      data
+        ? data.map((validator) => ({
+            validator,
+            amount: BigInt(0),
+          }))
+        : [],
     );
   };
 
