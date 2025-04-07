@@ -1,4 +1,7 @@
-import type { EDistributionMethod, IBatchDepositValidators } from "./batch-deposits";
+import type {
+  EDistributionMethod,
+  IBatchDepositValidators,
+} from "./batch-deposits";
 
 export interface ValidatorDetails {
   validatorIndex: number;
@@ -10,10 +13,20 @@ export interface ValidatorDetails {
   numberOfWithdrawals: number;
   activeSince: string;
   activeDuration: string;
-  apy: number;
-  transactionStatus: TransactionStatus;
-  transactionHash: string;
+  withdrawalTransaction: Transaction | undefined;
+  consolidationTransaction: Transaction | undefined;
+  depositTransaction: Transaction | undefined;
 }
+
+interface Transaction {
+  hash: string;
+  status: TransactionStatus;
+}
+
+export type ValidatorDetailsResponse = Omit<
+  ValidatorDetails,
+  "transactionStatus" | "transactionHash"
+>;
 
 export interface IConnector {
   connectedAddress: string;
@@ -61,7 +74,11 @@ export interface IBatchDepositValidatorCard {
   totalAllocated: number;
   totalToDistribute: number;
   validator: ValidatorDetails;
-  onClick: (validator: ValidatorDetails, distributionMethod: EDistributionMethod, depositAmount: number) => void;
+  onClick: (
+    validator: ValidatorDetails,
+    distributionMethod: EDistributionMethod,
+    depositAmount: number,
+  ) => void;
   onDepositChange: (validator: IBatchDepositValidators) => void;
 }
 

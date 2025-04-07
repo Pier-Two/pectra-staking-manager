@@ -31,8 +31,8 @@ export function useValidatorTable(data: ValidatorDetails[], itemsPerPage = 10) {
     return [...filteredData].sort((a, b) => {
       if (!sortConfig) return 0;
 
-      const aValue = a[sortConfig.key as keyof typeof a];
-      const bValue = b[sortConfig.key as keyof typeof b];
+      const aValue = a[sortConfig.key as keyof typeof a] as number;
+      const bValue = b[sortConfig.key as keyof typeof b] as number;
 
       if (aValue < bValue)
         return sortConfig.direction === ESortDirection.ASC ? -1 : 1;

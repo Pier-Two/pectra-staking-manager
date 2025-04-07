@@ -1,6 +1,5 @@
 import {
   ValidatorStatus,
-  TransactionStatus,
   type ValidatorDetails,
 } from "pec/types/validator";
 
@@ -17,9 +16,9 @@ export const MOCK_VALIDATORS: ValidatorDetails[] = [
     status: ValidatorStatus.ACTIVE,
     activeSince: "01-Jan-2025",
     activeDuration: "100 days",
-    apy: 3.34,
-    transactionStatus: TransactionStatus.SUBMITTED,
-    transactionHash: "0x1234567890abcdef",
+    consolidationTransaction: null,
+    depositTransaction: null,
+    withdrawalTransaction: null,
   },
   {
     validatorIndex: 501234,
@@ -33,9 +32,9 @@ export const MOCK_VALIDATORS: ValidatorDetails[] = [
     status: ValidatorStatus.ACTIVE,
     activeSince: "15-Feb-2025",
     activeDuration: "85 days",
-    apy: 3.28,
-    transactionStatus: TransactionStatus.UPCOMING,
-    transactionHash: "",
+    consolidationTransaction: null,
+    depositTransaction: null,
+    withdrawalTransaction: null,
   },
   {
     validatorIndex: 502890,
@@ -49,9 +48,9 @@ export const MOCK_VALIDATORS: ValidatorDetails[] = [
     status: ValidatorStatus.PENDING,
     activeSince: "20-Mar-2025",
     activeDuration: "50 days",
-    apy: 3.25,
-    transactionStatus: TransactionStatus.SUBMITTED,
-    transactionHash: "",
+    consolidationTransaction: null,
+    depositTransaction: null,
+    withdrawalTransaction: null,
   },
   {
     validatorIndex: 503452,
@@ -65,9 +64,9 @@ export const MOCK_VALIDATORS: ValidatorDetails[] = [
     status: ValidatorStatus.ACTIVE,
     activeSince: "20-Mar-2025",
     activeDuration: "50 days",
-    apy: 3.45,
-    transactionStatus: TransactionStatus.IN_PROGRESS,
-    transactionHash: "",
+    consolidationTransaction: null,
+    depositTransaction: null,
+    withdrawalTransaction: null,
   },
   {
     validatorIndex: 504321,
@@ -81,9 +80,9 @@ export const MOCK_VALIDATORS: ValidatorDetails[] = [
     status: ValidatorStatus.INACTIVE,
     activeSince: "10-Jan-2025",
     activeDuration: "120 days",
-    apy: 3.12,
-    transactionStatus: TransactionStatus.UPCOMING,
-    transactionHash: "",
+    consolidationTransaction: null,
+    depositTransaction: null,
+    withdrawalTransaction: null,
   },
   ...Array.from({ length: 15 }, (_, i) => ({
     validatorIndex: 500000 + i,
@@ -100,8 +99,8 @@ export const MOCK_VALIDATORS: ValidatorDetails[] = [
           : ValidatorStatus.INACTIVE,
     activeSince: i < 15 ? "2023-06-15" : "2025-01-01",
     activeDuration: i < 15 ? "8 months" : "3 months",
-    apy: +(Math.random() * 10).toFixed(2),
-    transactionStatus: TransactionStatus.UPCOMING,
-    transactionHash: "0x1234567890abcdef",
+    consolidationTransaction: null,
+    depositTransaction: null,
+    withdrawalTransaction: null,
   })),
 ];
