@@ -16,21 +16,16 @@ export const useConsolidationFee = () => {
   const queryFn = useQuery({
     queryKey: ["consolidationFee", account],
     queryFn: async () => {
-      console.log("hello");
       if (!contracts || !rpcClient) {
         throw new Error("Not loaded");
       }
 
-      console.log("pre hook");
       const result = await eth_call(rpcClient, {
         to: contracts.consolidation.address,
       });
 
-      console.log("result: ", result);
-
       const convertedBigInt = fromHex(result, "bigint");
 
-      console.log(convertedBigInt);
       return Number(formatEther(convertedBigInt));
     },
   });
@@ -41,10 +36,12 @@ export const useConsolidationFee = () => {
 export const useConsolidation = () => {
   const { data: feeData } = useConsolidationFee();
 
+  const consolidate = async () => {
+    // TODO add call to consolidate contract
+  };
+
   const mutationFn = useMutation({
-    mutationFn: async () => {
-      console.log("clicked consolidate");
-    },
+    mutationFn: consolidate,
   });
 
   return mutationFn;
