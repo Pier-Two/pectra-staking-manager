@@ -10,20 +10,18 @@ import { ArrowRightIcon } from "lucide-react";
 import { PrimaryButton } from "pec/components/ui/custom/PrimaryButton";
 import { EIconPosition } from "pec/types/components";
 
-export const SubmitConsolidationRequests: FC<IConsolidationSubmission> = (
-  props,
-) => {
-  const {
-    consolidationEmail,
-    destinationValidator,
-    setConsolidationEmail,
-    sourceValidators,
-  } = props;
-
+export const SubmitConsolidationRequests: FC<IConsolidationSubmission> = ({
+  consolidationEmail,
+  destinationValidator,
+  setConsolidationEmail,
+  sourceValidators,
+}) => {
   const router = useRouter();
 
   const everyTransactionSubmitted = sourceValidators.every(
-    (validator) => validator.transactionStatus === TransactionStatus.SUBMITTED,
+    (validator) =>
+      validator.consolidationTransaction?.status ===
+      TransactionStatus.SUBMITTED,
   );
 
   const handleDashboardNavigation = () => {
@@ -68,8 +66,13 @@ export const SubmitConsolidationRequests: FC<IConsolidationSubmission> = (
         <div className="flex flex-col gap-2">
           <div className="text-d font-medium">Destination validator</div>
           <TransactionValidatorCard
-            status={destinationValidator.transactionStatus}
-            transactionHash={destinationValidator.transactionHash}
+            status={
+              destinationValidator.consolidationTransaction?.status ??
+              TransactionStatus.UPCOMING
+            }
+            transactionHash={
+              destinationValidator.consolidationTransaction?.hash ?? ""
+            }
             validator={destinationValidator}
           />
         </div>
@@ -80,8 +83,11 @@ export const SubmitConsolidationRequests: FC<IConsolidationSubmission> = (
           {sourceValidators.map((validator) => (
             <TransactionValidatorCard
               key={validator.validatorIndex}
-              status={validator.transactionStatus}
-              transactionHash={validator.transactionHash}
+              status={
+                validator.consolidationTransaction?.status ??
+                TransactionStatus.UPCOMING
+              }
+              transactionHash={validator.consolidationTransaction?.hash ?? ""}
               validator={validator}
             />
           ))}
