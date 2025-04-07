@@ -11,7 +11,16 @@ export const ValidatorDataSchema = z.object({
   numberOfWithdrawals: z.number(),
   activeSince: z.string(),
   activeDuration: z.string(),
-  apy: z.number(),
-  transactionStatus: z.nativeEnum(TransactionStatus).optional(),
-  transactionHash: z.string().optional(),
+  consolidationTransaction: z.object({
+    status: z.nativeEnum(TransactionStatus),
+    hash: z.string(),
+  }).optional(),
+  depositTransaction: z.object({
+    status: z.nativeEnum(TransactionStatus),
+    hash: z.string(),
+  }).optional(),
+  withdrawalTransaction: z.object({
+    status: z.nativeEnum(TransactionStatus),
+    hash: z.string(),
+  }).optional(),
 });
