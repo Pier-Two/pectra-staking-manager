@@ -23,11 +23,9 @@ type Story = StoryObj<typeof meta>;
 export const Primary: Story = {
   args: {
     destinationValidator: MOCK_VALIDATORS[0]!,
-    selectedSourceTotal: 0,
+    selectedSourceValidators: [],
     setProgress: () => {},
     setSelectedDestinationValidator: () => {},
-    setSelectedSourceTotal: () => {},
-    selectedSourceValidators: [],
     setSelectedSourceValidators: () => {},
     validators: MOCK_VALIDATORS,
   },

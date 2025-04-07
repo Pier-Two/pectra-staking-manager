@@ -1,42 +1,40 @@
+"use client";
+
 import type { FC } from "react";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "pec/components/ui/card";
-import { Separator } from "pec/components/ui/separator";
-import { AlignLeft, ArrowDownToDot } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { ArrowDownToDot } from "lucide-react";
+import { PrimaryButton } from "pec/components/ui/custom/PrimaryButton";
 
 export const BatchDeposit: FC = () => {
+  const router = useRouter();
+
+  const handleBatchDepositRedirect = () => {
+    router.push("/batch-deposit");
+  };
+
   return (
-    <Card className="hover:border-3 space-y-4 rounded-xl border bg-white p-3 hover:border-blue-400 dark:border-gray-800 dark:bg-black dark:hover:border-blue-400 hover:cursor-pointer flex flex-col">
-      <CardHeader className="flex min-h-[15vh] flex-row items-center justify-center gap-8 flex-shrink-0">
-        <ArrowDownToDot className="hover:text-blue-400" size={70} />
-        <div className="flex flex-col gap-2">
-          <CardTitle>Batch Deposit</CardTitle>
-          <CardDescription className="text-gray-500">
-            Deposit to multiple active validators at once, via PierTwo&apos;s
-            batch deposit contract.
-          </CardDescription>
-        </div>
-      </CardHeader>
+    <div
+      className="hover:bg-activeCard hover:border-3 group flex flex-col space-y-4 rounded-xl border border-indigo-200 bg-white p-4 pe-8 ps-8 text-gray-900 hover:cursor-pointer hover:text-white dark:border-gray-700 dark:bg-black dark:text-white"
+      onClick={handleBatchDepositRedirect}
+    >
+      <div className="flex flex-row items-center gap-x-2 text-indigo-800 group-hover:text-blue-200 dark:text-indigo-200">
+        <ArrowDownToDot size={30} />
+        <div className="text-2xl font-medium">Batch Deposit</div>
+      </div>
 
-      <Separator className="bg-gray-200 dark:bg-gray-800" />
-
-      <CardContent className="flex flex-grow items-center justify-between gap-8 text-sm">
-        <div className="text-gray-700 dark:text-white">
-          Available to deposit
+      <div className="flex flex-col gap-y-4 pt-8">
+        <div className="text-sm">
+          Deposit multiple active validators at once, via PierTwo&apos;s batch
+          deposit contract.
         </div>
 
-        <div className="flex flex-row items-center gap-1">
-          <AlignLeft className="h-4 w-4" />
-          <div className="text-gray-700 hover:text-black dark:text-white dark:hover:text-gray-300">
-            XXX
-          </div>
-        </div>
-      </CardContent>
-    </Card>
+        <PrimaryButton
+          className="w-auto group-hover:bg-white group-hover:text-indigo-800 dark:group-hover:bg-white dark:group-hover:text-indigo-800"
+          label="Deposit now"
+          disabled={false}
+          onClick={handleBatchDepositRedirect}
+        />
+      </div>
+    </div>
   );
 };

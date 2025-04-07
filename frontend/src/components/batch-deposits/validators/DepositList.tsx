@@ -1,0 +1,51 @@
+import type { FC } from "react";
+import {
+  EBatchDepositStage,
+  type IDepositList,
+} from "pec/types/batch-deposits";
+import { ValidatorListHeaders } from "./ValidatorListHeaders";
+import { DistributionInformation } from "../distribution/DistributionInformation";
+import { DepositSignDataCard } from "pec/components/validators/cards/DepositSignDataCard";
+import { SIGN_DEPOSIT_COLUMN_HEADERS } from "pec/constants/columnHeaders";
+
+export const DepositList: FC<IDepositList> = ({
+  deposits,
+  resetBatchDeposit,
+  totalAllocated,
+  totalToDistribute,
+}) => {
+  return (
+    <>
+      <DistributionInformation
+        buttonText="Submitting"
+        disableButton={false}
+        resetBatchDeposit={resetBatchDeposit}
+        selectedValidators={deposits.map((deposit) => deposit.validator)}
+        stage={EBatchDepositStage.TRANSACTIONS_SUBMITTED}
+        totalAllocated={totalAllocated}
+        totalToDistribute={totalToDistribute}
+      />
+
+      <div className="text-md font-medium">Deposits</div>
+
+      <div className="flex flex-col gap-3">
+        <ValidatorListHeaders
+          columnHeaders={SIGN_DEPOSIT_COLUMN_HEADERS}
+          sortColumn={""}
+          sortDirection={null}
+          onSort={() => {}}
+        />
+
+        {deposits.map((deposit, index) => {
+          return (
+            <DepositSignDataCard
+              key={`deposit-${index}-${deposit.validator.validatorIndex}`}
+              deposit={deposit}
+              stage={EBatchDepositStage.SIGN_DATA}
+            />
+          );
+        })}
+      </div>
+    </>
+  );
+};

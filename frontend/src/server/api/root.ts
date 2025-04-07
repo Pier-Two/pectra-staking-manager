@@ -1,5 +1,6 @@
 import { createCallerFactory, createTRPCRouter } from "pec/server/api/trpc";
 import { validatorRouter } from "./routers/validators";
+import { storeEmailRequestRouter } from "./routers/store-email-request/router";
 
 /**
  * This is the primary router for your server.
@@ -8,6 +9,7 @@ import { validatorRouter } from "./routers/validators";
  */
 export const appRouter = createTRPCRouter({
   validators: validatorRouter,
+  storeEmailRequest: storeEmailRequestRouter,
 });
 
 // export type definition of API

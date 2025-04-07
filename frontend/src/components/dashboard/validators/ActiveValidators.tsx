@@ -1,21 +1,32 @@
 import type { FC } from "react";
-import { Card, CardContent, CardHeader } from "pec/components/ui/card";
-import { CircleDollarSign } from "lucide-react";
+import type { IActiveValidators } from "pec/types/dashboard";
+import Image from "next/image";
 
-export const ActiveValidators: FC = () => {
+export const ActiveValidators: FC<IActiveValidators> = (props) => {
+  const { activeValidators, inactiveValidators } = props;
   return (
-    <Card className="space-y-4 rounded-xl border bg-white p-1 dark:border-gray-800 dark:bg-black">
-      <CardHeader className="flex flex-row justify-between items-center gap-8">
-        <div className="text-gray-700 dark:text-white">Active Validators</div>
-        <CircleDollarSign />
-      </CardHeader>
+    <div className="space-y-4 rounded-xl border bg-indigo-50 p-4 pe-8 ps-8 text-gray-600 dark:border-gray-800 dark:bg-gray-900 dark:text-white">
+      <div className="flex flex-row items-center justify-between gap-8">
+        <div>Active Validators</div>
+      </div>
 
-      <CardContent className="flex flex-col gap-2">
-        <div className="text-xl font-bold text-gray-700 dark:text-white">XXX</div>
-        <div className="text-sm text-gray-500 dark:text-white">
-          +XXX inactive
+      <div className="flex flex-col gap-2">
+        <div className="flex flex-row items-center gap-2">
+          <Image
+            src="/icons/EthValidator.svg"
+            alt="Wallet"
+            width={24}
+            height={24}
+          />
+          <div className="text-xl font-bold text-indigo-800 dark:text-indigo-200">
+            {activeValidators}
+          </div>
         </div>
-      </CardContent>
-    </Card>
+
+        {inactiveValidators > 0 && (
+          <div>+{inactiveValidators} inactive</div>
+        )}
+      </div>
+    </div>
   );
 };

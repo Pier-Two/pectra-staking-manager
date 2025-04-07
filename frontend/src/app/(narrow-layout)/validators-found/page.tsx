@@ -4,9 +4,12 @@ import type { FC } from "react";
 import { api } from "pec/trpc/react";
 import { useRouter } from "next/navigation";
 import { Connector } from "pec/components/validators/Connector";
-import { Button } from "pec/components/ui/button";
 import ValidatorsFoundLoading from "./loading";
 import { useWalletAddress } from "pec/hooks/useWallet";
+import { PrimaryButton } from "pec/components/ui/custom/PrimaryButton";
+import { SecondaryButton } from "pec/components/ui/custom/SecondaryButton";
+import { ArrowRightIcon } from "lucide-react";
+import { EIconPosition } from "pec/types/components";
 
 const ValidatorsFound: FC = () => {
   const router = useRouter();
@@ -22,7 +25,7 @@ const ValidatorsFound: FC = () => {
   if (!walletAddress || !data || !isFetched) return <ValidatorsFoundLoading />;
 
   const handleConsolidationRedirect = () => {
-    router.push("/consolidate");
+    router.push("/consolidation");
   };
 
   const handleDashboardRedirect = () => {
@@ -31,27 +34,29 @@ const ValidatorsFound: FC = () => {
 
   return (
     <div className="space-y-8">
-      <div className="flex flex-col items-center justify-center gap-4">
-        <div className="text-3xl">Validators found!</div>
-        <Connector connectedAddress={walletAddress} validators={data} />
+      <div className="flex flex-col gap-2">
+        <div className="text-2xl text-center font-medium">Validators found!</div>
+        <Connector connectedAddress={walletAddress} textAlignment="center" validators={data} />
       </div>
 
       <div className="flex flex-col gap-4">
-        <Button
-          className="space-x-2 rounded-xl border border-gray-800 bg-black p-4 hover:bg-gray-900 dark:bg-white dark:hover:bg-gray-200"
+        <PrimaryButton
+          label="Start consolidation"
           onClick={handleConsolidationRedirect}
-        >
-          <div className="text-sm text-white dark:text-black">
-            Start consolidation
-          </div>
-        </Button>
+          disabled={false}
+        />
 
-        <Button
-          className="space-x-2 rounded-xl border border-gray-800 bg-white p-4 hover:bg-gray-200"
+        <SecondaryButton
+          label="Skip and go to Dashboard"
+          icon={<ArrowRightIcon />}
+          iconPosition={EIconPosition.RIGHT}
           onClick={handleDashboardRedirect}
-        >
-          <div className="text-sm text-black">Skip and go to Dashboard</div>
-        </Button>
+          disabled={false}
+        />
+
+        <div className="flex justify-center text-xs">
+          You can access consolidation anytime.
+        </div>
       </div>
     </div>
   );

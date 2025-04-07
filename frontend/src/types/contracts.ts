@@ -1,9 +1,10 @@
-import { Address, ThirdwebContract } from "thirdweb";
+import type { batchDepositABI } from "@piertwo/contracts";
+import type { Address, ThirdwebContract } from "thirdweb";
 
-export type SupportedNetworks = "Holesky";
+export type SupportedNetworks = "Hoodi";
 
 export interface Contracts {
   consolidation: ThirdwebContract<[], Address>;
   withdrawal: ThirdwebContract<[], Address>;
-  batchDeposit: string;
+  batchDeposit: ThirdwebContract<typeof batchDepositABI, Address>;
 }

@@ -1,3 +1,5 @@
+import type { EDistributionMethod, IBatchDepositValidators } from "./batch-deposits";
+
 export interface ValidatorDetails {
   validatorIndex: number;
   publicKey: string;
@@ -9,10 +11,13 @@ export interface ValidatorDetails {
   activeSince: string;
   activeDuration: string;
   apy: number;
+  transactionStatus: TransactionStatus;
+  transactionHash: string;
 }
 
 export interface IConnector {
   connectedAddress: string;
+  textAlignment: "left" | "center";
   validators: ValidatorDetails[];
 }
 
@@ -20,14 +25,44 @@ export interface IConnectedAddress {
   address: string;
 }
 
+export interface IDetectedValidators {
+  cardTitle: string;
+  validators: ValidatorDetails[];
+}
+
+export interface IGenericValidator {
+  validator: ValidatorDetails;
+}
+
 export interface IGenericValidators {
   validators: ValidatorDetails[];
 }
 
 export interface IValidatorCard {
-  validator: ValidatorDetails;
+  hasBackground: boolean;
+  hasHover: boolean;
   shrink: boolean;
+  validator: ValidatorDetails;
   onClick?: () => void;
+}
+
+export interface ITransactionValidatorCard {
+  status: TransactionStatus;
+  transactionHash: string;
+  validator: ValidatorDetails;
+}
+
+export interface IBatchDepositValidatorCard {
+  clearedSelectedValidators: boolean;
+  depositAmount: number;
+  distributionMethod: EDistributionMethod;
+  selected: boolean;
+  setClearedSelectedValidators: (cleared: boolean) => void;
+  totalAllocated: number;
+  totalToDistribute: number;
+  validator: ValidatorDetails;
+  onClick: (validator: ValidatorDetails, distributionMethod: EDistributionMethod, depositAmount: number) => void;
+  onDepositChange: (validator: IBatchDepositValidators) => void;
 }
 
 export interface ISourceValidatorCard {
@@ -40,4 +75,10 @@ export enum ValidatorStatus {
   ACTIVE = "Active",
   PENDING = "Pending",
   INACTIVE = "Inactive",
+}
+
+export enum TransactionStatus {
+  IN_PROGRESS = "In Progress",
+  UPCOMING = "Upcoming",
+  SUBMITTED = "Submitted",
 }

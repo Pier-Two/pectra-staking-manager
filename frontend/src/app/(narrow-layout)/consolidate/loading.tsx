@@ -17,9 +17,11 @@ const ConsolidationLoading: FC = () => {
 
         {/* Skeleton loaders for async data */}
         <div className="space-y-4">
-          <Skeleton className="h-12 w-[60vw] rounded-md" />
-          <Skeleton className="h-12 w-[60vw] rounded-md" />
-          <Skeleton className="h-12 w-[60vw] rounded-md" />
+          <Skeleton className="h-12 w-[60vw] rounded-md bg-gray-200 dark:bg-gray-800" />
+          <Skeleton className="h-12 w-[40vw] rounded-md bg-gray-200 dark:bg-gray-800" />
+          <Skeleton className="h-12 w-[50vw] rounded-md bg-gray-200 dark:bg-gray-800" />
+          <Skeleton className="h-12 w-[40vw] rounded-md bg-gray-200 dark:bg-gray-800" />
+          <Skeleton className="h-12 w-[60vw] rounded-md bg-gray-200 dark:bg-gray-800" />
         </div>
       </div>
     </div>

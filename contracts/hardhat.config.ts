@@ -26,6 +26,13 @@ const config: HardhatUserConfig = {
         blockNumber: 22062918,
       },
     },
+    hoodi: {
+      chainId: 560048,
+      url: "https://0xrpc.io/hoodi",
+      accounts: {
+        mnemonic: process.env.MNEMONIC || "",
+      },
+    },
   },
 };
 

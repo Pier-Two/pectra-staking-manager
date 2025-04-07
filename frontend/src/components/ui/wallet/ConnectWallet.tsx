@@ -14,7 +14,7 @@ export const ConnectWalletButton = ({ className }: StyleableComponent) => {
       connectButton={{
         label: "Connect Wallet",
         className: clsx(
-          "hover:bg-[#141019] hover:text-red-500 !w-full !max-w-md !bg-black dark:!bg-gray-200 !text-white dark:!text-black border-1-gray border-lg border-white",
+          "!w-full !rounded-full !bg-indigo-500 !hover:bg-indigo-400 !text-white",
           className,
         ),
       }}
@@ -24,9 +24,6 @@ export const ConnectWalletButton = ({ className }: StyleableComponent) => {
       connectModal={{
         size: "wide",
         title: "Login/Sign up",
-      }}
-      onConnect={() => {
-        router.push("/validators-found");
       }}
       onDisconnect={() => {
         router.push("/welcome");

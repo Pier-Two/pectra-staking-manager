@@ -25,7 +25,7 @@ export const BottomBar: FC = () => {
         <Image
           src={logoSrc}
           alt={logo}
-          className="h-30 w-30 transition-opacity duration-200 group-hover:opacity-0"
+          className="h-35 w-35 transition-opacity duration-200 group-hover:opacity-0"
           width={100}
           height={100}
         />
@@ -33,7 +33,7 @@ export const BottomBar: FC = () => {
         <Image
           src={hoverLogoSrc}
           alt={`${logo} Hover`}
-          className="h-30 w-30 absolute left-0 top-0 opacity-0 transition-opacity duration-200 group-hover:opacity-100"
+          className="h-35 w-35 absolute left-0 top-0 opacity-0 transition-opacity duration-200 group-hover:opacity-100"
           width={100}
           height={100}
         />
@@ -42,16 +42,21 @@ export const BottomBar: FC = () => {
   };
 
   return (
-    <footer className="sticky bottom-0 z-10 flex h-[5vh] w-full items-center justify-between border-t bg-[rgba(255,255,255,0.98)] px-6 shadow-sm dark:border-gray-800 dark:bg-gray-950">
-      <div className="text-gray-600 dark:text-gray-300">
+    <footer className="sticky bottom-0 z-10 flex h-[7vh] w-full items-center justify-between border-t bg-[rgba(255,255,255,0.98)] px-6 shadow-sm dark:border-gray-800 dark:bg-gray-950">
+      <div className="text-sm text-gray-600 dark:text-gray-300">
         Built with 🤍 by and for the Ethereum community
       </div>
 
-      <div className="flex items-center space-x-3 text-gray-600 dark:text-gray-300">
-        <div>Powered by: </div>
-        {renderLogo("PierTwo")}
-        {renderLogo("Labrys")}
-        {renderLogo("Hashlock")}
+      <div className="flex items-center gap-8 text-sm text-gray-600 dark:text-gray-300">
+        <div className="flex items-center gap-2">
+          <div>Product by: </div>
+          {renderLogo("PierTwo")}
+        </div>
+
+        <div className="flex items-center gap-2">
+          <div>Produced by: </div>
+          {renderLogo("Labrys")}
+        </div>
       </div>
     </footer>
   );

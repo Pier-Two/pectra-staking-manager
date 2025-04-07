@@ -24,8 +24,6 @@ export interface ITableFiltersProps {
 
 export interface IValidatorRowProps {
   validator: ValidatorDetails;
-  isSelected: boolean;
-  onToggle: (checked: boolean) => void;
 }
 
 export interface ITablePaginationProps {
@@ -42,10 +40,7 @@ export interface SortConfig {
 }
 
 export interface ITableHeadersRowProps {
-  paginatedData: ValidatorDetails[];
-  selectedRows: string[];
   sortConfig: SortConfig | null;
-  onToggleAll: (checked: boolean) => void;
   onSort: (key: string) => void;
 }
 
@@ -55,9 +50,6 @@ export interface IHeaderConfig {
 }
 export interface IValidatorTableContentProps {
   paginatedData: ValidatorDetails[];
-  selectedRows: string[];
   sortConfig: SortConfig | null;
-  onToggleAll: (checked: boolean) => void;
-  onToggleRow: (id: string, checked: boolean) => void;
   onSort: (key: string) => void;
 }

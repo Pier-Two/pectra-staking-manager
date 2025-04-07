@@ -8,6 +8,7 @@
   "scripts": {
     "dev": "pnpm --filter frontend dev",
     "build": "pnpm --filter frontend build",
-    "storybook": "pnpm --filter frontend storybook"
+    "storybook": "pnpm --filter frontend storybook",
+    "schedule-jobs": "pnpm --filter frontend schedule-jobs"
   }
 }

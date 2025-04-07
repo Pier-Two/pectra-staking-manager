@@ -1,5 +1,4 @@
 import type { FC } from "react";
-import { Button } from "pec/components/ui/button";
 import { CircleCheck } from "lucide-react";
 
 export const Information: FC = () => {
@@ -13,16 +12,15 @@ export const Information: FC = () => {
     <div className="flex flex-col gap-4 text-black dark:text-white">
       <div className="text-center">Use this tool to enable and manage:</div>
 
-      <div className="flex flex-row justify-between gap-2">
+      <div className="flex flex-row justify-between gap-3">
         {benefits.map((benefit) => (
-          <Button
+          <div
             key={benefit}
-            className="rounded-xl border-gray-700 bg-white dark:border-gray-200 dark:bg-black"
-            variant="outline"
+            className="flex flex-row items-center gap-2 border p-2 rounded-xl border-gray-300 bg-white dark:border-gray-700 dark:bg-black"
           >
-            <CircleCheck fill="black" className="h-4 w-4 text-white" />
-            {benefit}
-          </Button>
+            <CircleCheck className="h-4 w-4 text-white fill-indigo-500" />
+            <div className="text-xs">{benefit}</div>
+          </div>
         ))}
       </div>
     </div>

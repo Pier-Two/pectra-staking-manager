@@ -1,0 +1,60 @@
+"use client";
+
+import { type FC, useState } from "react";
+import Image from "next/image";
+import type { IDetectedValidators } from "pec/types/validator";
+import { AlignLeft, ChevronsLeftRight } from "lucide-react";
+import { ValidatorCard } from "./cards/ValidatorCard";
+import { DECIMAL_PLACES } from "pec/lib/constants";
+
+export const DetectedValidators: FC<IDetectedValidators> = (props) => {
+  const { cardTitle, validators } = props;
+
+  const [showValidators, setShowValidators] = useState<boolean>(false);
+
+  const totalBalance = validators.reduce(
+    (acc, validator) => acc + validator.balance,
+    0,
+  );
+
+  return (
+    <>
+      <div
+        onClick={() => setShowValidators(!showValidators)}
+        className="flex-col-2 flex w-full items-center justify-between gap-x-4 rounded-xl border border-gray-200 bg-white px-4 py-6 hover:cursor-pointer hover:border-indigo-300 dark:border-gray-800 dark:bg-black"
+      >
+        <div className="flex items-center gap-x-4">
+          <Image
+            src="/icons/EthValidator.svg"
+            alt="Wallet"
+            width={24}
+            height={24}
+          />
+          <div className="text-md">{validators.length} {cardTitle}</div>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1">
+            <AlignLeft className="h-3 w-3 text-gray-500 dark:text-white" />
+            <span>{totalBalance.toFixed(DECIMAL_PLACES)}</span>
+          </div>
+          <ChevronsLeftRight className="h-5 w-5 rotate-90 text-gray-800 dark:text-white" />
+        </div>
+      </div>
+
+      {showValidators && (
+        <div className="flex w-full flex-col items-center gap-2 mt-2">
+          {validators.map((validator, index) => (
+            <ValidatorCard
+              key={index + validator.validatorIndex}
+              hasBackground={false}
+              hasHover={false}
+              shrink={true}
+              validator={validator}
+            />
+          ))}
+        </div>
+      )}
+    </>
+  );
+};

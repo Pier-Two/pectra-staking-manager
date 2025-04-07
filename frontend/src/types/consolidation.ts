@@ -11,7 +11,7 @@ export interface IDestinationValidatorList {
 }
 
 export interface ISourceValidatorList {
-  sourceValidators: ValidatorDetails[]; 
+  sourceValidators: ValidatorDetails[];
   setSourceValidators: (validator: ValidatorDetails) => void;
   validators: ValidatorDetails[];
 }
@@ -24,16 +24,38 @@ export interface ISelectDestinationValidator {
 
 export interface ISelectSourceValidators {
   destinationValidator: ValidatorDetails;
-  selectedSourceTotal: number;
   selectedSourceValidators: ValidatorDetails[];
   setProgress: (progress: number) => void;
   setSelectedDestinationValidator: (validator: ValidatorDetails | null) => void;
-  setSelectedSourceTotal: (total: number) => void;
   setSelectedSourceValidators: (validators: ValidatorDetails[]) => void;
   validators: ValidatorDetails[];
 }
 
-export interface IDestinationValidatorDetails {
-  validator: ValidatorDetails;
-  selectedSourceTotal: number;
+export interface IConsolidationSummary {
+  destinationValidator: ValidatorDetails;
+  setSelectedDestinationValidator: (validator: ValidatorDetails | null) => void;
+  setSelectedSourceValidators: (validators: ValidatorDetails[]) => void;
+  setProgress: (progress: number) => void;
+  summaryEmail: string;
+  setSummaryEmail: (email: string) => void;
+  sourceValidators: ValidatorDetails[];
+}
+
+export interface IConsolidationOverview {
+  destinationValidator: ValidatorDetails;
+  sourceValidators: ValidatorDetails[];
+}
+
+export interface IConsolidationEmail {
+  cardText: string;
+  cardTitle: string;
+  summaryEmail: string;
+  setSummaryEmail: (email: string) => void;
+}
+
+export interface IConsolidationSubmission {
+  consolidationEmail: string;
+  destinationValidator: ValidatorDetails;
+  setConsolidationEmail: (email: string) => void;
+  sourceValidators: ValidatorDetails[];
 }

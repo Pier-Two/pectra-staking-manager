@@ -8,7 +8,7 @@ export const logoPaths: Record<string, ILogoPaths> = {
     hoverDark: "/logos/dark/PierTwoHover.svg",
   },
   Labrys: {
-    light: "/logos/light/Labrys.svg",
+    light: "/logos/dark/Labrys.svg",
     dark: "/logos/dark/Labrys.svg",
     hoverLight: "/logos/light/LabrysHover.svg",
     hoverDark: "/logos/dark/LabrysHover.svg",

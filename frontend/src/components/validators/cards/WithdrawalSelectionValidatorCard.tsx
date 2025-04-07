@@ -1,0 +1,141 @@
+"use client";
+
+import type { FC } from "react";
+import Image from "next/image";
+import type { IWithdrawalSelectionValidatorCard } from "pec/types/withdrawal";
+import { CircleCheck, CirclePlus, AlignLeft, CircleMinus } from "lucide-react";
+import type { FieldErrors, UseFormRegister } from "react-hook-form";
+import type { WithdrawalType } from "pec/lib/api/schemas/withdrawal";
+import { DECIMAL_PLACES } from "pec/lib/constants";
+
+interface ExtendedProps extends IWithdrawalSelectionValidatorCard {
+  errors: FieldErrors<WithdrawalType>;
+  register: UseFormRegister<WithdrawalType>;
+}
+
+export const WithdrawalSelectionValidatorCard: FC<ExtendedProps> = ({
+  availableAmount,
+  errors,
+  handleSelect,
+  index,
+  register,
+  selected,
+  validator,
+}) => {
+  const { validatorIndex, publicKey, balance } = validator;
+  const locked = availableAmount === 0;
+
+  return (
+    <div
+      className={`flex w-full items-center justify-between gap-x-4 rounded-xl border bg-white px-4 py-3 ${
+        locked
+          ? "opacity-50"
+          : "group hover:border-indigo-500 dark:hover:border-gray-600"
+      } dark:border-gray-800 dark:bg-black ${
+        selected ? "border-indigo-500 dark:border-2 dark:border-indigo-900" : ""
+      } ${locked || selected ? "" : "cursor-pointer"}`}
+      onClick={selected || locked ? undefined : handleSelect}
+    >
+      <div className="flex flex-[1.2] items-center gap-x-4">
+        {selected && !locked ? (
+          <div className="group/icon">
+            <CircleCheck
+              className="h-4 w-4 fill-green-500 text-white hover:cursor-pointer group-hover/icon:hidden dark:text-black"
+              onClick={handleSelect}
+            />
+
+            <CircleMinus
+              className="hidden h-4 w-4 fill-red-500 text-white hover:cursor-pointer group-hover/icon:block dark:text-black"
+              onClick={handleSelect}
+            />
+          </div>
+        ) : (
+          <CirclePlus className="h-4 w-4 text-indigo-500 group-hover:fill-indigo-500 group-hover:text-white" />
+        )}
+
+        <Image
+          src="/icons/EthValidator.svg"
+          alt="Validator"
+          width={24}
+          height={24}
+        />
+
+        <div className="flex flex-col">
+          <div className="text-sm">{validatorIndex}</div>
+          <div className="text-xs text-gray-700 dark:text-gray-300">
+            {publicKey.slice(0, 5)}...{publicKey.slice(-4)}
+          </div>
+        </div>
+      </div>
+
+      <div className="flex flex-1 flex-col">
+        <div className="flex items-center gap-1">
+          <AlignLeft className="h-4 w-4" />
+          <div className="text-sm">{balance.toFixed(DECIMAL_PLACES)}</div>
+        </div>
+
+        <div className="flex items-center gap-1 py-1 text-gray-700 dark:text-gray-300">
+          <AlignLeft className="h-3 w-3" />
+          <div className="text-sm">
+            {availableAmount.toFixed(DECIMAL_PLACES)} available
+          </div>
+        </div>
+      </div>
+
+      <div className="flex-1">
+        {selected ? (
+          <div className="flex">
+            <div className="flex w-full flex-col">
+              <div className="flex flex-row items-center gap-2">
+                <AlignLeft className="h-4 w-4" />
+
+                <input
+                  className={`w-full rounded-xl border border-indigo-300 bg-white p-2 text-sm text-gray-700 dark:border-gray-800 dark:bg-black dark:text-gray-300 ${locked ? "opacity-50" : ""}`}
+                  disabled={locked}
+                  type="number"
+                  step="any"
+                  // Registers the withdrawal amount input field with React Hook Form
+                  // - Converts empty input to 0
+                  // - Prevents changes if `locked` is true
+                  // - Ensures valid numeric input
+                  // - Blocks withdrawals that would reduce balance below 32
+                  // - Blocks withdrawals exceeding the available amount
+                  // - Returns undefined for invalid values, preventing form submission and showing errors
+                  {...register(`withdrawals.${index}.amount`, {
+                    setValueAs: (value) => {
+                      if (value === "") return 0;
+                      if (locked) return 0;
+                      const numValue = parseFloat(value as string);
+                      if (isNaN(numValue)) return 0;
+                      if (numValue === 0) return 0;
+                      if (balance - numValue < 32) return undefined;
+                      if (numValue > availableAmount) return undefined;
+                      return numValue;
+                    },
+                  })}
+                />
+              </div>
+
+              {errors.withdrawals?.[index]?.amount && (
+                <div className="mt-1 text-xs text-red-500">
+                  Please enter an amount less than or equal to your available
+                  balance.
+                </div>
+              )}
+            </div>
+          </div>
+        ) : (
+          <div className="flex items-center gap-1">
+            <AlignLeft className="h-4 w-4" />
+            <input
+              className="w-full rounded-xl bg-white border-none p-2 text-sm text-gray-700 dark:border-gray-800 dark:bg-black dark:text-gray-300"
+              disabled
+              type="number"
+              value={0}
+            />
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
