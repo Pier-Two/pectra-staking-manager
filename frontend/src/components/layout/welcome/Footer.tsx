@@ -13,7 +13,7 @@ export const Footer: FC = () => {
         <div className="flex flex-col items-center gap-2">
           <div className="text-xs">Product by</div>
           <Image
-            src={`/logos/${!darkMode ? "dark" : "light"}/PierTwo.svg`}
+            src={`/logos/${darkMode ? "dark" : "light"}/PierTwo.svg`}
             alt="Pier Two"
             width={100}
             height={100}
