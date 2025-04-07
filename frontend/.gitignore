@@ -47,6 +47,7 @@ yarn-error.log*
 .idea
 .env*
 .flaskenv*
+!.env.example
 !.env.project
 !.env.vault
 
