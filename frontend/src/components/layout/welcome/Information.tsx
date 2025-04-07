@@ -9,16 +9,18 @@ export const Information: FC = () => {
   ];
 
   return (
-    <div className="flex flex-col gap-4 text-black dark:text-white">
-      <div className="text-center">Use this tool to enable and manage:</div>
+    <div className="mt-12 flex w-full flex-col gap-2 text-black dark:text-white">
+      <div className="w-full text-center text-xs">
+        Use this tool to enable and manage:
+      </div>
 
-      <div className="flex flex-row justify-between gap-3">
+      <div className="flex w-full flex-col gap-3 md:flex-row md:flex-wrap md:justify-center">
         {benefits.map((benefit) => (
           <div
             key={benefit}
-            className="flex flex-row items-center gap-2 border p-2 rounded-xl border-gray-300 bg-white dark:border-gray-700 dark:bg-black"
+            className="flex w-full flex-row items-center gap-2 rounded-xl border border-gray-300 bg-white p-2 dark:border-gray-700 dark:bg-black md:w-[200px]"
           >
-            <CircleCheck className="h-4 w-4 text-white fill-indigo-500" />
+            <CircleCheck className="h-4 w-4 fill-indigo-500 text-white" />
             <div className="text-xs">{benefit}</div>
           </div>
         ))}

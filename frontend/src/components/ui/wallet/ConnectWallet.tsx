@@ -14,7 +14,7 @@ export const ConnectWalletButton = ({ className }: StyleableComponent) => {
       connectButton={{
         label: "Connect Wallet",
         className: clsx(
-          "!w-full !rounded-full !bg-indigo-500 !hover:bg-indigo-400 !text-white",
+          "!w-full !rounded-full !bg-indigo-500 !hover:bg-indigo-400 !text-white !text-xs !py-2 !h-auto",
           className,
         ),
       }}
@@ -28,39 +28,6 @@ export const ConnectWalletButton = ({ className }: StyleableComponent) => {
       onDisconnect={() => {
         router.push("/welcome");
       }}
-
-      // auth={{
-      //   isLoggedIn: async (address) => {
-      //     console.log("checking if logged in!", { address });
-      //     try {
-      //       console.log("About to call isLoggedIn function");
-      //       const result = await isLoggedIn();
-      //       console.log("isLoggedIn function returned:", result);
-      //       return result.isValid;
-      //     } catch (error) {
-      //       console.error("Error calling isLoggedIn:", error);
-      //       return false;
-      //     }
-      //   },
-      //   doLogin: async (params) => {
-      //     console.log("logging in!");
-      //     await login(params);
-      //     // Invalidate the user query after login
-      //     await queryClient.invalidateQueries({
-      //       queryKey: [GetUserQueryKey],
-      //     });
-      //   },
-      //   getLoginPayload: async ({ address }) => generatePayload({ address }),
-      //   doLogout: async () => {
-      //     console.log("logging out!");
-      //     await logout();
-      //     // Invalidate the user query after logout
-      //     await queryClient.invalidateQueries({
-      //       queryKey: [GetUserQueryKey],
-      //     });
-      //     router.push("/");
-      //   },
-      // }}
     />
   );
 };

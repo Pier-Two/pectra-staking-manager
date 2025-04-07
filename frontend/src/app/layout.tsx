@@ -1,10 +1,12 @@
-import "pec/styles/globals.css";
 import { GeistSans } from "geist/font/sans";
-import { Montserrat } from "next/font/google";
 import { type Metadata } from "next";
-import { TRPCReactProvider } from "pec/trpc/react";
-import { cn } from "pec/lib/utils";
+import { Montserrat } from "next/font/google";
+import { AppSidebar } from "pec/components/app-sidebar";
+import { SidebarProvider } from "pec/components/ui/sidebar";
 import { NetworkContextProvider } from "pec/contexts/NetworkContext";
+import { cn } from "pec/lib/utils";
+import "pec/styles/globals.css";
+import { TRPCReactProvider } from "pec/trpc/react";
 
 const montserrat = Montserrat({
   subsets: ["latin"],
@@ -23,9 +25,16 @@ export default function RootLayout({
   return (
     <html lang="en" className={cn(GeistSans.variable, montserrat.variable)}>
       <body>
-        <TRPCReactProvider>
-          <NetworkContextProvider>{children}</NetworkContextProvider>
-        </TRPCReactProvider>
+        <SidebarProvider>
+          <div className="md:hidden">
+            <AppSidebar />
+          </div>
+          <main>
+            <TRPCReactProvider>
+              <NetworkContextProvider>{children}</NetworkContextProvider>
+            </TRPCReactProvider>
+          </main>
+        </SidebarProvider>
       </body>
     </html>
   );
