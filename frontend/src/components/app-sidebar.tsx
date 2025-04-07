@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Sidebar,
   SidebarContent,
@@ -7,8 +9,43 @@ import {
 } from "pec/components/ui/sidebar";
 import Image from "next/image";
 import { ConnectWalletButton } from "./ui/wallet/ConnectWallet";
+import { useActiveAccount } from "thirdweb/react";
+
+const links = [
+  {
+    id: "home",
+    name: "Home",
+    href: "/welcome",
+    requireAuth: false,
+  },
+  {
+    id: "validators",
+    name: "My Validators",
+    href: "/dashboard",
+    requireAuth: true,
+  },
+  {
+    id: "tools",
+    name: "Tools",
+    href: "/tools",
+    requireAuth: true,
+  },
+  {
+    id: "charts",
+    name: "Charts",
+    href: "/charts",
+    requireAuth: false,
+  },
+];
 
 export function AppSidebar() {
+  const account = useActiveAccount();
+
+  // Filter links based on authentication status
+  const filteredLinks = links.filter(
+    (link) => !link.requireAuth || (link.requireAuth && account),
+  );
+
   return (
     <Sidebar>
       <SidebarHeader>
@@ -30,8 +67,17 @@ export function AppSidebar() {
         </div>
       </SidebarHeader>
       <SidebarContent>
-        <SidebarGroup />
-        <SidebarGroup />
+        <SidebarGroup>
+          {filteredLinks.map((link) => (
+            <a
+              key={link.id}
+              href={link.href}
+              className="block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700"
+            >
+              {link.name}
+            </a>
+          ))}
+        </SidebarGroup>
       </SidebarContent>
       <SidebarFooter>
         <ConnectWalletButton />
