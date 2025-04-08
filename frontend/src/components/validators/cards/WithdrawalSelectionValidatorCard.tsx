@@ -24,7 +24,7 @@ export const WithdrawalSelectionValidatorCard: FC<ExtendedProps> = ({
   validator,
 }) => {
   const { validatorIndex, publicKey, balance } = validator;
-  const locked = availableAmount === 0;
+  const locked = availableAmount === 0n;
 
   return (
     <div
@@ -80,7 +80,8 @@ export const WithdrawalSelectionValidatorCard: FC<ExtendedProps> = ({
         <div className="flex items-center gap-1 py-1 text-gray-700 dark:text-gray-300">
           <AlignLeft className="h-3 w-3" />
           <div className="text-sm">
-            {availableAmount.toFixed(DECIMAL_PLACES)} available
+            {Number(formatEther(availableAmount)).toFixed(DECIMAL_PLACES)}{" "}
+            available
           </div>
         </div>
       </div>
@@ -111,7 +112,7 @@ export const WithdrawalSelectionValidatorCard: FC<ExtendedProps> = ({
                       const numValue = parseFloat(value as string);
                       if (isNaN(numValue)) return 0;
                       if (numValue === 0) return 0;
-                      if (balance - numValue < 32) return undefined;
+                      if (balance - BigInt(numValue) < 32) return undefined; // TODO check decimals
                       if (numValue > availableAmount) return undefined;
                       return numValue;
                     },

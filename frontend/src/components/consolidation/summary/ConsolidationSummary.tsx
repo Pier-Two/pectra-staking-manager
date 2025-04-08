@@ -1,3 +1,5 @@
+"use client";
+
 import type { FC } from "react";
 import type { IConsolidationSummary } from "pec/types/consolidation";
 import { ValidatorCard } from "pec/components/validators/cards/ValidatorCard";

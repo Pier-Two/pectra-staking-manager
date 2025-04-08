@@ -125,7 +125,7 @@ const Withdrawal: FC = () => {
       "withdrawals",
       sortedValidators?.map((validator) => ({
         validator,
-        amount: Math.max(validator.balance - 32, 0),
+        amount: Number(validator.balance) / 10 ** 9, // TODO check decimals
       })) ?? [],
     );
 
@@ -216,7 +216,7 @@ const Withdrawal: FC = () => {
               return (
                 <WithdrawalSelectionValidatorCard
                   key={`${index}-${validator.validatorIndex}`}
-                  availableAmount={Math.max(validator.balance - 32, 0)}
+                  availableAmount={validator.balance}
                   errors={errors}
                   handleSelect={() => handleValidatorSelect(validator)}
                   index={index}

@@ -67,17 +67,17 @@ export interface ITransactionValidatorCard {
 
 export interface IBatchDepositValidatorCard {
   clearedSelectedValidators: boolean;
-  depositAmount: number;
+  depositAmount: bigint;
   distributionMethod: EDistributionMethod;
   selected: boolean;
   setClearedSelectedValidators: (cleared: boolean) => void;
-  totalAllocated: number;
+  totalAllocated: bigint;
   totalToDistribute: number;
   validator: ValidatorDetails;
   onClick: (
     validator: ValidatorDetails,
     distributionMethod: EDistributionMethod,
-    depositAmount: number,
+    depositAmount: bigint,
   ) => void;
   onDepositChange: (validator: IBatchDepositValidators) => void;
 }

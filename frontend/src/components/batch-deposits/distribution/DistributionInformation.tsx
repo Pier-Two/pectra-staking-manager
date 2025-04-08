@@ -13,6 +13,7 @@ import { PectraSpinner } from "pec/components/ui/custom/pectraSpinner";
 import { EIconPosition } from "pec/types/components";
 import { SecondaryButton } from "pec/components/ui/custom/SecondaryButton";
 import { DECIMAL_PLACES } from "pec/lib/constants";
+import { formatEther } from "viem";
 
 export const DistributionInformation: FC<IDistributionInformation> = ({
   buttonText,
@@ -38,7 +39,7 @@ export const DistributionInformation: FC<IDistributionInformation> = ({
     },
     {
       icon: <AlignLeft className="h-4 w-4" />,
-      value: totalAllocated?.toFixed(DECIMAL_PLACES) ?? 0,
+      value: formatEther(totalAllocated ?? 0n),
       label: "Allocated",
     },
   ];

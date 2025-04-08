@@ -1,12 +1,10 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { ProgressBar } from "pec/components/consolidation/ProgressBar";
 import { SelectDestinationValidator } from "pec/components/consolidation/selectDestinationValidator/SelectDestinationValidator";
 import { SelectSourceValidators } from "pec/components/consolidation/selectSourceValidators/SelectSourceValidators";
 import { SubmitConsolidationRequests } from "pec/components/consolidation/submitRequests/SubmitConsolidationRequests";
 import { ConsolidationSummary } from "pec/components/consolidation/summary/ConsolidationSummary";
-import { Button } from "pec/components/ui/button";
 import { useWalletAddress } from "pec/hooks/useWallet";
 import { api } from "pec/trpc/react";
 import type { ValidatorDetails } from "pec/types/validator";
@@ -15,7 +13,6 @@ import ConsolidationLoading from "../consolidate/loading";
 
 const ConsolidationWorkflow: FC = () => {
   const walletAddress = useWalletAddress();
-  const router = useRouter();
 
   const { data, isFetched } = api.validators.getValidators.useQuery(
     {
@@ -35,10 +32,6 @@ const ConsolidationWorkflow: FC = () => {
   const [summaryEmail, setSummaryEmail] = useState<string>("");
   const [consolidationEmail, setConsolidationEmail] = useState<string>("");
 
-  const handleConsolidationRedirect = () => {
-    router.push("/validators-found");
-  };
-
   useEffect(() => {
     if (progress === 1) setSelectedSourceValidators([]);
   }, [progress]);
@@ -47,15 +40,6 @@ const ConsolidationWorkflow: FC = () => {
 
   return (
     <div className="flex flex-col gap-4">
-      {progress === 0 && (
-        <Button
-          onClick={handleConsolidationRedirect}
-          className="flex w-full justify-start"
-        >
-          {" < "}Back
-        </Button>
-      )}
-
       <ProgressBar progress={progress} setProgress={setProgress} />
 
       {progress === 1 && (

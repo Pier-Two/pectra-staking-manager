@@ -85,7 +85,7 @@ export const DepositSelectionValidatorCard: FC<ExtendedProps> = ({
             }
             type="number"
             step="any"
-            value={depositAmount}
+            value={depositAmount.toString()}
             // Registers the deposit amount input field with React Hook Form
             // - Converts empty input to 0
             // - Ensures valid numeric input
@@ -101,7 +101,7 @@ export const DepositSelectionValidatorCard: FC<ExtendedProps> = ({
                 if (numValue === 0) return 0;
                 if (numValue > totalToDistribute) return undefined;
                 if (totalAllocated > totalToDistribute) return undefined;
-                if (numValue + totalAllocated > totalToDistribute)
+                if (BigInt(numValue) + totalAllocated > totalToDistribute)
                   return undefined;
                 return numValue;
               },

@@ -22,15 +22,13 @@ export const DepositWorkflow: FC<IDepositWorkflowProps> = ({
   data,
   balance,
 }) => {
-  const {} = useContracts();
-
   const initialValues: DepositType = {
     selectedValidators: [],
     stage: EBatchDepositStage.DATA_CAPTURE,
     deposits: data
       ? data?.map((validator) => ({
           validator,
-          amount: 0,
+          amount: 0n,
         }))
       : [],
     totalToDistribute: 0,
@@ -86,15 +84,15 @@ export const DepositWorkflow: FC<IDepositWorkflowProps> = ({
   });
 
   const totalAllocated = watchedDeposits.reduce(
-    (acc, curr) => acc + (curr.amount ?? 0),
-    0,
+    (acc, curr) => acc + (curr.amount ?? 0n),
+    0n,
   );
 
   const shouldBeDisabled =
-    totalAllocated !== totalToDistribute ||
+    totalAllocated !== BigInt(totalToDistribute) || // TODO check decimals here
     totalAllocated > totalToDistribute ||
     totalToDistribute === 0 ||
-    totalAllocated === 0;
+    totalAllocated === 0n;
 
   const handleDistributionMethodChange = (method: EDistributionMethod) => {
     setValue("distributionMethod", method);
@@ -129,7 +127,7 @@ export const DepositWorkflow: FC<IDepositWorkflowProps> = ({
       const isCurrentValidator =
         deposit.validator.validatorIndex === selectedValidator.validatorIndex;
 
-      if (!isAdding && isCurrentValidator) return { ...deposit, amount: 0 };
+      if (!isAdding && isCurrentValidator) return { ...deposit, amount: 0n };
 
       const isSelected = watchedSelectedValidators.some(
         (v) => v.validatorIndex === deposit.validator.validatorIndex,
@@ -138,7 +136,9 @@ export const DepositWorkflow: FC<IDepositWorkflowProps> = ({
       return {
         ...deposit,
         amount:
-          isSelected || (isAdding && isCurrentValidator) ? splitAmount : 0,
+          isSelected || (isAdding && isCurrentValidator)
+            ? BigInt(splitAmount)
+            : 0n,
       };
     });
   };
@@ -150,7 +150,7 @@ export const DepositWorkflow: FC<IDepositWorkflowProps> = ({
       ...deposit,
       amount:
         deposit.validator.validatorIndex === selectedValidator.validatorIndex
-          ? 0
+          ? 0n
           : deposit.amount,
     }));
   };
@@ -252,7 +252,7 @@ export const DepositWorkflow: FC<IDepositWorkflowProps> = ({
                     totalAllocated={totalAllocated}
                     totalToDistribute={totalToDistribute}
                     watchedDeposits={
-                      watchedDeposits as IBatchDepositValidators[]
+                      watchedDeposits as unknown as IBatchDepositValidators[]
                     }
                     validators={data}
                   />
