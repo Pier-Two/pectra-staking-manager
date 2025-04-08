@@ -1,6 +1,6 @@
 {
   "functions": {
-    "api/**/*.js": {
+    "app/api/trpc/[trpc]/route.ts": {
       "memory": 3009
     }
   }
