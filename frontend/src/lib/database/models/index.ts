@@ -1,9 +1,10 @@
-import mongoose, { type Mongoose, type Model } from "mongoose";
 import { getModelForClass, type DocumentType } from "@typegoose/typegoose";
+import mongoose, { type Model, type Mongoose } from "mongoose";
 import { env } from "pec/env";
-import { User } from "../classes/user";
-import { Withdrawal } from "../classes/withdrawal";
 import { Deposit } from "../classes/deposit";
+import { User } from "../classes/user";
+import { ValidatorSummary } from "../classes/validatorSummary";
+import { Withdrawal } from "../classes/withdrawal";
 
 // Create a cached connection variable
 let conn: Mongoose | null = null;
@@ -34,3 +35,8 @@ export const DepositModel: Model<Deposit> =
   mongoose.models.Deposit ?? getModelForClass(Deposit);
 
 export type DepositDocumentType = DocumentType<Deposit>;
+
+export const ValidatorSummaryModel: Model<ValidatorSummary> =
+  mongoose.models.ValidatorSummary ?? getModelForClass(ValidatorSummary);
+
+export type ValidatorSummaryDocumentType = DocumentType<Deposit>;
