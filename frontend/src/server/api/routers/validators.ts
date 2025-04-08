@@ -17,7 +17,7 @@ export const validatorRouter = createTRPCRouter({
     // TODO: Potentially look at upgrading this to a paid key if possible
     // Fetch the validator data (return ALL active validators - ~1 million entries)
     const { data } = await axios.get<ValidatorsResponseData>(
-      "https://docs-demo.quiknode.pro/eth/v1/beacon/states/head/validators?status=active",
+      `https://${process.env.QUICKNODE_ENDPOINT_NAME}.quiknode.pro/${process.env.QUICKNODE_ENDPOINT_SECRET}/eth/v1/beacon/states/head/validators?status=active`,
     );
 
     // Initial summary. All values are 0 to begin with
