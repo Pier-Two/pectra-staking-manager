@@ -1,0 +1,7 @@
+{
+  "functions": {
+    "api/trpc/[trpc]/route.ts": {
+      "memory": 3009
+    }
+  }
+}
