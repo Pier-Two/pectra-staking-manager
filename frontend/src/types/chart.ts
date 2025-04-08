@@ -3,7 +3,7 @@ export interface IChartContainer {
 }
 
 export interface IAreaChart {
-    chart: IChart;
+  chart: IChart;
 }
 
 export interface IChart {

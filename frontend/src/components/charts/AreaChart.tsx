@@ -1,7 +1,7 @@
 "use client";
 
 import type { FC } from "react";
-import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from "recharts";
+import { Area, AreaChart, CartesianGrid, Label, XAxis, YAxis } from "recharts";
 import {
   ChartContainer,
   ChartLegend,
@@ -28,16 +28,15 @@ const chartConfig = {
 };
 
 export const AreaChartComponent: FC<IAreaChart> = ({ chart }) => {
-  const { chartData, yAxis, xAxis, legend } = chart;
+  const { chartData, yAxis, legend, xAxis } = chart;
   const {
-    label: yLabel,
-    showLabel: showYLabel,
     lowerRange,
     upperRange,
     ticks,
+    label: yLabel,
+    showLabel: showYLabel,
     orientation: yOrientation,
   } = yAxis;
-
   const {
     label: xLabel,
     showLabel: showXLabel,
@@ -52,7 +51,7 @@ export const AreaChartComponent: FC<IAreaChart> = ({ chart }) => {
   };
 
   return (
-    <ChartContainer config={chartConfig}>
+    <ChartContainer className="px-8" config={chartConfig}>
       <AreaChart data={chartData}>
         <defs>
           <linearGradient id="fillPectra" x1="0" y1="0" x2="0" y2="1">
@@ -102,11 +101,20 @@ export const AreaChartComponent: FC<IAreaChart> = ({ chart }) => {
           tickLine={false}
           axisLine={false}
           tickMargin={8}
+          label={
+            showXLabel
+              ? {
+                  value: xLabel,
+                  position:
+                    xOrientation === "top" ? "insideTop" : "insideBottom",
+                  offset: xOrientation === "bottom" ? -20 : -20,
+                }
+              : undefined
+          }
           minTickGap={32}
           tickFormatter={(value: string) => value.slice(0, 3)}
-          label={showXLabel ? { value: xLabel } : undefined}
-          orientation={xOrientation}
           tick={axisTextStyle}
+          orientation={xOrientation}
         />
 
         <YAxis
@@ -115,10 +123,18 @@ export const AreaChartComponent: FC<IAreaChart> = ({ chart }) => {
           tickMargin={8}
           domain={[lowerRange, upperRange]}
           ticks={ticks}
-          label={showYLabel ? { value: yLabel } : undefined}
-          orientation={yOrientation}
           tick={axisTextStyle}
-        />
+          orientation={yOrientation}
+        >
+          {showYLabel && (
+            <Label
+              angle={yOrientation === "left" ? -90 : 90}
+              value={yLabel}
+              position={yOrientation === "left" ? "insideLeft" : "insideRight"}
+              style={{ textAnchor: "middle" }}
+            />
+          )}
+        </YAxis>
 
         <ChartTooltip
           cursor={false}
@@ -155,7 +171,9 @@ export const AreaChartComponent: FC<IAreaChart> = ({ chart }) => {
           stackId="c"
         />
 
-        {legend && <ChartLegend content={<ChartLegendContent />} />}
+        {legend && (
+          <ChartLegend className="mt-4" content={<ChartLegendContent />} />
+        )}
       </AreaChart>
     </ChartContainer>
   );

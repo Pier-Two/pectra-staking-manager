@@ -71,9 +71,8 @@ export const ChartContainer: FC<IChartContainer> = ({ charts }) => {
           </div>
         </CardHeader>
 
-        <CardContent className="">
+
           <AreaChartComponent chart={activeChart} />
-        </CardContent>
 
         {footer && (
           <CardFooter className="flex flex-row items-center justify-center text-sm text-gray-500 dark:text-gray-400">
