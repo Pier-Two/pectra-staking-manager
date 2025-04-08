@@ -1,0 +1,86 @@
+"use client";
+
+import { useState, type FC } from "react";
+import Image from "next/image";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+} from "pec/components/ui/card";
+import type { IChartContainer } from "pec/types/chart";
+import { AreaChartComponent } from "./AreaChart";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+
+const emptyChart = (
+  <Card className="w-full rounded-xl bg-white text-black shadow-xl dark:bg-gray-900 dark:text-white">
+    <CardHeader className="flex flex-row items-center justify-between">
+      <div className="">
+        <div className="text-lg font-semibold">No charts configured.</div>
+      </div>
+    </CardHeader>
+  </Card>
+);
+
+export const ChartContainer: FC<IChartContainer> = ({ charts }) => {
+  const chartCount = charts.length;
+  const [chartIndex, setChartIndex] = useState(0);
+  const activeChart = charts[chartIndex];
+
+  const handleChartForward = () => {
+    if (chartIndex === charts.length - 1) setChartIndex(0);
+    else setChartIndex(chartIndex + 1);
+  };
+
+  const handleChartBackward = () => {
+    if (chartIndex === 0) setChartIndex(charts.length - 1);
+    else setChartIndex(chartIndex - 1);
+  };
+
+  if (!activeChart || chartCount === 0) return emptyChart;
+  const { title, footer } = activeChart;
+
+  return (
+    <div className="flex w-full flex-col gap-4">
+      <div className="flex flex-row items-center justify-between px-6">
+        <div className="text-lg font-semibold">{title}</div>
+        {chartCount > 1 && (
+          <div className="flex flex-row items-center gap-2">
+            <ChevronLeft
+              className="h-10 w-10 cursor-pointer rounded-full border-2 p-2 hover:bg-white dark:border-gray-800 dark:bg-gray-900 dark:hover:bg-gray-800"
+              onClick={handleChartBackward}
+            />
+            <ChevronRight
+              className="h-10 w-10 cursor-pointer rounded-full border-2 p-2 hover:bg-white dark:border-gray-800 dark:bg-gray-900 dark:hover:bg-gray-800"
+              onClick={handleChartForward}
+            />
+          </div>
+        )}
+      </div>
+
+      <Card className="w-full rounded-xl bg-white text-black shadow-xl dark:border dark:border-gray-800 dark:bg-gray-900 dark:text-white">
+        <CardHeader className="flex flex-row justify-end">
+          <div className="flex flex-row items-center gap-2">
+            <Image
+              src="/icons/EthValidator.svg"
+              alt="Wallet"
+              width={18}
+              height={18}
+            />
+            <div className="text-sm">pectrastaking.com</div>
+          </div>
+        </CardHeader>
+
+        <CardContent className="">
+          <AreaChartComponent chart={activeChart} />
+        </CardContent>
+
+        {footer && (
+          <CardFooter className="flex flex-row items-center justify-center text-sm text-gray-500 dark:text-gray-400">
+            {footer}
+          </CardFooter>
+        )}
+      </Card>
+    </div>
+  );
+};

@@ -7,3 +7,17 @@
   background-size: cover !important;
   background-position: center !important;
 }
+
+@layer base {
+  :root {
+    --chart-1: 233 63% 59%; /* #5164DC */
+    --chart-2: 24 96% 71%; /* #FDBA74 */
+    --chart-3: 138 76% 79%; /* #86EFAC */
+  }
+
+  .dark {
+    --chart-1: 233 63% 59%; /* #5164DC */
+    --chart-2: 24 96% 71%; /* #FDBA74 */
+    --chart-3: 138 76% 79%; /* #86EFAC */
+  }
+}
