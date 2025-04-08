@@ -19,20 +19,16 @@ const getBeaconChainURL = (isTestnet: boolean): `${string}/` =>
 export const validatorRouter = createTRPCRouter({
   getValidators: publicProcedure
     .input(
-      z.object({ address: z.string(), isTestnet: z.boolean().default(true) }),
+      z.object({ address: z.string(), isTestnet: z.boolean().default(true) }), // TODO actually use isTestnet in front end
     )
     .query(async ({ input: { address, isTestnet } }) => {
       try {
         const validators: ValidatorDetailsResponse[] = [];
 
-        console.log("url: ", getBeaconChainURL(isTestnet));
-
         const validatorResponse =
           await axios.get<BeaconChainAllValidatorsResponse>(
             `${getBeaconChainURL(isTestnet)}api/v1/validator/withdrawalCredentials/${address}?apikey=${env.BEACONCHAIN_API_KEY}`,
           );
-
-        console.log(validatorResponse);
 
         if (!validatorResponse.data || validatorResponse.data.data.length === 0)
           return [];
@@ -52,7 +48,6 @@ export const validatorRouter = createTRPCRouter({
           return [];
 
         validatorDetails.data.data.forEach((validator) => {
-          console.log("validator: ", validator);
           const { activeSince, activeDuration } = getValidatorActiveInfo(
             validator.activationepoch,
           );
@@ -75,8 +70,6 @@ export const validatorRouter = createTRPCRouter({
             depositTransaction: undefined,
           });
         });
-
-        console.log(validators);
 
         return validators;
       } catch (error) {
