@@ -19,8 +19,6 @@ export const connect = async () => {
   return conn;
 };
 
-await connect();
-
 export const UserModel: Model<User> =
   mongoose.models.User ?? getModelForClass(User);
 

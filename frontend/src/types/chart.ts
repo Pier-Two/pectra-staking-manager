@@ -15,20 +15,20 @@ export interface IChart {
   footer: string;
 }
 
-interface IChartData {
+export interface IChartData {
   key: string;
   merge: number;
   shapella: number;
   pectra: number;
 }
 
-interface IXAxis {
+export interface IXAxis {
   label: string;
   showLabel: boolean;
   orientation: "top" | "bottom";
 }
 
-interface IYAxis {
+export interface IYAxis {
   lowerRange: number;
   upperRange: number;
   ticks: number[];
@@ -36,3 +36,16 @@ interface IYAxis {
   showLabel: boolean;
   orientation: "left" | "right";
 }
+
+//API
+
+export type IGroupedValidatorStatistics = Record<
+  string,
+  {
+    avgStaked: string;
+    count: number;
+    totalStaked: string;
+    withdrawalCredentialPrefix: string;
+    timestamp: Date;
+  }[]
+>;

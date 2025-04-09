@@ -2,12 +2,7 @@
 
 import { useState, type FC } from "react";
 import Image from "next/image";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-} from "pec/components/ui/card";
+import { Card, CardFooter, CardHeader } from "pec/components/ui/card";
 import type { IChartContainer } from "pec/types/chart";
 import { AreaChartComponent } from "./AreaChart";
 import { ChevronLeft, ChevronRight } from "lucide-react";
@@ -71,8 +66,7 @@ export const ChartContainer: FC<IChartContainer> = ({ charts }) => {
           </div>
         </CardHeader>
 
-
-          <AreaChartComponent chart={activeChart} />
+        <AreaChartComponent chart={activeChart} />
 
         {footer && (
           <CardFooter className="flex flex-row items-center justify-center text-sm text-gray-500 dark:text-gray-400">
