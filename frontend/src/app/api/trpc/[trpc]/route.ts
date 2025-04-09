@@ -5,8 +5,6 @@ import { env } from "pec/env";
 import { appRouter } from "pec/server/api/root";
 import { createTRPCContext } from "pec/server/api/trpc";
 
-export const maxDuration = 60;
-
 /**
  * This wraps the `createTRPCContext` helper and provides the required context for the tRPC API when
  * handling a HTTP request (e.g. when you make requests from Client Components).

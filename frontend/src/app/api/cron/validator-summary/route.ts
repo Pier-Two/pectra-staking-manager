@@ -5,6 +5,8 @@ import {
   type ValidatorUpgradeSummaryObject,
 } from "pec/types/quicknode-validators";
 
+export const maxDuration = 60;
+
 /**
  * Generates summaries of the validators currently marked as active. In particular, it records the total staked, average staked and number of validators
  */
