@@ -1,7 +1,6 @@
 "use client";
 
-import { type ValidatorDetails } from "pec/types/validator";
-import { useEffect, useState } from "react";
+import { TransactionStatus, type ValidatorDetails } from "pec/types/validator";
 
 import { useStore } from "zustand";
 import { persist } from "zustand/middleware";
@@ -40,6 +39,19 @@ type ConsolidationStore = {
   bulkSetConsolidationTargets: (validators: ValidatorDetails[]) => void;
   addValidatorToConsolidate: (validator: ValidatorDetails) => void;
   removeValidatorToConsolidate: (validator: ValidatorDetails) => void;
+  updateConsolidatedValidator: (
+    validator: ValidatorDetails,
+    txHash: string,
+  ) => void;
+
+  // Email fields
+  summaryEmail: string;
+  setSummaryEmail: (email: string) => void;
+  consolidationEmail: string;
+  setConsolidationEmail: (email: string) => void;
+
+  // Reset method
+  reset: () => void;
 
   // Getter methods to deserialize data
   getConsolidationTarget: () => ValidatorDetails | undefined;
@@ -80,6 +92,41 @@ export const consolidationStore = createStore<ConsolidationStore>()(
             (v) => v.publicKey !== validator.publicKey,
           ),
         })),
+
+      updateConsolidatedValidator: (
+        validator: ValidatorDetails,
+        txHash: string,
+      ) =>
+        set((state) => ({
+          validatorsToConsolidate: state.validatorsToConsolidate.map((v) =>
+            v.publicKey === validator.publicKey
+              ? {
+                  ...v,
+                  depositTransaction: {
+                    hash: txHash,
+                    status: TransactionStatus.SUBMITTED,
+                  },
+                }
+              : v,
+          ),
+        })),
+
+      // Email fields implementation
+      summaryEmail: "",
+      setSummaryEmail: (email: string) => set({ summaryEmail: email }),
+      consolidationEmail: "",
+      setConsolidationEmail: (email: string) =>
+        set({ consolidationEmail: email }),
+
+      // Reset method implementation
+      reset: () =>
+        set({
+          progress: 1,
+          consolidationTarget: undefined,
+          validatorsToConsolidate: [],
+          summaryEmail: "",
+          consolidationEmail: "",
+        }),
 
       // Getter methods to deserialize data
       getConsolidationTarget: () => {

@@ -8,11 +8,9 @@ import { ConsolidationSummary } from "pec/components/consolidation/summary/Conso
 import { useConsolidationStore } from "pec/hooks/use-consolidation-store";
 import { useWalletAddress } from "pec/hooks/useWallet";
 import { api } from "pec/trpc/react";
-import type { ValidatorDetails } from "pec/types/validator";
-import { type FC, useEffect, useState } from "react";
 import ConsolidationLoading from "../consolidate/loading";
 
-const ConsolidationWorkflow: FC = () => {
+const ConsolidationWorkflow = () => {
   const walletAddress = useWalletAddress();
 
   const { data, isFetched } = api.validators.getValidators.useQuery(
@@ -22,18 +20,12 @@ const ConsolidationWorkflow: FC = () => {
     { enabled: !!walletAddress },
   );
 
-  const { consolidationTarget, progress, setProgress } =
-    useConsolidationStore();
-
-  const [selectedSourceValidators, setSelectedSourceValidators] = useState<
-    ValidatorDetails[]
-  >([]);
-  const [summaryEmail, setSummaryEmail] = useState<string>("");
-  const [consolidationEmail, setConsolidationEmail] = useState<string>("");
-
-  useEffect(() => {
-    if (progress === 1) setSelectedSourceValidators([]);
-  }, [progress]);
+  const {
+    validatorsToConsolidate,
+    consolidationTarget,
+    progress,
+    setProgress,
+  } = useConsolidationStore();
 
   if (!walletAddress || !data || !isFetched) {
     return (
@@ -55,25 +47,12 @@ const ConsolidationWorkflow: FC = () => {
         <>
           {progress === 2 && <SelectSourceValidators />}
 
-          {selectedSourceValidators.length > 0 && progress === 3 && (
-            <ConsolidationSummary
-              destinationValidator={selectedDestinationValidator}
-              setProgress={setProgress}
-              setSelectedDestinationValidator={setSelectedDestinationValidator}
-              setSelectedSourceValidators={setSelectedSourceValidators}
-              setSummaryEmail={setSummaryEmail}
-              sourceValidators={selectedSourceValidators}
-              summaryEmail={summaryEmail}
-            />
+          {validatorsToConsolidate.length > 0 && progress === 3 && (
+            <ConsolidationSummary />
           )}
 
-          {selectedSourceValidators.length > 0 && progress === 4 && (
-            <SubmitConsolidationRequests
-              consolidationEmail={consolidationEmail}
-              destinationValidator={selectedDestinationValidator}
-              setConsolidationEmail={setConsolidationEmail}
-              sourceValidators={selectedSourceValidators}
-            />
+          {validatorsToConsolidate.length > 0 && progress === 4 && (
+            <SubmitConsolidationRequests />
           )}
         </>
       )}

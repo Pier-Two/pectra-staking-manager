@@ -9,33 +9,38 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "pec/components/ui/tooltip";
-import { useConsolidationFee } from "pec/hooks/useConsolidation";
+import { useConsolidationStore } from "pec/hooks/use-consolidation-store";
+import { useConsolidationFee } from "pec/hooks/use-consolidation";
 import { DECIMAL_PLACES } from "pec/lib/constants";
-import type { IConsolidationOverview } from "pec/types/consolidation";
-import type { FC } from "react";
-import { formatEther } from "viem";
+import { formatEther, parseEther } from "viem";
 
-export const Overview: FC<IConsolidationOverview> = (props) => {
-  const { destinationValidator, sourceValidators } = props;
+export const Overview = () => {
   const { data: consolidationFee, isLoading: isLoadingConsolidationFee } =
     useConsolidationFee();
 
-  const totalSourceValidators = sourceValidators.length;
+  const { consolidationTarget, validatorsToConsolidate } =
+    useConsolidationStore();
+
+  const totalSourceValidators = validatorsToConsolidate?.length;
 
   const newTotalBalance =
-    destinationValidator.balance +
-    sourceValidators.reduce((acc, validator) => acc + validator.balance, 0n);
+    (consolidationTarget?.balance ?? 0n) +
+    validatorsToConsolidate.reduce(
+      (acc, validator) => acc + validator.balance,
+      0n,
+    );
 
   const estimatedGasFee = consolidationFee
-    ? consolidationFee * totalSourceValidators
-    : null;
+    ? consolidationFee * BigInt(totalSourceValidators)
+    : BigInt(0);
 
   return (
     <div className="flex min-h-[10vh] w-full flex-col justify-between gap-x-4 space-y-4 rounded-xl border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-black">
       <div className="flex items-end gap-x-2 text-sm text-black dark:text-white">
         <span>
-          Consolidate {totalSourceValidators} validators into one validator with
-          a new total balance of
+          Consolidate {totalSourceValidators} validator
+          {totalSourceValidators <= 1 ? "" : "s"} into validator with a new
+          total balance of
         </span>
 
         <div className="flex items-center gap-1">
@@ -65,7 +70,7 @@ export const Overview: FC<IConsolidationOverview> = (props) => {
       <div className="flex w-full flex-col space-y-2">
         <div className="flex flex-row justify-between">
           <div className="text-sm text-gray-700 dark:text-gray-300">
-            Estimated gas fee ({totalSourceValidators + 1}x consolidations)
+            Estimated gas fee ({totalSourceValidators}x consolidations)
           </div>
 
           <div className="flex items-center gap-1">
@@ -77,7 +82,9 @@ export const Overview: FC<IConsolidationOverview> = (props) => {
               </div>
             ) : (
               <div className="text-sm font-medium">
-                {estimatedGasFee?.toFixed(DECIMAL_PLACES) ?? "0"}
+                {estimatedGasFee < parseEther("0.000001")
+                  ? "< 0.000001"
+                  : Number(formatEther(estimatedGasFee)).toFixed(2)}
               </div>
             )}
           </div>

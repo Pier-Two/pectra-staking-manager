@@ -191,13 +191,6 @@ export const SelectSourceValidators = () => {
 
       <PrimaryButton
         className="w-full"
-        onClick={() => bulkSetConsolidationTargets([])}
-        label="clear"
-        disabled={false}
-      />
-
-      <PrimaryButton
-        className="w-full"
         label="Next"
         onClick={() => handleConsolidationProgression()}
         disabled={validatorsToConsolidate.length === 0}
