@@ -7,6 +7,8 @@ import type { IResponse } from "pec/types/response";
 import { chunk, groupBy, maxBy } from "lodash";
 import type { Withdrawal } from "pec/lib/database/classes/withdrawal";
 import { z } from "zod";
+import { getBeaconChainURL } from "pec/constants/beaconchain";
+import { env } from "pec/env";
 
 interface WithdrawalResponse {
   status: string;
@@ -42,8 +44,9 @@ export const storeWithdrawalRequest = async (
   validatorIndex: number,
 ): Promise<IResponse> => {
   try {
+    // TODO hardcoded env here
     const response = await axios.get<WithdrawalResponse>(
-      `https://beaconcha.in/api/v1/validator/${validatorIndex}/withdrawals`,
+      `${getBeaconChainURL(true)}/api/v1/validator/${validatorIndex}/withdrawals?apikey=${env.BEACONCHAIN_API_KEY}`,
     );
 
     if (!isResponseValid(response)) return storeWithdrawal(validatorIndex, 0);
@@ -86,8 +89,9 @@ export const processWithdrawals = async (): Promise<IResponse> => {
         .map((item) => item.validatorIndex)
         .join(",");
 
+      // TODO hardcoded env here
       const response = await axios.get<WithdrawalResponse>(
-        `https://beaconcha.in/api/v1/validator/${validatorIndexString}/withdrawals`,
+        `${getBeaconChainURL(true)}/api/v1/validator/${validatorIndexString}/withdrawals?apikey=${env.BEACONCHAIN_API_KEY}`,
       );
 
       if (!isResponseValid(response))

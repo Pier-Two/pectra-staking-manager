@@ -8,10 +8,17 @@ import type {
   BeaconChainAllValidatorsResponse,
   BeaconChainValidatorDetailsResponse,
 } from "pec/types/api";
-import { type ValidatorDetails, ValidatorStatus } from "pec/types/validator";
-
-const getBeaconChainURL = (isTestnet: boolean): `${string}/` =>
-  `https://${isTestnet && "hoodi."}beaconcha.in/`;
+import {
+  TransactionStatus,
+  type ValidatorDetails,
+  ValidatorStatus,
+} from "pec/types/validator";
+import {
+  ConsolidationModel,
+  DepositModel,
+  WithdrawalModel,
+} from "pec/lib/database/models";
+import { getBeaconChainURL } from "pec/constants/beaconchain";
 
 export const validatorRouter = createTRPCRouter({
   getValidators: publicProcedure
@@ -23,6 +30,7 @@ export const validatorRouter = createTRPCRouter({
         const validators: ValidatorDetails[] = [];
 
         const validatorResponse =
+          // TODO hardcoded env here
           await axios.get<BeaconChainAllValidatorsResponse>(
             `${getBeaconChainURL(isTestnet)}api/v1/validator/withdrawalCredentials/${address}?apikey=${env.BEACONCHAIN_API_KEY}`,
           );
@@ -37,6 +45,7 @@ export const validatorRouter = createTRPCRouter({
         if (validatorIndexes.length === 0) return [];
 
         const validatorDetails =
+          // TODO hardcoded env here
           await axios.get<BeaconChainValidatorDetailsResponse>(
             `${getBeaconChainURL(isTestnet)}/api/v1/validator/${validatorIndexes.join(",")}?apikey=${env.BEACONCHAIN_API_KEY}`,
           );
@@ -68,10 +77,96 @@ export const validatorRouter = createTRPCRouter({
           });
         });
 
+        for (const validator of validators) {
+          const [withdrawTx, consolidationTx, depositTx] = await Promise.all([
+            await WithdrawalModel.findOne({
+              validatorIndex: validator.validatorIndex,
+            }),
+            await ConsolidationModel.findOne({
+              $or: [
+                { targetValidatorIndex: Number(validator.validatorIndex) },
+                {
+                  sourceTargetValidatorIndex: Number(validator.validatorIndex),
+                },
+              ],
+            }),
+            await DepositModel.findOne({
+              validatorIndex: validator.validatorIndex,
+            }),
+          ]);
+
+          if (consolidationTx) {
+            console.log(consolidationTx);
+
+            validator.consolidationTransaction = {
+              hash: consolidationTx.txHash,
+              status: TransactionStatus.SUBMITTED,
+              isConsolidatedValidator:
+                validator.validatorIndex ===
+                consolidationTx?.targetValidatorIndex,
+            };
+          }
+
+          if (depositTx) {
+            validator.depositTransaction = {
+              hash: depositTx.txHash,
+              status: TransactionStatus.SUBMITTED,
+            };
+          }
+        }
+
         return validators;
       } catch (error) {
         console.error("Error fetching validators:", error);
         return [];
       }
+    }),
+
+  updateConsolidationRecord: publicProcedure
+    .input(
+      z.object({
+        targetValidatorIndex: z.number(),
+        sourceTargetValidatorIndex: z.number(),
+        txHash: z.string(),
+        user: z.string().default("67f60c4f4ce6567f9f511b2f"), // TODO figure this out
+      }),
+    )
+    .mutation(async ({ input }) => {
+      const { targetValidatorIndex, sourceTargetValidatorIndex, txHash, user } =
+        input;
+
+      // Check if a record with these validator indexes already exists
+      const existingRecord = await ConsolidationModel.findOne({
+        $or: [
+          {
+            targetValidatorIndex,
+            sourceTargetValidatorIndex,
+          },
+          {
+            targetValidatorIndex: sourceTargetValidatorIndex,
+            sourceTargetValidatorIndex: targetValidatorIndex,
+          },
+        ],
+      });
+
+      if (existingRecord) {
+        throw new Error(
+          `Consolidation record already exists for validators ${targetValidatorIndex} and ${sourceTargetValidatorIndex}`,
+        );
+      }
+
+      // Create new consolidation record
+      const newRecord = await ConsolidationModel.create({
+        targetValidatorIndex,
+        sourceTargetValidatorIndex,
+        status: "ACTIVE",
+        txHash,
+        user,
+      });
+
+      return {
+        success: true,
+        record: newRecord,
+      };
     }),
 });

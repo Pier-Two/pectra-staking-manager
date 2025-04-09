@@ -19,8 +19,9 @@ export interface ValidatorDetails {
 }
 
 interface Transaction {
-  hash: string;
+  hash: string | undefined;
   status: TransactionStatus;
+  isConsolidatedValidator?: boolean;
 }
 
 export interface IConnector {
@@ -55,9 +56,10 @@ export interface IValidatorCard {
 }
 
 export interface ITransactionValidatorCard {
-  status: TransactionStatus;
+  status?: TransactionStatus;
   transactionHash: string;
   validator: ValidatorDetails;
+  isTarget?: boolean;
 }
 
 export interface IBatchDepositValidatorCard {
