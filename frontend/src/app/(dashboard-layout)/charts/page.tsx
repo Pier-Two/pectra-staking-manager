@@ -4,12 +4,12 @@ import type { FC } from "react";
 import { api } from "pec/trpc/react";
 import ChartLoading from "./loading";
 import { ChartContainer } from "pec/components/charts/ChartContainer";
+import type { IChartContainer } from "pec/types/chart";
 
 const ChartsPage: FC = () => {
   const { data, isFetched } = api.charts.getChartData.useQuery();
   if (!data || !isFetched) return <ChartLoading />;
-
-  console.log('Chart data from useQuery: ', data);
+  const chartContainer = data as IChartContainer;
 
   return (
     <div className="flex w-full flex-col items-center dark:text-white">
@@ -24,8 +24,7 @@ const ChartsPage: FC = () => {
           </div>
         </div>
 
-        {/* <ChartContainer charts={data} /> */}
-        <ChartContainer charts={[]} />
+        <ChartContainer charts={chartContainer.charts} />
       </div>
     </div>
   );
