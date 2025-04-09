@@ -1,6 +1,6 @@
 {
   "functions": {
-    "src/app/api/trpc/[trpc]/route.ts": {
+    "src/app/api/cron/validator-summary/route.ts": {
       "memory": 3008
     }
   }

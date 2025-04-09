@@ -45,4 +45,7 @@ export class ValidatorSummary extends TimeStamps {
    */
   @prop({ required: true })
   public avgStaked!: string;
+
+  @prop({ required: true })
+  public timestamp!: Date;
 }
