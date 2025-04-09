@@ -2,6 +2,8 @@
 
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { HOODI_CHAIN_DETAILS } from "pec/constants/chain";
+import { api } from "pec/trpc/react";
+import { TransactionStatus } from "pec/types/validator";
 import { eth_call } from "thirdweb";
 import { useActiveAccount } from "thirdweb/react";
 import { fromHex } from "viem";
@@ -45,7 +47,11 @@ export const useSubmitConsolidate = () => {
     consolidationTarget,
     validatorsToConsolidate,
     updateConsolidatedValidator,
+    setCurrentPubKey,
   } = useConsolidationStore();
+
+  const { mutateAsync: saveConsolidationToDatabase } =
+    api.validators.updateConsolidationRecord.useMutation();
 
   const consolidate = async () => {
     if (
@@ -68,12 +74,20 @@ export const useSubmitConsolidate = () => {
 
     for (const validator of nonConsolidateHashes) {
       try {
-        // Combine source validator pubkey and target validator pubkey
-        const callData =
-          `0x${consolidationTarget.publicKey}${validator.publicKey}`.replace(
-            /^0x0x/g,
-            "0x",
-          );
+        setCurrentPubKey(validator.publicKey);
+
+        // update the validator status to be in progress
+        updateConsolidatedValidator(
+          validator,
+          undefined, // empty tx hash
+          TransactionStatus.IN_PROGRESS,
+        );
+
+        const srcPubkey = validator.publicKey.replace(/^0x/g, "");
+        const targetPubkey = consolidationTarget.publicKey.replace(/^0x/g, "");
+
+        // Concatenate and add the 0x prefix back
+        const callData = `0x${targetPubkey}${srcPubkey}`;
 
         // Call the consolidation contract with the fee
         const txHash = await account.sendTransaction({
@@ -83,7 +97,17 @@ export const useSubmitConsolidate = () => {
           chainId: HOODI_CHAIN_DETAILS.id, // TODO make dynamic
         });
 
-        updateConsolidatedValidator(validator, txHash.transactionHash);
+        updateConsolidatedValidator(
+          validator,
+          txHash.transactionHash,
+          TransactionStatus.SUBMITTED,
+        );
+
+        await saveConsolidationToDatabase({
+          targetValidatorIndex: consolidationTarget.validatorIndex,
+          sourceTargetValidatorIndex: validator.validatorIndex,
+          txHash: txHash.transactionHash,
+        });
 
         results.push({ validator, txHash, success: true });
       } catch (error) {
@@ -91,8 +115,20 @@ export const useSubmitConsolidate = () => {
           `Error consolidating validator ${validator.validatorIndex}:`,
           error,
         );
+        updateConsolidatedValidator(
+          validator,
+          undefined,
+          TransactionStatus.UPCOMING,
+        );
         results.push({ validator, error, success: false });
+
+        // break out of the loop if it errors
+        setCurrentPubKey("");
+        // TODO we should toast an error
+        break;
       }
+
+      setCurrentPubKey("");
     }
 
     return results;
@@ -100,6 +136,7 @@ export const useSubmitConsolidate = () => {
 
   const mutationFn = useMutation({
     mutationFn: consolidate,
+    mutationKey: ["consolidate-function", consolidationTarget?.publicKey],
   });
 
   return mutationFn;

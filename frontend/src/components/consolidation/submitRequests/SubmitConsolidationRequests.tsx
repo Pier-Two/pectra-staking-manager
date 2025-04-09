@@ -75,6 +75,7 @@ export const SubmitConsolidationRequests = () => {
               consolidationTarget?.consolidationTransaction?.hash ?? ""
             }
             validator={consolidationTarget!}
+            isTarget={true}
           />
         </div>
 
@@ -84,10 +85,7 @@ export const SubmitConsolidationRequests = () => {
           {validatorsToConsolidate.map((validator) => (
             <TransactionValidatorCard
               key={validator.validatorIndex}
-              status={
-                validator.consolidationTransaction?.status ??
-                TransactionStatus.UPCOMING
-              }
+              status={validator.consolidationTransaction?.status}
               transactionHash={validator.consolidationTransaction?.hash ?? ""}
               validator={validator}
             />

@@ -9,6 +9,7 @@ import { useConsolidationStore } from "pec/hooks/use-consolidation-store";
 import { EIconPosition } from "pec/types/components";
 import { Email } from "./Email";
 import { Overview } from "./Overview";
+import { useSubmitConsolidate } from "pec/hooks/use-consolidation";
 
 export const ConsolidationSummary = () => {
   const {
@@ -26,8 +27,11 @@ export const ConsolidationSummary = () => {
     setProgress(1);
   };
 
-  const handleGenerateTransactions = () => {
+  const { mutateAsync: submitConsolidationTx } = useSubmitConsolidate();
+
+  const handleGenerateTransactions = async () => {
     setProgress(4);
+    await submitConsolidationTx();
   };
 
   const handleResetSourceValidators = () => {

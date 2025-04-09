@@ -1,15 +1,15 @@
 "use client";
 
-import type { FC } from "react";
-import { api } from "pec/trpc/react";
-import Link from "next/link";
-import { Connector } from "pec/components/validators/Connector";
-import ValidatorsFoundLoading from "./loading";
-import { useWalletAddress } from "pec/hooks/useWallet";
-import { PrimaryButton } from "pec/components/ui/custom/PrimaryButton";
-import { SecondaryButton } from "pec/components/ui/custom/SecondaryButton";
 import { ArrowRightIcon } from "lucide-react";
+import Link from "next/link";
+import { Button } from "pec/components/ui/button";
+import { SecondaryButton } from "pec/components/ui/custom/SecondaryButton";
+import { Connector } from "pec/components/validators/Connector";
+import { useWalletAddress } from "pec/hooks/useWallet";
+import { api } from "pec/trpc/react";
 import { EIconPosition } from "pec/types/components";
+import type { FC } from "react";
+import ValidatorsFoundLoading from "./loading";
 
 const ValidatorsFound: FC = () => {
   const walletAddress = useWalletAddress();
@@ -37,9 +37,9 @@ const ValidatorsFound: FC = () => {
       </div>
 
       <div className="flex w-full flex-col justify-center gap-4">
-        <Link href="/consolidation" className="flex w-full justify-center">
-          <PrimaryButton label="Start consolidation" disabled={false} />
-        </Link>
+        <Button asChild className="w-full">
+          <Link href="/consolidation">Start Consolidation</Link>
+        </Button>
 
         <Link href="/dashboard" className="flex w-full justify-center">
           <SecondaryButton

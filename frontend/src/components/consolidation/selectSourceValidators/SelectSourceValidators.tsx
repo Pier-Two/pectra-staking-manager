@@ -45,7 +45,8 @@ export const SelectSourceValidators = () => {
   const availableSourceValidators = useMemo(() => {
     return validators?.filter(
       (validator) =>
-        validator.validatorIndex !== consolidationTarget?.validatorIndex,
+        validator.validatorIndex !== consolidationTarget?.validatorIndex &&
+        validator.consolidationTransaction?.isConsolidatedValidator !== false,
     );
   }, [validators, consolidationTarget]);
 
