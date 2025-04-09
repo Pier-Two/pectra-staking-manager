@@ -86,4 +86,6 @@ export const POST = async () => {
 
   // Commit updates to database
   await ValidatorSummaryModel.bulkWrite(bulkWriteQuery);
+
+  return Response.json({}, { status: 200 });
 };
