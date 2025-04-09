@@ -8,10 +8,7 @@ import type {
   BeaconChainAllValidatorsResponse,
   BeaconChainValidatorDetailsResponse,
 } from "pec/types/api";
-import {
-  type ValidatorDetailsResponse,
-  ValidatorStatus,
-} from "pec/types/validator";
+import { type ValidatorDetails, ValidatorStatus } from "pec/types/validator";
 
 const getBeaconChainURL = (isTestnet: boolean): `${string}/` =>
   `https://${isTestnet && "hoodi."}beaconcha.in/`;
@@ -23,7 +20,7 @@ export const validatorRouter = createTRPCRouter({
     )
     .query(async ({ input: { address, isTestnet } }) => {
       try {
-        const validators: ValidatorDetailsResponse[] = [];
+        const validators: ValidatorDetails[] = [];
 
         const validatorResponse =
           await axios.get<BeaconChainAllValidatorsResponse>(

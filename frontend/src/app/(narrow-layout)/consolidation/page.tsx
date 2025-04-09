@@ -5,6 +5,7 @@ import { SelectDestinationValidator } from "pec/components/consolidation/selectD
 import { SelectSourceValidators } from "pec/components/consolidation/selectSourceValidators/SelectSourceValidators";
 import { SubmitConsolidationRequests } from "pec/components/consolidation/submitRequests/SubmitConsolidationRequests";
 import { ConsolidationSummary } from "pec/components/consolidation/summary/ConsolidationSummary";
+import { useConsolidationStore } from "pec/hooks/use-consolidation-store";
 import { useWalletAddress } from "pec/hooks/useWallet";
 import { api } from "pec/trpc/react";
 import type { ValidatorDetails } from "pec/types/validator";
@@ -21,10 +22,8 @@ const ConsolidationWorkflow: FC = () => {
     { enabled: !!walletAddress },
   );
 
-  const [progress, setProgress] = useState<number>(1);
-
-  const [selectedDestinationValidator, setSelectedDestinationValidator] =
-    useState<ValidatorDetails | null>(null);
+  const { consolidationTarget, progress, setProgress } =
+    useConsolidationStore();
 
   const [selectedSourceValidators, setSelectedSourceValidators] = useState<
     ValidatorDetails[]
@@ -36,32 +35,25 @@ const ConsolidationWorkflow: FC = () => {
     if (progress === 1) setSelectedSourceValidators([]);
   }, [progress]);
 
-  if (!walletAddress || !data || !isFetched) return <ConsolidationLoading />;
+  if (!walletAddress || !data || !isFetched) {
+    return (
+      <div className="flex flex-col gap-4">
+        {/* TODO this could be DRYer but this is easiest way to maintain UI with types */}
+        <ProgressBar progress={progress} setProgress={setProgress} />
+        <ConsolidationLoading />
+      </div>
+    );
+  }
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex w-full flex-col gap-4">
       <ProgressBar progress={progress} setProgress={setProgress} />
 
-      {progress === 1 && (
-        <SelectDestinationValidator
-          setProgress={setProgress}
-          setSelectedDestinationValidator={setSelectedDestinationValidator}
-          validators={data}
-        />
-      )}
+      {progress === 1 && <SelectDestinationValidator />}
 
-      {selectedDestinationValidator && (
+      {consolidationTarget && (
         <>
-          {progress === 2 && (
-            <SelectSourceValidators
-              destinationValidator={selectedDestinationValidator}
-              selectedSourceValidators={selectedSourceValidators}
-              setProgress={setProgress}
-              setSelectedDestinationValidator={setSelectedDestinationValidator}
-              setSelectedSourceValidators={setSelectedSourceValidators}
-              validators={data}
-            />
-          )}
+          {progress === 2 && <SelectSourceValidators />}
 
           {selectedSourceValidators.length > 0 && progress === 3 && (
             <ConsolidationSummary

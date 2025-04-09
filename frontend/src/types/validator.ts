@@ -23,11 +23,6 @@ interface Transaction {
   status: TransactionStatus;
 }
 
-export type ValidatorDetailsResponse = Omit<
-  ValidatorDetails,
-  "transactionStatus" | "transactionHash"
->;
-
 export interface IConnector {
   connectedAddress: string;
   textAlignment: "left" | "center";

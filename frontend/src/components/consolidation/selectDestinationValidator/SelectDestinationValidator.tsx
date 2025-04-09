@@ -1,11 +1,6 @@
-import type { FC } from "react";
 import { ValidatorList } from "./ValidatorList";
-import type { ISelectDestinationValidator } from "pec/types/consolidation";
 
-export const SelectDestinationValidator: FC<ISelectDestinationValidator> = (
-  props,
-) => {
-  const { setProgress, setSelectedDestinationValidator, validators } = props;
+export const SelectDestinationValidator = () => {
   return (
     <div className="space-y-8">
       <div className="space-y-4">
@@ -21,15 +16,9 @@ export const SelectDestinationValidator: FC<ISelectDestinationValidator> = (
         </div>
       </div>
 
-      <div className="text-md font-medium">
-        Select destination validator
-      </div>
+      <div className="text-md font-medium">Select destination validator</div>
 
-      <ValidatorList
-        setProgress={setProgress}
-        setSelectedValidator={setSelectedDestinationValidator}
-        validators={validators}
-      />
+      <ValidatorList />
     </div>
   );
 };

@@ -1,0 +1,108 @@
+"use client";
+
+import { type ValidatorDetails } from "pec/types/validator";
+import { useEffect, useState } from "react";
+
+import { useStore } from "zustand";
+import { persist } from "zustand/middleware";
+import { createStore } from "zustand/vanilla";
+
+// zustand doesnt writing bigints
+const serializeValidator = (validator: ValidatorDetails) => {
+  const formatted = {
+    ...validator,
+    balance: validator.balance.toString(),
+    effectiveBalance: validator.effectiveBalance.toString(),
+  };
+
+  return formatted;
+};
+
+// Create a type for the serialized validator
+type SerializedValidator = ReturnType<typeof serializeValidator>;
+
+const deserialiseValidator = (validator: SerializedValidator) => {
+  return {
+    ...validator,
+    balance: BigInt(validator.balance),
+    effectiveBalance: BigInt(validator.effectiveBalance),
+  };
+};
+
+type ConsolidationStore = {
+  progress: number;
+  setProgress: (step: number) => void;
+
+  consolidationTarget: SerializedValidator | undefined;
+  setConsolidationTarget: (validator: ValidatorDetails | undefined) => void;
+
+  validatorsToConsolidate: SerializedValidator[];
+  bulkSetConsolidationTargets: (validators: ValidatorDetails[]) => void;
+  addValidatorToConsolidate: (validator: ValidatorDetails) => void;
+  removeValidatorToConsolidate: (validator: ValidatorDetails) => void;
+
+  // Getter methods to deserialize data
+  getConsolidationTarget: () => ValidatorDetails | undefined;
+  getValidatorsToConsolidate: () => ValidatorDetails[];
+};
+
+export const consolidationStore = createStore<ConsolidationStore>()(
+  persist(
+    (set, get) => ({
+      progress: 1,
+      setProgress: (progress: number) => set({ progress }),
+
+      consolidationTarget: undefined,
+      setConsolidationTarget: (validator: ValidatorDetails | undefined) =>
+        set({
+          consolidationTarget: validator
+            ? serializeValidator(validator)
+            : undefined,
+        }),
+
+      validatorsToConsolidate: [],
+      bulkSetConsolidationTargets: (validators: ValidatorDetails[]) =>
+        set(() => ({
+          validatorsToConsolidate: validators.map(serializeValidator),
+        })),
+
+      addValidatorToConsolidate: (validator: ValidatorDetails) =>
+        set(() => ({
+          validatorsToConsolidate: [
+            ...get().validatorsToConsolidate,
+            serializeValidator(validator),
+          ],
+        })),
+
+      removeValidatorToConsolidate: (validator: ValidatorDetails) =>
+        set((state) => ({
+          validatorsToConsolidate: state.validatorsToConsolidate.filter(
+            (v) => v.publicKey !== validator.publicKey,
+          ),
+        })),
+
+      // Getter methods to deserialize data
+      getConsolidationTarget: () => {
+        const target = get().consolidationTarget;
+        return target ? deserialiseValidator(target) : undefined;
+      },
+      getValidatorsToConsolidate: () => {
+        return get().validatorsToConsolidate.map(deserialiseValidator);
+      },
+    }),
+    {
+      name: "consolidation-store",
+    },
+  ),
+);
+
+// Custom hook to return deserialized data
+export const useConsolidationStore = () => {
+  const store = useStore(consolidationStore);
+
+  return {
+    ...store,
+    consolidationTarget: store.getConsolidationTarget(),
+    validatorsToConsolidate: store.getValidatorsToConsolidate(),
+  };
+};

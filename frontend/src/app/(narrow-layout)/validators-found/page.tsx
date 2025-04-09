@@ -2,7 +2,7 @@
 
 import type { FC } from "react";
 import { api } from "pec/trpc/react";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { Connector } from "pec/components/validators/Connector";
 import ValidatorsFoundLoading from "./loading";
 import { useWalletAddress } from "pec/hooks/useWallet";
@@ -12,7 +12,6 @@ import { ArrowRightIcon } from "lucide-react";
 import { EIconPosition } from "pec/types/components";
 
 const ValidatorsFound: FC = () => {
-  const router = useRouter();
   const walletAddress = useWalletAddress();
 
   const { data, isFetched } = api.validators.getValidators.useQuery(
@@ -24,35 +23,32 @@ const ValidatorsFound: FC = () => {
 
   if (!walletAddress || !data || !isFetched) return <ValidatorsFoundLoading />;
 
-  const handleConsolidationRedirect = () => {
-    router.push("/consolidation");
-  };
-
-  const handleDashboardRedirect = () => {
-    router.push("/dashboard");
-  };
-
   return (
     <div className="space-y-8">
       <div className="flex flex-col gap-2">
-        <div className="text-2xl text-center font-medium">Validators found!</div>
-        <Connector connectedAddress={walletAddress} textAlignment="center" validators={data} />
+        <div className="text-center text-2xl font-medium">
+          Validators found!
+        </div>
+        <Connector
+          connectedAddress={walletAddress}
+          textAlignment="center"
+          validators={data}
+        />
       </div>
 
-      <div className="flex flex-col gap-4">
-        <PrimaryButton
-          label="Start consolidation"
-          onClick={handleConsolidationRedirect}
-          disabled={false}
-        />
+      <div className="flex w-full flex-col justify-center gap-4">
+        <Link href="/consolidation" className="flex w-full justify-center">
+          <PrimaryButton label="Start consolidation" disabled={false} />
+        </Link>
 
-        <SecondaryButton
-          label="Skip and go to Dashboard"
-          icon={<ArrowRightIcon />}
-          iconPosition={EIconPosition.RIGHT}
-          onClick={handleDashboardRedirect}
-          disabled={false}
-        />
+        <Link href="/dashboard" className="flex w-full justify-center">
+          <SecondaryButton
+            label="Skip and go to Dashboard"
+            icon={<ArrowRightIcon />}
+            iconPosition={EIconPosition.RIGHT}
+            disabled={false}
+          />
+        </Link>
 
         <div className="flex justify-center text-xs">
           You can access consolidation anytime.
