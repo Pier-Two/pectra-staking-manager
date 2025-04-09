@@ -96,8 +96,6 @@ export const validatorRouter = createTRPCRouter({
           ]);
 
           if (consolidationTx) {
-            console.log(consolidationTx);
-
             validator.consolidationTransaction = {
               hash: consolidationTx.txHash,
               status: TransactionStatus.SUBMITTED,
