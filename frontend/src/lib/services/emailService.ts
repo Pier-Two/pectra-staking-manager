@@ -10,40 +10,17 @@ import {
 import { generateErrorResponse } from "../utils";
 import { z } from "zod";
 
-const getHubspotApiKeyResponse = (): IResponse => {
-  const hubspotApiKey = env.HUBSPOT_API_KEY;
-
-  if (!hubspotApiKey)
-    return {
-      success: false,
-      message: "Hubspot API key not found",
-    };
-
-  return {
-    success: true,
-    message: "Hubspot API key found",
-    data: hubspotApiKey,
-  };
-};
-
 export const createContact = async (
   input: CreateContactType,
 ): Promise<IResponse> => {
   try {
+    // TODO: We need to do signature validation and extract the email from the signature. So the zod schemas for these funcs will change
     const parsedInput = CreateContactSchema.parse(input);
-    const { emailAddress, customerFirstName, customerLastName, companyName } =
-      parsedInput;
-
-    const hubspotApiKeyResponse = getHubspotApiKeyResponse();
-    if (!hubspotApiKeyResponse.success) return hubspotApiKeyResponse;
-    const hubspotApiKey = hubspotApiKeyResponse.data;
+    const { emailAddress } = parsedInput;
 
     const payload = {
       properties: {
         emailAddress,
-        ...(customerFirstName && { customerFirstName }),
-        ...(customerLastName && { customerLastName }),
-        ...(companyName && { companyName }),
       },
     };
 
@@ -52,7 +29,7 @@ export const createContact = async (
       payload,
       {
         headers: {
-          Authorization: `Bearer ${hubspotApiKey}`,
+          Authorization: `Bearer ${env.HUBSPOT_API_KEY}`,
           "Content-Type": "application/json",
         },
       },
@@ -89,10 +66,6 @@ export const sendEmailNotification = async (
   try {
     const parsedInput = SendEmailNotificationSchema.parse(input);
 
-    const hubspotApiKeyResponse = getHubspotApiKeyResponse();
-    if (!hubspotApiKeyResponse.success) return hubspotApiKeyResponse;
-    const hubspotApiKey = hubspotApiKeyResponse.data;
-
     const payload = {
       properties: {
         emailName: parsedInput.emailName,
@@ -105,7 +78,7 @@ export const sendEmailNotification = async (
       payload,
       {
         headers: {
-          Authorization: `Bearer ${hubspotApiKey}`,
+          Authorization: `Bearer ${env.HUBSPOT_API_KEY}`,
           "Content-Type": "application/json",
         },
       },
