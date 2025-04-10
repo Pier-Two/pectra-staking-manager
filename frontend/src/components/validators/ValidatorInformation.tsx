@@ -10,7 +10,7 @@ export const ValidatorInformation: FC<IGenericValidators> = (props) => {
   ).length;
 
   return (
-    <div className="flex w-full flex-col gap-y-2 rounded-xl border border-indigo-200 bg-indigo-50 p-4 dark:border-indigo-900 dark:bg-gray-900">
+    <div className="flex w-full flex-col gap-y-2 rounded-xl border border-indigo-200 bg-[#A5B4FC12] p-4 dark:border-indigo-900 dark:bg-gray-900">
       <div className="flex items-center gap-x-4">
         <Zap className="min-h-4 min-w-4 fill-primary text-primary" />
         {numberOfOldValidators > 0 && (
