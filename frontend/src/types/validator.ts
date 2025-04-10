@@ -24,6 +24,8 @@ interface Transaction {
 }
 
 export interface IConnector {
+  title: string;
+  description?: string;
   connectedAddress: string;
   textAlignment: "left" | "center";
   validators: ValidatorDetails[];

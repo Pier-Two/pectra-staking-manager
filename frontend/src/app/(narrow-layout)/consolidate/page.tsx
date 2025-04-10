@@ -1,14 +1,14 @@
 "use client";
 
-import type { FC } from "react";
-import { api } from "pec/trpc/react";
-import { useRouter } from "next/navigation";
-import { Connector } from "pec/components/validators/Connector";
 import { Merge } from "lucide-react";
-import ConsolidationLoading from "./loading";
-import { useWalletAddress } from "pec/hooks/useWallet";
+import { useRouter } from "next/navigation";
 import { PrimaryButton } from "pec/components/ui/custom/PrimaryButton";
 import { SecondaryButton } from "pec/components/ui/custom/SecondaryButton";
+import { Connector } from "pec/components/validators/Connector";
+import { useWalletAddress } from "pec/hooks/useWallet";
+import { api } from "pec/trpc/react";
+import type { FC } from "react";
+import ConsolidationLoading from "./loading";
 
 const Consolidation: FC = () => {
   const router = useRouter();
@@ -36,11 +36,14 @@ const Consolidation: FC = () => {
           <div className="text-3xl">Consolidate</div>
         </div>
 
-        <div className="w-[45vw] text-gray-700">
-          Combine multiple validator balances into a single large-balance
-          validator, as per Pectra EIP-7251.
-        </div>
-        <Connector connectedAddress={walletAddress} textAlignment="left" validators={data} />
+        <Connector
+          title="Consolidate"
+          description="Combine multiple validator balances into a single large-balance
+          validator, as per Pectra EIP-7251."
+          connectedAddress={walletAddress}
+          textAlignment="left"
+          validators={data}
+        />
       </div>
 
       <div className="flex flex-col gap-4">

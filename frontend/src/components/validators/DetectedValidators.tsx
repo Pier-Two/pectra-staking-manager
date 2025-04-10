@@ -1,6 +1,7 @@
 "use client";
 
-import { AlignLeft, ChevronsLeftRight } from "lucide-react";
+import clsx from "clsx";
+import { ChevronsLeftRight } from "lucide-react";
 import Image from "next/image";
 import { DECIMAL_PLACES } from "pec/lib/constants";
 import type { IDetectedValidators } from "pec/types/validator";
@@ -19,10 +20,13 @@ export const DetectedValidators: FC<IDetectedValidators> = (props) => {
   );
 
   return (
-    <>
+    <div className="flex flex-col gap-y-3">
       <div
         onClick={() => setShowValidators(!showValidators)}
-        className="flex-col-2 flex w-full items-center justify-between gap-x-4 rounded-xl border border-gray-200 bg-white px-4 py-6 hover:cursor-pointer hover:border-indigo-300 dark:border-gray-800 dark:bg-black"
+        className={clsx(
+          "flex-col-2 flex w-full items-center justify-between gap-x-4 rounded-xl px-4 py-6 hover:cursor-pointer hover:border-indigo-300 dark:border-gray-800 dark:bg-black",
+          showValidators && "outline outline-[1px] outline-primary",
+        )}
       >
         <div className="flex items-center gap-x-4">
           <Image
@@ -31,24 +35,23 @@ export const DetectedValidators: FC<IDetectedValidators> = (props) => {
             width={24}
             height={24}
           />
-          <div className="text-sm">
+          <p className="font-570 text-[14px] leading-[14px] text-zinc-950">
             {validators.length} {cardTitle}
-          </div>
+          </p>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-x-4">
           <div className="flex items-center gap-1">
-            <AlignLeft className="h-3 w-3 text-gray-500 dark:text-white" />
-            <span>
-              {Number(formatEther(totalBalance)).toFixed(DECIMAL_PLACES)}
-            </span>
+            <p className="font-570 text-[14px] leading-[14px] text-zinc-950">
+              Ξ {Number(formatEther(totalBalance)).toFixed(DECIMAL_PLACES)}
+            </p>
           </div>
-          <ChevronsLeftRight className="h-5 w-5 rotate-90 text-gray-800 dark:text-white" />
+          <ChevronsLeftRight className="h-4 w-4 rotate-90 text-gray-800 dark:text-white" />
         </div>
       </div>
 
       {showValidators && (
-        <div className="mt-2 flex w-full flex-col items-center gap-2">
+        <div className="flex w-full flex-col items-center gap-y-2">
           {validators.map((validator, index) => (
             <ValidatorCard
               key={index + validator.validatorIndex}
@@ -60,6 +63,6 @@ export const DetectedValidators: FC<IDetectedValidators> = (props) => {
           ))}
         </div>
       )}
-    </>
+    </div>
   );
 };

@@ -11,6 +11,7 @@ export default {
         montserrat: ["var(--font-montserrat)", ...fontFamily.sans],
       },
       fontWeight: {
+        380: "300",
         570: "500",
         670: "570",
       },
