@@ -12,7 +12,7 @@ const NarrowLayout: FC<ChildrenProp> = (props) => {
       <div className="flex min-h-screen w-screen flex-col">
         <TopBar numberOfValidators={4} type={"wallet_connect"} />
         <div className="flex flex-1 justify-center bg-indigo-50 dark:bg-gray-950 dark:text-white">
-          <div className="px-16 py-12">{children}</div>
+          <div className="px-4 py-12 sm:px-16">{children}</div>
         </div>
         <BottomBar />
       </div>

@@ -23,7 +23,7 @@ export const TopBar: FC<ITopBar> = () => {
     <header className="sticky flex w-full items-center justify-between border-b border-zinc-200 bg-white/40 p-4 shadow-sm backdrop-blur-md dark:border-gray-800 dark:bg-gray-950">
       <div className="order-2 flex items-center md:order-1">
         <div
-          className="flex flex-row-reverse items-center hover:cursor-pointer md:flex-row md:space-x-3"
+          className="flex flex-row-reverse items-center gap-x-3 hover:cursor-pointer md:flex-row"
           onClick={handleWelcomeNavigation}
         >
           <Image
