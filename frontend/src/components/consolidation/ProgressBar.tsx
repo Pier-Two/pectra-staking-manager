@@ -1,3 +1,5 @@
+"use client";
+
 import type { IProgressBar } from "pec/types/consolidation";
 import type { FC } from "react";
 
