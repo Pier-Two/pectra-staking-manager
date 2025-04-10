@@ -7,9 +7,13 @@ import { ChartContainer } from "pec/components/charts/ChartContainer";
 
 const ChartsPage: FC = () => {
   const [filter, setFilter] = useState<"days" | "months" | "years">("days");
-  const { data, isFetched } = api.charts.getChartData.useQuery({
-    filter,
-  });
+  const { data, isFetched } = api.charts.getChartData.useQuery(
+    {
+      filter,
+    },
+    { refetchInterval: 5000 },
+  );
+  
   if (!data || !isFetched) return <ChartLoading />;
 
   return (
