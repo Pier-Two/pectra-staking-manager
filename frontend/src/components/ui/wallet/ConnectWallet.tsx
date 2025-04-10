@@ -31,7 +31,7 @@ export const ConnectWalletButton = ({ className }: StyleableComponent) => {
       connectButton={{
         label: "Connect Wallet",
         className: clsx(
-          "!w-full !rounded-full !bg-primary !hover:bg-indigo-400 !text-white !text-xs !py-2 !h-10 !font-570 !leading[13px] !text-[13px] !shadow-[0px_0px_20px_0px_white] !px-4",
+          "!rounded-full !bg-primary !hover:bg-indigo-400 !text-white !text-xs !py-2 !h-10 !font-570 !leading[13px] !text-[13px] !shadow-[0px_0px_20px_0px_white] !px-4",
           className,
         ),
       }}
