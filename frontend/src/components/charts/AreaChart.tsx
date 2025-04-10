@@ -37,6 +37,7 @@ export const AreaChartComponent: FC<IAreaChart> = ({ chart }) => {
     showLabel: showYLabel,
     orientation: yOrientation,
   } = yAxis;
+
   const {
     label: xLabel,
     showLabel: showXLabel,
@@ -47,11 +48,11 @@ export const AreaChartComponent: FC<IAreaChart> = ({ chart }) => {
 
   const axisTextStyle = {
     fill: darkMode ? "#ffffff" : "#000000",
-    fontSize: 12,
+    fontSize: 10,
   };
 
   return (
-    <ChartContainer className="px-8" config={chartConfig}>
+    <ChartContainer className="w-[90%]" config={chartConfig}>
       <AreaChart data={chartData}>
         <defs>
           <linearGradient id="fillPectra" x1="0" y1="0" x2="0" y2="1">
@@ -107,12 +108,11 @@ export const AreaChartComponent: FC<IAreaChart> = ({ chart }) => {
                   value: xLabel,
                   position:
                     xOrientation === "top" ? "insideTop" : "insideBottom",
-                  offset: xOrientation === "bottom" ? -20 : -20,
+                  offset: -15,
                 }
               : undefined
           }
           minTickGap={32}
-          tickFormatter={(value: string) => value.slice(0, 3)}
           tick={axisTextStyle}
           orientation={xOrientation}
         />
@@ -120,11 +120,11 @@ export const AreaChartComponent: FC<IAreaChart> = ({ chart }) => {
         <YAxis
           tickLine={false}
           axisLine={true}
-          tickMargin={8}
           domain={[lowerRange, upperRange]}
           ticks={ticks}
           tick={axisTextStyle}
           orientation={yOrientation}
+          width={upperRange.toString().length * (showYLabel ? 9 : 7)}
         >
           {showYLabel && (
             <Label
@@ -172,7 +172,10 @@ export const AreaChartComponent: FC<IAreaChart> = ({ chart }) => {
         />
 
         {legend && (
-          <ChartLegend className="mt-4" content={<ChartLegendContent />} />
+          <ChartLegend
+            className={`${showXLabel ? "mt-4" : ""}`}
+            content={<ChartLegendContent />}
+          />
         )}
       </AreaChart>
     </ChartContainer>

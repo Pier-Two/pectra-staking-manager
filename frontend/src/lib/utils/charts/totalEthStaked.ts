@@ -3,10 +3,15 @@ import { buildChartData, buildXAxis, buildYAxis } from ".";
 
 export const constructTotalEthStakedChartData = (
   groupedValidatorStatistics: IGroupedValidatorStatistics,
+  filter: "days" | "months" | "years",
 ): IChart => {
-  const chartData = buildChartData(groupedValidatorStatistics, "totalStaked");
-  const yAxis = buildYAxis(chartData, "Total ETH Staked", true, "left");
-  const xAxis = buildXAxis();
+  const chartData = buildChartData(
+    groupedValidatorStatistics,
+    "totalStaked",
+    filter,
+  );
+  const yAxis = buildYAxis(chartData, "Total ETH Staked", false, "left");
+  const xAxis = buildXAxis(filter);
 
   return {
     title: "Total ETH Staked",

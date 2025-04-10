@@ -17,7 +17,11 @@ const emptyChart = (
   </Card>
 );
 
-export const ChartContainer: FC<IChartContainer> = ({ charts }) => {
+export const ChartContainer: FC<IChartContainer> = ({
+  charts,
+  filter,
+  setFilter,
+}) => {
   const chartCount = charts.length;
   const [chartIndex, setChartIndex] = useState(0);
   const activeChart = charts[chartIndex];
@@ -40,15 +44,40 @@ export const ChartContainer: FC<IChartContainer> = ({ charts }) => {
       <div className="flex flex-row items-center justify-between px-6">
         <div className="text-lg font-semibold">{title}</div>
         {chartCount > 1 && (
-          <div className="flex flex-row items-center gap-2">
-            <ChevronLeft
-              className="h-10 w-10 cursor-pointer rounded-full border-2 p-2 hover:bg-white dark:border-gray-800 dark:bg-gray-900 dark:hover:bg-gray-800"
-              onClick={handleChartBackward}
-            />
-            <ChevronRight
-              className="h-10 w-10 cursor-pointer rounded-full border-2 p-2 hover:bg-white dark:border-gray-800 dark:bg-gray-900 dark:hover:bg-gray-800"
-              onClick={handleChartForward}
-            />
+          <div className="flex flex-row items-center gap-8">
+            <div className="flex flex-row items-center gap-4 text-sm">
+              <div
+                onClick={() => setFilter("days")}
+                className={`cursor-pointer ${filter === "days" ? "font-semibold text-indigo-500" : ""}`}
+              >
+                Day
+              </div>
+
+              <div
+                onClick={() => setFilter("months")}
+                className={`cursor-pointer ${filter === "months" ? "font-semibold text-indigo-500" : ""}`}
+              >
+                Month
+              </div>
+
+              <div
+                onClick={() => setFilter("years")}
+                className={`cursor-pointer ${filter === "years" ? "font-semibold text-indigo-500" : ""}`}
+              >
+                Year
+              </div>
+            </div>
+
+            <div className="flex flex-row items-center gap-2">
+              <ChevronLeft
+                className="h-10 w-10 cursor-pointer rounded-full border-2 p-2 hover:bg-white dark:border-gray-800 dark:bg-gray-900 dark:hover:bg-gray-800"
+                onClick={handleChartBackward}
+              />
+              <ChevronRight
+                className="h-10 w-10 cursor-pointer rounded-full border-2 p-2 hover:bg-white dark:border-gray-800 dark:bg-gray-900 dark:hover:bg-gray-800"
+                onClick={handleChartForward}
+              />
+            </div>
           </div>
         )}
       </div>
@@ -66,7 +95,9 @@ export const ChartContainer: FC<IChartContainer> = ({ charts }) => {
           </div>
         </CardHeader>
 
-        <AreaChartComponent chart={activeChart} />
+        <div className="flex w-full items-center justify-center">
+          <AreaChartComponent chart={activeChart} />
+        </div>
 
         {footer && (
           <CardFooter className="flex flex-row items-center justify-center text-sm text-gray-500 dark:text-gray-400">

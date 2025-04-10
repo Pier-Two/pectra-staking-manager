@@ -1,7 +1,8 @@
 export interface IChartContainer {
   charts: IChart[];
+  filter: "days" | "months" | "years";
+  setFilter: (filter: "days" | "months" | "years") => void;
 }
-
 export interface IAreaChart {
   chart: IChart;
 }

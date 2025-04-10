@@ -3,10 +3,15 @@ import { buildChartData, buildXAxis, buildYAxis } from ".";
 
 export const constructAverageEthStakedChartData = (
   groupedPectraValidators: IGroupedValidatorStatistics,
+  filter: "days" | "months" | "years",
 ): IChart => {
-  const chartData = buildChartData(groupedPectraValidators, "avgStaked");
-  const yAxis = buildYAxis(chartData, "Average ETH Staked", true, "left");
-  const xAxis = buildXAxis();
+  const chartData = buildChartData(
+    groupedPectraValidators,
+    "avgStaked",
+    filter,
+  );
+  const yAxis = buildYAxis(chartData, "Average ETH Staked", false, "left");
+  const xAxis = buildXAxis(filter);
 
   return {
     title: "Average ETH Staked",

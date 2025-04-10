@@ -1,15 +1,18 @@
 "use client";
 
-import type { FC } from "react";
+import { useState, type FC } from "react";
 import { api } from "pec/trpc/react";
 import ChartLoading from "./loading";
 import { ChartContainer } from "pec/components/charts/ChartContainer";
-import type { IChartContainer } from "pec/types/chart";
 
 const ChartsPage: FC = () => {
-  const { data, isFetched } = api.charts.getChartData.useQuery();
+  const [filter, setFilter] = useState<"days" | "months" | "years">("days");
+  const { data, isFetched } = api.charts.getChartData.useQuery({
+    filter,
+  });
   if (!data || !isFetched) return <ChartLoading />;
-  const chartContainer = data as IChartContainer;
+
+  console.log("My charts data: ", data);
 
   return (
     <div className="flex w-full flex-col items-center dark:text-white">
@@ -24,7 +27,7 @@ const ChartsPage: FC = () => {
           </div>
         </div>
 
-        <ChartContainer charts={chartContainer.charts} />
+        <ChartContainer charts={data} filter={filter} setFilter={setFilter} />
       </div>
     </div>
   );

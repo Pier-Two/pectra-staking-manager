@@ -12,44 +12,55 @@ export const buildChartData = (
     IGroupedValidatorStatistics[string][number],
     "count" | "totalStaked" | "avgStaked"
   >,
+  filter: "days" | "months" | "years",
 ): IChartData[] => {
-  const result: IChartData[] = [];
+  const chartMap = new Map<string, IChartData>();
 
   Object.entries(groupedValidatorStatistics).forEach(
     ([timestampKey, group]) => {
-      if (!group) return;
+      if (!group || group.length === 0) return;
+      const chartKey = buildChartKey(new Date(timestampKey), filter);
 
-      const date = new Date(timestampKey);
-      const month = date.getMonth().toString().padStart(2, "0");
-      const year = date.getFullYear().toString().slice(-2);
-      const chartKey = `${month}/${year}`;
-
-      let chartEntry = result.find((item) => item.key === chartKey);
-
-      if (!chartEntry) {
-        chartEntry = {
+      if (!chartMap.has(chartKey)) {
+        chartMap.set(chartKey, {
           key: chartKey,
           merge: 0,
           shapella: 0,
           pectra: 0,
-        };
-        result.push(chartEntry);
+        });
       }
 
-      Object.entries(WITHDRAWAL_PREFIXES).forEach(([type, prefix]) => {
-        const validator = group.find(
+      const chartEntry = chartMap.get(chartKey)!;
+
+      for (const [type, prefix] of Object.entries(WITHDRAWAL_PREFIXES)) {
+        const validatorsOfType = group.filter(
           (validator) => validator.withdrawalCredentialPrefix === prefix,
         );
 
-        const field = validator?.[key];
-        if (!field) return;
+        if (validatorsOfType.length === 0) continue;
 
-        chartEntry[type as keyof typeof WITHDRAWAL_PREFIXES] += Number(field);
-      });
+        const maxValue = Math.max(
+          ...validatorsOfType
+            .map((validator) => Number(validator[key] || 0))
+            .filter((val) => !isNaN(val)),
+        );
+
+        const typeKey = type as keyof typeof WITHDRAWAL_PREFIXES;
+        if (maxValue > chartEntry[typeKey]) chartEntry[typeKey] = maxValue;
+      }
     },
   );
 
-  return result;
+  return Array.from(chartMap.values());
+};
+
+const buildChartKey = (date: Date, filter: "days" | "months" | "years") => {
+  const day = date.getDate().toString().padStart(2, "0");
+  const month = date.getMonth().toString().padStart(2, "0");
+  const year = date.getFullYear().toString().slice(-2);
+  if (filter === "days") return `${day}/${month}/${year}`;
+  if (filter === "years") return `${year}`;
+  return `${month}/${year}`;
 };
 
 export const buildYAxis = (
@@ -83,9 +94,9 @@ export const buildYAxis = (
   };
 };
 
-export const buildXAxis = (): IXAxis => {
+export const buildXAxis = (filter: "days" | "months" | "years"): IXAxis => {
   return {
-    label: "Month",
+    label: filter === "days" ? "Day" : filter === "months" ? "Month" : "Year",
     showLabel: false,
     orientation: "bottom",
   };

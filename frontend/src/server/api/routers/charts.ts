@@ -1,35 +1,43 @@
+import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "pec/server/api/trpc";
 import { ValidatorSummaryModel } from "pec/lib/database/models";
 import { groupBy } from "lodash";
-import type {
-  IGroupedValidatorStatistics,
-  IChartContainer,
-} from "pec/types/chart";
+import type { IGroupedValidatorStatistics, IChart } from "pec/types/chart";
 import type { ValidatorSummary } from "pec/lib/database/classes/validatorSummary";
 import { constructNumberOfValidatorsForEachUpgradeChartData } from "pec/lib/utils/charts/numberOfValidatorsForEachUpgrade";
 import { constructTotalEthStakedChartData } from "pec/lib/utils/charts/totalEthStaked";
 import { constructAverageEthStakedChartData } from "pec/lib/utils/charts/averageEthStaked";
 
 export const chartRouter = createTRPCRouter({
-  getChartData: publicProcedure.query(async () => {
-    const validatorStatistics = await ValidatorSummaryModel.find({
-      timestamp: { $exists: true },
-    })
-      .select(
-        "avgStaked count totalStaked withdrawalCredentialPrefix timestamp",
-      )
-      .lean();
+  getChartData: publicProcedure
+    .input(
+      z.object({
+        filter: z.enum(["days", "months", "years"]),
+      }),
+    )
+    .query(async ({ input }) => {
+      const validatorStatistics = await ValidatorSummaryModel.find({
+        timestamp: { $exists: true },
+      })
+        .select(
+          "avgStaked count totalStaked withdrawalCredentialPrefix timestamp",
+        )
+        .lean();
 
-    if (!validatorStatistics || validatorStatistics.length === 0) return [];
+      if (!validatorStatistics || validatorStatistics.length === 0) return [];
 
-    const { groupedValidators, groupedPectraValidators } =
-      getValidatorGroups(validatorStatistics);
+      const { groupedValidators, groupedPectraValidators } =
+        getValidatorGroups(validatorStatistics);
 
-    if (!groupedValidators || Object.keys(groupedValidators).length === 0)
-      return [];
+      if (!groupedValidators || Object.keys(groupedValidators).length === 0)
+        return [];
 
-    return constructChartData(groupedValidators, groupedPectraValidators);
-  }),
+      return constructChartData(
+        groupedValidators,
+        groupedPectraValidators,
+        input.filter,
+      );
+    }),
 });
 
 const getValidatorGroups = (validatorStatistics: ValidatorSummary[]) => {
@@ -48,19 +56,21 @@ const getValidatorGroups = (validatorStatistics: ValidatorSummary[]) => {
 const constructChartData = (
   groupedValidators: IGroupedValidatorStatistics,
   pectraValidators: IGroupedValidatorStatistics,
-): IChartContainer => {
+  filter: "days" | "months" | "years",
+): IChart[] => {
   const numberOfValidatorsForEachUpgradeChartData =
-    constructNumberOfValidatorsForEachUpgradeChartData(groupedValidators);
+    constructNumberOfValidatorsForEachUpgradeChartData(
+      groupedValidators,
+      filter,
+    );
   const totalETHStakedForEachUpgradeChartData =
-    constructTotalEthStakedChartData(groupedValidators);
+    constructTotalEthStakedChartData(groupedValidators, filter);
   const averageETHStakedPerValidatorForEachUpgradeChartData =
-    constructAverageEthStakedChartData(pectraValidators);
+    constructAverageEthStakedChartData(pectraValidators, filter);
 
-  return {
-    charts: [
-      numberOfValidatorsForEachUpgradeChartData,
-      totalETHStakedForEachUpgradeChartData,
-      averageETHStakedPerValidatorForEachUpgradeChartData,
-    ],
-  };
+  return [
+    numberOfValidatorsForEachUpgradeChartData,
+    totalETHStakedForEachUpgradeChartData,
+    averageETHStakedPerValidatorForEachUpgradeChartData,
+  ];
 };

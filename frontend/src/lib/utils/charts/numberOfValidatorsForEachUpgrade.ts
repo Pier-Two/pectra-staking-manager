@@ -3,10 +3,11 @@ import { buildChartData, buildXAxis, buildYAxis } from ".";
 
 export const constructNumberOfValidatorsForEachUpgradeChartData = (
   groupedValidatorStatistics: IGroupedValidatorStatistics,
+  filter: "days" | "months" | "years",
 ): IChart => {
-  const chartData = buildChartData(groupedValidatorStatistics, "count");
-  const yAxis = buildYAxis(chartData, "Number of validators", true, "left");
-  const xAxis = buildXAxis();
+  const chartData = buildChartData(groupedValidatorStatistics, "count", filter);
+  const yAxis = buildYAxis(chartData, "Number of validators", false, "left");
+  const xAxis = buildXAxis(filter);
   const percentageUptake = "";
 
   return {
