@@ -1,17 +1,15 @@
 "use client";
 
-import type { FC } from "react";
-import { api } from "pec/trpc/react";
-import { BatchDeposit } from "pec/components/dashboard/tools/BatchDeposit";
-import { Withdrawal } from "pec/components/dashboard/tools/Withdrawal";
-import { Consolidate } from "pec/components/dashboard/tools/Consolidate";
+import { ToolCard } from "pec/components/dashboard/tools/ToolCard";
 import { ActiveValidators } from "pec/components/dashboard/validators/ActiveValidators";
-import { TotalStake } from "pec/components/dashboard/validators/TotalStake";
 import { TotalDailyIncome } from "pec/components/dashboard/validators/TotalDailyIncome";
+import { TotalStake } from "pec/components/dashboard/validators/TotalStake";
 import { ValidatorTable } from "pec/components/dashboard/validatorTable/ValidatorTable";
 import { useWalletAddress } from "pec/hooks/useWallet";
-import DashboardLoading from "./loading";
+import { api } from "pec/trpc/react";
 import { ValidatorStatus } from "pec/types/validator";
+import type { FC } from "react";
+import DashboardLoading from "./loading";
 
 const Dashboard: FC = () => {
   const walletAddress = useWalletAddress();
@@ -42,9 +40,9 @@ const Dashboard: FC = () => {
           </div>
 
           <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-            <Consolidate />
-            <BatchDeposit />
-            <Withdrawal />
+            <ToolCard preset="Consolidate" />
+            <ToolCard preset="BatchDeposit" />
+            <ToolCard preset="Withdrawal" />
           </div>
         </div>
       </div>

@@ -11,6 +11,7 @@
 @layer base {
   :root {
     --primary: 232 67% 59%;
+    --primary-dark: 232 46% 36%;
     --border: 231 67% 84%;
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;
