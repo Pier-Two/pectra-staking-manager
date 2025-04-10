@@ -14,5 +14,5 @@ export class User implements UserType {
   public email!: string;
 
   @prop({ required: true, unique: true })
-  public walletAddress!: string;
+  public address!: string;
 }

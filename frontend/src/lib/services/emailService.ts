@@ -14,7 +14,6 @@ export const createContact = async (
   input: CreateContactType,
 ): Promise<IResponse> => {
   try {
-    // TODO: We need to do signature validation and extract the email from the signature. So the zod schemas for these funcs will change
     const parsedInput = CreateContactSchema.parse(input);
     const { emailAddress } = parsedInput;
 
