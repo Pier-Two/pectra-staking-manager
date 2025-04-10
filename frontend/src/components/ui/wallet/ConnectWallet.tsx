@@ -1,11 +1,11 @@
 "use client";
 
-import { ConnectButton } from "thirdweb/react";
-import { client, wallets } from "pec/lib/wallet/client";
-import type { StyleableComponent } from "pec/types/components";
 import { clsx } from "clsx";
 import { useRouter } from "next/navigation";
+import { client, wallets } from "pec/lib/wallet/client";
+import type { StyleableComponent } from "pec/types/components";
 import { defineChain, mainnet } from "thirdweb/chains";
+import { ConnectButton } from "thirdweb/react";
 
 const hoodiChain = defineChain({
   id: 560048,
@@ -31,7 +31,7 @@ export const ConnectWalletButton = ({ className }: StyleableComponent) => {
       connectButton={{
         label: "Connect Wallet",
         className: clsx(
-          "!w-full !rounded-full !bg-indigo-500 !hover:bg-indigo-400 !text-white !text-xs !py-2 !h-auto",
+          "!w-full !rounded-full !bg-primary !hover:bg-indigo-400 !text-white !text-xs !py-2 !h-10 !font-570 !leading[13px] !text-[13px] !shadow-[0px_0px_20px_0px_white] !px-4",
           className,
         ),
       }}

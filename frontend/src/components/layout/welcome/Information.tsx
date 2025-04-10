@@ -1,5 +1,5 @@
-import type { FC } from "react";
 import { CircleCheck } from "lucide-react";
+import type { FC } from "react";
 
 export const Information: FC = () => {
   const benefits = [
@@ -9,19 +9,21 @@ export const Information: FC = () => {
   ];
 
   return (
-    <div className="mt-12 flex w-full flex-col gap-2 text-black dark:text-white">
-      <div className="w-full text-center text-xs">
+    <div className="flex w-full flex-col gap-y-3 text-black dark:text-white">
+      <p className="font-570 w-full text-center text-[14px] leading-[14px] text-zinc-700">
         Use this tool to enable and manage:
-      </div>
+      </p>
 
-      <div className="flex w-full flex-col gap-3 md:flex-row md:flex-wrap md:justify-center">
+      <div className="flex w-full flex-wrap justify-center gap-3">
         {benefits.map((benefit) => (
           <div
             key={benefit}
-            className="flex w-full flex-row items-center gap-2 rounded-xl border border-gray-300 bg-white p-2 dark:border-gray-700 dark:bg-black md:w-[200px]"
+            className="flex h-10 w-fit flex-row items-center gap-3 rounded-lg border-[0.5px] border-border bg-white p-3 dark:border-gray-700 dark:bg-black"
           >
-            <CircleCheck className="h-4 w-4 fill-indigo-500 text-white" />
-            <div className="text-xs">{benefit}</div>
+            <CircleCheck className="h-4 w-4 fill-primary text-white" />
+            <div className="font-570 pt-[2px] text-[14px] leading-[14px] text-[#4C4C4C]">
+              {benefit}
+            </div>
           </div>
         ))}
       </div>

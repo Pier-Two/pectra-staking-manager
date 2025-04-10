@@ -10,10 +10,9 @@ export default {
         sans: ["var(--font-geist-sans)", ...fontFamily.sans],
         montserrat: ["var(--font-montserrat)", ...fontFamily.sans],
       },
-      borderRadius: {
-        lg: "var(--radius)",
-        md: "calc(var(--radius) - 2px)",
-        sm: "calc(var(--radius) - 4px)",
+      fontWeight: {
+        570: "500",
+        670: "570",
       },
       colors: {
         background: "hsl(var(--background))",

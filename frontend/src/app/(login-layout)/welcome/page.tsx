@@ -4,10 +4,10 @@ import { useRouter } from "next/navigation";
 import { Footer } from "pec/components/layout/welcome/Footer";
 import { Information } from "pec/components/layout/welcome/Information";
 import { PectraLink } from "pec/components/layout/welcome/PectraLink";
-import { ConnectWalletButton } from "pec/components/ui/wallet/ConnectWallet";
-import type { FC } from "react";
 import { PrimaryButton } from "pec/components/ui/custom/PrimaryButton";
+import { ConnectWalletButton } from "pec/components/ui/wallet/ConnectWallet";
 import { useWalletAddress } from "pec/hooks/useWallet";
+import type { FC } from "react";
 
 const Welcome: FC = () => {
   const router = useRouter();
@@ -19,21 +19,23 @@ const Welcome: FC = () => {
   };
 
   return (
-    <div className="flex h-full w-full flex-col gap-4">
-      <div className="flex w-full flex-col items-center justify-center gap-1">
-        <PectraLink />
+    <div className="flex h-full w-full flex-col gap-y-[72px]">
+      <div className="flex flex-col gap-y-4">
+        <div className="flex w-full flex-col items-center justify-center gap-y-4">
+          <PectraLink />
 
-        <p className="text-center text-5xl">
-          <span>This is the Future</span>
-          <span className="md:block"> of Ethereum Staking</span>
-        </p>
+          <p className="font-670 text-center text-[50px] leading-[54px]">
+            <span>This is the Future of</span>
+            <span className="md:block"> Ethereum Staking</span>
+          </p>
+        </div>
       </div>
 
       <Information />
 
-      <div className="mt-12 flex w-full flex-col items-center justify-center gap-2">
+      <div className="flex w-full flex-col items-center justify-center gap-y-4">
         {!hasWalletAddress && (
-          <div className="text-center text-xs">
+          <div className="font-570 text-center text-[14px] leading-[14px]">
             Connect your withdrawal address to access validators
           </div>
         )}
@@ -47,14 +49,13 @@ const Welcome: FC = () => {
               disabled={false}
             />
           ) : (
-            <ConnectWalletButton className="w-full text-xs" />
+            // TODO: Come back and address width appropriately
+            <ConnectWalletButton className="!min-w-[420px]" />
           )}
         </div>
       </div>
 
-      <div className="mt-12 flex justify-center">
-        <Footer />
-      </div>
+      <Footer />
     </div>
   );
 };

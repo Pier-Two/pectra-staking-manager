@@ -1,18 +1,18 @@
 "use client";
 
-import type { FC } from "react";
-import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { ConnectWalletButton } from "pec/components/ui/wallet/ConnectWallet";
-import { SidebarTrigger } from "../ui/sidebar";
+import type { FC } from "react";
 import DarkMode from "../dark-mode";
+import { SidebarTrigger } from "../ui/sidebar";
 
 export interface ITopBar {
   numberOfValidators: number;
   type: "profile" | "wallet_connect";
 }
 
-export const TopBar: FC<ITopBar> = (props) => {
+export const TopBar: FC<ITopBar> = () => {
   const router = useRouter();
 
   const handleWelcomeNavigation = () => {
@@ -20,7 +20,7 @@ export const TopBar: FC<ITopBar> = (props) => {
   };
 
   return (
-    <header className="sticky flex w-full items-center justify-between border-b bg-gray-50 p-4 shadow-sm dark:border-gray-800 dark:bg-gray-950">
+    <header className="sticky flex w-full items-center justify-between border-b border-zinc-200 bg-white/40 p-4 shadow-sm backdrop-blur-md dark:border-gray-800 dark:bg-gray-950">
       <div className="order-2 flex items-center md:order-1">
         <div
           className="flex flex-row-reverse items-center hover:cursor-pointer md:flex-row md:space-x-3"
@@ -29,16 +29,17 @@ export const TopBar: FC<ITopBar> = (props) => {
           <Image
             src="/logos/PectraStakingManager.svg"
             alt="Pectra Staking Manager"
-            className="ml-3 h-12 w-12 md:ml-0"
-            width={48}
-            height={48}
+            width={40}
+            height={40}
           />
 
-          <div className="flex flex-col text-right md:text-left">
-            <h1 className="text-lg font-semibold dark:text-white">
+          <div className="flex flex-col gap-y-[3px] text-right md:text-left">
+            <h1 className="font-570 text-[19.8px] leading-[18px] dark:text-white">
               Pectra Staking
             </h1>
-            <h1 className="text-lg font-semibold dark:text-white">Manager</h1>
+            <h1 className="font-570 text-[19.8px] leading-[18px] dark:text-white">
+              Manager
+            </h1>
           </div>
         </div>
       </div>
@@ -50,9 +51,9 @@ export const TopBar: FC<ITopBar> = (props) => {
           <SidebarTrigger />
         </div>
 
-        <div className="mr-12 hidden flex-row items-center gap-2 md:flex">
+        <div className="hidden flex-row items-center gap-2 md:flex">
           <DarkMode />
-          <ConnectWalletButton className="!w-[100px]" />
+          <ConnectWalletButton className="!w-fit !min-w-[123px]" />
         </div>
       </div>
     </header>
