@@ -11,7 +11,7 @@ describe("chartRouter", () => {
   it("should return the correct data", async () => {
     await ValidatorSummaryModel.insertMany(validatorSummaries);
     const caller = createCaller(mockCtx);
-    const result = await caller.charts.getChartData();
+    const result = await caller.charts.getChartData({ filter: "days" });
     expect(result).toBeDefined();
   });
 });
