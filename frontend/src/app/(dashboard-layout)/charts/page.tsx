@@ -12,8 +12,6 @@ const ChartsPage: FC = () => {
   });
   if (!data || !isFetched) return <ChartLoading />;
 
-  console.log("My charts data: ", data);
-
   return (
     <div className="flex w-full flex-col items-center dark:text-white">
       <div className="flex w-[55vw] flex-col space-y-10 p-10">
