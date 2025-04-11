@@ -31,7 +31,7 @@ export const Footer: FC = () => {
             Produced by
           </div>
           <Image
-            src={`/logos/${darkMode ? "dark" : "light"}/LabrysHover.svg`}
+            src={`/logos/${darkMode ? "dark" : "light"}/Labrys.svg`}
             alt="Labrys"
             width={999}
             height={999}

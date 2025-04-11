@@ -32,14 +32,14 @@ const Dashboard: FC = () => {
   );
 
   return (
-    <div className="flex w-full flex-col items-center space-y-10 dark:text-white">
+    <div className="flex w-full flex-col items-center dark:text-white">
       <div className="flex w-full items-center justify-center bg-indigo-50 p-12 dark:bg-gray-900">
         <div className="w-[78vw] space-y-6">
           <div className="text-2xl font-medium text-indigo-800 dark:text-indigo-200">
             Tools
           </div>
 
-          <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid grid-cols-1 gap-8 lg:grid-cols-2 xl:grid-cols-3">
             <ToolCard preset="Consolidate" />
             <ToolCard preset="BatchDeposit" />
             <ToolCard preset="Withdrawal" />
@@ -47,11 +47,14 @@ const Dashboard: FC = () => {
         </div>
       </div>
 
-      <div className="flex w-full items-center justify-center">
-        <div className="w-[75vw] space-y-4">
-          <div className="text-2xl font-medium text-indigo-800 dark:text-indigo-200">
+      <div className="flex w-full items-center justify-center pt-12">
+        {/*
+          // TODO: Refactor to note use vw
+        */}
+        <div className="w-[75vw] space-y-6">
+          <h2 className="text-[26px] font-570 leading-[26px] text-primary-dark dark:text-indigo-200">
             My Validators
-          </div>
+          </h2>
 
           <div className="grid grid-cols-1 gap-8 text-sm md:grid-cols-2 lg:grid-cols-3">
             <ActiveValidators
