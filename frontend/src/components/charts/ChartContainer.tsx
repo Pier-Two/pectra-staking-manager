@@ -1,11 +1,12 @@
 "use client";
 
 import { useState, type FC } from "react";
+import { api } from "pec/trpc/react";
 import Image from "next/image";
 import { Card, CardFooter, CardHeader } from "pec/components/ui/card";
-import type { IChartContainer } from "pec/types/chart";
 import { AreaChartComponent } from "./AreaChart";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChartSkeleton } from "./ChartSkeleton";
 
 const emptyChart = (
   <Card className="w-full rounded-xl bg-white text-black shadow-xl dark:bg-gray-900 dark:text-white">
@@ -17,22 +18,29 @@ const emptyChart = (
   </Card>
 );
 
-export const ChartContainer: FC<IChartContainer> = ({
-  charts,
-  filter,
-  setFilter,
-}) => {
-  const chartCount = charts.length;
+export const ChartContainer: FC = () => {
+  const [filter, setFilter] = useState<"days" | "months" | "years">("days");
+  const { data, isFetched } = api.charts.getChartData.useQuery(
+    {
+      filter,
+    },
+    { refetchInterval: 5000 },
+  );
+
   const [chartIndex, setChartIndex] = useState(0);
-  const activeChart = charts[chartIndex];
+
+  if (!data || !isFetched) return <ChartSkeleton />;
+
+  const chartCount = data.length;
+  const activeChart = data[chartIndex];
 
   const handleChartForward = () => {
-    if (chartIndex === charts.length - 1) setChartIndex(0);
+    if (chartIndex === data.length - 1) setChartIndex(0);
     else setChartIndex(chartIndex + 1);
   };
 
   const handleChartBackward = () => {
-    if (chartIndex === 0) setChartIndex(charts.length - 1);
+    if (chartIndex === 0) setChartIndex(data.length - 1);
     else setChartIndex(chartIndex - 1);
   };
 
