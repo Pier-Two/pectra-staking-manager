@@ -15,17 +15,41 @@ import {
 import { Input } from "pec/components/ui/input";
 import { Label } from "pec/components/ui/label";
 import { PrimaryButton } from "../ui/custom/PrimaryButton";
+import { api } from "pec/trpc/react";
 
-export const UserModal: FC<{
+interface IUserModal {
   open: boolean;
   setOpen: (open: boolean) => void;
-}> = ({ open, setOpen }) => {
-  // TODO: Check for existing user details in Mongo and prepopulate the initial values with this
+  address: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  companyName: string;
+}
+
+export const UserModal: FC<IUserModal> = ({
+  open,
+  setOpen,
+  address,
+  email,
+  firstName,
+  lastName,
+  companyName,
+}) => {
+  console.log("Props: ", {
+    address,
+    email,
+    firstName,
+    lastName,
+    companyName,
+  });
+
   const initialValues: User = {
-    email: "",
-    firstName: "",
-    lastName: "",
-    companyName: "",
+    address: address ?? "",
+    email: email ?? "",
+    firstName: firstName ?? "",
+    lastName: lastName ?? "",
+    companyName: companyName ?? "",
   };
 
   const {
@@ -39,9 +63,16 @@ export const UserModal: FC<{
     mode: "onChange",
   });
 
+  const { mutate: createOrUpdateUser } =
+    api.users.createOrUpdateUser.useMutation();
+
   const onSubmit = (data: User) => {
-    console.log("onSubmit HIT: ", data);
-    // TODO: Hit our create user route and change the route to update existing users
+    // ETH signature validation logic for Ben needed here first
+    const response = createOrUpdateUser({
+      ...data,
+      address,
+    });
+    console.log("Response: ", response);
     setOpen(false);
     reset();
   };

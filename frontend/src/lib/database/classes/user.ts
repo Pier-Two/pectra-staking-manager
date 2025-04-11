@@ -15,4 +15,13 @@ export class User implements UserType {
 
   @prop({ required: true, unique: true })
   public address!: string;
+
+  @prop({ required: false })
+  public firstName?: string;
+
+  @prop({ required: false })
+  public lastName?: string;
+
+  @prop({ required: false })
+  public companyName?: string;
 }

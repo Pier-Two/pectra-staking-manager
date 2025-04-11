@@ -9,8 +9,7 @@ import { useTheme } from "pec/hooks/useTheme";
 import { ConnectWalletButton } from "pec/components/ui/wallet/ConnectWallet";
 import { Badge } from "../ui/badge";
 import { Tools } from "./Tools";
-import { UserModal } from "../user/UserModal";
-
+import { UserContainer } from "../user/UserContainer";
 export interface ITopBar {
   numberOfValidators: number;
   type: "profile" | "wallet_connect";
@@ -124,7 +123,7 @@ export const TopBar: FC<ITopBar> = (props) => {
         <ConnectWalletButton className="!w-[50%]" />
       </div>
 
-      <UserModal open={open} setOpen={setOpen} />
+      <UserContainer open={open} setOpen={setOpen} />
     </header>
   );
 };
