@@ -1,14 +1,15 @@
 "use client";
 
-import type { FC } from "react";
+import { useState, type FC } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { Button } from "pec/components/ui/button";
-import { Moon, Sun } from "lucide-react";
+import { Moon, Settings, Sun } from "lucide-react";
 import { useTheme } from "pec/hooks/useTheme";
 import { ConnectWalletButton } from "pec/components/ui/wallet/ConnectWallet";
 import { Badge } from "../ui/badge";
 import { Tools } from "./Tools";
+import { UserModal } from "../user/UserModal";
 
 export interface ITopBar {
   numberOfValidators: number;
@@ -19,6 +20,7 @@ export const TopBar: FC<ITopBar> = (props) => {
   const { numberOfValidators, type } = props;
   const { darkMode, toggleDarkMode } = useTheme();
   const router = useRouter();
+  const [open, setOpen] = useState(true);
 
   const handleWelcomeNavigation = () => {
     router.push("/welcome");
@@ -99,6 +101,17 @@ export const TopBar: FC<ITopBar> = (props) => {
               ? "border-gray-700 dark:bg-black dark:hover:bg-gray-900"
               : "border-indigo-400 bg-gray-100 hover:bg-gray-200"
           } p-3`}
+          onClick={() => setOpen(!open)}
+        >
+          <Settings className="text-gray-700 dark:text-white" />
+        </Button>
+
+        <Button
+          className={`rounded-full border ${
+            darkMode
+              ? "border-gray-700 dark:bg-black dark:hover:bg-gray-900"
+              : "border-indigo-400 bg-gray-100 hover:bg-gray-200"
+          } p-3`}
           onClick={toggleDarkMode}
         >
           {darkMode ? (
@@ -110,6 +123,8 @@ export const TopBar: FC<ITopBar> = (props) => {
 
         <ConnectWalletButton className="!w-[50%]" />
       </div>
+
+      <UserModal open={open} setOpen={setOpen} />
     </header>
   );
 };
