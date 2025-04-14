@@ -67,13 +67,6 @@ export const SubmitConsolidationRequests = () => {
         <div className="flex flex-col gap-2">
           <div className="text-d font-medium">Destination validator</div>
           <TransactionValidatorCard
-            status={
-              consolidationTarget?.consolidationTransaction?.status ??
-              TransactionStatus.UPCOMING
-            }
-            transactionHash={
-              consolidationTarget?.consolidationTransaction?.hash ?? ""
-            }
             validator={consolidationTarget!}
             isTarget={true}
           />
@@ -85,8 +78,6 @@ export const SubmitConsolidationRequests = () => {
           {validatorsToConsolidate.map((validator) => (
             <TransactionValidatorCard
               key={validator.validatorIndex}
-              status={validator.consolidationTransaction?.status}
-              transactionHash={validator.consolidationTransaction?.hash ?? ""}
               validator={validator}
             />
           ))}

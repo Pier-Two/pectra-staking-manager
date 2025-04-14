@@ -1,6 +1,10 @@
 "use client";
 
-import { TransactionStatus, type ValidatorDetails } from "pec/types/validator";
+import {
+  Transaction,
+  TransactionStatus,
+  type ValidatorDetails,
+} from "pec/types/validator";
 
 import { useStore } from "zustand";
 import { persist } from "zustand/middleware";
@@ -105,7 +109,7 @@ export const consolidationStore = createStore<ConsolidationStore>()(
       updateConsolidatedValidator: (
         validator: ValidatorDetails,
         txHash: string | undefined,
-        status: TransactionStatus = TransactionStatus.IN_PROGRESS,
+        status: TransactionStatus,
       ) =>
         set((state) => ({
           validatorsToConsolidate: state.validatorsToConsolidate.map((v) =>
@@ -115,7 +119,7 @@ export const consolidationStore = createStore<ConsolidationStore>()(
                   consolidationTransaction: {
                     hash: txHash,
                     status: status,
-                  },
+                  } as Transaction,
                 }
               : v,
           ),
