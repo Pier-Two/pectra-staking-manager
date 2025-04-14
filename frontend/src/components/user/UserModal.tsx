@@ -60,7 +60,6 @@ export const UserModal: FC<IUserModal> = ({
       ...data,
       address,
     });
-    console.log("Response: ", response);
     setOpen(false);
     reset();
   };

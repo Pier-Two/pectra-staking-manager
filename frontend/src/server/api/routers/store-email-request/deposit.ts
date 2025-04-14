@@ -1,35 +1,16 @@
 import axios, { type AxiosResponse } from "axios";
 import { chunk, groupBy } from "lodash";
 import { getBeaconChainURL } from "pec/constants/beaconchain";
+import { EMAIL_NAMES } from "pec/constants/email";
 import { env } from "pec/env";
 import { BEACONCHAIN_OK_STATUS, CHUNK_SIZE } from "pec/lib/constants";
 import type { Deposit } from "pec/lib/database/classes/deposit";
-import { DepositModel } from "pec/lib/database/models";
+import { DepositModel, UserModel } from "pec/lib/database/models";
+import { sendEmailNotification } from "pec/lib/services/emailService";
 import { generateErrorResponse } from "pec/lib/utils";
 import { ACTIVE_STATUS, INACTIVE_STATUS } from "pec/types/app";
 import type { IResponse } from "pec/types/response";
 import { z } from "zod";
-
-interface DepositResponse {
-  status: string;
-  data: DepositData[];
-}
-
-interface DepositData {
-  amount: number;
-  block_number: number;
-  block_ts: number;
-  from_address: string;
-  merkletree_index: string;
-  publickey: string;
-  removed: boolean;
-  signature: string;
-  tx_hash: string;
-  tx_index: number;
-  tx_input: string;
-  valid_signature: boolean;
-  withdrawal_credentials: string;
-}
 
 const DepositDataSchema = z.object({
   amount: z.number(),
@@ -37,12 +18,22 @@ const DepositDataSchema = z.object({
   block_ts: z.number(),
   from_address: z.string(),
   merkletree_index: z.string(),
+  publickey: z.string(),
+  removed: z.boolean(),
+  signature: z.string(),
+  tx_hash: z.string(),
+  tx_index: z.number(),
+  tx_input: z.string(),
+  valid_signature: z.boolean(),
+  withdrawal_credentials: z.string(),
 });
 
 const DepositResponseSchema = z.object({
   status: z.literal(BEACONCHAIN_OK_STATUS),
   data: z.array(DepositDataSchema),
 });
+
+type DepositResponse = z.infer<typeof DepositResponseSchema>;
 
 export const storeDepositRequest = async (
   validatorIndex: number,
@@ -115,7 +106,31 @@ export const processDeposits = async (): Promise<IResponse> => {
 
         if (!depositExists) continue;
 
-        //SEND EMAIL - DEPOSIT COMPLETE
+        const currentUser = await UserModel.findById(targetDeposit.user);
+        if (!currentUser) {
+          await DepositModel.updateOne(
+            { validatorIndex },
+            { $set: { status: INACTIVE_STATUS } },
+          );
+          continue;
+        }
+
+        const email = await sendEmailNotification({
+          emailName: EMAIL_NAMES.PECTRA_STAKING_MANAGER_DEPLOYMENT_COMPLETE,
+          metadata: {
+            email: currentUser.email,
+            firstName: currentUser.firstName,
+            lastName: currentUser.lastName,
+            companyName: currentUser.companyName,
+            txHash: targetTransactionHash,
+          },
+        });
+
+        if (!email.success) {
+          console.error("Error sending email notification:", email.message);
+          continue;
+        }
+
         await DepositModel.updateOne(
           { validatorIndex },
           {
@@ -142,6 +157,7 @@ const groupDepositsByValidator = (data: DepositResponse) => {
 
 const chunkDeposits = (deposits: Deposit[]) => {
   const formatted = deposits.map((deposit) => ({
+    user: deposit.user,
     validatorIndex: deposit.validatorIndex,
   }));
 
