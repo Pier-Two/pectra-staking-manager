@@ -14,54 +14,42 @@ import { Input } from "pec/components/ui/input";
 import { Label } from "pec/components/ui/label";
 import { PrimaryButton } from "../ui/custom/PrimaryButton";
 import { api } from "pec/trpc/react";
+import { toast } from "sonner";
+import { UserType } from "pec/lib/api/schemas/database/user";
 
 interface IUserModal {
   open: boolean;
   setOpen: (open: boolean) => void;
-  address: string;
-  email: string;
-  firstName: string;
-  lastName: string;
-  companyName: string;
+  userDetails: UserType;
 }
 
-export const UserModal: FC<IUserModal> = ({
-  open,
-  setOpen,
-  address,
-  email,
-  firstName,
-  lastName,
-  companyName,
-}) => {
+export const UserModal: FC<IUserModal> = ({ open, setOpen, userDetails }) => {
   const {
     register,
     handleSubmit,
-    reset,
     formState: { isValid, errors },
   } = useForm<User>({
     resolver: zodResolver(UserSchema),
-    defaultValues: {
-      address: address,
-      email: email,
-      firstName: firstName,
-      lastName: lastName,
-      companyName: companyName,
-    },
+    defaultValues: userDetails,
     mode: "onChange",
   });
 
-  const { mutate: createOrUpdateUser } =
+  const { mutateAsync: createOrUpdateUser } =
     api.users.createOrUpdateUser.useMutation();
 
-  const onSubmit = (data: User) => {
+  const onSubmit = async (data: User) => {
+    await new Promise((resolve) => setTimeout(resolve, 5000));
     // ETH signature validation logic for Ben needed here first
-    const response = createOrUpdateUser({
+    const response = await createOrUpdateUser({
       ...data,
-      address,
+      address: userDetails.address,
     });
-    setOpen(false);
-    reset();
+
+    if (!response.success) {
+      toast.error(response.error);
+    } else {
+      setOpen(false);
+    }
   };
 
   return (
@@ -147,6 +135,9 @@ export const UserModal: FC<IUserModal> = ({
               className="mx-auto w-[90%]"
               disabled={!isValid}
               label="Submit"
+              type="button"
+              useSpinner
+              onClick={handleSubmit(onSubmit)}
             />
           </DialogFooter>
         </form>

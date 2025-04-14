@@ -1,44 +1,24 @@
 "use client";
 
 import { clsx } from "clsx";
-import { ChevronDown } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useWalletAddress } from "pec/hooks/useWallet";
 import { client, wallets } from "pec/lib/wallet/client";
 import type { StyleableComponent } from "pec/types/components";
-import { defineChain, mainnet } from "thirdweb/chains";
+import { ConnectButton } from "thirdweb/react";
 import {
-  ConnectButton,
-  useEnsAvatar,
-  useEnsName,
-  useWalletDetailsModal,
-} from "thirdweb/react";
-import { Button } from "../button";
-
-const hoodiChain = defineChain({
-  id: 560048,
-  rpc: "https://0xrpc.io/hoodi",
-  blockExplorers: [
-    {
-      name: "Hoodiscan",
-      url: "https://hoodi.etherscan.io/",
-    },
-  ],
-  nativeCurrency: {
-    name: "Ether",
-    symbol: "ETH",
-    decimals: 18,
-  },
-});
+  generatePayload,
+  isLoggedIn,
+  login,
+  logout,
+} from "pec/lib/wallet/auth";
+import { SUPPORTED_CHAINS } from "pec/constants/chain";
+import { api } from "pec/trpc/react";
 
 export const ConnectWalletButton = ({ className }: StyleableComponent) => {
   const router = useRouter();
-  const address = useWalletAddress();
-  const detailsModal = useWalletDetailsModal();
-  const { data: ensName } = useEnsName({ client, address });
-  const { data: ensAvatar } = useEnsAvatar({ client, ensName });
+  const utils = api.useUtils();
 
-  return !address ? (
+  return (
     <ConnectButton
       connectButton={{
         label: "Connect Wallet",
@@ -48,7 +28,7 @@ export const ConnectWalletButton = ({ className }: StyleableComponent) => {
         ),
       }}
       autoConnect
-      chains={[hoodiChain, mainnet]}
+      chains={SUPPORTED_CHAINS}
       client={client}
       wallets={wallets}
       connectModal={{
@@ -58,24 +38,31 @@ export const ConnectWalletButton = ({ className }: StyleableComponent) => {
       onDisconnect={() => {
         router.push("/welcome");
       }}
-    />
-  ) : (
-    <Button
-      variant="ghost"
-      className="h-10 rounded-full border border-primary/30 hover:bg-primary/10"
-      onClick={async () => {
-        detailsModal.open({ client, theme: "light" });
+      auth={{
+        isLoggedIn: async () => {
+          try {
+            const result = await isLoggedIn();
+            return result.success;
+          } catch (error) {
+            console.error("Error calling isLoggedIn:", error);
+            return false;
+          }
+        },
+        doLogin: async (params) => {
+          await login(params);
+          // Invalidate the user query after login
+
+          await utils.users.getUser.invalidate();
+        },
+        getLoginPayload: async ({ address }) => generatePayload({ address }),
+        doLogout: async () => {
+          await utils.users.getUser.invalidate();
+
+          await logout();
+
+          router.push("/welcome");
+        },
       }}
-    >
-      {!!ensAvatar ? (
-        // eslint-disable-next-line @next/next/no-img-element -- Image comes from non-whitelisted url. Use img incase it can change
-        <img src={ensAvatar} alt="Avatar" className="h-4 w-4 rounded-full" />
-      ) : (
-        // TODO: Could improve no image avatar
-        <div className="h-4 w-4 rounded-full bg-primary" />
-      )}
-      {ensName ?? `${address.slice(0, 6)}...${address.slice(-4)}`}
-      <ChevronDown size={16} />
-    </Button>
+    />
   );
 };

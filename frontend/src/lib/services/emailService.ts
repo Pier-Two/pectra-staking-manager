@@ -1,25 +1,15 @@
 import axios from "axios";
 import { env } from "pec/env";
 import type { IResponse } from "pec/types/response";
-import {
-  CreateContactSchema,
-  type CreateContactType,
-  SendEmailNotificationSchema,
-  type SendEmailNotificationType,
-} from "../api/schemas/email";
 import { generateErrorResponse } from "../utils";
-import { z } from "zod";
+import { type EmailNames } from "pec/types/emails";
+import { type UserType } from "../api/schemas/database/user";
 
-export const createContact = async (
-  input: CreateContactType,
-): Promise<IResponse> => {
+export const createContact = async (email: string): Promise<IResponse> => {
   try {
-    const parsedInput = CreateContactSchema.parse(input);
-    const { emailAddress } = parsedInput;
-
     const payload = {
       properties: {
-        emailAddress,
+        emailAddress: email,
       },
     };
 
@@ -36,39 +26,23 @@ export const createContact = async (
 
     return {
       success: true,
-      message: `Contact created successfully: ${response.data}`,
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- TODO: TYPES
+      data: response.data,
     };
   } catch (error) {
-    if (error instanceof z.ZodError) {
-      return {
-        success: false,
-        message: "Invalid input format",
-        errors: error.errors.map((e) => e.message),
-      };
-    }
-
-    if (axios.isAxiosError(error)) {
-      console.error("Hubspot API error:", error.response?.data);
-      return generateErrorResponse(
-        `Error creating contact: ${error.response?.status} ${error.response?.statusText}`,
-      );
-    }
-
-    console.error("Error creating contact:", error);
-    return generateErrorResponse("Error creating contact");
+    return generateErrorResponse(error, "Error creating contact");
   }
 };
 
 export const sendEmailNotification = async (
-  input: SendEmailNotificationType,
+  emailName: EmailNames,
+  metadata: UserType & { txHash?: string },
 ): Promise<IResponse> => {
   try {
-    const parsedInput = SendEmailNotificationSchema.parse(input);
-
     const payload = {
       properties: {
-        emailName: parsedInput.emailName,
-        metadata: parsedInput.metadata,
+        emailName,
+        metadata,
       },
     };
 
@@ -85,25 +59,11 @@ export const sendEmailNotification = async (
 
     return {
       success: true,
-      message: `Email notification sent successfully: ${response.data}`,
+      // TODO: Type response
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      data: response.data,
     };
   } catch (error) {
-    if (error instanceof z.ZodError) {
-      return {
-        success: false,
-        message: "Invalid input format",
-        errors: error.errors.map((e) => e.message),
-      };
-    }
-
-    if (axios.isAxiosError(error)) {
-      console.error("Hubspot API error:", error.response?.data);
-      return generateErrorResponse(
-        `Error sending email notification: ${error.response?.status} ${error.response?.statusText}`,
-      );
-    }
-
-    console.error("Error sending email notification:", error);
-    return generateErrorResponse("Error sending email notification");
+    return generateErrorResponse(error, "Error sending email notification");
   }
 };

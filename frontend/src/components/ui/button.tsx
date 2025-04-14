@@ -4,6 +4,7 @@ import * as React from "react";
 import { Slot } from "@radix-ui/react-slot";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "pec/lib/utils";
+import { PectraSpinner } from "./custom/pectraSpinner";
 
 const buttonVariants = cva(
   "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
@@ -35,20 +36,53 @@ const buttonVariants = cva(
 );
 
 export interface ButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
+  extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "onClick">,
     VariantProps<typeof buttonVariants> {
   asChild?: boolean;
+  useSpinner?: boolean;
+  onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void | Promise<void>;
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, asChild = false, ...props }, ref) => {
+  (
+    { className, variant, size, asChild = false, useSpinner = false, ...props },
+    ref,
+  ) => {
+    const [isLoading, setIsLoading] = React.useState(false);
     const Comp = asChild ? Slot : "button";
+
+    const onClickHandler = async (e: React.MouseEvent<HTMLButtonElement>) => {
+      if (!props.onClick) return;
+
+      if (!useSpinner) {
+        await props.onClick(e);
+        return;
+      }
+
+      setIsLoading(true);
+
+      try {
+        await props.onClick(e);
+
+        setIsLoading(false);
+      } catch (e) {
+        setIsLoading(false);
+        throw e;
+      }
+    };
+
+    const isDisabled = props.disabled ?? isLoading;
+
     return (
       <Comp
         className={cn(buttonVariants({ variant, size, className }))}
         ref={ref}
         {...props}
-      />
+        disabled={isDisabled}
+        onClick={onClickHandler}
+      >
+        {isLoading ? <PectraSpinner /> : props.children}
+      </Comp>
     );
   },
 );
