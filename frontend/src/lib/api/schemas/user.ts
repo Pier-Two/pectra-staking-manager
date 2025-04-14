@@ -8,4 +8,4 @@ export const UserSchema = z.object({
   companyName: z.string().optional(),
 });
 
-export type UserType = z.infer<typeof UserSchema>;
+export type User = z.infer<typeof UserSchema>;

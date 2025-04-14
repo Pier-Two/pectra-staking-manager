@@ -24,6 +24,7 @@ export const env = createEnv({
     QSTASH_NEXT_SIGNING_KEY: z.string(),
     VERCEL_URL: z.string(),
     BEACONCHAIN_API_KEY: z.string(),
+    HUBSPOT_API_KEY: z.string(),
   },
 
   /**
@@ -52,6 +53,7 @@ export const env = createEnv({
     QSTASH_NEXT_SIGNING_KEY: process.env.QSTASH_NEXT_SIGNING_KEY,
     VERCEL_URL: process.env.VERCEL_URL,
     BEACONCHAIN_API_KEY: process.env.BEACONCHAIN_API_KEY,
+    HUBSPOT_API_KEY: process.env.HUBSPOT_API_KEY,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially
