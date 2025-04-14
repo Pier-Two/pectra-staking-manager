@@ -1,28 +1,16 @@
+import { z } from "zod";
 import type {
   EDistributionMethod,
   IBatchDepositValidators,
 } from "./batch-deposits";
+import {
+  TransactionSchema,
+  ValidatorDataSchema,
+} from "pec/lib/api/schemas/validator";
 
-export interface ValidatorDetails {
-  validatorIndex: number;
-  publicKey: string;
-  withdrawalAddress: string;
-  balance: bigint;
-  effectiveBalance: bigint;
-  status: ValidatorStatus;
-  numberOfWithdrawals: number;
-  activeSince: string;
-  activeDuration: string;
-  withdrawalTransaction: Transaction | undefined;
-  consolidationTransaction: Transaction | undefined;
-  depositTransaction: Transaction | undefined;
-}
+export type ValidatorDetails = z.infer<typeof ValidatorDataSchema>;
 
-interface Transaction {
-  hash: string | undefined;
-  status: TransactionStatus;
-  isConsolidatedValidator?: boolean;
-}
+export type Transaction = z.infer<typeof TransactionSchema>;
 
 export interface IConnector {
   connectedAddress: string;
