@@ -2,7 +2,7 @@
 
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
-import type { IResponse } from "pec/types/response";
+import type { IErrorResponse } from "pec/types/response";
 import { parseError } from "./parseError";
 
 export const cn = (...inputs: ClassValue[]) => {
@@ -12,7 +12,7 @@ export const cn = (...inputs: ClassValue[]) => {
 export const generateErrorResponse = (
   error: unknown,
   fallbackMessage?: string,
-): IResponse => {
+): IErrorResponse => {
   return {
     success: false,
     error: parseError(error, fallbackMessage),

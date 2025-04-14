@@ -1,83 +1,85 @@
-import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "pec/server/api/trpc";
 import { UserSchema, type UserType } from "pec/lib/api/schemas/database/user";
 import { UserModel } from "pec/lib/database/models";
 import { createContact } from "pec/lib/services/emailService";
-import { TRPCError } from "@trpc/server";
 import { isLoggedIn } from "pec/lib/wallet/auth";
+import { IResponse } from "pec/types/response";
+import { generateErrorResponse } from "pec/lib/utils";
+
+const findOrCreateUser = async (address: string) => {
+  const user = await UserModel.findOne({ address });
+
+  if (user) return user;
+
+  const createdUser = await UserModel.create({
+    address,
+  });
+
+  return createdUser;
+};
 
 export const userRouter = createTRPCRouter({
   createOrUpdateUser: publicProcedure
     .input(UserSchema)
-    .mutation(async ({ input }) => {
+    .mutation(async ({ input: rawInput }) => {
       try {
-        const { address, email, firstName, lastName, companyName } = input;
-        const existingUser = await UserModel.findOne({
-          address,
-        });
-
-        try {
-          if (existingUser) {
-            const updatedUser = await UserModel.updateOne(
-              { address },
-              { $set: input },
-            );
-            return updatedUser;
-          } else {
-            const newUser = await UserModel.create({
-              ...input,
-            });
-
-            const contactData = {
-              emailAddress: email,
-              ...(firstName && { customerFirstName: firstName }),
-              ...(lastName && { customerLastName: lastName }),
-              ...(companyName && { companyName: companyName }),
-            };
-
-            await createContact(contactData);
-            return newUser;
-          }
-        } catch (error) {
-          console.error("Failed to create or update email contact:", error);
-          throw new TRPCError({
-            code: "INTERNAL_SERVER_ERROR",
-            message: "Failed to create user",
-            cause: error,
-          });
+        const parsedInput = UserSchema.safeParse(rawInput);
+        if (!parsedInput.success) {
+          return generateErrorResponse(parsedInput.error, "Invalid input");
         }
-      } catch (error) {
-        if (error instanceof TRPCError) throw error;
 
-        throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: "Failed to create user",
-          cause: error,
-        });
+        const value = await isLoggedIn();
+
+        if (!value.success) {
+          return value;
+        }
+
+        // Use the returned address on the JWT
+        const existingUser = await findOrCreateUser(value.data.address);
+
+        if (!existingUser.email && parsedInput.data.email) {
+          // TODO: Pass through fields
+          await createContact(parsedInput.data.email);
+        }
+
+        const { data: input } = parsedInput;
+
+        await UserModel.updateOne(
+          { address: value.data.address },
+          {
+            $set: {
+              email: input.email,
+              firstName: input.firstName,
+              lastName: input.lastName,
+              companyName: input.companyName,
+            },
+          },
+        );
+
+        return {
+          success: true,
+          data: null,
+        };
+      } catch (error) {
+        return generateErrorResponse(error);
       }
     }),
 
-  getUser: publicProcedure.query(
-    async ({ input }): Promise<UserType | null> => {
-      const value = await isLoggedIn();
+  getUser: publicProcedure.query(async (): Promise<IResponse<UserType>> => {
+    const value = await isLoggedIn();
 
-      if (!value.isValid) {
-        throw new TRPCError({
-          code: "UNAUTHORIZED",
-          message: "User is not logged in",
-        });
-      }
+    if (!value.success) {
+      return value;
+    }
 
-      try {
-        const user = await UserModel.findOne({ address: value.address });
-        return user;
-      } catch (error) {
-        throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: "Failed to get user",
-          cause: error,
-        });
-      }
-    },
-  ),
+    try {
+      const user = await findOrCreateUser(value.data.address);
+      return {
+        success: true,
+        data: user,
+      };
+    } catch (error) {
+      return generateErrorResponse(error);
+    }
+  }),
 });

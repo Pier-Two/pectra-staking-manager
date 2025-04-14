@@ -1,24 +1,14 @@
 import axios from "axios";
 import { env } from "pec/env";
 import type { IResponse } from "pec/types/response";
-import {
-  CreateContactSchema,
-  type CreateContactType,
-  SendEmailNotificationSchema,
-  type SendEmailNotificationType,
-} from "../api/schemas/email";
 import { generateErrorResponse } from "../utils";
 
-export const createContact = async (
-  input: CreateContactType,
-): Promise<IResponse> => {
+export const createContact = async (email: string): Promise<IResponse> => {
   try {
-    const parsedInput = CreateContactSchema.parse(input);
-    const { emailAddress } = parsedInput;
-
+    // TODO: What is schema here for passing first name last name and company name
     const payload = {
       properties: {
-        emailAddress,
+        emailAddress: email,
       },
     };
 
@@ -43,15 +33,12 @@ export const createContact = async (
 };
 
 export const sendEmailNotification = async (
-  input: SendEmailNotificationType,
+  email: string,
 ): Promise<IResponse> => {
   try {
-    const parsedInput = SendEmailNotificationSchema.parse(input);
-
     const payload = {
       properties: {
-        emailName: parsedInput.emailName,
-        metadata: parsedInput.metadata,
+        emailName: email,
       },
     };
 

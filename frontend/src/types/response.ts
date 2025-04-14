@@ -1,5 +1,8 @@
 export type IError = string;
 
-export type IResponse<T = null> =
-  | { success: false; error: IError }
-  | { success: true; data: T };
+export type IErrorResponse = {
+  success: false;
+  error: IError;
+};
+
+export type IResponse<T = null> = IErrorResponse | { success: true; data: T };
