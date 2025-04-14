@@ -31,7 +31,7 @@ export interface BeaconChainValidatorArrayDetailsResponse {
   data: BeaconChainValidatorDetails[];
 }
 
-export interface BeaconChainSingleValidatorDetailsResponse {
+export interface BeaconChainValidatorDetailsResponse {
   status: string;
   data: BeaconChainValidatorDetails;
 }
