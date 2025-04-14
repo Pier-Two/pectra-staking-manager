@@ -3,7 +3,6 @@
 import { ArrowRightIcon } from "lucide-react";
 import Link from "next/link";
 import { PrimaryButton } from "pec/components/ui/custom/PrimaryButton";
-import { Button } from "pec/components/ui/button";
 import { SecondaryButton } from "pec/components/ui/custom/SecondaryButton";
 import { Connector } from "pec/components/validators/Connector";
 import { useWalletAddress } from "pec/hooks/useWallet";
