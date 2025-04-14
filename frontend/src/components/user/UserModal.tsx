@@ -1,5 +1,3 @@
-"use client";
-
 import { type FC } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -36,22 +34,6 @@ export const UserModal: FC<IUserModal> = ({
   lastName,
   companyName,
 }) => {
-  console.log("Props: ", {
-    address,
-    email,
-    firstName,
-    lastName,
-    companyName,
-  });
-
-  const initialValues: User = {
-    address: address ?? "",
-    email: email ?? "",
-    firstName: firstName ?? "",
-    lastName: lastName ?? "",
-    companyName: companyName ?? "",
-  };
-
   const {
     register,
     handleSubmit,
@@ -59,7 +41,13 @@ export const UserModal: FC<IUserModal> = ({
     formState: { isValid, errors },
   } = useForm<User>({
     resolver: zodResolver(UserSchema),
-    defaultValues: initialValues,
+    defaultValues: {
+      address: address,
+      email: email,
+      firstName: firstName,
+      lastName: lastName,
+      companyName: companyName,
+    },
     mode: "onChange",
   });
 
