@@ -22,6 +22,7 @@ type Story = StoryObj<typeof meta>;
 // More on writing stories with args: https://storybook.js.org/docs/writing-stories/args
 export const Primary: Story = {
   args: {
+    title: "Validators found!",
     connectedAddress: "0x1234567890123456789012345678901234567890",
     validators: MOCK_VALIDATORS,
     textAlignment: "left",
