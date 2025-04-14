@@ -1,3 +1,7 @@
+---
+sidebar_position: 3
+---
+
 # Contracts
 
 This project only contains a BatchDeposit contract which simply iterates over an array of Deposit structs and calls Ethereum's deposit contract for each. The file can be found here `contracts/contracts/implementations/BatchDeposit.sol`.

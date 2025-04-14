@@ -41,7 +41,7 @@ export const validatorRouter = createTRPCRouter({
           (validator) => validator.validatorindex,
         );
 
-        if (validatorIndexes.length === 0) return [];
+        //   if (validatorIndexes.length === 0) return [];
 
         const validatorDetails =
           await axios.get<BeaconChainValidatorDetailsResponse>(
