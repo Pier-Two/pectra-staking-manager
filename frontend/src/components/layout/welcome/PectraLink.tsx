@@ -9,9 +9,9 @@ export const PectraLink: FC = () => {
         <div className="absolute inset-[1px] rounded-full bg-indigo-50 dark:bg-gray-950"></div>
       </div>
       <Button
-        onClick={() =>
-          window.open("https://ethereum.org/en/roadmap/pectra/", "_blank")
-        }
+        onClick={() => {
+          window.open("https://ethereum.org/en/roadmap/pectra/", "_blank");
+        }}
         variant="outline"
         className="relative !h-auto gap-x-4 rounded-full border-0 bg-[linear-gradient(170.54deg,rgba(253,186,116,0.15)_11.34%,rgba(165,180,252,0.15)_53.87%,rgba(134,239,172,0.15)_100%)] !px-4 !py-2"
       >

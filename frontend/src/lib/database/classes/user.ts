@@ -10,8 +10,9 @@ import { UserType } from "pec/lib/api/schemas/database/user";
   },
 })
 export class User implements UserType {
-  @prop({ required: true, unique: true })
-  public email!: string;
+  // Doesn't have to be unique because users may have multiple wallets but want to use the same email
+  @prop({ required: false })
+  public email?: string;
 
   @prop({ required: true, unique: true })
   public address!: string;

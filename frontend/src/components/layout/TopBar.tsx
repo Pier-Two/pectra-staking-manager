@@ -8,9 +8,10 @@ import { ConnectWalletButton } from "pec/components/ui/wallet/ConnectWallet";
 import { useTheme } from "pec/hooks/useTheme";
 import { useState } from "react";
 
+import { api } from "pec/trpc/react";
 import DarkMode from "../dark-mode";
 import { SidebarTrigger } from "../ui/sidebar";
-import { UserContainer } from "../user/UserContainer";
+import { UserModal } from "../user/UserModal";
 
 export interface ITopBar {
   numberOfValidators: number;
@@ -19,8 +20,9 @@ export interface ITopBar {
 
 export const TopBar = () => {
   const router = useRouter();
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
   const { darkMode } = useTheme();
+  const { data: user } = api.users.getUser.useQuery();
 
   const handleWelcomeNavigation = () => {
     router.push("/welcome");
@@ -57,22 +59,29 @@ export const TopBar = () => {
         </div>
 
         <div className="hidden md:flex items-center space-x-4">
-          <Button
-            className={`rounded-full border ${
-              darkMode
-                ? "border-gray-700 dark:bg-gray-950 dark:hover:bg-gray-900"
-                : "border-primary/30 bg-white hover:bg-primary/10"
-            } p-3`}
-            onClick={() => setOpen(!open)}
-          >
-            <Settings className="text-gray-700 dark:text-white" />
-          </Button>
+          {user?.success && (
+            <>
+              <Button
+                className={`rounded-full border ${
+                  darkMode
+                    ? "border-gray-700 dark:bg-gray-950 dark:hover:bg-gray-900"
+                    : "border-primary/30 bg-white hover:bg-primary/10"
+                } p-3`}
+                onClick={() => setOpen(!open)}
+              >
+                <Settings className="text-gray-700 dark:text-white" />
+              </Button>
+              <UserModal
+                open={open}
+                setOpen={setOpen}
+                userDetails={user.data}
+              />
+            </>
+          )}
 
           <DarkMode />
           <ConnectWalletButton className="!w-fit !min-w-[123px]" />
         </div>
-
-        <UserContainer open={open} setOpen={setOpen} />
       </div>
     </header>
   );

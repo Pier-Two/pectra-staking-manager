@@ -47,7 +47,7 @@ export const storeDepositRequest = async (
 
     return {
       success: true,
-      message: "Deposit request stored successfully.",
+      data: null,
     };
   } catch (error) {
     return generateErrorResponse(error);
@@ -63,13 +63,13 @@ export const processDeposits = async (): Promise<IResponse> => {
     if (!deposits)
       return {
         success: false,
-        message: "Deposit query failed to execute.",
+        error: "Deposit query failed to execute.",
       };
 
     if (deposits.length === 0)
       return {
         success: true,
-        message: "No active deposits found, nothing to process.",
+        data: null,
       };
 
     const chunkedDeposits = chunkDeposits(deposits);
@@ -115,19 +115,16 @@ export const processDeposits = async (): Promise<IResponse> => {
           continue;
         }
 
-        const email = await sendEmailNotification({
-          emailName: EMAIL_NAMES.PECTRA_STAKING_MANAGER_DEPLOYMENT_COMPLETE,
-          metadata: {
-            email: currentUser.email,
-            firstName: currentUser.firstName,
-            lastName: currentUser.lastName,
-            companyName: currentUser.companyName,
+        const email = await sendEmailNotification(
+          "PECTRA_STAKING_MANAGER_DEPLOYMENT_COMPLETE",
+          {
+            ...currentUser,
             txHash: targetTransactionHash,
           },
-        });
+        );
 
         if (!email.success) {
-          console.error("Error sending email notification:", email.message);
+          console.error("Error sending email notification:", email.error);
           continue;
         }
 
@@ -144,7 +141,7 @@ export const processDeposits = async (): Promise<IResponse> => {
 
     return {
       success: true,
-      message: "Deposit requests processed successfully.",
+      data: null,
     };
   } catch (error) {
     return generateErrorResponse(error);
