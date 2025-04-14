@@ -2,8 +2,7 @@ import { verifySignatureAppRouter } from "@upstash/qstash/nextjs";
 import { processConsolidations } from "pec/server/api/routers/store-email-request/consolidation";
 
 async function consolidationHandler(_request: Request) {
-  // TODO:
-  const result = await processConsolidations(1, "");
+  const result = await processConsolidations();
   if (result.success) {
     return Response.json({
       success: true,

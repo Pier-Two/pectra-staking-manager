@@ -1,3 +1,4 @@
+import { EMAIL_NAMES } from "pec/constants/email";
 import { z } from "zod";
 
 export const CreateContactSchema = z.object({
@@ -10,11 +11,7 @@ export const CreateContactSchema = z.object({
 export type CreateContactType = z.infer<typeof CreateContactSchema>;
 
 export const SendEmailNotificationSchema = z.object({
-  emailName: z.enum([
-    "PECTRA_STAKING_MANAGER_WITHDRAWAL_COMPLETE",
-    "PECTRA_STAKING_MANAGER_CONSOLIDATION_COMPLETE",
-    "PECTRA_STAKING_MANAGER_DEPLOYMENT_COMPLETE",
-  ]),
+  emailName: z.enum(Object.values(EMAIL_NAMES) as [string, ...string[]]),
   metadata: z.record(z.unknown()),
 });
 

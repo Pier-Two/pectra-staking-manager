@@ -1,6 +1,6 @@
 import axios, { type AxiosResponse } from "axios";
 import { BEACONCHAIN_OK_STATUS, CHUNK_SIZE } from "pec/lib/constants";
-import { WithdrawalModel } from "pec/lib/database/models";
+import { UserModel, WithdrawalModel } from "pec/lib/database/models";
 import { generateErrorResponse } from "pec/lib/utils";
 import { ACTIVE_STATUS, INACTIVE_STATUS } from "pec/types/app";
 import type { IResponse } from "pec/types/response";
@@ -9,21 +9,8 @@ import type { Withdrawal } from "pec/lib/database/classes/withdrawal";
 import { z } from "zod";
 import { getBeaconChainURL } from "pec/constants/beaconchain";
 import { env } from "pec/env";
-
-interface WithdrawalResponse {
-  status: string;
-  data: WithdrawalData[];
-}
-
-interface WithdrawalData {
-  epoch: number;
-  slot: number;
-  blockroot: string;
-  withdrawalindex: number;
-  validatorindex: number;
-  address: string;
-  amount: number;
-}
+import { sendEmailNotification } from "pec/lib/services/emailService";
+import { EMAIL_NAMES } from "pec/constants/email";
 
 const WithdrawalDataSchema = z.object({
   epoch: z.number(),
@@ -39,6 +26,8 @@ const WithdrawalResponseSchema = z.object({
   status: z.literal(BEACONCHAIN_OK_STATUS),
   data: z.array(WithdrawalDataSchema),
 });
+
+type WithdrawalResponse = z.infer<typeof WithdrawalResponseSchema>;
 
 export const storeWithdrawalRequest = async (
   validatorIndex: number,
@@ -113,12 +102,34 @@ export const processWithdrawals = async (): Promise<IResponse> => {
 
         if (!currentWithdrawal) continue;
 
+        const currentUser = await UserModel.findById(currentWithdrawal.user);
+        if (!currentUser) {
+          await WithdrawalModel.updateOne(
+            { validatorIndex },
+            { $set: { status: INACTIVE_STATUS } },
+          );
+          continue;
+        }
+
+        const email = await sendEmailNotification({
+          emailName: EMAIL_NAMES.PECTRA_STAKING_MANAGER_WITHDRAWAL_COMPLETE,
+          metadata: {
+            email: currentUser.email,
+            firstName: currentUser.firstName,
+            lastName: currentUser.lastName,
+            companyName: currentUser.companyName,
+          },
+        });
+
+        if (!email.success) {
+          console.error("Error sending email notification:", email.message);
+          continue;
+        }
+
         if (
           lastWithdrawalIndex !== 0 &&
           lastWithdrawalIndex > currentWithdrawal.withdrawalIndex
         ) {
-          console.log("Log for Vercel deployment - WITHDRAWAL COMPLETE");
-          //SEND EMAIL - WITHDRAWAL COMPLETE
           await WithdrawalModel.updateOne(
             { validatorIndex },
             {
