@@ -31,7 +31,7 @@ export const validatorRouter = createTRPCRouter({
 
         const validatorResponse =
           await axios.get<BeaconChainAllValidatorsResponse>(
-            `${getBeaconChainURL()}api/v1/validator/withdrawalCredentials/${address}?apikey=${env.BEACONCHAIN_API_KEY}`,
+            `${getBeaconChainURL()}api/v1/validator/withdrawalCredentials/${address}?apikey=${env.BEACONCHAIN_API_KEY}&limit=200`,
           );
 
         if (!validatorResponse.data || validatorResponse.data.data.length === 0)
