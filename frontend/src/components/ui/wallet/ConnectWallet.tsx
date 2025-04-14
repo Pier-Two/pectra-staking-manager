@@ -75,7 +75,7 @@ export const ConnectWalletButton = ({ className }: StyleableComponent) => {
           );
         }
       }}
-      autoConnect={true}
+      autoConnect
       chains={SUPPORTED_CHAINS}
       client={client}
       wallets={wallets}
