@@ -51,6 +51,7 @@ export const ConnectWalletButton = ({ className }: StyleableComponent) => {
           border: `1px solid ${darkMode ? "#374151" : "transparent"}`,
         },
       }}
+      theme={darkMode ? "dark" : "light"}
 
       // Details Button ---- using a custom Component because matching the mocked styling is not possible
       detailsButton={{
