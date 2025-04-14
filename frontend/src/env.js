@@ -25,6 +25,7 @@ export const env = createEnv({
     VERCEL_URL: z.string(),
     BEACONCHAIN_API_KEY: z.string(),
     HUBSPOT_API_KEY: z.string(),
+    AUTH_JWT_VERIFYING_KEY: z.string(),
   },
 
   /**
@@ -54,6 +55,7 @@ export const env = createEnv({
     VERCEL_URL: process.env.VERCEL_URL,
     BEACONCHAIN_API_KEY: process.env.BEACONCHAIN_API_KEY,
     HUBSPOT_API_KEY: process.env.HUBSPOT_API_KEY,
+    AUTH_JWT_VERIFYING_KEY: process.env.AUTH_JWT_VERIFYING_KEY,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially
