@@ -21,7 +21,7 @@ const findOrCreateUser = async (address: string) => {
 export const userRouter = createTRPCRouter({
   createOrUpdateUser: publicProcedure
     .input(UserSchema)
-    .mutation(async ({ input: rawInput }) => {
+    .mutation(async ({ input: rawInput }): Promise<IResponse<null>> => {
       try {
         const parsedInput = UserSchema.safeParse(rawInput);
         if (!parsedInput.success) {

@@ -2,28 +2,21 @@ import type { FC } from "react";
 import { api } from "pec/trpc/react";
 import { useWalletAddress } from "pec/hooks/useWallet";
 import { UserModal } from "./UserModal";
+import { UserType } from "pec/lib/api/schemas/database/user";
 
-export const UserContainer: FC<{
+interface UserContainerProps {
   open: boolean;
   setOpen: (open: boolean) => void;
-}> = ({ open, setOpen }) => {
-  const walletAddress = useWalletAddress();
+  user: UserType;
+}
 
-  const { data: user, isFetched } = api.users.getUser.useQuery({
-    address: walletAddress,
-  });
-
-  if (!!walletAddress || !user || !isFetched) return null;
-
+export const UserContainer = ({ open, setOpen, user }: UserContainerProps) => {
   return (
     <UserModal
       open={open}
       setOpen={setOpen}
+      {...user.data}
       address={walletAddress}
-      email={user.email ?? ""}
-      firstName={user.firstName ?? ""}
-      lastName={user.lastName ?? ""}
-      companyName={user.companyName ?? ""}
     />
   );
 };

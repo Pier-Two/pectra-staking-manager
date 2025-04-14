@@ -1,3 +1,5 @@
+import { ButtonProps } from "pec/components/ui/button";
+
 export interface StyleableComponent {
   className?: string;
 }
@@ -6,12 +8,10 @@ export interface ParentComponent {
   children: React.ReactNode;
 }
 
-export interface ICustomButton extends StyleableComponent {
+export interface ICustomButton extends ButtonProps {
   label: string;
   icon?: React.ReactNode;
   iconPosition?: EIconPosition;
-  onClick?: () => void;
-  disabled: boolean;
 }
 
 export enum EIconPosition {

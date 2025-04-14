@@ -8,9 +8,10 @@ import { Settings } from "lucide-react";
 import { useTheme } from "pec/hooks/useTheme";
 import { ConnectWalletButton } from "pec/components/ui/wallet/ConnectWallet";
 
-import { UserContainer } from "../user/UserContainer";
 import { SidebarTrigger } from "../ui/sidebar";
 import DarkMode from "../dark-mode";
+import { api } from "pec/trpc/react";
+import { UserModal } from "../user/UserModal";
 
 export interface ITopBar {
   numberOfValidators: number;
@@ -19,8 +20,9 @@ export interface ITopBar {
 
 export const TopBar = () => {
   const router = useRouter();
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
   const { darkMode } = useTheme();
+  const { data: user } = api.users.getUser.useQuery();
 
   const handleWelcomeNavigation = () => {
     router.push("/welcome");
@@ -59,21 +61,28 @@ export const TopBar = () => {
 
         <div className="flex items-center space-x-4 pe-12">
           <ConnectWalletButton className="!w-fit !min-w-[123px]" />
-          <Button
-            className={`rounded-full border ${
-              darkMode
-                ? "border-gray-700 dark:bg-black dark:hover:bg-gray-900"
-                : "border-indigo-400 bg-gray-100 hover:bg-gray-200"
-            } p-3`}
-            onClick={() => setOpen(!open)}
-          >
-            <Settings className="text-gray-700 dark:text-white" />
-          </Button>
+          {user?.success && (
+            <>
+              <Button
+                className={`rounded-full border ${
+                  darkMode
+                    ? "border-gray-700 dark:bg-black dark:hover:bg-gray-900"
+                    : "border-indigo-400 bg-gray-100 hover:bg-gray-200"
+                } p-3`}
+                onClick={() => setOpen(!open)}
+              >
+                <Settings className="text-gray-700 dark:text-white" />
+              </Button>
+              <UserModal
+                open={open}
+                setOpen={setOpen}
+                userDetails={user.data}
+              />
+            </>
+          )}
 
           <DarkMode />
         </div>
-
-        <UserContainer open={open} setOpen={setOpen} />
       </div>
     </header>
   );
