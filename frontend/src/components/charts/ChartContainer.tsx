@@ -7,6 +7,7 @@ import { Card, CardFooter, CardHeader } from "pec/components/ui/card";
 import { AreaChartComponent } from "./AreaChart";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { ChartSkeleton } from "./ChartSkeleton";
+import type { ChartGroup } from "pec/types/chart";
 
 const emptyChart = (
   <Card className="w-full rounded-xl bg-white text-black shadow-xl dark:bg-gray-900 dark:text-white">
@@ -20,19 +21,19 @@ const emptyChart = (
 
 export const ChartContainer: FC = () => {
   const [filter, setFilter] = useState<"days" | "months" | "years">("days");
-  const { data, isFetched } = api.charts.getChartData.useQuery(
-    {
-      filter,
-    },
-    { refetchInterval: 5000 },
-  );
-
+  const { data, isFetched } = api.charts.getChartData.useQuery(undefined, {
+    refetchInterval: 10000,
+  });
+  
   const [chartIndex, setChartIndex] = useState(0);
 
   if (!data || !isFetched) return <ChartSkeleton />;
 
   const chartCount = data.length;
-  const activeChart = data[chartIndex];
+  const activeChartGroup = data.find(
+    (chart) => chart.key === filter,
+  ) as ChartGroup;
+  const activeChart = activeChartGroup.data[chartIndex];
 
   const handleChartForward = () => {
     if (chartIndex === data.length - 1) setChartIndex(0);
@@ -99,7 +100,7 @@ export const ChartContainer: FC = () => {
               width={18}
               height={18}
             />
-            <div className="text-sm">pectrastaking.com</div>
+            <div className="text-sm leading-[16px]">pectrastaking.com</div>
           </div>
         </CardHeader>
 

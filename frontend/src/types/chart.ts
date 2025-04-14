@@ -18,8 +18,8 @@ export interface IChart {
 
 export interface IChartData {
   key: string;
-  merge: number;
-  shapella: number;
+  merge?: number;
+  shapella?: number;
   pectra: number;
 }
 
@@ -39,6 +39,18 @@ export interface IYAxis {
 }
 
 //API
+export type ChartGroup = {
+  key: string;
+  data: IChart[];
+};
+
+export type ValidatorStatistics = {
+  avgStaked: number;
+  count: number;
+  totalStaked: number;
+  withdrawalCredentialPrefix: string;
+  timestamp: string;
+};
 
 export type IGroupedValidatorStatistics = Record<
   string,

@@ -47,8 +47,9 @@ export const AreaChartComponent: FC<IAreaChart> = ({ chart }) => {
   const { darkMode } = useTheme();
 
   const axisTextStyle = {
-    stroke: darkMode ? "#ffffff" : "#000000",
+    stroke: darkMode ? "#ffffff" : "#27272A",
     fontSize: 10,
+    fontWeight: 380,
   };
 
   return (
@@ -100,7 +101,7 @@ export const AreaChartComponent: FC<IAreaChart> = ({ chart }) => {
         <XAxis
           dataKey="key"
           tickLine={false}
-          axisLine={false}
+          axisLine={true}
           tickMargin={8}
           label={
             showXLabel

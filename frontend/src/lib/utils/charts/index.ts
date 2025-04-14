@@ -46,7 +46,8 @@ export const buildChartData = (
         );
 
         const typeKey = type as keyof typeof WITHDRAWAL_PREFIXES;
-        if (maxValue > chartEntry[typeKey]) chartEntry[typeKey] = maxValue;
+        const currentValue = chartEntry[typeKey] ?? 0;
+        if (maxValue > currentValue) chartEntry[typeKey] = maxValue;
       }
     },
   );
@@ -69,29 +70,39 @@ export const buildYAxis = (
   showLabel: boolean,
   orientation: "left" | "right",
 ): IYAxis => {
-  const lowerRange = chartData.reduce(
-    (min, item) => Math.min(min, item.pectra, item.merge, item.shapella),
-    Infinity,
-  );
+  const lowerRange = chartData.reduce((min, item) => {
+    const values = [item.pectra, item.merge, item.shapella].filter(
+      (val): val is number => val !== undefined,
+    );
+    return values.length > 0 ? Math.min(min, ...values) : min;
+  }, Infinity);
 
-  const upperRange = chartData.reduce(
-    (max, item) => Math.max(max, item.pectra, item.merge, item.shapella),
-    0,
-  );
+  const upperRange = chartData.reduce((max, item) => {
+    const values = [item.pectra, item.merge, item.shapella].filter(
+      (val): val is number => val !== undefined,
+    );
+    return values.length > 0 ? Math.max(max, ...values) : max;
+  }, 0);
 
-  const step = (upperRange - lowerRange) / 9;
-  const ticks = Array.from({ length: 10 }, (_, i) =>
-    Math.round(lowerRange + i * step),
+  const allValues = chartData.flatMap((item) =>
+    [item.pectra, item.merge, item.shapella].filter(
+      (val): val is number => val !== undefined,
+    ),
   );
+  const uniqueValues = [...new Set(allValues)].sort((a, b) => a - b);
 
-  return {
-    lowerRange,
-    upperRange,
-    ticks,
-    label,
-    showLabel,
-    orientation,
-  };
+  const ticks =
+    uniqueValues.length === 0
+      ? [0, 1]
+      : uniqueValues.length === 1
+        ? [uniqueValues[0]!, uniqueValues[0]! + 1]
+        : uniqueValues.length <= 10
+          ? uniqueValues
+          : Array.from({ length: 10 }, (_, i) =>
+              Math.round(lowerRange + (i * (upperRange - lowerRange)) / 9),
+            );
+
+  return { lowerRange, upperRange, ticks, label, showLabel, orientation };
 };
 
 export const buildXAxis = (filter: "days" | "months" | "years"): IXAxis => {
