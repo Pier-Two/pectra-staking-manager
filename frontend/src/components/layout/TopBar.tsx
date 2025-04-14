@@ -1,16 +1,16 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import Image from "next/image";
-import { Button } from "pec/components/ui/button";
 import { Settings } from "lucide-react";
-import { useTheme } from "pec/hooks/useTheme";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { Button } from "pec/components/ui/button";
 import { ConnectWalletButton } from "pec/components/ui/wallet/ConnectWallet";
+import { useTheme } from "pec/hooks/useTheme";
+import { useState } from "react";
 
-import { UserContainer } from "../user/UserContainer";
-import { SidebarTrigger } from "../ui/sidebar";
 import DarkMode from "../dark-mode";
+import { SidebarTrigger } from "../ui/sidebar";
+import { UserContainer } from "../user/UserContainer";
 
 export interface ITopBar {
   numberOfValidators: number;
@@ -27,7 +27,7 @@ export const TopBar = () => {
   };
 
   return (
-    <header className="sticky flex w-full items-center justify-between border-b border-zinc-200 bg-white/40 p-4 shadow-sm backdrop-blur-md dark:border-gray-800 dark:bg-gray-950">
+    <header className="sticky top-0 z-50 flex w-full items-center justify-between border-b border-zinc-200 bg-gray-50/40 backdrop-blur-md p-4 shadow-sm dark:border-zinc-800 dark:bg-black">
       <div className="order-2 flex items-center md:order-1">
         <div
           className="flex flex-row-reverse items-center gap-x-3 hover:cursor-pointer md:flex-row"
@@ -50,15 +50,14 @@ export const TopBar = () => {
           </div>
         </div>
       </div>
-
       {/* ONLY SHOW NAV BUTTON ON MOBILE/SMALLER */}
-      <div className="order-1 md:order-2">
-        <div className="md:hidden">
+      <div className="order-1 flex items-center gap-4 md:order-2">
+        <div className="block md:hidden">
           <SidebarTrigger />
         </div>
 
-        <div className="flex items-center space-x-4 pe-12">
-          <ConnectWalletButton className="!w-fit !min-w-[123px]" />
+        {/* Desktop Navigation */}
+        <div className="hidden md:flex items-center space-x-4">
           <Button
             className={`rounded-full border ${
               darkMode
@@ -71,6 +70,7 @@ export const TopBar = () => {
           </Button>
 
           <DarkMode />
+          <ConnectWalletButton className="!w-fit !min-w-[123px]" />
         </div>
 
         <UserContainer open={open} setOpen={setOpen} />

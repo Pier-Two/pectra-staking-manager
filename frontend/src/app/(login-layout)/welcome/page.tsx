@@ -49,8 +49,7 @@ const Welcome: FC = () => {
               disabled={false}
             />
           ) : (
-            // TODO: Come back and address width appropriately
-            <ConnectWalletButton className="!min-w-[420px]" />
+            <ConnectWalletButton className="!w-[420px] !max-w-[90vw]" />
           )}
         </div>
       </div>

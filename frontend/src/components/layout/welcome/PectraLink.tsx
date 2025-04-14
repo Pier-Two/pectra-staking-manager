@@ -4,7 +4,7 @@ import type { FC } from "react";
 
 export const PectraLink: FC = () => {
   return (
-    <div className="relative inline-block">
+    <div className="relative inline-block z-10">
       <div className="absolute inset-0 rounded-full bg-gradient-to-r from-[#00FFA7] via-[#A5B4FC] to-[#313C86]"></div>
       <Button
         onClick={() =>

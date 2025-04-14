@@ -1,12 +1,10 @@
 "use client"
 
-import * as React from "react"
 import { Slot } from "@radix-ui/react-slot"
 import { VariantProps, cva } from "class-variance-authority"
 import { PanelLeft } from "lucide-react"
+import * as React from "react"
 
-import { useIsMobile } from "pec/hooks/use-mobile"
-import { cn } from "pec/lib/utils"
 import { Button } from "pec/components/ui/button"
 import { Input } from "pec/components/ui/input"
 import { Separator } from "pec/components/ui/separator"
@@ -24,6 +22,8 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "pec/components/ui/tooltip"
+import { useIsMobile } from "pec/hooks/use-mobile"
+import { cn } from "pec/lib/utils"
 
 const SIDEBAR_COOKIE_NAME = "sidebar_state"
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7
@@ -281,7 +281,7 @@ const SidebarTrigger = React.forwardRef<
       data-sidebar="trigger"
       variant="ghost"
       size="icon"
-      className={cn("h-7 w-7", className)}
+      className={cn("h-7 w-7 text-zinc-950 dark:text-white", className)}
       onClick={(event) => {
         onClick?.(event)
         toggleSidebar()
@@ -769,5 +769,6 @@ export {
   SidebarRail,
   SidebarSeparator,
   SidebarTrigger,
-  useSidebar,
+  useSidebar
 }
+
