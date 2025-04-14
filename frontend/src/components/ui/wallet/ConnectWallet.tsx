@@ -2,9 +2,11 @@
 
 import { clsx } from "clsx";
 
+import { ChevronDown } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { SUPPORTED_CHAINS } from "pec/constants/chain";
 import { useTheme } from "pec/hooks/useTheme";
+import { useWalletAddress } from "pec/hooks/useWallet";
 import {
   generatePayload,
   isLoggedIn,
@@ -15,13 +17,19 @@ import { client, wallets } from "pec/lib/wallet/client";
 import { api } from "pec/trpc/react";
 import type { StyleableComponent } from "pec/types/components";
 import { useEffect, useState } from "react";
-import { ConnectButton } from "thirdweb/react";
+import { ConnectButton, useEnsAvatar, useEnsName, useWalletDetailsModal } from "thirdweb/react";
+import { Button } from "../button";
 export const ConnectWalletButton = ({ className }: StyleableComponent) => {
-  const [isMounted, setIsMounted] = useState(false);
   const router = useRouter();
   const utils = api.useUtils();
   const { darkMode } = useTheme();
-
+  const address = useWalletAddress();
+  const detailsModal = useWalletDetailsModal();
+  const [isMounted, setIsMounted] = useState(false);
+  const { data: ensName } = useEnsName({ client, address });
+  const { data: ensAvatar } = useEnsAvatar({ client, ensName });
+  
+  
   // This is to prevent the component from rendering on the server can causing hydration errors from the dynamic theme styling
   useEffect(() => {
     setIsMounted(true);
@@ -29,8 +37,10 @@ export const ConnectWalletButton = ({ className }: StyleableComponent) => {
 
   if (!isMounted) return null;
 
+  
   return (
     <ConnectButton
+      // ConnectButton     
       connectButton={{
         label: "Connect Wallet",
         className: clsx(
@@ -41,7 +51,31 @@ export const ConnectWalletButton = ({ className }: StyleableComponent) => {
           border: `1px solid ${darkMode ? "#374151" : "transparent"}`,
         },
       }}
-      autoConnect
+
+      // Details Button ---- using a custom Component because matching the mocked styling is not possible
+      detailsButton={{
+        render: () => {
+          return (
+            <Button
+              variant="ghost"
+              className="h-10 rounded-full border border-primary/30 hover:bg-primary/10 dark:border-gray-700 dark:bg-black dark:hover:bg-gray-900 dark:text-white"
+              onClick={() => {
+                detailsModal.open({ client, theme: darkMode ? "dark" : "light" });
+              }}
+            >
+              {ensAvatar ? (
+                // eslint-disable-next-line @next/next/no-img-element -- Image comes from non-whitelisted url. Use img incase it can change
+                <img src={ensAvatar} alt="Avatar" className="h-4 w-4 rounded-full" />
+              ) : (
+                <div className="h-4 w-4 rounded-full bg-primary" />
+              )}
+              {ensName ?? `${address?.slice(0, 6)}...${address?.slice(-4)}`}
+              <ChevronDown size={16} />
+            </Button>
+          );
+        }
+      }}
+      autoConnect={true}
       chains={SUPPORTED_CHAINS}
       client={client}
       wallets={wallets}
