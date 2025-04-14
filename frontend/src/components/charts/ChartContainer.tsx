@@ -24,7 +24,7 @@ export const ChartContainer: FC = () => {
   const { data, isFetched } = api.charts.getChartData.useQuery(undefined, {
     refetchInterval: 10000,
   });
-  
+
   const [chartIndex, setChartIndex] = useState(0);
 
   if (!data || !isFetched) return <ChartSkeleton />;
@@ -51,7 +51,9 @@ export const ChartContainer: FC = () => {
   return (
     <div className="flex w-full flex-col gap-4">
       <div className="flex flex-row items-center justify-between px-6">
-        <div className="text-lg font-semibold">{title}</div>
+        <div className="text-center text-[20px] font-670 text-zinc-800 dark:text-zinc-200">
+          {title}
+        </div>
         {chartCount > 1 && (
           <div className="flex flex-row items-center gap-8">
             <div className="flex flex-row items-center gap-4 text-sm">

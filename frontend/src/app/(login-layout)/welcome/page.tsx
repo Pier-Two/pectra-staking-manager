@@ -25,7 +25,7 @@ const Welcome: FC = () => {
         <div className="flex w-full flex-col items-center justify-center gap-y-4">
           <PectraLink />
 
-          <p className="font-670 text-center text-[50px] leading-[54px]">
+          <p className="text-center text-[50px] font-670 leading-[54px]">
             <span>This is the Future of</span>
             <span className="md:block"> Ethereum Staking</span>
           </p>
@@ -36,7 +36,7 @@ const Welcome: FC = () => {
 
       <div className="flex w-full flex-col items-center justify-center gap-y-4">
         {!hasWalletAddress && (
-          <div className="font-570 text-center text-[14px] leading-[14px]">
+          <div className="text-center text-[14px] font-570 leading-[14px]">
             Connect your withdrawal address to access validators
           </div>
         )}
@@ -44,11 +44,11 @@ const Welcome: FC = () => {
         <div className="flex flex-col items-center justify-center gap-4">
           {hasWalletAddress ? (
             <PrimaryButton
-            className="h-10 w-full"
-            label={"View Validators"}
-            onClick={handleEnterSite}
-            disabled={false}
-          />
+              className="h-10 w-full"
+              label={"View Validators"}
+              onClick={handleEnterSite}
+              disabled={false}
+            />
           ) : (
             // TODO: Come back and address width appropriately
             <ConnectWalletButton className="!min-w-[420px]" />
@@ -56,7 +56,11 @@ const Welcome: FC = () => {
         </div>
       </div>
 
-      <ChartContainer />
+      <div className="flex w-full flex-col items-center justify-center">
+        <div className="flex w-[720px] flex-col items-center justify-center">
+          <ChartContainer />
+        </div>
+      </div>
 
       <Footer />
     </div>

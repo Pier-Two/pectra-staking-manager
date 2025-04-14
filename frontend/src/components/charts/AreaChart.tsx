@@ -47,7 +47,7 @@ export const AreaChartComponent: FC<IAreaChart> = ({ chart }) => {
   const { darkMode } = useTheme();
 
   const axisTextStyle = {
-    stroke: darkMode ? "#ffffff" : "#27272A",
+    stroke: darkMode ? "#e3e3e3" : "#27272A",
     fontSize: 10,
     fontWeight: 380,
   };
