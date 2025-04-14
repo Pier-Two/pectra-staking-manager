@@ -6,6 +6,7 @@ import { client } from "./client";
 import { cookies } from "next/headers";
 import { privateKeyToAccount } from "thirdweb/wallets";
 import { IResponse } from "pec/types/response";
+import { COOKIE_NAME } from "pec/constants/cookie";
 
 const thirdwebAuth = createAuth({
   domain: env.NEXT_PUBLIC_THIRDWEB_CLIENT_ID,
@@ -27,14 +28,14 @@ export async function login(payload: VerifyLoginPayloadParams) {
         user: true,
       },
     });
-    (await cookies()).set("jwt", jwt);
+    (await cookies()).set(COOKIE_NAME, jwt);
   }
 }
 
 export async function isLoggedIn(): Promise<
   IResponse<{ address: string; accessToken: string }>
 > {
-  const jwt = (await cookies()).get("jwt");
+  const jwt = (await cookies()).get(COOKIE_NAME);
   if (!jwt?.value) {
     return { success: false, error: "No JWT found" };
   }
@@ -53,6 +54,5 @@ export async function isLoggedIn(): Promise<
 }
 
 export async function logout() {
-  console.log("Log out");
-  (await cookies()).delete("jwt");
+  (await cookies()).delete(COOKIE_NAME);
 }

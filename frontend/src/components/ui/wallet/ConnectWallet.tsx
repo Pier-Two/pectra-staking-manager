@@ -66,21 +66,3 @@ export const ConnectWalletButton = ({ className }: StyleableComponent) => {
     />
   );
 };
-
-// <Button
-//   variant="ghost"
-//   className="h-10 rounded-full border border-primary/30 hover:bg-primary/10"
-//   onClick={async () => {
-//     detailsModal.open({ client, theme: "light" });
-//   }}
-// >
-//   {!!ensAvatar ? (
-//     // eslint-disable-next-line @next/next/no-img-element -- Image comes from non-whitelisted url. Use img incase it can change
-//     <img src={ensAvatar} alt="Avatar" className="h-4 w-4 rounded-full" />
-//   ) : (
-//     // TODO: Could improve no image avatar
-//     <div className="h-4 w-4 rounded-full bg-primary" />
-//   )}
-//   {ensName ?? `${address.slice(0, 6)}...${address.slice(-4)}`}
-//   <ChevronDown size={16} />
-// </Button>
