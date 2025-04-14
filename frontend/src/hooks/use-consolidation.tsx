@@ -10,6 +10,7 @@ import { fromHex } from "viem";
 import { useConsolidationStore } from "./use-consolidation-store";
 import { useContracts } from "./useContracts";
 import { useRpcClient } from "./useRpcClient";
+import { toast } from "sonner";
 
 export const useConsolidationFee = () => {
   const contracts = useContracts();
@@ -62,7 +63,9 @@ export const useSubmitConsolidate = () => {
       !rpcClient ||
       !account
     ) {
-      console.error("Missing required data for consolidation");
+      toast.error("There was an error consolidating", {
+        description: "Please try again or double check input fields.",
+      });
       return;
     }
 
@@ -125,6 +128,13 @@ export const useSubmitConsolidate = () => {
         // break out of the loop if it errors
         setCurrentPubKey("");
         // TODO we should toast an error
+
+        toast.error(
+          `Error Consolidating Validator ${validator.validatorIndex}`,
+          {
+            description: "Please try again.",
+          },
+        );
         break;
       }
 

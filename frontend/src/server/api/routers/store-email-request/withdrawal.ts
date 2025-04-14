@@ -44,9 +44,8 @@ export const storeWithdrawalRequest = async (
   validatorIndex: number,
 ): Promise<IResponse> => {
   try {
-    // TODO hardcoded env here
     const response = await axios.get<WithdrawalResponse>(
-      `${getBeaconChainURL(true)}/api/v1/validator/${validatorIndex}/withdrawals?apikey=${env.BEACONCHAIN_API_KEY}`,
+      `${getBeaconChainURL()}/api/v1/validator/${validatorIndex}/withdrawals?apikey=${env.BEACONCHAIN_API_KEY}`,
     );
 
     if (!isResponseValid(response)) return storeWithdrawal(validatorIndex, 0);

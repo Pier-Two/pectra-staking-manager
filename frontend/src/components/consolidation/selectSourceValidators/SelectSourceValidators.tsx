@@ -59,9 +59,6 @@ export const SelectSourceValidators = () => {
         bulkSetConsolidationTargets(availableSourceValidators);
       }
     }
-    //   if (activeTab === "manuallySelect" && validatorsToConsolidate?.length > 0) {
-    //     bulkSetConsolidationTargets([]);
-    //   }
   }, [
     activeTab,
     availableSourceValidators,

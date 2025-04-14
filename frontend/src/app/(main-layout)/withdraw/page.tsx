@@ -125,7 +125,7 @@ const Withdrawal: FC = () => {
       "withdrawals",
       sortedValidators?.map((validator) => ({
         validator,
-        amount: Number(validator.balance) / 10 ** 9, // TODO check decimals
+        amount: Number(validator.balance),
       })) ?? [],
     );
 
