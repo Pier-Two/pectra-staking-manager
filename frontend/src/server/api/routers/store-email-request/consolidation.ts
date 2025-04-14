@@ -40,7 +40,6 @@ const EXITED_CHECK = "exited";
 
 export const processConsolidations = async (): Promise<IResponse> => {
   try {
-    debugger;
     const consolidations = await ConsolidationModel.find({
       status: ACTIVE_STATUS,
     });
@@ -93,7 +92,6 @@ export const processConsolidations = async (): Promise<IResponse> => {
         continue;
       }
 
-      debugger;
       await markConsolidationInactive(sourceTargetValidatorIndex, txHash);
     }
 
