@@ -2,9 +2,7 @@ import { verifySignatureAppRouter } from "@upstash/qstash/nextjs";
 import { processWithdrawals } from "pec/server/api/routers/store-email-request/withdrawal";
 
 async function withdrawalHandler(_request: Request) {
-  console.log("Log for Vercel deployment - withdrawalHandler HIT");
   const result = await processWithdrawals();
-  console.log("Log for Vercel deployment - result: ", result);
   if (result.success) {
     return Response.json({
       success: true,

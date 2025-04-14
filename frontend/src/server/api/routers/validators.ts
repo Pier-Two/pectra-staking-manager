@@ -19,6 +19,7 @@ import {
   WithdrawalModel,
 } from "pec/lib/database/models";
 import { getBeaconChainURL } from "pec/constants/beaconchain";
+import { ACTIVE_STATUS } from "pec/types/app";
 
 export const validatorRouter = createTRPCRouter({
   getValidators: publicProcedure
@@ -155,7 +156,7 @@ export const validatorRouter = createTRPCRouter({
       const newRecord = await ConsolidationModel.create({
         targetValidatorIndex,
         sourceTargetValidatorIndex,
-        status: "ACTIVE",
+        status: ACTIVE_STATUS,
         txHash,
         user,
       });
