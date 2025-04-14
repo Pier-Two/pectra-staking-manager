@@ -78,11 +78,7 @@ export const processConsolidations = async (): Promise<IResponse> => {
       const email = await sendEmailNotification(
         "PECTRA_STAKING_MANAGER_CONSOLIDATION_COMPLETE",
         {
-          address: currentUser.address,
-          email: currentUser.email,
-          firstName: currentUser.firstName,
-          lastName: currentUser.lastName,
-          companyName: currentUser.companyName,
+          ...currentUser,
           txHash,
         },
       );

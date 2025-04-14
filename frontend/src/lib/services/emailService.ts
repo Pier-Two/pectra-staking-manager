@@ -2,8 +2,8 @@ import axios from "axios";
 import { env } from "pec/env";
 import type { IResponse } from "pec/types/response";
 import { generateErrorResponse } from "../utils";
-import { EmailNames } from "pec/types/emails";
-import { UserType } from "../api/schemas/database/user";
+import { type EmailNames } from "pec/types/emails";
+import { type UserType } from "../api/schemas/database/user";
 
 export const createContact = async (email: string): Promise<IResponse> => {
   try {
@@ -26,6 +26,7 @@ export const createContact = async (email: string): Promise<IResponse> => {
 
     return {
       success: true,
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- TODO: TYPES
       data: response.data,
     };
   } catch (error) {
@@ -35,7 +36,7 @@ export const createContact = async (email: string): Promise<IResponse> => {
 
 export const sendEmailNotification = async (
   emailName: EmailNames,
-  metadata: UserType & { txHash: string },
+  metadata: UserType & { txHash?: string },
 ): Promise<IResponse> => {
   try {
     const payload = {
@@ -59,6 +60,7 @@ export const sendEmailNotification = async (
     return {
       success: true,
       // TODO: Type response
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       data: response.data,
     };
   } catch (error) {

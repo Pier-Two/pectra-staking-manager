@@ -8,7 +8,7 @@ export const useActiveChainWithDefault = (): Readonly<
     rpc: string;
   }
 > => {
-  let chain = useActiveWalletChain();
+  const chain = useActiveWalletChain();
 
   if (!chain) return MAIN_CHAIN;
 

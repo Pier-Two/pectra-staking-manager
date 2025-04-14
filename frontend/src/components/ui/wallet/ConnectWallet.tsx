@@ -11,13 +11,12 @@ import {
   login,
   logout,
 } from "pec/lib/wallet/auth";
-import { useQueryClient } from "@tanstack/react-query";
-import { USER_QUERY_KEY } from "pec/hooks/useUserDetails";
 import { SUPPORTED_CHAINS } from "pec/constants/chain";
+import { api } from "pec/trpc/react";
 
 export const ConnectWalletButton = ({ className }: StyleableComponent) => {
-  const queryClient = useQueryClient();
   const router = useRouter();
+  const utils = api.useUtils();
 
   return (
     <ConnectButton
@@ -52,17 +51,15 @@ export const ConnectWalletButton = ({ className }: StyleableComponent) => {
         doLogin: async (params) => {
           await login(params);
           // Invalidate the user query after login
-          await queryClient.invalidateQueries({
-            queryKey: [USER_QUERY_KEY],
-          });
+
+          await utils.users.getUser.invalidate();
         },
         getLoginPayload: async ({ address }) => generatePayload({ address }),
         doLogout: async () => {
+          await utils.users.getUser.invalidate();
+
           await logout();
-          // Invalidate the user query after logout
-          await queryClient.invalidateQueries({
-            queryKey: [USER_QUERY_KEY],
-          });
+
           router.push("/welcome");
         },
       }}

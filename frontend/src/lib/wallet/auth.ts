@@ -19,7 +19,6 @@ const thirdwebAuth = createAuth({
 export const generatePayload = thirdwebAuth.generatePayload;
 
 export async function login(payload: VerifyLoginPayloadParams) {
-  console.log("Checking login state");
   const verifiedPayload = await thirdwebAuth.verifyPayload(payload);
   if (verifiedPayload.valid) {
     const jwt = await thirdwebAuth.generateJWT({
@@ -35,7 +34,6 @@ export async function login(payload: VerifyLoginPayloadParams) {
 export async function isLoggedIn(): Promise<
   IResponse<{ address: string; accessToken: string }>
 > {
-  console.log("tytytytyty");
   const jwt = (await cookies()).get("jwt");
   if (!jwt?.value) {
     return { success: false, error: "No JWT found" };

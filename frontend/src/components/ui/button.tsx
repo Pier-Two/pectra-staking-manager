@@ -36,7 +36,7 @@ const buttonVariants = cva(
 );
 
 export interface ButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
+  extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "onClick">,
     VariantProps<typeof buttonVariants> {
   asChild?: boolean;
   useSpinner?: boolean;
@@ -55,7 +55,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       if (!props.onClick) return;
 
       if (!useSpinner) {
-        props.onClick(e);
+        await props.onClick(e);
         return;
       }
 
@@ -71,7 +71,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       }
     };
 
-    const isDisabled = props.disabled || isLoading;
+    const isDisabled = props.disabled ?? isLoading;
 
     return (
       <Comp
