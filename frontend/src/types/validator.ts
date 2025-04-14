@@ -43,13 +43,6 @@ export interface IValidatorCard {
   onClick?: () => void;
 }
 
-export interface ITransactionValidatorCard {
-  status?: TransactionStatus;
-  transactionHash: string;
-  validator: ValidatorDetails;
-  isTarget?: boolean;
-}
-
 export interface IBatchDepositValidatorCard {
   clearedSelectedValidators: boolean;
   depositAmount: bigint;
