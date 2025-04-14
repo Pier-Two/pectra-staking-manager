@@ -72,13 +72,13 @@ export const processWithdrawals = async (): Promise<IResponse> => {
     if (!withdrawals)
       return {
         success: false,
-        message: "Withdrawal query failed to execute.",
+        error: "Withdrawal query failed to execute.",
       };
 
     if (withdrawals.length === 0)
       return {
         success: true,
-        message: "No active withdrawals found, nothing to process.",
+        data: null,
       };
 
     const chunkedWithdrawals = chunkWithdrawals(withdrawals);
@@ -134,7 +134,7 @@ export const processWithdrawals = async (): Promise<IResponse> => {
 
     return {
       success: true,
-      message: "Withdrawal requests processed successfully.",
+      data: null,
     };
   } catch (error) {
     return generateErrorResponse(error);
@@ -176,7 +176,7 @@ const storeWithdrawal = async (
 
     return {
       success: true,
-      message: "Withdrawal request stored successfully.",
+      data: null,
     };
   } catch (error) {
     return generateErrorResponse(error);

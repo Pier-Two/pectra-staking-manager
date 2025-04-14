@@ -3,19 +3,18 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import type { IResponse } from "pec/types/response";
+import { parseError } from "./parseError";
 
 export const cn = (...inputs: ClassValue[]) => {
   return twMerge(clsx(inputs));
 };
 
-export const generateErrorResponse = (error: unknown): IResponse => {
+export const generateErrorResponse = (
+  error: unknown,
+  fallbackMessage?: string,
+): IResponse => {
   return {
     success: false,
-    message:
-      error instanceof Error
-        ? error.message
-        : typeof error === "string"
-          ? error
-          : "An unexpected error occurred",
+    error: parseError(error, fallbackMessage),
   };
 };

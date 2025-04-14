@@ -5,6 +5,7 @@ import { createAuth, VerifyLoginPayloadParams } from "thirdweb/auth";
 import { client } from "./client";
 import { cookies } from "next/headers";
 import { privateKeyToAccount } from "thirdweb/wallets";
+import { IResponse } from "pec/types/response";
 
 const thirdwebAuth = createAuth({
   domain: env.NEXT_PUBLIC_THIRDWEB_CLIENT_ID,
@@ -31,22 +32,26 @@ export async function login(payload: VerifyLoginPayloadParams) {
   }
 }
 
-export async function isLoggedIn() {
+export async function isLoggedIn(): Promise<
+  IResponse<{ address: string; accessToken: string }>
+> {
   console.log("tytytytyty");
   const jwt = (await cookies()).get("jwt");
   if (!jwt?.value) {
-    return { address: null, accessToken: null, isValid: false };
+    return { success: false, error: "No JWT found" };
   }
 
   const authResult = await thirdwebAuth.verifyJWT({ jwt: jwt.value });
   if (authResult.valid) {
     return {
-      address: authResult.parsedJWT.sub,
-      accessToken: jwt.value,
-      isValid: true,
+      success: true,
+      data: {
+        address: authResult.parsedJWT.sub,
+        accessToken: jwt.value,
+      },
     };
   }
-  return { address: null, accessToken: null, isValid: false };
+  return { success: false, error: "Invalid JWT" };
 }
 
 export async function logout() {

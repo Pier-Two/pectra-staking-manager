@@ -4,6 +4,7 @@ import { UserSchema, type UserType } from "pec/lib/api/schemas/database/user";
 import { UserModel } from "pec/lib/database/models";
 import { createContact } from "pec/lib/services/emailService";
 import { TRPCError } from "@trpc/server";
+import { isLoggedIn } from "pec/lib/wallet/auth";
 
 export const userRouter = createTRPCRouter({
   createOrUpdateUser: publicProcedure
@@ -56,28 +57,19 @@ export const userRouter = createTRPCRouter({
       }
     }),
 
-  getUsersEmail: publicProcedure
-    .input(z.object({ address: z.string() }))
-    .query(async ({ input }): Promise<string | null> => {
-      try {
-        const { address } = input;
-        const user = await UserModel.findOne({ address }).select("email");
-        return user ? user.email : null;
-      } catch (error) {
+  getUser: publicProcedure.query(
+    async ({ input }): Promise<UserType | null> => {
+      const value = await isLoggedIn();
+
+      if (!value.isValid) {
         throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: "Failed to fetch user email",
-          cause: error,
+          code: "UNAUTHORIZED",
+          message: "User is not logged in",
         });
       }
-    }),
 
-  getUser: publicProcedure
-    .input(z.object({ address: z.string() }))
-    .query(async ({ input }): Promise<UserType | null> => {
       try {
-        const { address } = input;
-        const user = await UserModel.findOne({ address });
+        const user = await UserModel.findOne({ address: value.address });
         return user;
       } catch (error) {
         throw new TRPCError({
@@ -86,5 +78,6 @@ export const userRouter = createTRPCRouter({
           cause: error,
         });
       }
-    }),
+    },
+  ),
 });

@@ -43,7 +43,6 @@ export const ConnectWalletButton = ({ className }: StyleableComponent) => {
         isLoggedIn: async () => {
           try {
             const result = await isLoggedIn();
-            console.log("IS logged in", result);
             return result.isValid;
           } catch (error) {
             console.error("Error calling isLoggedIn:", error);

@@ -7,7 +7,7 @@ export const storeConsolidationRequest = async () => {};
 export const processConsolidations = async (
   validatorIndex: number,
   txHash: string,
-): Promise<IResponse> => {
+): Promise<IResponse<null>> => {
   try {
     await ConsolidationModel.create({
       validatorIndex,
@@ -16,7 +16,7 @@ export const processConsolidations = async (
 
     return {
       success: true,
-      message: "Deposit request stored successfully.",
+      data: null,
     };
   } catch (err) {
     return generateErrorResponse(err);

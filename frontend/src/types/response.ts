@@ -1,6 +1,5 @@
-export interface IResponse {
-  success: boolean;
-  message: string;
-  data?: string;
-  errors?: string[];
-}
+export type IError = string;
+
+export type IResponse<T = null> =
+  | { success: false; error: IError }
+  | { success: true; data: T };

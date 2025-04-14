@@ -8,7 +8,6 @@ import {
   type SendEmailNotificationType,
 } from "../api/schemas/email";
 import { generateErrorResponse } from "../utils";
-import { z } from "zod";
 
 export const createContact = async (
   input: CreateContactType,
@@ -36,26 +35,10 @@ export const createContact = async (
 
     return {
       success: true,
-      message: `Contact created successfully: ${response.data}`,
+      data: response.data,
     };
   } catch (error) {
-    if (error instanceof z.ZodError) {
-      return {
-        success: false,
-        message: "Invalid input format",
-        errors: error.errors.map((e) => e.message),
-      };
-    }
-
-    if (axios.isAxiosError(error)) {
-      console.error("Hubspot API error:", error.response?.data);
-      return generateErrorResponse(
-        `Error creating contact: ${error.response?.status} ${error.response?.statusText}`,
-      );
-    }
-
-    console.error("Error creating contact:", error);
-    return generateErrorResponse("Error creating contact");
+    return generateErrorResponse(error, "Error creating contact");
   }
 };
 
@@ -85,25 +68,10 @@ export const sendEmailNotification = async (
 
     return {
       success: true,
-      message: `Email notification sent successfully: ${response.data}`,
+      // TODO: Type response
+      data: response.data,
     };
   } catch (error) {
-    if (error instanceof z.ZodError) {
-      return {
-        success: false,
-        message: "Invalid input format",
-        errors: error.errors.map((e) => e.message),
-      };
-    }
-
-    if (axios.isAxiosError(error)) {
-      console.error("Hubspot API error:", error.response?.data);
-      return generateErrorResponse(
-        `Error sending email notification: ${error.response?.status} ${error.response?.statusText}`,
-      );
-    }
-
-    console.error("Error sending email notification:", error);
-    return generateErrorResponse("Error sending email notification");
+    return generateErrorResponse(error, "Error sending email notification");
   }
 };
