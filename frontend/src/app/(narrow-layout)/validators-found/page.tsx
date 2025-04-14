@@ -52,22 +52,6 @@ const ValidatorsFound: FC = () => {
               className="w-full"
             />
           </Link>
-        </div>
-
-        <div className="flex w-full flex-col justify-center gap-4">
-          <Button asChild className="w-full">
-            <Link href="/consolidation">Start Consolidation</Link>
-          </Button>
-
-          <Link href="/dashboard" className="flex w-full justify-center">
-            <SecondaryButton
-              label="Skip and go to Dashboard"
-              icon={<ArrowRightIcon />}
-              iconPosition={EIconPosition.RIGHT}
-              disabled={false}
-            />
-          </Link>
-
           <p className="flex justify-center text-[13px] leading-[13px]">
             You can access consolidation anytime.
           </p>
