@@ -1,9 +1,10 @@
-import type { FC } from "react";
-import Image from "next/image";
-import type { ISourceValidatorCard } from "pec/types/validator";
 import { AlignLeft, BadgeMinus } from "lucide-react";
+import Image from "next/image";
 import { Checkbox } from "pec/components/ui/checkbox";
 import { DECIMAL_PLACES } from "pec/lib/constants";
+import type { ISourceValidatorCard } from "pec/types/validator";
+import type { FC } from "react";
+import { formatEther } from "viem";
 
 export const ValidatorCard: FC<ISourceValidatorCard> = (props) => {
   const { checked, onClick, validator } = props;
@@ -11,7 +12,7 @@ export const ValidatorCard: FC<ISourceValidatorCard> = (props) => {
 
   return (
     <div
-      className={`flex-col-3 flex w-full items-center justify-between gap-x-4 rounded-xl border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-black hover:border-indigo-500 dark:hover:border-gray-600 ${checked ? "border-indigo-500 dark:border-indigo-400" : ""}`}
+      className={`flex-col-3 flex w-full items-center justify-between gap-x-4 rounded-xl border border-gray-200 bg-white p-4 hover:border-indigo-500 dark:border-gray-800 dark:bg-black dark:hover:border-gray-600 ${checked ? "border-indigo-500 dark:border-indigo-400" : ""}`}
       onClick={onClick}
     >
       <div className="flex items-center gap-x-4">
@@ -42,7 +43,9 @@ export const ValidatorCard: FC<ISourceValidatorCard> = (props) => {
 
       <div className="flex items-center gap-1">
         <AlignLeft className="h-3 w-3 text-gray-500" />
-        <div className="text-sm">{validator.balance.toFixed(DECIMAL_PLACES)}</div>
+        <div className="text-sm">
+          {Number(formatEther(validator.balance)).toFixed(DECIMAL_PLACES)}
+        </div>
       </div>
     </div>
   );

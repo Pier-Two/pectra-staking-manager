@@ -7,7 +7,7 @@ import {
 
 export const DepositDataSchema = z.object({
   validator: ValidatorDataSchema,
-  amount: z.number().min(0, { message: "Please enter an acceptable amount" }),
+  amount: z.bigint().min(0n, { message: "Please enter an acceptable amount" }),
 });
 
 export type DepositData = z.infer<typeof DepositDataSchema>;

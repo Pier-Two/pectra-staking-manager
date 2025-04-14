@@ -6,6 +6,7 @@ import type { IDepositSignDataCard } from "pec/types/batch-deposits";
 import { AlignLeft } from "lucide-react";
 import { DECIMAL_PLACES } from "pec/lib/constants";
 import { PectraSpinner } from "pec/components/ui/custom/pectraSpinner";
+import { formatEther } from "viem";
 
 export const DepositSignDataCard: FC<IDepositSignDataCard> = ({
   deposit,
@@ -34,7 +35,9 @@ export const DepositSignDataCard: FC<IDepositSignDataCard> = ({
 
       <div className="flex flex-1 items-center gap-1">
         <AlignLeft className="h-4 w-4" />
-        <div className="text-sm">{amount.toFixed(DECIMAL_PLACES)}</div>
+        <div className="text-sm">
+          {Number(formatEther(amount)).toFixed(DECIMAL_PLACES)}
+        </div>
       </div>
 
       <div className="flex flex-1 items-center gap-1">

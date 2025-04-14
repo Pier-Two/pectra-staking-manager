@@ -1,23 +1,28 @@
-import type { FC } from "react";
 import { ChevronRight } from "lucide-react";
+import { Button } from "pec/components/ui/button";
+import type { FC } from "react";
 
 export const PectraLink: FC = () => {
   return (
-    <div className="w-[55%] overflow-auto rounded-xl bg-gradient-to-r from-[#00FFA7] via-[#5164DC] to-[#313C86] p-[1px] text-sm">
-      <a
-        href="https://ethereum.org/en/roadmap/pectra/"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="flex min-h-8 items-center rounded-xl bg-indigo-50 pb-1 pe-6 ps-6 pt-1 transition-colors hover:bg-gray-100 hover:bg-indigo-100 dark:bg-black dark:hover:bg-gray-900"
+    <div className="relative inline-block">
+      <div className="absolute inset-0 rounded-full bg-gradient-to-r from-[#00FFA7] via-[#A5B4FC] to-[#313C86]"></div>
+      <Button
+        onClick={() =>
+          window.open("https://ethereum.org/en/roadmap/pectra/", "_blank")
+        }
+        variant="outline"
+        className="relative m-[1px] !h-auto gap-x-4 rounded-full border-transparent bg-white !px-4 !py-2 hover:opacity-90 dark:bg-black"
       >
-        <div className="flex w-full flex-row justify-between">
-          <div>Pectra is here!</div>
-          <div className="flex items-center">
-            <div>Read announcement </div>
-            <ChevronRight className="h-4 w-4" />
-          </div>
+        <p className="font-570 mt-[1px] text-[13px] leading-[13px] text-zinc-950">
+          Pectra is here!
+        </p>
+        <div className="flex items-center">
+          <p className="font-570 mt-[1px] text-[13px] leading-[13px] text-zinc-950">
+            Read announcement
+          </p>
+          <ChevronRight className="h-4 w-4" />
         </div>
-      </a>
+      </Button>
     </div>
   );
 };

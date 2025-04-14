@@ -2,7 +2,7 @@ import { type Config } from "tailwindcss";
 import { fontFamily } from "tailwindcss/defaultTheme";
 
 export default {
-  darkMode: "class",
+  darkMode: ["class"],
   content: ["./src/**/*.tsx", "./.storybook/**/*.{js,ts,tsx,mdx}"],
   theme: {
     extend: {
@@ -10,10 +10,10 @@ export default {
         sans: ["var(--font-geist-sans)", ...fontFamily.sans],
         montserrat: ["var(--font-montserrat)", ...fontFamily.sans],
       },
-      borderRadius: {
-        lg: "var(--radius)",
-        md: "calc(var(--radius) - 2px)",
-        sm: "calc(var(--radius) - 4px)",
+      fontWeight: {
+        380: "300",
+        570: "500",
+        670: "570",
       },
       colors: {
         background: "hsl(var(--background))",
@@ -29,6 +29,9 @@ export default {
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
+        },
+        "primary-dark": {
+          DEFAULT: "hsl(var(--primary-dark))",
         },
         secondary: {
           DEFAULT: "hsl(var(--secondary))",
@@ -55,6 +58,16 @@ export default {
           "3": "hsl(var(--chart-3))",
           "4": "hsl(var(--chart-4))",
           "5": "hsl(var(--chart-5))",
+        },
+        sidebar: {
+          DEFAULT: "hsl(var(--sidebar-background))",
+          foreground: "hsl(var(--sidebar-foreground))",
+          primary: "hsl(var(--sidebar-primary))",
+          "primary-foreground": "hsl(var(--sidebar-primary-foreground))",
+          accent: "hsl(var(--sidebar-accent))",
+          "accent-foreground": "hsl(var(--sidebar-accent-foreground))",
+          border: "hsl(var(--sidebar-border))",
+          ring: "hsl(var(--sidebar-ring))",
         },
       },
     },

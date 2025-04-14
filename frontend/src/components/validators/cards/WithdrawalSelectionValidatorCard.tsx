@@ -1,12 +1,13 @@
 "use client";
 
-import type { FC } from "react";
+import { AlignLeft, CircleCheck, CircleMinus, CirclePlus } from "lucide-react";
 import Image from "next/image";
-import type { IWithdrawalSelectionValidatorCard } from "pec/types/withdrawal";
-import { CircleCheck, CirclePlus, AlignLeft, CircleMinus } from "lucide-react";
-import type { FieldErrors, UseFormRegister } from "react-hook-form";
 import type { WithdrawalType } from "pec/lib/api/schemas/withdrawal";
 import { DECIMAL_PLACES } from "pec/lib/constants";
+import type { IWithdrawalSelectionValidatorCard } from "pec/types/withdrawal";
+import type { FC } from "react";
+import type { FieldErrors, UseFormRegister } from "react-hook-form";
+import { formatEther } from "viem";
 
 interface ExtendedProps extends IWithdrawalSelectionValidatorCard {
   errors: FieldErrors<WithdrawalType>;
@@ -23,7 +24,7 @@ export const WithdrawalSelectionValidatorCard: FC<ExtendedProps> = ({
   validator,
 }) => {
   const { validatorIndex, publicKey, balance } = validator;
-  const locked = availableAmount === 0;
+  const locked = availableAmount === 0n;
 
   return (
     <div
@@ -71,13 +72,16 @@ export const WithdrawalSelectionValidatorCard: FC<ExtendedProps> = ({
       <div className="flex flex-1 flex-col">
         <div className="flex items-center gap-1">
           <AlignLeft className="h-4 w-4" />
-          <div className="text-sm">{balance.toFixed(DECIMAL_PLACES)}</div>
+          <div className="text-sm">
+            {Number(formatEther(balance)).toFixed(DECIMAL_PLACES)}
+          </div>
         </div>
 
         <div className="flex items-center gap-1 py-1 text-gray-700 dark:text-gray-300">
           <AlignLeft className="h-3 w-3" />
           <div className="text-sm">
-            {availableAmount.toFixed(DECIMAL_PLACES)} available
+            {Number(formatEther(availableAmount)).toFixed(DECIMAL_PLACES)}{" "}
+            available
           </div>
         </div>
       </div>
@@ -108,7 +112,7 @@ export const WithdrawalSelectionValidatorCard: FC<ExtendedProps> = ({
                       const numValue = parseFloat(value as string);
                       if (isNaN(numValue)) return 0;
                       if (numValue === 0) return 0;
-                      if (balance - numValue < 32) return undefined;
+                      if (balance - BigInt(numValue) < 32) return undefined; // TODO check decimals
                       if (numValue > availableAmount) return undefined;
                       return numValue;
                     },
@@ -128,7 +132,7 @@ export const WithdrawalSelectionValidatorCard: FC<ExtendedProps> = ({
           <div className="flex items-center gap-1">
             <AlignLeft className="h-4 w-4" />
             <input
-              className="w-full rounded-xl bg-white border-none p-2 text-sm text-gray-700 dark:border-gray-800 dark:bg-black dark:text-gray-300"
+              className="w-full rounded-xl border-none bg-white p-2 text-sm text-gray-700 dark:border-gray-800 dark:bg-black dark:text-gray-300"
               disabled
               type="number"
               value={0}

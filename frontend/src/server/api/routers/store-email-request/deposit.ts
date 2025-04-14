@@ -1,5 +1,7 @@
 import axios, { type AxiosResponse } from "axios";
 import { chunk, groupBy } from "lodash";
+import { getBeaconChainURL } from "pec/constants/beaconchain";
+import { env } from "pec/env";
 import { BEACONCHAIN_OK_STATUS, CHUNK_SIZE } from "pec/lib/constants";
 import type { Deposit } from "pec/lib/database/classes/deposit";
 import { DepositModel } from "pec/lib/database/models";
@@ -87,7 +89,7 @@ export const processDeposits = async (): Promise<IResponse> => {
         .join(",");
 
       const response = await axios.get<DepositResponse>(
-        `https://beaconcha.in/api/v1/validator/${validatorIndexString}/deposits`,
+        `${getBeaconChainURL()}api/v1/validator/${validatorIndexString}/deposits?apikey=${env.BEACONCHAIN_API_KEY}`,
       );
 
       if (!isResponseValid(response))

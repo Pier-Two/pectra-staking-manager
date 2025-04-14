@@ -1,34 +1,20 @@
+import { z } from "zod";
 import type {
   EDistributionMethod,
   IBatchDepositValidators,
 } from "./batch-deposits";
+import {
+  TransactionSchema,
+  ValidatorDataSchema,
+} from "pec/lib/api/schemas/validator";
 
-export interface ValidatorDetails {
-  validatorIndex: number;
-  publicKey: string;
-  withdrawalAddress: string;
-  balance: number;
-  effectiveBalance: number;
-  status: ValidatorStatus;
-  numberOfWithdrawals: number;
-  activeSince: string;
-  activeDuration: string;
-  withdrawalTransaction: Transaction | undefined;
-  consolidationTransaction: Transaction | undefined;
-  depositTransaction: Transaction | undefined;
-}
+export type ValidatorDetails = z.infer<typeof ValidatorDataSchema>;
 
-interface Transaction {
-  hash: string;
-  status: TransactionStatus;
-}
-
-export type ValidatorDetailsResponse = Omit<
-  ValidatorDetails,
-  "transactionStatus" | "transactionHash"
->;
+export type Transaction = z.infer<typeof TransactionSchema>;
 
 export interface IConnector {
+  title: string;
+  description?: string;
   connectedAddress: string;
   textAlignment: "left" | "center";
   validators: ValidatorDetails[];
@@ -59,25 +45,19 @@ export interface IValidatorCard {
   onClick?: () => void;
 }
 
-export interface ITransactionValidatorCard {
-  status: TransactionStatus;
-  transactionHash: string;
-  validator: ValidatorDetails;
-}
-
 export interface IBatchDepositValidatorCard {
   clearedSelectedValidators: boolean;
-  depositAmount: number;
+  depositAmount: bigint;
   distributionMethod: EDistributionMethod;
   selected: boolean;
   setClearedSelectedValidators: (cleared: boolean) => void;
-  totalAllocated: number;
+  totalAllocated: bigint;
   totalToDistribute: number;
   validator: ValidatorDetails;
   onClick: (
     validator: ValidatorDetails,
     distributionMethod: EDistributionMethod,
-    depositAmount: number,
+    depositAmount: bigint,
   ) => void;
   onDepositChange: (validator: IBatchDepositValidators) => void;
 }

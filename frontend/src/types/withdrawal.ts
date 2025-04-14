@@ -12,7 +12,7 @@ export interface IWithdrawalInformation {
 }
 
 export interface IWithdrawalSelectionValidatorCard {
-  availableAmount: number;
+  availableAmount: bigint;
   handleSelect: () => void;
   index: number;
   selected: boolean;

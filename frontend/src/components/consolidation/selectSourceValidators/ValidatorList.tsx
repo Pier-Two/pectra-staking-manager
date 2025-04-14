@@ -1,11 +1,31 @@
 "use client";
 
-import type { FC } from "react";
+import { useConsolidationStore } from "pec/hooks/use-consolidation-store";
 import type { ISourceValidatorList } from "pec/types/consolidation";
+import { type ValidatorDetails } from "pec/types/validator";
+import { type FC } from "react";
 import { ValidatorCard } from "./ValidatorCard";
 
 export const ValidatorList: FC<ISourceValidatorList> = (props) => {
-  const { sourceValidators, setSourceValidators, validators } = props;
+  const { validators } = props;
+
+  const { validatorsToConsolidate, bulkSetConsolidationTargets } =
+    useConsolidationStore();
+
+  const handleValidatorClicked = (validator: ValidatorDetails) => {
+    const isSelected = validatorsToConsolidate
+      .map((item) => item.validatorIndex)
+      .includes(validator.validatorIndex);
+
+    if (isSelected) {
+      const updatedValidators = validatorsToConsolidate.filter(
+        (v) => v.validatorIndex !== validator.validatorIndex,
+      );
+      bulkSetConsolidationTargets(updatedValidators);
+    } else {
+      bulkSetConsolidationTargets([...validatorsToConsolidate, validator]);
+    }
+  };
 
   return (
     <div className="flex flex-col items-center gap-2">
@@ -16,7 +36,7 @@ export const ValidatorList: FC<ISourceValidatorList> = (props) => {
           </div>
         </div>
 
-        <div className="text-sm text-gray-700 dark:text-gray-300 ms-14">
+        <div className="ms-14 text-sm text-gray-700 dark:text-gray-300">
           Credential
         </div>
 
@@ -29,9 +49,11 @@ export const ValidatorList: FC<ISourceValidatorList> = (props) => {
 
       {validators.map((validator, index) => (
         <ValidatorCard
-          checked={sourceValidators.includes(validator)}
+          checked={validatorsToConsolidate
+            .map((item) => item.validatorIndex)
+            .includes(validator.validatorIndex)}
           key={`validator-${validator.validatorIndex}-${index}`}
-          onClick={() => setSourceValidators(validator)}
+          onClick={() => handleValidatorClicked(validator)}
           validator={validator}
         />
       ))}
