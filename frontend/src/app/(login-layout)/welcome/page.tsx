@@ -52,7 +52,7 @@ const Welcome: FC = () => {
             <ConnectWalletButton className="!w-[420px] !max-w-[90vw]" />
           )}
         </div>
-      </div>
+    </div>
 
       <Footer />
     </div>
