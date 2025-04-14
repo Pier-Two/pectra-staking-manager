@@ -24,8 +24,8 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className={cn(GeistSans.variable, montserrat.variable)}>
-      <TRPCReactProvider>
-        <NetworkContextProvider>
+      <NetworkContextProvider>
+        <TRPCReactProvider>
           <body>
             <SidebarProvider>
               <div className="md:hidden">
@@ -34,8 +34,8 @@ export default function RootLayout({
               <main>{children}</main>
             </SidebarProvider>
           </body>
-        </NetworkContextProvider>
-      </TRPCReactProvider>
+        </TRPCReactProvider>
+      </NetworkContextProvider>
     </html>
   );
 }

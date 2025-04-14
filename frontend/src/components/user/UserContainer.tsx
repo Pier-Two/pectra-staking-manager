@@ -1,5 +1,3 @@
-"use client";
-
 import type { FC } from "react";
 import { api } from "pec/trpc/react";
 import { useWalletAddress } from "pec/hooks/useWallet";
@@ -21,7 +19,7 @@ export const UserContainer: FC<{
     <UserModal
       open={open}
       setOpen={setOpen}
-      address={walletAddress ?? ""}
+      address={walletAddress}
       email={user.email ?? ""}
       firstName={user.firstName ?? ""}
       lastName={user.lastName ?? ""}

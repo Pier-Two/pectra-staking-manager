@@ -1,10 +1,10 @@
 import { HOODI_CHAIN_DETAILS } from "pec/constants/chain";
 import { client } from "pec/lib/wallet/client";
 import { getRpcClient } from "thirdweb";
-import { useActiveWalletChain } from "thirdweb/react";
+import { useActiveChainWithDefault } from "./useChain";
 
 export const useRpcClient = () => {
-  const chain = useActiveWalletChain();
+  const chain = useActiveChainWithDefault();
 
   if (!chain) return null;
 
