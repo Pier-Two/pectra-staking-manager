@@ -2,10 +2,11 @@ import axios from "axios";
 import { env } from "pec/env";
 import type { IResponse } from "pec/types/response";
 import { generateErrorResponse } from "../utils";
+import { EmailNames } from "pec/types/emails";
+import { UserType } from "../api/schemas/database/user";
 
 export const createContact = async (email: string): Promise<IResponse> => {
   try {
-    // TODO: What is schema here for passing first name last name and company name
     const payload = {
       properties: {
         emailAddress: email,
@@ -33,12 +34,14 @@ export const createContact = async (email: string): Promise<IResponse> => {
 };
 
 export const sendEmailNotification = async (
-  email: string,
+  emailName: EmailNames,
+  metadata: UserType & { txHash: string },
 ): Promise<IResponse> => {
   try {
     const payload = {
       properties: {
-        emailName: email,
+        emailName,
+        metadata,
       },
     };
 
