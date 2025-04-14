@@ -30,7 +30,7 @@ export const ConnectWalletButton = ({ className }: StyleableComponent) => {
   const { data: ensAvatar } = useEnsAvatar({ client, ensName });
   
   
-  // This is to prevent the component from rendering on the server can causing hydration errors from the dynamic theme styling
+  // This is to prevent the component from rendering on the server causing hydration errors from the dynamic theme styling
   useEffect(() => {
     setIsMounted(true);
   }, []);
@@ -53,7 +53,7 @@ export const ConnectWalletButton = ({ className }: StyleableComponent) => {
       }}
       theme={darkMode ? "dark" : "light"}
 
-      // Details Button ---- using a custom Component because matching the mocked styling is not possible
+      // Details Button ---- Using a custom Component because matching the mocked styling with default className is not possible
       detailsButton={{
         render: () => {
           return (
