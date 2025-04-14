@@ -99,9 +99,6 @@ export const useSubmitConsolidate = () => {
           value: feeData,
           data: callData as `0x${string}`,
           chainId: HOODI_CHAIN_DETAILS.id, // TODO make dynamic
-          gasLimit: 200000n, // Fixed gas limit of 200,000
-          gasPrice: 3600798353n,
-          maxFeePerGas: 5000798353n,
         });
 
         // wait for the tx to be confirmed
