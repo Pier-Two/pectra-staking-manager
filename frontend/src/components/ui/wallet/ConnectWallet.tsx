@@ -5,6 +5,23 @@ import { client, wallets } from "pec/lib/wallet/client";
 import type { StyleableComponent } from "pec/types/components";
 import { clsx } from "clsx";
 import { useRouter } from "next/navigation";
+import { defineChain, mainnet } from "thirdweb/chains";
+
+const hoodiChain = defineChain({
+  id: 560048,
+  rpc: "https://0xrpc.io/hoodi",
+  blockExplorers: [
+    {
+      name: "Hoodiscan",
+      url: "https://hoodi.etherscan.io/",
+    },
+  ],
+  nativeCurrency: {
+    name: "Ether",
+    symbol: "ETH",
+    decimals: 18,
+  },
+});
 
 export const ConnectWalletButton = ({ className }: StyleableComponent) => {
   const router = useRouter();
@@ -14,11 +31,12 @@ export const ConnectWalletButton = ({ className }: StyleableComponent) => {
       connectButton={{
         label: "Connect Wallet",
         className: clsx(
-          "!w-full !rounded-full !bg-indigo-500 !hover:bg-indigo-400 !text-white",
+          "!w-full !rounded-full !bg-indigo-500 !hover:bg-indigo-400 !text-white !text-xs !py-2 !h-auto",
           className,
         ),
       }}
       autoConnect
+      chains={[hoodiChain, mainnet]}
       client={client}
       wallets={wallets}
       connectModal={{
@@ -28,39 +46,6 @@ export const ConnectWalletButton = ({ className }: StyleableComponent) => {
       onDisconnect={() => {
         router.push("/welcome");
       }}
-
-      // auth={{
-      //   isLoggedIn: async (address) => {
-      //     console.log("checking if logged in!", { address });
-      //     try {
-      //       console.log("About to call isLoggedIn function");
-      //       const result = await isLoggedIn();
-      //       console.log("isLoggedIn function returned:", result);
-      //       return result.isValid;
-      //     } catch (error) {
-      //       console.error("Error calling isLoggedIn:", error);
-      //       return false;
-      //     }
-      //   },
-      //   doLogin: async (params) => {
-      //     console.log("logging in!");
-      //     await login(params);
-      //     // Invalidate the user query after login
-      //     await queryClient.invalidateQueries({
-      //       queryKey: [GetUserQueryKey],
-      //     });
-      //   },
-      //   getLoginPayload: async ({ address }) => generatePayload({ address }),
-      //   doLogout: async () => {
-      //     console.log("logging out!");
-      //     await logout();
-      //     // Invalidate the user query after logout
-      //     await queryClient.invalidateQueries({
-      //       queryKey: [GetUserQueryKey],
-      //     });
-      //     router.push("/");
-      //   },
-      // }}
     />
   );
 };

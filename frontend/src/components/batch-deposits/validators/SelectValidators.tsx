@@ -62,7 +62,7 @@ export const SelectValidators: FC<ExtendedProps> = ({
     <>
       <ValidatorHeader
         selectedCount={selectedValidators.length}
-        totalCount={validators.length}
+        totalCount={validators?.length ?? 0}
         onClear={handleClearValidators}
       />
 
@@ -75,11 +75,11 @@ export const SelectValidators: FC<ExtendedProps> = ({
         />
 
         <div className="flex w-full flex-col gap-y-2">
-          {sortedValidators.map((validator, index) => (
+          {sortedValidators?.map((validator, index) => (
             <DepositSelectionValidatorCard
               key={`depositValidator-${validator.validatorIndex}-${index}`}
               index={index}
-              depositAmount={watchedDeposits[index]?.amount ?? 0}
+              depositAmount={watchedDeposits[index]?.amount ?? BigInt(0)}
               errors={errors}
               handleSelect={() => handleValidatorSelect(validator)}
               register={register}

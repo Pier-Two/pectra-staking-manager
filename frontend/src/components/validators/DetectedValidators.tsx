@@ -1,11 +1,12 @@
 "use client";
 
-import { type FC, useState } from "react";
-import Image from "next/image";
-import type { IDetectedValidators } from "pec/types/validator";
 import { AlignLeft, ChevronsLeftRight } from "lucide-react";
-import { ValidatorCard } from "./cards/ValidatorCard";
+import Image from "next/image";
 import { DECIMAL_PLACES } from "pec/lib/constants";
+import type { IDetectedValidators } from "pec/types/validator";
+import { type FC, useState } from "react";
+import { formatEther } from "viem";
+import { ValidatorCard } from "./cards/ValidatorCard";
 
 export const DetectedValidators: FC<IDetectedValidators> = (props) => {
   const { cardTitle, validators } = props;
@@ -14,7 +15,7 @@ export const DetectedValidators: FC<IDetectedValidators> = (props) => {
 
   const totalBalance = validators.reduce(
     (acc, validator) => acc + validator.balance,
-    0,
+    0n,
   );
 
   return (
@@ -30,20 +31,24 @@ export const DetectedValidators: FC<IDetectedValidators> = (props) => {
             width={24}
             height={24}
           />
-          <div className="text-md">{validators.length} {cardTitle}</div>
+          <div className="text-sm">
+            {validators.length} {cardTitle}
+          </div>
         </div>
 
         <div className="flex items-center gap-2">
           <div className="flex items-center gap-1">
             <AlignLeft className="h-3 w-3 text-gray-500 dark:text-white" />
-            <span>{totalBalance.toFixed(DECIMAL_PLACES)}</span>
+            <span>
+              {Number(formatEther(totalBalance)).toFixed(DECIMAL_PLACES)}
+            </span>
           </div>
           <ChevronsLeftRight className="h-5 w-5 rotate-90 text-gray-800 dark:text-white" />
         </div>
       </div>
 
       {showValidators && (
-        <div className="flex w-full flex-col items-center gap-2 mt-2">
+        <div className="mt-2 flex w-full flex-col items-center gap-2">
           {validators.map((validator, index) => (
             <ValidatorCard
               key={index + validator.validatorIndex}

@@ -5,11 +5,11 @@ import type { DepositType } from "pec/lib/api/schemas/deposit";
 
 export interface IBatchDepositValidators {
   validator: ValidatorDetails;
-  amount: number;
+  amount: bigint;
 }
 
 export interface IDepositWorkflowProps {
-  data: ValidatorDetails[];
+  data?: ValidatorDetails[];
   balance: number;
 }
 export interface IDistributionInformation {
@@ -20,7 +20,7 @@ export interface IDistributionInformation {
   selectedValidators: ValidatorDetails[];
   stage: EBatchDepositStage;
   setValue?: UseFormSetValue<DepositType>;
-  totalAllocated: number;
+  totalAllocated: bigint;
   totalToDistribute: number;
 }
 
@@ -40,7 +40,7 @@ export interface IBatchDepositState {
   distributionMethod: EDistributionMethod;
   selectedValidators: IBatchDepositValidators[];
   totalToDistribute: number;
-  totalAllocated: number;
+  totalAllocated: bigint;
 }
 
 export interface IDistributionMethodProps {
@@ -52,7 +52,7 @@ export interface IDistributionMethodProps {
   selectedValidators: ValidatorDetails[];
   stage: EBatchDepositStage;
   setValue: UseFormSetValue<DepositType>;
-  totalAllocated: number;
+  totalAllocated: bigint;
   totalToDistribute: number;
   walletBalance: number;
 }
@@ -62,10 +62,10 @@ export interface ISelectValidatorsProps {
   distributionMethod: EDistributionMethod;
   handleValidatorSelect: (validator: ValidatorDetails) => void;
   selectedValidators: ValidatorDetails[];
-  totalAllocated: number;
+  totalAllocated: bigint;
   totalToDistribute: number;
   watchedDeposits: IBatchDepositValidators[];
-  validators: ValidatorDetails[];
+  validators?: ValidatorDetails[];
 }
 
 export interface IValidatorHeaderProps {
@@ -77,11 +77,11 @@ export interface IValidatorHeaderProps {
 
 export interface IDepositSelectionValidatorCard {
   distributionMethod: EDistributionMethod;
-  depositAmount: number;
+  depositAmount: bigint;
   handleSelect: () => void;
   index: number;
   selected: boolean;
-  totalAllocated: number;
+  totalAllocated: bigint;
   totalToDistribute: number;
   validator: ValidatorDetails;
 }
@@ -109,7 +109,7 @@ export interface ISignatureDetails {
 export interface IDepositList {
   deposits: IBatchDepositValidators[];
   resetBatchDeposit: () => void;
-  totalAllocated: number;
+  totalAllocated: bigint;
   totalToDistribute: number;
 }
 

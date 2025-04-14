@@ -1,10 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState, type FC } from "react";
-import type { ISelectSourceValidators } from "pec/types/consolidation";
-import { ValidatorCard } from "pec/components/validators/cards/ValidatorCard";
-import type { ValidatorDetails } from "pec/types/validator";
-import { ValidatorList } from "./ValidatorList";
+import { AlignLeft, Pencil, Zap } from "lucide-react";
 import { PrimaryButton } from "pec/components/ui/custom/PrimaryButton";
 import { SecondaryButton } from "pec/components/ui/custom/SecondaryButton";
 import {
@@ -13,61 +9,83 @@ import {
   TabsList,
   TabsTrigger,
 } from "pec/components/ui/tabs";
+import { ValidatorCard } from "pec/components/validators/cards/ValidatorCard";
 import { DetectedValidators } from "pec/components/validators/DetectedValidators";
-import { AlignLeft, Pencil, Zap } from "lucide-react";
-import { EIconPosition } from "pec/types/components";
+import { useConsolidationStore } from "pec/hooks/use-consolidation-store";
+import { useWalletAddress } from "pec/hooks/useWallet";
 import { DECIMAL_PLACES } from "pec/lib/constants";
+import { api } from "pec/trpc/react";
+import { EIconPosition } from "pec/types/components";
+import type { ValidatorDetails } from "pec/types/validator";
+import { useEffect, useMemo, useState } from "react";
+import { formatEther } from "viem";
+import { ValidatorList } from "./ValidatorList";
 
-export const SelectSourceValidators: FC<ISelectSourceValidators> = (props) => {
+export const SelectSourceValidators = () => {
   const {
-    destinationValidator,
+    consolidationTarget,
+    setConsolidationTarget,
     setProgress,
-    setSelectedDestinationValidator,
-    selectedSourceValidators,
-    setSelectedSourceValidators,
-    validators,
-  } = props;
+    bulkSetConsolidationTargets,
+    validatorsToConsolidate,
+    addValidatorToConsolidate,
+  } = useConsolidationStore();
+
+  const walletAddress = useWalletAddress();
 
   const [activeTab, setActiveTab] = useState<string>("maxConsolidate");
 
+  const { data: validators } = api.validators.getValidators.useQuery(
+    {
+      address: walletAddress || "",
+    },
+    { enabled: !!walletAddress },
+  );
+
   const availableSourceValidators = useMemo(() => {
-    return validators.filter(
+    return validators?.filter(
       (validator) =>
-        validator.validatorIndex !== destinationValidator.validatorIndex,
+        validator.validatorIndex !== consolidationTarget?.validatorIndex &&
+        validator.consolidationTransaction?.isConsolidatedValidator !== false,
     );
-  }, [validators, destinationValidator]);
+  }, [validators, consolidationTarget]);
 
   useEffect(() => {
-    if (activeTab === "maxConsolidate")
-      setSelectedSourceValidators(availableSourceValidators);
+    if (
+      activeTab === "maxConsolidate" &&
+      validatorsToConsolidate?.length === 0
+    ) {
+      if (availableSourceValidators) {
+        bulkSetConsolidationTargets(availableSourceValidators);
+      }
+    }
+  }, [
+    activeTab,
+    availableSourceValidators,
+    bulkSetConsolidationTargets,
+    validatorsToConsolidate?.length,
+  ]);
 
-    if (activeTab === "manuallySelect") setSelectedSourceValidators([]);
-  }, [activeTab, availableSourceValidators, setSelectedSourceValidators]);
-
-  const handleResetDestinationValidator = () => {
-    setSelectedDestinationValidator(null);
+  const handleResetConsolidationTarget = () => {
+    setConsolidationTarget(undefined);
     setProgress(1);
   };
 
   const handleConsolidationProgression = () => {
-    if (selectedSourceValidators.length > 0) setProgress(3);
+    if (validatorsToConsolidate?.length > 0) setProgress(3);
   };
 
   const handleSourceValidatorSelection = (validator: ValidatorDetails) => {
-    if (selectedSourceValidators.includes(validator))
-      setSelectedSourceValidators(
-        selectedSourceValidators.filter((v) => v !== validator),
-      );
-    else setSelectedSourceValidators([...selectedSourceValidators, validator]);
+    addValidatorToConsolidate(validator);
   };
 
   const newDestinationBalance = useMemo(() => {
     return (
-      selectedSourceValidators.reduce((acc, validator) => {
+      validatorsToConsolidate.reduce((acc, validator) => {
         return acc + validator.balance;
-      }, 0) + destinationValidator.balance
+      }, 0n) + (consolidationTarget?.balance ?? 0n)
     );
-  }, [selectedSourceValidators, destinationValidator]);
+  }, [validatorsToConsolidate, consolidationTarget]);
 
   return (
     <div className="space-y-6">
@@ -84,19 +102,21 @@ export const SelectSourceValidators: FC<ISelectSourceValidators> = (props) => {
           <div className="text-md font-medium">Destination validator</div>
 
           <div className="flex flex-col items-center justify-center gap-4">
-            <ValidatorCard
-              hasBackground={true}
-              hasHover={false}
-              shrink={false}
-              validator={destinationValidator}
-            />
+            {consolidationTarget && (
+              <ValidatorCard
+                hasBackground={true}
+                hasHover={false}
+                shrink={false}
+                validator={consolidationTarget}
+              />
+            )}
 
             <SecondaryButton
               className="w-full"
               label="Change destination"
               icon={<Pencil className="h-4 w-4" />}
               iconPosition={EIconPosition.LEFT}
-              onClick={() => handleResetDestinationValidator()}
+              onClick={() => handleResetConsolidationTarget()}
               disabled={false}
             />
           </div>
@@ -112,15 +132,19 @@ export const SelectSourceValidators: FC<ISelectSourceValidators> = (props) => {
       >
         <TabsList className="grid w-full grid-cols-2 rounded-xl bg-gray-200 dark:bg-gray-900">
           <TabsTrigger
-            className="rounded-xl data-[state=active]:bg-white text-gray-800 data-[state=active]:text-indigo-800 dark:data-[state=active]:text-black"
+            className="rounded-xl text-gray-800 data-[state=active]:bg-white data-[state=active]:text-indigo-800 dark:data-[state=active]:text-black"
             value="maxConsolidate"
+            onClick={() =>
+              bulkSetConsolidationTargets(availableSourceValidators ?? [])
+            }
           >
             Max consolidate
           </TabsTrigger>
 
           <TabsTrigger
-            className="rounded-xl data-[state=active]:bg-white text-gray-800 data-[state=active]:text-indigo-800 dark:data-[state=active]:text-black"
+            className="rounded-xl text-gray-800 data-[state=active]:bg-white data-[state=active]:text-indigo-800 dark:data-[state=active]:text-black"
             value="manuallySelect"
+            onClick={() => bulkSetConsolidationTargets([])}
           >
             Manually select
           </TabsTrigger>
@@ -129,26 +153,32 @@ export const SelectSourceValidators: FC<ISelectSourceValidators> = (props) => {
         <TabsContent value="maxConsolidate">
           <DetectedValidators
             cardTitle="selected"
-            validators={availableSourceValidators}
+            validators={validatorsToConsolidate}
           />
         </TabsContent>
 
         <TabsContent value="manuallySelect">
-          <ValidatorList
-            sourceValidators={selectedSourceValidators}
-            setSourceValidators={handleSourceValidatorSelection}
-            validators={availableSourceValidators}
-          />
+          {availableSourceValidators && (
+            <ValidatorList
+              sourceValidators={validatorsToConsolidate}
+              setSourceValidators={handleSourceValidatorSelection}
+              validators={availableSourceValidators}
+            />
+          )}
         </TabsContent>
       </Tabs>
 
-      <div className="flex flex-row items-center justify-center gap-2 text-gray-600 dark:text-gray-400 text-sm">
+      <div className="flex flex-row items-center justify-center gap-2 text-sm text-gray-600 dark:text-gray-400">
         <Zap className="h-4 w-4 fill-indigo-500 text-indigo-500" />
         <div>New destination balance:</div>
 
         <div className="flex items-center gap-1 text-black dark:text-white">
           <AlignLeft className="h-3 w-3" />
-          <span>{newDestinationBalance.toFixed(DECIMAL_PLACES)} /</span>
+          <span>
+            {Number(formatEther(newDestinationBalance)).toFixed(
+              DECIMAL_PLACES,
+            )}{" "}
+          </span>
         </div>
 
         <div className="flex items-center gap-1">
@@ -161,7 +191,7 @@ export const SelectSourceValidators: FC<ISelectSourceValidators> = (props) => {
         className="w-full"
         label="Next"
         onClick={() => handleConsolidationProgression()}
-        disabled={selectedSourceValidators.length === 0}
+        disabled={validatorsToConsolidate.length === 0}
       />
     </div>
   );

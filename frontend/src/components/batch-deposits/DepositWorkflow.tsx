@@ -1,36 +1,36 @@
 "use client";
 
-import type { FC } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { ArrowDownToDot } from "lucide-react";
+import { useContracts } from "pec/hooks/useContracts";
 import { DepositSchema, type DepositType } from "pec/lib/api/schemas/deposit";
+import type { IDepositWorkflowProps } from "pec/types/batch-deposits";
 import {
+  EBatchDepositStage,
   EDistributionMethod,
   type IBatchDepositValidators,
 } from "pec/types/batch-deposits";
-import { EBatchDepositStage } from "pec/types/batch-deposits";
-import type { IDepositWorkflowProps } from "pec/types/batch-deposits";
 import type { ValidatorDetails } from "pec/types/validator";
+import type { FC } from "react";
 import { useFieldArray, useForm, useWatch } from "react-hook-form";
-import { SignatureDetails } from "./SignatureDetails";
-import { ArrowDownToDot } from "lucide-react";
 import { DistributionMethod } from "./distribution/DistributionMethod";
-import { SelectValidators } from "./validators/SelectValidators";
+import { SignatureDetails } from "./SignatureDetails";
 import { DepositList } from "./validators/DepositList";
-import { useContracts } from "pec/hooks/useContracts";
+import { SelectValidators } from "./validators/SelectValidators";
 
 export const DepositWorkflow: FC<IDepositWorkflowProps> = ({
   data,
   balance,
 }) => {
-  const {} = useContracts();
   const initialValues: DepositType = {
     selectedValidators: [],
     stage: EBatchDepositStage.DATA_CAPTURE,
-    deposits:
-      data?.map((validator) => ({
-        validator,
-        amount: 0,
-      })) ?? [],
+    deposits: data
+      ? data?.map((validator) => ({
+          validator,
+          amount: 0n,
+        }))
+      : [],
     totalToDistribute: 0,
     distributionMethod: EDistributionMethod.SPLIT,
   };
@@ -84,15 +84,15 @@ export const DepositWorkflow: FC<IDepositWorkflowProps> = ({
   });
 
   const totalAllocated = watchedDeposits.reduce(
-    (acc, curr) => acc + (curr.amount ?? 0),
-    0,
+    (acc, curr) => acc + (curr.amount ?? 0n),
+    0n,
   );
 
   const shouldBeDisabled =
-    totalAllocated !== totalToDistribute ||
+    totalAllocated !== BigInt(totalToDistribute) ||
     totalAllocated > totalToDistribute ||
     totalToDistribute === 0 ||
-    totalAllocated === 0;
+    totalAllocated === 0n;
 
   const handleDistributionMethodChange = (method: EDistributionMethod) => {
     setValue("distributionMethod", method);
@@ -105,10 +105,12 @@ export const DepositWorkflow: FC<IDepositWorkflowProps> = ({
     setValue("totalToDistribute", 0);
     setValue(
       "deposits",
-      data.map((validator) => ({
-        validator,
-        amount: 0,
-      })),
+      data
+        ? data.map((validator) => ({
+            validator,
+            amount: BigInt(0),
+          }))
+        : [],
     );
   };
 
@@ -125,7 +127,7 @@ export const DepositWorkflow: FC<IDepositWorkflowProps> = ({
       const isCurrentValidator =
         deposit.validator.validatorIndex === selectedValidator.validatorIndex;
 
-      if (!isAdding && isCurrentValidator) return { ...deposit, amount: 0 };
+      if (!isAdding && isCurrentValidator) return { ...deposit, amount: 0n };
 
       const isSelected = watchedSelectedValidators.some(
         (v) => v.validatorIndex === deposit.validator.validatorIndex,
@@ -134,7 +136,9 @@ export const DepositWorkflow: FC<IDepositWorkflowProps> = ({
       return {
         ...deposit,
         amount:
-          isSelected || (isAdding && isCurrentValidator) ? splitAmount : 0,
+          isSelected || (isAdding && isCurrentValidator)
+            ? BigInt(splitAmount)
+            : 0n,
       };
     });
   };
@@ -146,7 +150,7 @@ export const DepositWorkflow: FC<IDepositWorkflowProps> = ({
       ...deposit,
       amount:
         deposit.validator.validatorIndex === selectedValidator.validatorIndex
-          ? 0
+          ? 0n
           : deposit.amount,
     }));
   };
@@ -223,9 +227,7 @@ export const DepositWorkflow: FC<IDepositWorkflowProps> = ({
                   onDistributionMethodChange={handleDistributionMethodChange}
                   onSubmit={handleSubmit((data) => onSubmit(data, true))}
                   resetBatchDeposit={handleResetBatchDeposit}
-                  selectedValidators={
-                    watchedSelectedValidators as ValidatorDetails[]
-                  }
+                  selectedValidators={watchedSelectedValidators}
                   stage={stage}
                   setValue={setValue}
                   totalAllocated={totalAllocated}
@@ -242,14 +244,10 @@ export const DepositWorkflow: FC<IDepositWorkflowProps> = ({
                     clearSelectedValidators={handleClearValidators}
                     distributionMethod={watchedDistributionMethod}
                     handleValidatorSelect={handleValidatorSelect}
-                    selectedValidators={
-                      watchedSelectedValidators as ValidatorDetails[]
-                    }
+                    selectedValidators={watchedSelectedValidators}
                     totalAllocated={totalAllocated}
                     totalToDistribute={totalToDistribute}
-                    watchedDeposits={
-                      watchedDeposits as IBatchDepositValidators[]
-                    }
+                    watchedDeposits={watchedDeposits}
                     validators={data}
                   />
                 )}

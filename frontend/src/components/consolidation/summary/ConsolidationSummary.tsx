@@ -1,36 +1,41 @@
-import type { FC } from "react";
-import type { IConsolidationSummary } from "pec/types/consolidation";
-import { ValidatorCard } from "pec/components/validators/cards/ValidatorCard";
-import { DetectedValidators } from "pec/components/validators/DetectedValidators";
-import { Overview } from "./Overview";
-import { Email } from "./Email";
+"use client";
+
+import { Pencil } from "lucide-react";
 import { PrimaryButton } from "pec/components/ui/custom/PrimaryButton";
 import { SecondaryButton } from "pec/components/ui/custom/SecondaryButton";
-import { Pencil } from "lucide-react";
+import { ValidatorCard } from "pec/components/validators/cards/ValidatorCard";
+import { DetectedValidators } from "pec/components/validators/DetectedValidators";
+import { useConsolidationStore } from "pec/hooks/use-consolidation-store";
 import { EIconPosition } from "pec/types/components";
+import { Email } from "./Email";
+import { Overview } from "./Overview";
+import { useSubmitConsolidate } from "pec/hooks/use-consolidation";
 
-export const ConsolidationSummary: FC<IConsolidationSummary> = (props) => {
+export const ConsolidationSummary = () => {
   const {
-    destinationValidator,
-    setSelectedDestinationValidator,
-    setSelectedSourceValidators,
-    sourceValidators,
-    setProgress,
     summaryEmail,
     setSummaryEmail,
-  } = props;
+    bulkSetConsolidationTargets,
+    validatorsToConsolidate,
+    reset,
+    consolidationTarget,
+    setProgress,
+  } = useConsolidationStore();
 
   const handleResetDestinationValidator = () => {
-    setSelectedDestinationValidator(null);
+    reset();
     setProgress(1);
   };
 
-  const handleGenerateTransactions = () => {
+  const { mutateAsync: submitConsolidationTx } = useSubmitConsolidate();
+
+  const handleGenerateTransactions = async () => {
     setProgress(4);
+    await submitConsolidationTx();
   };
 
   const handleResetSourceValidators = () => {
-    setSelectedSourceValidators([]);
+    bulkSetConsolidationTargets([]);
     setProgress(2);
   };
 
@@ -53,7 +58,7 @@ export const ConsolidationSummary: FC<IConsolidationSummary> = (props) => {
               hasBackground={true}
               hasHover={false}
               shrink={false}
-              validator={destinationValidator}
+              validator={consolidationTarget!}
             />
 
             <SecondaryButton
@@ -72,7 +77,7 @@ export const ConsolidationSummary: FC<IConsolidationSummary> = (props) => {
         <div className="text-md font-medium">Source validators</div>
         <DetectedValidators
           cardTitle="selected"
-          validators={sourceValidators}
+          validators={validatorsToConsolidate}
         />
 
         <SecondaryButton
@@ -87,10 +92,7 @@ export const ConsolidationSummary: FC<IConsolidationSummary> = (props) => {
 
       <div className="space-y-2">
         <div className="text-md font-medium">Summary</div>
-        <Overview
-          destinationValidator={destinationValidator}
-          sourceValidators={sourceValidators}
-        />
+        <Overview />
 
         <Email
           cardText="Add your email to receive an email when your consolidation is complete."
@@ -109,7 +111,7 @@ export const ConsolidationSummary: FC<IConsolidationSummary> = (props) => {
         />
 
         <div className="text-center text-sm text-gray-700 dark:text-gray-300">
-          You will be required to sign {sourceValidators.length + 1}{" "}
+          You will be required to sign {validatorsToConsolidate.length + 1}{" "}
           consolidation transactions.
         </div>
       </div>

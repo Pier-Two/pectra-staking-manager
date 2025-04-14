@@ -1,3 +1,5 @@
+"use client";
+
 import { useRouter } from "next/navigation";
 import {
   DropdownMenu,
@@ -39,7 +41,7 @@ export const Tools = () => {
           </div>
         </DropdownMenuTrigger>
 
-        <DropdownMenuContent className="rounded-xl bg-white p-8 border:indigo-200 dark:bg-black dark:border-gray-800 shadow-lg">
+        <DropdownMenuContent className="border:indigo-200 rounded-xl bg-white p-8 shadow-lg dark:border-gray-800 dark:bg-black">
           <div className="flex flex-col gap-6">
             <DropdownMenuItem>
               <div
