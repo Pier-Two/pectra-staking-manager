@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { TransactionValidatorCard } from "./TransactionValidatorCard";
-import { TransactionStatus } from "pec/types/validator";
 import { MOCK_VALIDATORS } from "pec/server/__mocks__/validators";
 
 // More on how to set up stories at: https://storybook.js.org/docs/writing-stories#default-export
@@ -23,8 +22,6 @@ type Story = StoryObj<typeof meta>;
 // More on writing stories with args: https://storybook.js.org/docs/writing-stories/args
 export const Primary: Story = {
   args: {
-    status: TransactionStatus.SUBMITTED,
-    transactionHash: "0x1234567890abcdef",
     validator: MOCK_VALIDATORS[0]!,
   },
 };

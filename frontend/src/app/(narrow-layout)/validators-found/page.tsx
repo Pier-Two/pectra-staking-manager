@@ -3,6 +3,7 @@
 import { ArrowRightIcon } from "lucide-react";
 import Link from "next/link";
 import { PrimaryButton } from "pec/components/ui/custom/PrimaryButton";
+import { Button } from "pec/components/ui/button";
 import { SecondaryButton } from "pec/components/ui/custom/SecondaryButton";
 import { Connector } from "pec/components/validators/Connector";
 import { useWalletAddress } from "pec/hooks/useWallet";
@@ -52,6 +53,20 @@ const ValidatorsFound: FC = () => {
             />
           </Link>
         </div>
+
+      <div className="flex w-full flex-col justify-center gap-4">
+        <Button asChild className="w-full">
+          <Link href="/consolidation">Start Consolidation</Link>
+        </Button>
+
+        <Link href="/dashboard" className="flex w-full justify-center">
+          <SecondaryButton
+            label="Skip and go to Dashboard"
+            icon={<ArrowRightIcon />}
+            iconPosition={EIconPosition.RIGHT}
+            disabled={false}
+          />
+        </Link>
 
         <p className="flex justify-center text-[13px] leading-[13px]">
           You can access consolidation anytime.

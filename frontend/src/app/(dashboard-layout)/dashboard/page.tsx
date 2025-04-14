@@ -24,11 +24,15 @@ const Dashboard: FC = () => {
   if (!walletAddress || !data || !isFetched) return <DashboardLoading />;
 
   const activeValidators = data?.filter(
-    (validator) => validator?.status === ValidatorStatus.ACTIVE,
+    (validator) =>
+      validator?.status === ValidatorStatus.ACTIVE ||
+      validator?.consolidationTransaction?.isConsolidatedValidator !== false,
   );
 
   const inactiveValidators = data?.filter(
-    (validator) => validator?.status === ValidatorStatus.INACTIVE,
+    (validator) =>
+      validator?.status === ValidatorStatus.INACTIVE ||
+      validator?.consolidationTransaction?.isConsolidatedValidator === false,
   );
 
   return (

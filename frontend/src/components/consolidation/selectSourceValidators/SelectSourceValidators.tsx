@@ -45,7 +45,8 @@ export const SelectSourceValidators = () => {
   const availableSourceValidators = useMemo(() => {
     return validators?.filter(
       (validator) =>
-        validator.validatorIndex !== consolidationTarget?.validatorIndex,
+        validator.validatorIndex !== consolidationTarget?.validatorIndex &&
+        validator.consolidationTransaction?.isConsolidatedValidator !== false,
     );
   }, [validators, consolidationTarget]);
 
@@ -58,9 +59,6 @@ export const SelectSourceValidators = () => {
         bulkSetConsolidationTargets(availableSourceValidators);
       }
     }
-    //   if (activeTab === "manuallySelect" && validatorsToConsolidate?.length > 0) {
-    //     bulkSetConsolidationTargets([]);
-    //   }
   }, [
     activeTab,
     availableSourceValidators,

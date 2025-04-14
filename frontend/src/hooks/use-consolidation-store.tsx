@@ -1,6 +1,10 @@
 "use client";
 
-import { TransactionStatus, type ValidatorDetails } from "pec/types/validator";
+import {
+  Transaction,
+  TransactionStatus,
+  type ValidatorDetails,
+} from "pec/types/validator";
 
 import { useStore } from "zustand";
 import { persist } from "zustand/middleware";
@@ -32,6 +36,10 @@ type ConsolidationStore = {
   progress: number;
   setProgress: (step: number) => void;
 
+  // the current pub key being consolidated
+  currentPubKey: string | undefined;
+  setCurrentPubKey: (pubKey: string | undefined) => void;
+
   consolidationTarget: SerializedValidator | undefined;
   setConsolidationTarget: (validator: ValidatorDetails | undefined) => void;
 
@@ -41,7 +49,8 @@ type ConsolidationStore = {
   removeValidatorToConsolidate: (validator: ValidatorDetails) => void;
   updateConsolidatedValidator: (
     validator: ValidatorDetails,
-    txHash: string,
+    txHash: string | undefined,
+    status: TransactionStatus,
   ) => void;
 
   // Email fields
@@ -63,6 +72,10 @@ export const consolidationStore = createStore<ConsolidationStore>()(
     (set, get) => ({
       progress: 1,
       setProgress: (progress: number) => set({ progress }),
+
+      currentPubKey: undefined,
+      setCurrentPubKey: (pubKey: string | undefined) =>
+        set({ currentPubKey: pubKey }),
 
       consolidationTarget: undefined,
       setConsolidationTarget: (validator: ValidatorDetails | undefined) =>
@@ -95,17 +108,18 @@ export const consolidationStore = createStore<ConsolidationStore>()(
 
       updateConsolidatedValidator: (
         validator: ValidatorDetails,
-        txHash: string,
+        txHash: string | undefined,
+        status: TransactionStatus,
       ) =>
         set((state) => ({
           validatorsToConsolidate: state.validatorsToConsolidate.map((v) =>
             v.publicKey === validator.publicKey
               ? {
                   ...v,
-                  depositTransaction: {
+                  consolidationTransaction: {
                     hash: txHash,
-                    status: TransactionStatus.SUBMITTED,
-                  },
+                    status: status,
+                  } as Transaction,
                 }
               : v,
           ),
@@ -122,6 +136,7 @@ export const consolidationStore = createStore<ConsolidationStore>()(
       reset: () =>
         set({
           progress: 1,
+          currentPubKey: undefined,
           consolidationTarget: undefined,
           validatorsToConsolidate: [],
           summaryEmail: "",

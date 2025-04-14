@@ -4,7 +4,8 @@ import { ValidatorCard } from "pec/components/validators/cards/ValidatorCard";
 import { useConsolidationStore } from "pec/hooks/use-consolidation-store";
 import { useWalletAddress } from "pec/hooks/useWallet";
 import { api } from "pec/trpc/react";
-import type { ValidatorDetails } from "pec/types/validator";
+import { ValidatorStatus, type ValidatorDetails } from "pec/types/validator";
+import LoadingSkeletons from "./LoadingSkeletons";
 
 export const ValidatorList = () => {
   const { setConsolidationTarget, setProgress } = useConsolidationStore();
@@ -17,21 +18,22 @@ export const ValidatorList = () => {
     { enabled: !!walletAddress },
   );
 
+  const activeValidators = validators?.filter(
+    (validator) =>
+      validator?.status === ValidatorStatus.ACTIVE &&
+      validator?.consolidationTransaction?.isConsolidatedValidator !== false,
+  );
+
+  const inactiveValidators = validators?.filter(
+    (validator) =>
+      validator?.status === ValidatorStatus.INACTIVE ||
+      validator?.consolidationTransaction?.isConsolidatedValidator === false,
+  );
+
   const handleValidatorClick = (validator: ValidatorDetails) => {
     setConsolidationTarget(validator);
     setProgress(2);
   };
-
-  const LoadingSkeletons = () => (
-    <>
-      {[1, 2, 3].map((index) => (
-        <div
-          key={`loading-${index}`}
-          className="mb-2 h-24 w-full animate-pulse rounded-lg bg-gray-100 dark:bg-gray-800"
-        />
-      ))}
-    </>
-  );
 
   return (
     <div className="flex flex-col items-center gap-2">
@@ -55,8 +57,8 @@ export const ValidatorList = () => {
 
       {isLoading && <LoadingSkeletons />}
 
-      {validators && validators.length > 0 ? (
-        validators.map((validator, index) => (
+      {activeValidators && activeValidators.length > 0 ? (
+        activeValidators.map((validator, index) => (
           <ValidatorCard
             key={`validator-${validator.validatorIndex}-${index}`}
             hasBackground={true}
@@ -68,7 +70,25 @@ export const ValidatorList = () => {
         ))
       ) : (
         <div className="py-8 text-center text-gray-500 dark:text-gray-400">
-          No validators found
+          No active validators found
+        </div>
+      )}
+
+      {inactiveValidators && inactiveValidators.length > 0 && (
+        <div className="mt-2 flex w-full flex-col gap-2">
+          <div className="text-md font-medium">
+            Previously Consolidated Validators
+          </div>
+          {inactiveValidators.map((validator, index) => (
+            <ValidatorCard
+              key={`validator-${validator.validatorIndex}-${index}`}
+              hasBackground={false}
+              hasHover={false}
+              onClick={() => handleValidatorClick(validator)}
+              shrink={false}
+              validator={validator}
+            />
+          ))}
         </div>
       )}
     </div>
