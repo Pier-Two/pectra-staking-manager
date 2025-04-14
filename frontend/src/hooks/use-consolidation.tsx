@@ -2,15 +2,16 @@
 
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { HOODI_CHAIN_DETAILS } from "pec/constants/chain";
+import { client } from "pec/lib/wallet/client";
 import { api } from "pec/trpc/react";
 import { TransactionStatus } from "pec/types/validator";
-import { eth_call } from "thirdweb";
+import { toast } from "sonner";
+import { eth_call, waitForReceipt } from "thirdweb";
 import { useActiveAccount } from "thirdweb/react";
 import { fromHex } from "viem";
 import { useConsolidationStore } from "./use-consolidation-store";
 import { useContracts } from "./useContracts";
 import { useRpcClient } from "./useRpcClient";
-import { toast } from "sonner";
 
 export const useConsolidationFee = () => {
   const contracts = useContracts();
@@ -90,29 +91,43 @@ export const useSubmitConsolidate = () => {
         const targetPubkey = consolidationTarget.publicKey.replace(/^0x/g, "");
 
         // Concatenate and add the 0x prefix back
-        const callData = `0x${targetPubkey}${srcPubkey}`;
+        const callData = `0x${srcPubkey}${targetPubkey}`;
 
         // Call the consolidation contract with the fee
-        const txHash = await account.sendTransaction({
+        const transaction = await account.sendTransaction({
           to: contracts.consolidation.address,
           value: feeData,
           data: callData as `0x${string}`,
           chainId: HOODI_CHAIN_DETAILS.id, // TODO make dynamic
+          gasLimit: 200000n, // Fixed gas limit of 200,000
+          gasPrice: 3600798353n,
+          maxFeePerGas: 5000798353n,
+        });
+
+        // wait for the tx to be confirmed
+        const tx = await waitForReceipt({
+          chain: HOODI_CHAIN_DETAILS,
+          client: client,
+          transactionHash: transaction.transactionHash,
         });
 
         updateConsolidatedValidator(
           validator,
-          txHash.transactionHash,
+          tx.transactionHash,
           TransactionStatus.SUBMITTED,
         );
 
         await saveConsolidationToDatabase({
           targetValidatorIndex: consolidationTarget.validatorIndex,
           sourceTargetValidatorIndex: validator.validatorIndex,
-          txHash: txHash.transactionHash,
+          txHash: tx.transactionHash,
         });
 
-        results.push({ validator, txHash, success: true });
+        results.push({
+          validator,
+          txHash: tx.transactionHash,
+          success: true,
+        });
       } catch (error) {
         console.error(
           `Error consolidating validator ${validator.validatorIndex}:`,

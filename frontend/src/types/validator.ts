@@ -43,6 +43,7 @@ export interface IValidatorCard {
   shrink: boolean;
   validator: ValidatorDetails;
   onClick?: () => void;
+  info?: string;
 }
 
 export interface IBatchDepositValidatorCard {

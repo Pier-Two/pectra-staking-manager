@@ -4,13 +4,25 @@ import clsx from "clsx";
 import { ChevronsLeftRight } from "lucide-react";
 import Image from "next/image";
 import { DECIMAL_PLACES } from "pec/lib/constants";
-import type { IDetectedValidators } from "pec/types/validator";
-import { type FC, useState } from "react";
+import { ValidatorStatus, type IDetectedValidators } from "pec/types/validator";
+import { useState, type FC } from "react";
 import { formatEther } from "viem";
 import { ValidatorCard } from "./cards/ValidatorCard";
 
 export const DetectedValidators: FC<IDetectedValidators> = (props) => {
   const { cardTitle, validators } = props;
+
+  const activeValidators = validators?.filter(
+    (validator) =>
+      validator?.status === ValidatorStatus.ACTIVE ||
+      validator?.consolidationTransaction?.isConsolidatedValidator !== false,
+  );
+
+  const inactiveValidators = validators?.filter(
+    (validator) =>
+      validator?.status === ValidatorStatus.INACTIVE ||
+      validator?.consolidationTransaction?.isConsolidatedValidator === false,
+  );
 
   const [showValidators, setShowValidators] = useState<boolean>(false);
 
@@ -52,13 +64,23 @@ export const DetectedValidators: FC<IDetectedValidators> = (props) => {
 
       {showValidators && (
         <div className="flex w-full flex-col items-center gap-y-2">
-          {validators.map((validator, index) => (
+          {activeValidators.map((validator, index) => (
+            <ValidatorCard
+              key={index + validator.validatorIndex}
+              hasBackground={true}
+              hasHover={false}
+              shrink={true}
+              validator={validator}
+            />
+          ))}
+          {inactiveValidators.map((validator, index) => (
             <ValidatorCard
               key={index + validator.validatorIndex}
               hasBackground={false}
               hasHover={false}
               shrink={true}
               validator={validator}
+              info="(Consolidating)"
             />
           ))}
         </div>
