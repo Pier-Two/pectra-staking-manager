@@ -30,7 +30,6 @@ export const validatorRouter = createTRPCRouter({
         const validators: ValidatorDetails[] = [];
 
         const validatorResponse =
-          // TODO hardcoded env here
           await axios.get<BeaconChainAllValidatorsResponse>(
             `${getBeaconChainURL(isTestnet)}api/v1/validator/withdrawalCredentials/${address}?apikey=${env.BEACONCHAIN_API_KEY}`,
           );
@@ -45,7 +44,6 @@ export const validatorRouter = createTRPCRouter({
         if (validatorIndexes.length === 0) return [];
 
         const validatorDetails =
-          // TODO hardcoded env here
           await axios.get<BeaconChainValidatorDetailsResponse>(
             `${getBeaconChainURL(isTestnet)}/api/v1/validator/${validatorIndexes.join(",")}?apikey=${env.BEACONCHAIN_API_KEY}`,
           );

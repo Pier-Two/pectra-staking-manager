@@ -88,9 +88,8 @@ export const processDeposits = async (): Promise<IResponse> => {
         .map((item) => item.validatorIndex)
         .join(",");
 
-      // TODO hardcoded env here
       const response = await axios.get<DepositResponse>(
-        `${getBeaconChainURL(true)}api/v1/validator/${validatorIndexString}/deposits?apikey=${env.BEACONCHAIN_API_KEY}`,
+        `${getBeaconChainURL()}api/v1/validator/${validatorIndexString}/deposits?apikey=${env.BEACONCHAIN_API_KEY}`,
       );
 
       if (!isResponseValid(response))

@@ -89,7 +89,7 @@ export const DepositWorkflow: FC<IDepositWorkflowProps> = ({
   );
 
   const shouldBeDisabled =
-    totalAllocated !== BigInt(totalToDistribute) || // TODO check decimals here
+    totalAllocated !== BigInt(totalToDistribute) ||
     totalAllocated > totalToDistribute ||
     totalToDistribute === 0 ||
     totalAllocated === 0n;

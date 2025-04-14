@@ -30,7 +30,6 @@ const ConsolidationWorkflow = () => {
   if (!walletAddress || !data || !isFetched) {
     return (
       <div className="flex flex-col gap-4">
-        {/* TODO this could be DRYer but this is easiest way to maintain UI with types */}
         <ProgressBar progress={progress} setProgress={setProgress} />
         <ConsolidationLoading />
       </div>

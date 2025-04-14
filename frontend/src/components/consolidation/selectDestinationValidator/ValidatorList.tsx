@@ -5,6 +5,7 @@ import { useConsolidationStore } from "pec/hooks/use-consolidation-store";
 import { useWalletAddress } from "pec/hooks/useWallet";
 import { api } from "pec/trpc/react";
 import { ValidatorStatus, type ValidatorDetails } from "pec/types/validator";
+import LoadingSkeletons from "./LoadingSkeletons";
 
 export const ValidatorList = () => {
   const { setConsolidationTarget, setProgress } = useConsolidationStore();
@@ -33,17 +34,6 @@ export const ValidatorList = () => {
     setConsolidationTarget(validator);
     setProgress(2);
   };
-
-  const LoadingSkeletons = () => (
-    <>
-      {[1, 2, 3].map((index) => (
-        <div
-          key={`loading-${index}`}
-          className="mb-2 h-24 w-full animate-pulse rounded-lg bg-gray-100 dark:bg-gray-800"
-        />
-      ))}
-    </>
-  );
 
   return (
     <div className="flex flex-col items-center gap-2">
