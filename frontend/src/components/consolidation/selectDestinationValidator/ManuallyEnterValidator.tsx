@@ -29,7 +29,7 @@ export const ManuallyEnterValidator = () => {
     // Check if it's a non-zero number
     if (/^[1-9]\d*$/.test(value)) return true;
 
-    // Check if it's a public key (48 chars, starts with 0x)
+    // Check if it's a BLS public key (98 chars total, starts with 0x)
     if (/^0x[a-fA-F0-9]{96}$/.test(value)) return true;
 
     return false;
