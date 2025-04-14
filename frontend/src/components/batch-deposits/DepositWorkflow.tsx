@@ -227,9 +227,7 @@ export const DepositWorkflow: FC<IDepositWorkflowProps> = ({
                   onDistributionMethodChange={handleDistributionMethodChange}
                   onSubmit={handleSubmit((data) => onSubmit(data, true))}
                   resetBatchDeposit={handleResetBatchDeposit}
-                  selectedValidators={
-                    watchedSelectedValidators as ValidatorDetails[]
-                  }
+                  selectedValidators={watchedSelectedValidators}
                   stage={stage}
                   setValue={setValue}
                   totalAllocated={totalAllocated}
@@ -246,14 +244,10 @@ export const DepositWorkflow: FC<IDepositWorkflowProps> = ({
                     clearSelectedValidators={handleClearValidators}
                     distributionMethod={watchedDistributionMethod}
                     handleValidatorSelect={handleValidatorSelect}
-                    selectedValidators={
-                      watchedSelectedValidators as ValidatorDetails[]
-                    }
+                    selectedValidators={watchedSelectedValidators}
                     totalAllocated={totalAllocated}
                     totalToDistribute={totalToDistribute}
-                    watchedDeposits={
-                      watchedDeposits as unknown as IBatchDepositValidators[]
-                    }
+                    watchedDeposits={watchedDeposits}
                     validators={data}
                   />
                 )}
