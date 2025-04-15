@@ -72,13 +72,15 @@ export const validatorRouter = createTRPCRouter({
             withdrawalTransaction: undefined,
             consolidationTransaction: undefined,
             depositTransaction: undefined,
+            upgradeSubmitted: false,
           });
         });
 
         for (const validator of validators) {
-          const [withdrawTx, consolidationTx, depositTx] = await Promise.all([
-            await WithdrawalModel.findOne({
-              validatorIndex: validator.validatorIndex,
+          const [upgradeTx, consolidationTx, depositTx] = await Promise.all([
+            await ConsolidationModel.findOne({
+              targetValidatorIndex: validator.validatorIndex,
+              sourceTargetValidatorIndex: validator.validatorIndex,
             }),
             await ConsolidationModel.findOne({
               $or: [
@@ -92,6 +94,10 @@ export const validatorRouter = createTRPCRouter({
               validatorIndex: validator.validatorIndex,
             }),
           ]);
+
+          if (upgradeTx) {
+            validator.upgradeSubmitted = true;
+          }
 
           if (consolidationTx) {
             validator.consolidationTransaction = {

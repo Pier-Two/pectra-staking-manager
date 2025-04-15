@@ -17,8 +17,8 @@ export const ValidatorInformation: FC<IGenericValidators> = (props) => {
           <div className="flex flex-col gap-y-2">
             <p className="text-[14px] font-semibold leading-[14px] text-primary dark:text-indigo-500">
               {numberOfOldValidators} of your validators are using the old
-              credentials (0x01). It is recommended to consolidate them to
-              Pectra (0x02) to enable enhanced staking features.
+              credentials (0x01). Before consolidation can occur, you must
+              update them to Pectra (0x02) to enable enhanced staking features.
             </p>
           </div>
         )}
@@ -30,7 +30,7 @@ export const ValidatorInformation: FC<IGenericValidators> = (props) => {
         )}
       </div>
       {numberOfOldValidators > 0 && (
-        <p className="font-380 ml-8 text-[13px] leading-[13px]">
+        <p className="ml-8 text-[13px] font-380 leading-[13px]">
           Click start consolidation below to get started.
         </p>
       )}

@@ -37,4 +37,5 @@ export const ValidatorDataSchema = z.object({
   consolidationTransaction: TransactionSchema.optional(),
   depositTransaction: TransactionSchema.optional(),
   withdrawalTransaction: TransactionSchema.optional(),
+  upgradeSubmitted: z.boolean().default(false),
 });

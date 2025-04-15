@@ -39,6 +39,27 @@ export const ConsolidationSummary = () => {
     setProgress(2);
   };
 
+  const getTransactionsRequired = () => {
+    if (!validatorsToConsolidate || !consolidationTarget) return;
+
+    return {
+      // the amount of transactions required to move validators from 0x01 to 0x02
+      upgradeTransactions:
+        validatorsToConsolidate.filter(
+          (item) => !item.withdrawalAddress.startsWith("0x02"),
+        ).length +
+        (consolidationTarget.withdrawalAddress.startsWith("0x02") ? 0 : 1),
+      consolidationTransactions: validatorsToConsolidate.length,
+    };
+  };
+
+  // Calculate transactions data once before the return statement
+  const transactionsData = getTransactionsRequired();
+  const totalTransactions = transactionsData
+    ? transactionsData.consolidationTransactions +
+      transactionsData.upgradeTransactions
+    : 0;
+
   return (
     <div className="space-y-8">
       <div className="space-y-2">
@@ -111,8 +132,22 @@ export const ConsolidationSummary = () => {
         />
 
         <div className="text-center text-sm text-gray-700 dark:text-gray-300">
-          You will be required to sign {validatorsToConsolidate.length + 1}{" "}
-          consolidation transactions.
+          {transactionsData && (
+            <div>
+              <p>
+                You will be required to submit {totalTransactions} transactions.
+              </p>
+
+              <p className="text-xs">
+                ({transactionsData.upgradeTransactions}{" "}
+                {transactionsData.upgradeTransactions > 1
+                  ? "transactions"
+                  : "transaction"}{" "}
+                are required to upgrade your validators from validator version
+                0x01 to 0x02)
+              </p>
+            </div>
+          )}
         </div>
       </div>
     </div>
