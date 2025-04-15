@@ -8,7 +8,7 @@ import type { FC } from "react";
 import { formatEther } from "viem";
 
 export const ValidatorCard: FC<IValidatorCard> = (props) => {
-  const { hasBackground, hasHover, shrink, validator, onClick } = props;
+  const { hasBackground, hasHover, shrink, validator, onClick, info } = props;
   const withdrawalAddressPrefix = validator.withdrawalAddress.slice(0, 4);
 
   return (
@@ -31,7 +31,7 @@ export const ValidatorCard: FC<IValidatorCard> = (props) => {
 
         <div className="flex h-10 flex-col gap-y-3">
           <div className="font-570 text-[14px] leading-[14px] text-[#4C4C4C]">
-            {formatValidatorIndex(validator.validatorIndex)}
+            {formatValidatorIndex(validator.validatorIndex)} {info && info}
           </div>
           <div className="font-380 text-[14px] leading-[14px] text-[#4C4C4C] dark:text-gray-300">
             {validator.publicKey.slice(0, 5)}...{validator.publicKey.slice(-5)}

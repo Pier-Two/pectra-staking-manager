@@ -15,6 +15,7 @@ export const SubmitConsolidationRequests = () => {
     validatorsToConsolidate,
     setConsolidationEmail,
     consolidationEmail,
+    reset,
   } = useConsolidationStore();
 
   const router = useRouter();
@@ -26,6 +27,7 @@ export const SubmitConsolidationRequests = () => {
   );
 
   const handleDashboardNavigation = () => {
+    reset();
     router.push("/dashboard");
   };
 
