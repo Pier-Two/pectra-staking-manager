@@ -39,8 +39,7 @@ export const ConnectWalletButton = ({ className }: StyleableComponent) => {
 
   
   return (
-    <ConnectButton
-      // ConnectButton     
+    <ConnectButton   
       connectButton={{
         label: "Connect Wallet",
         className: clsx(
@@ -53,7 +52,7 @@ export const ConnectWalletButton = ({ className }: StyleableComponent) => {
       }}
       theme={darkMode ? "dark" : "light"}
 
-      // Details Button ---- Using a custom Component because matching the mocked styling with default className is not possible
+      // Details Button ---- Using a custom Component because matching the mocked styling with className Prop is not possible
       detailsButton={{
         render: () => {
           return (
