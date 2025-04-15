@@ -37,7 +37,7 @@ export const ChartContainer: FC = () => {
     (chart) => chart.key === filter,
   ) as ChartGroup;
 
-  const activeChart = activeChartGroup.data[chartIndex];
+  const activeChart = activeChartGroup?.data[chartIndex];
 
   const handleChartForward = () => {
     if (chartIndex === data.length - 1) setChartIndex(0);
