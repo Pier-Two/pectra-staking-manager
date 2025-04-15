@@ -21,19 +21,28 @@ const emptyChart = (
 
 export const ChartContainer: FC = () => {
   const [filter, setFilter] = useState<"days" | "months" | "years">("days");
-  const { data, isFetched } = api.charts.getChartData.useQuery(undefined, {
-    refetchInterval: 10000,
-  });
+
+  // const { data, isFetched } = api.charts.getChartData.useQuery(undefined, {
+  //   refetchInterval: 10000,
+  // });
+
+  const { data, isFetched } = api.charts.getChartData.useQuery();
 
   const [chartIndex, setChartIndex] = useState(0);
 
   if (!data || !isFetched) return <ChartSkeleton />;
 
+  console.log("Chart data: ", data);
+
   const chartCount = data.length;
+
   const activeChartGroup = data.find(
     (chart) => chart.key === filter,
   ) as ChartGroup;
+
   const activeChart = activeChartGroup.data[chartIndex];
+
+  console.log("Active chart: ", activeChart);
 
   const handleChartForward = () => {
     if (chartIndex === data.length - 1) setChartIndex(0);
@@ -50,30 +59,31 @@ export const ChartContainer: FC = () => {
 
   return (
     <div className="flex w-full flex-col gap-4">
-      <div className="flex flex-row items-center justify-between px-6">
-        <div className="text-center text-[20px] font-670 text-zinc-800 dark:text-zinc-200">
+      <div className="flex flex-row items-center justify-between gap-12 px-6 max-sm:flex-col max-sm:items-center max-sm:gap-4 max-sm:px-4">
+        <div className="text-center text-[24px] font-670 text-zinc-950 dark:text-zinc-50 max-sm:text-[16px]">
           {title}
         </div>
+
         {chartCount > 1 && (
-          <div className="flex flex-row items-center gap-8">
+          <div className="flex flex-row items-center gap-8 max-sm:gap-4">
             <div className="flex flex-row items-center gap-4 text-sm">
               <div
                 onClick={() => setFilter("days")}
-                className={`cursor-pointer ${filter === "days" ? "font-semibold text-indigo-500" : ""}`}
+                className={`cursor-pointer ${filter === "days" ? "font-semibold text-indigo-500" : "text-zinc-950 dark:text-zinc-50"}`}
               >
                 Day
               </div>
 
               <div
                 onClick={() => setFilter("months")}
-                className={`cursor-pointer ${filter === "months" ? "font-semibold text-indigo-500" : ""}`}
+                className={`cursor-pointer ${filter === "months" ? "font-semibold text-indigo-500" : "text-zinc-950 dark:text-zinc-50"}`}
               >
                 Month
               </div>
 
               <div
                 onClick={() => setFilter("years")}
-                className={`cursor-pointer ${filter === "years" ? "font-semibold text-indigo-500" : ""}`}
+                className={`cursor-pointer ${filter === "years" ? "font-semibold text-indigo-500" : "text-zinc-950 dark:text-zinc-50"}`}
               >
                 Year
               </div>
@@ -81,11 +91,11 @@ export const ChartContainer: FC = () => {
 
             <div className="flex flex-row items-center gap-2">
               <ChevronLeft
-                className="h-10 w-10 cursor-pointer rounded-full border-2 p-2 hover:bg-white dark:border-gray-800 dark:bg-gray-900 dark:hover:bg-gray-800"
+                className="h-10 w-10 cursor-pointer rounded-full border-2 p-2 hover:bg-white dark:border-gray-800 dark:bg-gray-900 dark:hover:bg-gray-800 max-sm:h-8 max-sm:w-8 max-sm:p-1.5"
                 onClick={handleChartBackward}
               />
               <ChevronRight
-                className="h-10 w-10 cursor-pointer rounded-full border-2 p-2 hover:bg-white dark:border-gray-800 dark:bg-gray-900 dark:hover:bg-gray-800"
+                className="h-10 w-10 cursor-pointer rounded-full border-2 p-2 hover:bg-white dark:border-gray-800 dark:bg-gray-900 dark:hover:bg-gray-800 max-sm:h-8 max-sm:w-8 max-sm:p-1.5"
                 onClick={handleChartForward}
               />
             </div>
@@ -106,12 +116,12 @@ export const ChartContainer: FC = () => {
           </div>
         </CardHeader>
 
-        <div className="flex w-full items-center justify-center">
+        <div className="flex w-full items-center justify-center overflow-x-auto">
           <AreaChartComponent chart={activeChart} />
         </div>
 
         {footer && (
-          <CardFooter className="flex flex-row items-center justify-center text-sm text-gray-500 dark:text-gray-400">
+          <CardFooter className="flex flex-row items-center justify-center text-[14px] font-380 text-zinc-950 dark:text-zinc-50 max-sm:text-[12px]">
             {footer}
           </CardFooter>
         )}

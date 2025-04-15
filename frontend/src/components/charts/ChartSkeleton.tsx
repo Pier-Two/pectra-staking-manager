@@ -6,21 +6,21 @@ import { Skeleton } from "pec/components/ui/skeleton";
 export const ChartSkeleton = () => {
   return (
     <div className="flex w-full flex-col gap-4">
-      <div className="flex flex-row items-center justify-between px-6">
-        <div className="text-lg font-semibold">
+      <div className="flex flex-row items-center justify-between gap-12 px-6 max-sm:flex-col max-sm:items-center max-sm:gap-4 max-sm:px-4">
+        <div className="text-center text-[24px] font-670 text-zinc-950 dark:text-zinc-50 max-sm:text-[16px]">
           Pectra adoption across all validators
         </div>
 
-        <div className="flex flex-row items-center gap-8">
+        <div className="flex flex-row items-center gap-8 max-sm:gap-4">
           <div className="flex flex-row items-center gap-4 text-sm">
-            <p>Day</p>
-            <p>Month</p>
-            <p>Year</p>
+            <p className={`text-zinc-950 dark:text-zinc-50`}>Day</p>
+            <p className={`text-zinc-950 dark:text-zinc-50`}>Month</p>
+            <p className={`text-zinc-950 dark:text-zinc-50`}>Year</p>
           </div>
 
           <div className="flex flex-row items-center gap-2">
-            <ChevronLeft className="h-10 w-10 rounded-full border-2 p-2 dark:border-gray-800 dark:bg-gray-900" />
-            <ChevronRight className="h-10 w-10 rounded-full border-2 p-2 dark:border-gray-800 dark:bg-gray-900" />
+            <ChevronLeft className="h-10 w-10 rounded-full border-2 p-2 dark:border-gray-800 dark:bg-gray-900 max-sm:h-8 max-sm:w-8 max-sm:p-1.5" />
+            <ChevronRight className="h-10 w-10 rounded-full border-2 p-2 dark:border-gray-800 dark:bg-gray-900 max-sm:h-8 max-sm:w-8 max-sm:p-1.5" />
           </div>
         </div>
       </div>
@@ -34,7 +34,7 @@ export const ChartSkeleton = () => {
               width={18}
               height={18}
             />
-            <p className="text-sm leading-[16px]">pectrastaking.com</p>
+            <div className="text-sm leading-[16px]">pectrastaking.com</div>
           </div>
         </CardHeader>
 

@@ -22,6 +22,7 @@ export const constructAverageEthStakedChartData = (
     "Average ETH Staked",
     false,
     "left",
+    "avgStaked",
   );
   
   const xAxis = buildXAxis(filter);

@@ -56,8 +56,8 @@ const Welcome: FC = () => {
         </div>
       </div>
 
-      <div className="flex w-full flex-col items-center justify-center">
-        <div className="flex w-[720px] flex-col items-center justify-center">
+      <div className="flex flex-col items-center justify-center">
+        <div className="flex flex-col items-center justify-center">
           <ChartContainer />
         </div>
       </div>

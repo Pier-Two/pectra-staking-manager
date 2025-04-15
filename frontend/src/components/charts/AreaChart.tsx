@@ -38,6 +38,9 @@ export const AreaChartComponent: FC<IAreaChart> = ({ chart }) => {
     orientation: yOrientation,
   } = yAxis;
 
+  console.log("Range: ", lowerRange, " to ", upperRange);
+  console.log("Ticks: ", ticks);
+
   const {
     label: xLabel,
     showLabel: showXLabel,
@@ -48,13 +51,34 @@ export const AreaChartComponent: FC<IAreaChart> = ({ chart }) => {
 
   const axisTextStyle = {
     stroke: darkMode ? "#e3e3e3" : "#27272A",
-    fontSize: 10,
-    fontWeight: 380,
+    fontSize: "11px",
+    fontWeight: 180,
+  };
+
+  const formatTick = (value: number): string => {
+    const abs = Math.abs(value);
+    const format = (val: number, suffix: string) =>
+      parseFloat(val.toFixed(2)).toString() + suffix;
+
+    if (abs >= 1e12) return format(value / 1e12, "t");
+    if (abs >= 1e9) return format(value / 1e9, "bn");
+    if (abs >= 1e6) return format(value / 1e6, "m");
+    if (abs >= 1e3) return format(value / 1e3, "k");
+    if (abs === 0) return "0";
+
+    if (abs < 100 && abs > 0.1) return value.toFixed(4);
+    return value.toFixed(2);
   };
 
   return (
-    <ChartContainer className="w-[90%]" config={chartConfig}>
-      <AreaChart data={chartData}>
+    <ChartContainer className="w-[90%] min-w-[800px]" config={chartConfig}>
+      <AreaChart
+        data={chartData}
+        margin={{ top: 10, right: 10, left: 10, bottom: 10 }}
+        width={800}
+        height={300}
+        className="max-sm:w-[280px]"
+      >
         <defs>
           <linearGradient id="fillPectra" x1="0" y1="0" x2="0" y2="1">
             <stop
@@ -101,7 +125,7 @@ export const AreaChartComponent: FC<IAreaChart> = ({ chart }) => {
         <XAxis
           dataKey="key"
           tickLine={false}
-          axisLine={true}
+          axisLine={false}
           tickMargin={8}
           label={
             showXLabel
@@ -116,16 +140,20 @@ export const AreaChartComponent: FC<IAreaChart> = ({ chart }) => {
           minTickGap={32}
           tick={axisTextStyle}
           orientation={xOrientation}
+          className="max-sm:minTickGap-48"
         />
 
         <YAxis
+          allowDataOverflow={true}
           tickLine={false}
-          axisLine={true}
+          axisLine={false}
           domain={[lowerRange, upperRange]}
           ticks={ticks}
           tick={axisTextStyle}
+          tickFormatter={(value) => formatTick(+value)}
           orientation={yOrientation}
-          width={upperRange.toString().length * (showYLabel ? 9 : 7)}
+          interval={0}
+          className="max-sm:width-40"
         >
           {showYLabel && (
             <Label

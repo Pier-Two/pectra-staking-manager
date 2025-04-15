@@ -6,6 +6,8 @@ import type {
   IYAxis,
 } from "pec/types/chart";
 
+const convertGweiToEth = (value: number): number => value / 1e9;
+
 export const buildChartData = (
   groupedValidatorStatistics: IGroupedValidatorStatistics,
   key: keyof Pick<
@@ -41,7 +43,10 @@ export const buildChartData = (
 
         const maxValue = Math.max(
           ...validatorsOfType
-            .map((validator) => Number(validator[key] || 0))
+            .map((validator) => {
+              const value = Number(validator[key] || 0);
+              return key === "count" ? value : convertGweiToEth(value);
+            })
             .filter((val) => !isNaN(val)),
         );
 
@@ -56,12 +61,64 @@ export const buildChartData = (
 };
 
 const buildChartKey = (date: Date, filter: "days" | "months" | "years") => {
-  const day = date.getDate().toString().padStart(2, "0");
-  const month = date.getMonth().toString().padStart(2, "0");
-  const year = date.getFullYear().toString().slice(-2);
+  const day = date.getUTCDate().toString().padStart(2, "0");
+  const month = (date.getUTCMonth() + 1).toString().padStart(2, "0");
+  const year = date.getUTCFullYear().toString().slice(-2);
+  
   if (filter === "days") return `${day}/${month}/${year}`;
   if (filter === "years") return `${year}`;
   return `${month}/${year}`;
+};
+
+const calculateLinearTicks = (
+  lowerRange: number,
+  upperRange: number,
+  uniqueValues: number[],
+): number[] => {
+  if (uniqueValues.length === 0) return [0];
+  if (uniqueValues.length === 1) return [uniqueValues[0]!];
+
+  return [
+    ...new Set(
+      Array.from({ length: 11 }, (_, i) =>
+        Math.round(lowerRange + (i * (upperRange - lowerRange)) / 10),
+      ),
+    ),
+  ].sort((a, b) => a - b);
+};
+
+const calculateEthTicks = (
+  lowerRange: number,
+  upperRange: number,
+  uniqueValues: number[],
+): number[] => {
+  if (uniqueValues.length === 0) return [0];
+  if (uniqueValues.length === 1) return [uniqueValues[0]!];
+
+  const range = upperRange - lowerRange;
+  const isLargeRange = range > 1000;
+  const step = range / 10;
+
+  return [
+    ...new Set(
+      Array.from({ length: 11 }, (_, i) => {
+        if (i === 0)
+          return isLargeRange
+            ? Math.trunc(lowerRange)
+            : Math.trunc(lowerRange * 10000) / 10000;
+
+        if (i === 10)
+          return isLargeRange
+            ? Math.trunc(upperRange)
+            : Math.trunc(upperRange * 10000) / 10000;
+
+        const value = lowerRange + step * i;
+        return isLargeRange
+          ? Number(value.toFixed(0))
+          : Number(value.toFixed(4));
+      }),
+    ),
+  ].sort((a, b) => a - b);
 };
 
 export const buildYAxis = (
@@ -69,38 +126,25 @@ export const buildYAxis = (
   label: string,
   showLabel: boolean,
   orientation: "left" | "right",
+  key: keyof Pick<
+    IGroupedValidatorStatistics[string][number],
+    "count" | "totalStaked" | "avgStaked"
+  >,
 ): IYAxis => {
-  const lowerRange = chartData.reduce((min, item) => {
-    const values = [item.pectra, item.merge, item.shapella].filter(
-      (val): val is number => val !== undefined,
-    );
-    return values.length > 0 ? Math.min(min, ...values) : min;
-  }, Infinity);
-
-  const upperRange = chartData.reduce((max, item) => {
-    const values = [item.pectra, item.merge, item.shapella].filter(
-      (val): val is number => val !== undefined,
-    );
-    return values.length > 0 ? Math.max(max, ...values) : max;
-  }, 0);
-
-  const allValues = chartData.flatMap((item) =>
+  const values = chartData.flatMap((item) =>
     [item.pectra, item.merge, item.shapella].filter(
       (val): val is number => val !== undefined,
     ),
   );
-  const uniqueValues = [...new Set(allValues)].sort((a, b) => a - b);
+
+  const lowerRange = values.length > 0 ? Math.min(...values) : 0;
+  const upperRange = values.length > 0 ? Math.max(...values) : 0;
+  const uniqueValues = [...new Set(values)].sort((a, b) => a - b);
 
   const ticks =
-    uniqueValues.length === 0
-      ? [0, 1]
-      : uniqueValues.length === 1
-        ? [uniqueValues[0]!, uniqueValues[0]! + 1]
-        : uniqueValues.length <= 10
-          ? uniqueValues
-          : Array.from({ length: 10 }, (_, i) =>
-              Math.round(lowerRange + (i * (upperRange - lowerRange)) / 9),
-            );
+    key === "count"
+      ? calculateLinearTicks(lowerRange, upperRange, uniqueValues)
+      : calculateEthTicks(lowerRange, upperRange, uniqueValues);
 
   return { lowerRange, upperRange, ticks, label, showLabel, orientation };
 };
