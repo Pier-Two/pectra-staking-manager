@@ -3,6 +3,7 @@ import { type Metadata } from "next";
 import { Montserrat } from "next/font/google";
 import { AppSidebar } from "pec/components/app-sidebar";
 import { SidebarProvider } from "pec/components/ui/sidebar";
+import { Toaster } from "pec/components/ui/sonner";
 import { NetworkContextProvider } from "pec/contexts/NetworkContext";
 import { cn } from "pec/lib/utils";
 import "pec/styles/globals.css";
@@ -33,6 +34,7 @@ export default function RootLayout({
               </div>
               <main>{children}</main>
             </SidebarProvider>
+            <Toaster />
           </body>
         </TRPCReactProvider>
       </NetworkContextProvider>

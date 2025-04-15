@@ -1,61 +1,18 @@
-import { type AxiosResponse } from "axios";
-import { BEACONCHAIN_OK_STATUS, CHUNK_SIZE } from "pec/lib/constants";
+import { CHUNK_SIZE } from "pec/lib/constants";
 import { WithdrawalModel } from "pec/lib/database/models";
 import { generateErrorResponse } from "pec/lib/utils";
 import { ACTIVE_STATUS, INACTIVE_STATUS } from "pec/types/app";
 import type { IResponse } from "pec/types/response";
 import { chunk, groupBy, maxBy } from "lodash";
 import type { Withdrawal } from "pec/lib/database/classes/withdrawal";
-import { z } from "zod";
 import { sendEmailNotification } from "pec/lib/services/emailService";
-import { SupportedNetworkIds } from "pec/constants/chain";
 import { getBeaconChainAxios } from "pec/lib/server/axios";
-import { HOODI_CHAIN_ID } from "@piertwo/contracts/constants/networks";
 import { isPopulated } from "pec/lib/utils/type-guards";
-
-const WithdrawalDataSchema = z.object({
-  epoch: z.number(),
-  slot: z.number(),
-  blockroot: z.string(),
-  withdrawalindex: z.number(),
-  validatorindex: z.number(),
-  address: z.string(),
-  amount: z.number(),
-});
-
-const WithdrawalResponseSchema = z.object({
-  status: z.literal(BEACONCHAIN_OK_STATUS),
-  data: z.array(WithdrawalDataSchema),
-});
-
-type WithdrawalResponse = z.infer<typeof WithdrawalResponseSchema>;
-
-export const storeWithdrawalRequest = async (
-  validatorIndex: number,
-  network: SupportedNetworkIds,
-): Promise<IResponse> => {
-  try {
-    const response = await getBeaconChainAxios(network).get<WithdrawalResponse>(
-      `/api/v1/validator/${validatorIndex}/withdrawals`,
-    );
-
-    if (!isResponseValid(response)) {
-      console.error(
-        `Invalid response from BeaconChain API: ${response.status}`,
-      );
-      return storeWithdrawal(validatorIndex, 0);
-    }
-
-    const lastWithdrawal = maxBy(response.data.data, "withdrawalindex");
-
-    return storeWithdrawal(
-      validatorIndex,
-      lastWithdrawal?.withdrawalindex ?? 0,
-    );
-  } catch (error) {
-    return generateErrorResponse(error);
-  }
-};
+import { PROCESS_REQUESTS_NETWORK_ID } from "pec/lib/constants/feature-flags";
+import {
+  BeaconchainWithdrawalResponse,
+  isBeaconchainWithdrawalResponseValid,
+} from "pec/lib/api/schemas/beaconchain";
 
 export const processWithdrawals = async (): Promise<IResponse> => {
   try {
@@ -77,12 +34,12 @@ export const processWithdrawals = async (): Promise<IResponse> => {
         .join(",");
 
       const response = await getBeaconChainAxios(
-        HOODI_CHAIN_ID,
-      )<WithdrawalResponse>(
+        PROCESS_REQUESTS_NETWORK_ID,
+      )<BeaconchainWithdrawalResponse>(
         `/api/v1/validator/${validatorIndexString}/withdrawals`,
       );
 
-      if (!isResponseValid(response)) {
+      if (!isBeaconchainWithdrawalResponseValid(response)) {
         return generateErrorResponse(response.status);
       }
 
@@ -145,34 +102,4 @@ const chunkWithdrawals = (withdrawals: Withdrawal[]) => {
   }));
 
   return chunk(formatted, CHUNK_SIZE);
-};
-
-const isResponseValid = (
-  response: AxiosResponse<WithdrawalResponse>,
-): boolean => {
-  if (!response || response.status !== 200) return false;
-  const result = WithdrawalResponseSchema.safeParse(response.data);
-  return result.success;
-};
-
-const storeWithdrawal = async (
-  validatorIndex: number,
-  withdrawalIndex: number,
-): Promise<IResponse> => {
-  try {
-    await WithdrawalModel.create({
-      data: {
-        validatorIndex,
-        withdrawalIndex,
-        status: ACTIVE_STATUS,
-      },
-    });
-
-    return {
-      success: true,
-      data: null,
-    };
-  } catch (error) {
-    return generateErrorResponse(error);
-  }
 };

@@ -6,18 +6,16 @@ import { PrimaryButton } from "pec/components/ui/custom/PrimaryButton";
 import { SecondaryButton } from "pec/components/ui/custom/SecondaryButton";
 import { Connector } from "pec/components/validators/Connector";
 import { useWalletAddress } from "pec/hooks/useWallet";
-import { api } from "pec/trpc/react";
 import type { FC } from "react";
 import ConsolidationLoading from "./loading";
+import { useValidators } from "pec/hooks/useValidators";
 
 const Consolidation: FC = () => {
   const router = useRouter();
   const walletAddress = useWalletAddress();
   if (!walletAddress) return <ConsolidationLoading />;
 
-  const { data } = api.validators.getValidators.useQuery({
-    address: walletAddress,
-  });
+  const { data } = useValidators();
   if (!data) return <ConsolidationLoading />;
 
   const handleConsolidationRedirect = () => {

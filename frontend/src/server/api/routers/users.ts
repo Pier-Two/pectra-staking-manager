@@ -2,21 +2,9 @@ import { createTRPCRouter, publicProcedure } from "pec/server/api/trpc";
 import { UserSchema, type UserType } from "pec/lib/api/schemas/database/user";
 import { UserModel } from "pec/lib/database/models";
 import { createContact } from "pec/lib/services/emailService";
-import { isLoggedIn } from "pec/lib/wallet/auth";
 import { IResponse } from "pec/types/response";
 import { generateErrorResponse } from "pec/lib/utils";
-
-const findOrCreateUser = async (address: string) => {
-  const user = await UserModel.findOne({ address });
-
-  if (user) return user;
-
-  const createdUser = await UserModel.create({
-    address,
-  });
-
-  return createdUser;
-};
+import { getLoggedInUserOrCreate } from "pec/lib/server/user";
 
 export const userRouter = createTRPCRouter({
   createOrUpdateUser: publicProcedure
@@ -28,24 +16,21 @@ export const userRouter = createTRPCRouter({
           return generateErrorResponse(parsedInput.error, "Invalid input");
         }
 
-        const value = await isLoggedIn();
+        // Use the returned address on the JWT
+        const userResponse = await getLoggedInUserOrCreate();
 
-        if (!value.success) {
-          return value;
+        if (!userResponse.success) {
+          return userResponse;
         }
 
-        // Use the returned address on the JWT
-        const existingUser = await findOrCreateUser(value.data.address);
-
-        if (!existingUser.email && parsedInput.data.email) {
-          // TODO: Pass through fields
+        if (!userResponse.data.email && parsedInput.data.email) {
           await createContact(parsedInput.data.email);
         }
 
         const { data: input } = parsedInput;
 
         await UserModel.updateOne(
-          { address: value.data.address },
+          { address: userResponse.data.address },
           {
             $set: {
               email: input.email,
@@ -66,18 +51,8 @@ export const userRouter = createTRPCRouter({
     }),
 
   getUser: publicProcedure.query(async (): Promise<IResponse<UserType>> => {
-    const value = await isLoggedIn();
-
-    if (!value.success) {
-      return value;
-    }
-
     try {
-      const user = await findOrCreateUser(value.data.address);
-      return {
-        success: true,
-        data: user,
-      };
+      return await getLoggedInUserOrCreate();
     } catch (error) {
       return generateErrorResponse(error);
     }

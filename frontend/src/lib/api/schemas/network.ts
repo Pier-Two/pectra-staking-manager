@@ -4,7 +4,7 @@ import {
 } from "pec/constants/chain";
 import { z } from "zod";
 
-export const SupportedNetworkSchema = z
+export const SupportedChainIdSchema = z
   .number()
   .refine(
     (val): val is SupportedNetworkIds =>

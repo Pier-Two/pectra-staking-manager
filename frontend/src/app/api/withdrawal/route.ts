@@ -1,5 +1,5 @@
 import { verifySignatureAppRouter } from "@upstash/qstash/nextjs";
-import { processWithdrawals } from "pec/server/api/routers/store-email-request/withdrawal";
+import { processWithdrawals } from "./processWithdrawal";
 
 async function withdrawalHandler(_request: Request) {
   const result = await processWithdrawals();

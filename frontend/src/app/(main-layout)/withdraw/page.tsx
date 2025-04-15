@@ -1,7 +1,6 @@
 "use client";
 
 import { type FC, useMemo, useState } from "react";
-import { api } from "pec/trpc/react";
 import { useWalletAddress } from "pec/hooks/useWallet";
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -12,9 +11,8 @@ import { WithdrawalInformation } from "pec/components/withdrawal/WithdrawalInfor
 import { WithdrawalSelectionValidatorCard } from "pec/components/validators/cards/WithdrawalSelectionValidatorCard";
 import { ValidatorListHeaders } from "pec/components/batch-deposits/validators/ValidatorListHeaders";
 import {
-  EWithdrawalStage,
-  WithdrawalSchema,
-  type WithdrawalType,
+  WithdrawalFormSchema,
+  type WithdrawalFormType,
 } from "pec/lib/api/schemas/withdrawal";
 import type { ValidatorDetails } from "pec/types/validator";
 import { ValidatorHeader } from "pec/components/batch-deposits/validators/ValidatorHeader";
@@ -23,16 +21,20 @@ import { WITHDRAWAL_COLUMN_HEADERS } from "pec/constants/columnHeaders";
 import { cloneDeep, orderBy, sumBy } from "lodash";
 import { formatAddressToShortenedString } from "pec/lib/utils/address";
 import { formatEther } from "viem";
+import { useValidators } from "pec/hooks/useValidators";
+import { useSubmitWithdraw } from "pec/hooks/useWithdraw";
 
 const Withdrawal: FC = () => {
   const walletAddress = useWalletAddress();
 
-  const { data: rawValidatorData } = api.validators.getValidators.useQuery({
-    address: walletAddress,
-  });
-  const [stage, setStage] = useState<EWithdrawalStage>(
-    EWithdrawalStage.DATA_CAPTURE,
-  );
+  const { data: rawValidatorData } = useValidators();
+  const {
+    submitWithdrawalsMutationFn: {
+      mutate: submitWithdrawals,
+      status,
+      reset: resetMutation,
+    },
+  } = useSubmitWithdraw();
 
   const {
     handleSubmit,
@@ -42,8 +44,8 @@ const Withdrawal: FC = () => {
     watch,
     register,
     formState: { isValid, errors },
-  } = useForm<WithdrawalType>({
-    resolver: zodResolver(WithdrawalSchema),
+  } = useForm<WithdrawalFormType>({
+    resolver: zodResolver(WithdrawalFormSchema),
     defaultValues: { withdrawals: [] },
     mode: "onChange",
   });
@@ -122,18 +124,11 @@ const Withdrawal: FC = () => {
 
   const handleResetWithdrawal = () => {
     reset({ withdrawals: [] });
+    resetMutation();
   };
 
-  const onSubmit = (data: WithdrawalType) => {
-    setStage(EWithdrawalStage.TRANSACTIONS_SUBMITTED);
-
-    const filteredData = data.withdrawals.filter(
-      (withdrawal) => withdrawal.amount > 0,
-    );
-    // TODO: Send off tx
-    // TODO: STore req
-
-    console.log("onSubmit for withdrawal HIT: ", filteredData);
+  const onSubmit = (data: WithdrawalFormType) => {
+    submitWithdrawals(data.withdrawals);
   };
 
   return (
@@ -172,7 +167,7 @@ const Withdrawal: FC = () => {
           isValid={isValid && withdrawalTotal > 0}
           onSubmit={handleSubmit(onSubmit)}
           resetWithdrawal={handleResetWithdrawal}
-          stage={stage}
+          status={status}
           validatorsSelected={withdrawals.length}
           withdrawalTotal={withdrawalTotal}
         />

@@ -1,6 +1,6 @@
 import { AlignLeft, CircleCheck, CircleMinus, CirclePlus } from "lucide-react";
 import Image from "next/image";
-import type { WithdrawalType } from "pec/lib/api/schemas/withdrawal";
+import type { WithdrawalFormType } from "pec/lib/api/schemas/withdrawal";
 import { cn } from "pec/lib/utils";
 import { parseEtherToFixedDecimals } from "pec/lib/utils/parseAmounts";
 import { ValidatorDetails } from "pec/types/validator";
@@ -13,8 +13,8 @@ interface ExtendedProps {
   withdrawalIndex: number;
   selected: boolean;
   validator: ValidatorDetails;
-  errors: FieldErrors<WithdrawalType>;
-  register: UseFormRegister<WithdrawalType>;
+  errors: FieldErrors<WithdrawalFormType>;
+  register: UseFormRegister<WithdrawalFormType>;
 }
 
 export const WithdrawalSelectionValidatorCard = ({

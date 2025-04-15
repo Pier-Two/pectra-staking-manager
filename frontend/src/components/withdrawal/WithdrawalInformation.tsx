@@ -6,7 +6,7 @@ import { SecondaryButton } from "../ui/custom/SecondaryButton";
 import { PectraSpinner } from "../ui/custom/pectraSpinner";
 import { EIconPosition } from "pec/types/components";
 import { DECIMAL_PLACES } from "pec/lib/constants";
-import { EWithdrawalStage } from "pec/lib/api/schemas/withdrawal";
+import { MutationStatus } from "@tanstack/react-query";
 
 export interface IWithdrawalInformation {
   buttonText: string;
@@ -14,7 +14,7 @@ export interface IWithdrawalInformation {
   isValid: boolean;
   onSubmit: () => void;
   resetWithdrawal: () => void;
-  stage: EWithdrawalStage;
+  status: MutationStatus;
   validatorsSelected: number;
   withdrawalTotal: number;
 }
@@ -25,7 +25,7 @@ export const WithdrawalInformation = ({
   isValid,
   onSubmit,
   resetWithdrawal,
-  stage,
+  status,
   validatorsSelected,
   withdrawalTotal,
 }: IWithdrawalInformation) => {
@@ -41,6 +41,7 @@ export const WithdrawalInformation = ({
       label: "Withdrawal total",
     },
   ];
+  console.log(status);
 
   return (
     <div className="flex flex-col gap-4 rounded-xl border border-indigo-400 bg-white p-4 dark:border dark:border-gray-800 dark:bg-black">
@@ -78,14 +79,14 @@ export const WithdrawalInformation = ({
         </div>
 
         <div>
-          {stage === EWithdrawalStage.TRANSACTIONS_CONFIRMED && (
+          {status === "success" && (
             <div className="flex flex-row items-center gap-2">
               <Check className="h-4 w-4 text-green-500" />
               <div className="text-sm">Done</div>
             </div>
           )}
 
-          {stage === EWithdrawalStage.TRANSACTIONS_SUBMITTED && (
+          {status === "pending" && (
             <div className="flex flex-col items-center gap-2">
               <PrimaryButton
                 label="Sign transactions"
@@ -96,7 +97,7 @@ export const WithdrawalInformation = ({
             </div>
           )}
 
-          {stage === EWithdrawalStage.DATA_CAPTURE && (
+          {(status === "idle" || status === "error") && (
             <div className="flex flex-row gap-4">
               <SecondaryButton
                 label="Max"
@@ -115,7 +116,7 @@ export const WithdrawalInformation = ({
         </div>
       </div>
 
-      {stage === EWithdrawalStage.TRANSACTIONS_CONFIRMED && (
+      {status === "success" && (
         <>
           <div className="rounded-xl bg-gray-100 p-2 text-sm text-green-500">
             Your transactions have been submitted successfully and will be

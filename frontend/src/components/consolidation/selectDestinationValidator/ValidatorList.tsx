@@ -6,17 +6,13 @@ import { useWalletAddress } from "pec/hooks/useWallet";
 import { api } from "pec/trpc/react";
 import { ValidatorStatus, type ValidatorDetails } from "pec/types/validator";
 import LoadingSkeletons from "./LoadingSkeletons";
+import { useValidators } from "pec/hooks/useValidators";
 
 export const ValidatorList = () => {
   const { setConsolidationTarget, setProgress } = useConsolidationStore();
   const walletAddress = useWalletAddress();
 
-  const { data: validators, isLoading } = api.validators.getValidators.useQuery(
-    {
-      address: walletAddress || "",
-    },
-    { enabled: !!walletAddress },
-  );
+  const { data: validators, isLoading } = useValidators();
 
   const activeValidators = validators?.filter(
     (validator) =>
