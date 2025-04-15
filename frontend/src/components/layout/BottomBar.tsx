@@ -37,14 +37,14 @@ export const BottomBar: FC = () => {
 
       <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-8 text-sm text-gray-600 dark:text-gray-300">
         <div className="flex flex-wrap items-center justify-center gap-x-3">
-          <p className="text-[11px] leading-[11px] text-zinc-950">
+          <p className="text-[11px] leading-[11px] text-zinc-950 dark:text-gray-300">
             Product by:
           </p>
           {renderLogo("PierTwo")}
         </div>
 
         <div className="flex flex-wrap items-center justify-center gap-x-3">
-          <p className="text-[11px] leading-[11px] text-zinc-950">
+          <p className="text-[11px] leading-[11px] text-zinc-950 dark:text-gray-300">
             Produced by:{" "}
           </p>
           {renderLogo("Labrys")}
