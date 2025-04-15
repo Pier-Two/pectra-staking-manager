@@ -1,6 +1,5 @@
 import { z } from "zod";
 import { ValidatorDataSchema } from "./validator";
-import { EWithdrawalStage } from "pec/types/withdrawal";
 
 export const WithdrawalDataSchema = z.object({
   validator: ValidatorDataSchema,
@@ -9,9 +8,19 @@ export const WithdrawalDataSchema = z.object({
 
 export type WithdrawalData = z.infer<typeof WithdrawalDataSchema>;
 
+export enum EWithdrawalStage {
+  DATA_CAPTURE = "DATA_CAPTURE",
+  TRANSACTIONS_SUBMITTED = "TRANSACTIONS_SUBMITTED",
+  TRANSACTIONS_CONFIRMED = "TRANSACTIONS_CONFIRMED",
+}
+
+// export const WithdrawalSchema = z.array(
+//   ValidatorDataSchema.extend({
+//     withdrawalAmount: z.number().optional(),
+//   }),
+// );
+
 export const WithdrawalSchema = z.object({
-  selectedValidators: z.array(ValidatorDataSchema),
-  stage: z.nativeEnum(EWithdrawalStage),
   withdrawals: z.array(WithdrawalDataSchema),
 });
 

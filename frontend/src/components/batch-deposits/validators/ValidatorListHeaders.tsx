@@ -1,13 +1,24 @@
-import type { FC } from "react";
 import { ColumnHeader } from "./ColumnHeader";
-import type { IValidatorListHeaders } from "pec/types/batch-deposits";
+import type { SortDirection } from "pec/components/batch-deposits/validators/ColumnHeader";
 
-export const ValidatorListHeaders: FC<IValidatorListHeaders> = ({
+interface IColumnHeader {
+  label: string;
+  showSort: boolean;
+}
+
+export interface IValidatorListHeaders {
+  columnHeaders: readonly IColumnHeader[];
+  sortColumn: string | null;
+  sortDirection: SortDirection;
+  onSort: (column: string) => void;
+}
+
+export const ValidatorListHeaders = ({
   columnHeaders,
   onSort,
   sortColumn,
   sortDirection,
-}) => {
+}: IValidatorListHeaders) => {
   return (
     <div className="flex w-full items-center px-4">
       {columnHeaders.map((columnHeader, index) => (

@@ -1,10 +1,3 @@
-"use client";
-
-import type { FC } from "react";
-import {
-  EWithdrawalStage,
-  type IWithdrawalInformation,
-} from "pec/types/withdrawal";
 import { AlignLeft, Check } from "lucide-react";
 import { Separator } from "../ui/separator";
 import Image from "next/image";
@@ -13,8 +6,20 @@ import { SecondaryButton } from "../ui/custom/SecondaryButton";
 import { PectraSpinner } from "../ui/custom/pectraSpinner";
 import { EIconPosition } from "pec/types/components";
 import { DECIMAL_PLACES } from "pec/lib/constants";
+import { EWithdrawalStage } from "pec/lib/api/schemas/withdrawal";
 
-export const WithdrawalInformation: FC<IWithdrawalInformation> = ({
+export interface IWithdrawalInformation {
+  buttonText: string;
+  handleMaxAllocation: () => void;
+  isValid: boolean;
+  onSubmit: () => void;
+  resetWithdrawal: () => void;
+  stage: EWithdrawalStage;
+  validatorsSelected: number;
+  withdrawalTotal: number;
+}
+
+export const WithdrawalInformation = ({
   buttonText,
   handleMaxAllocation,
   isValid,
@@ -23,7 +28,7 @@ export const WithdrawalInformation: FC<IWithdrawalInformation> = ({
   stage,
   validatorsSelected,
   withdrawalTotal,
-}) => {
+}: IWithdrawalInformation) => {
   const distributionStats = [
     {
       imageUrl: "/icons/EthValidator.svg",
