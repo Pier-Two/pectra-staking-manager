@@ -16,10 +16,10 @@ export const TableHeader: FC<ITableHeadersRowProps> = ({
 
 
   return (
-    <div className="hidden md:flex flex-row items-center justify-between gap-1 px-6">
+    <div className="hidden md:grid grid-cols-6 items-center gap-1 px-6">
       {tableHeaderItems.map((header) => (
         <div
-          className="flex-1 cursor-pointer"
+          className="col-span-1 cursor-pointer"
           key={header.sortKey}
           onClick={() => onSort(header.sortKey)}
         >
@@ -38,6 +38,8 @@ export const TableHeader: FC<ITableHeadersRowProps> = ({
           </div>
         </div>
       ))}
+      {/* Empty div for actions column */}
+      <div className="col-span-1" />
     </div>
   );
 };

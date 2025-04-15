@@ -54,10 +54,12 @@ export const ValidatorRow: FC<IValidatorRowProps> = (props) => {
   };
 
   return (
+    <div className="flex flex-row">
     <div
-      className={`flex w-full flex-row items-center rounded-xl border bg-indigo-50 p-4 text-sm hover:border-indigo-300 dark:bg-black dark:hover:bg-gray-900`}
+      className={`grid grid-cols-6 w-fit items-center rounded-xl border bg-indigo-50 p-4 text-sm hover:border-indigo-300 dark:bg-black dark:hover:bg-gray-900`}
     >
-      <div className="flex-1">
+      {/* Validator Column */}
+      <div className="col-span-1">
         <div className="flex flex-row gap-2">
           <Image
             src="/icons/EthValidator.svg"
@@ -75,47 +77,49 @@ export const ValidatorRow: FC<IValidatorRowProps> = (props) => {
         </div>
       </div>
 
+      {/* Active Since Column */}
       {!filterTableOptions.includes("Active since") && (
-      <div className="flex-1">
-        <div className="flex flex-col">
-          <span>{validator.activeSince}</span>
-          <span className="text-xs text-gray-500">
-            {validator.activeDuration}
-          </span>
+        <div className="col-span-1">
+          <div className="flex flex-col">
+            <span>{validator.activeSince}</span>
+            <span className="text-xs text-gray-500">
+              {validator.activeDuration}
+            </span>
+          </div>
         </div>
-      </div>
       )}
 
+      {/* Credentials Column */}
       {!filterTableOptions.includes("Status") && (
-        <div className="flex-1">
+        <div className="col-span-1">
           <div className="flex items-center gap-1">
-          {validator.withdrawalAddress.includes("0x02") ? (
-            <CircleCheck className="h-4 w-4 fill-green-500 text-white dark:text-black" />
-          ) : (
-            <OctagonMinus className="h-4 w-4 text-gray-500 dark:text-white" />
-          )}
-          <div className="font-semibold">
-            {validator.withdrawalAddress.slice(0, 4)}
-          </div>
+            {validator.withdrawalAddress.includes("0x02") ? (
+              <CircleCheck className="h-4 w-4 fill-green-500 text-white dark:text-black" />
+            ) : (
+              <OctagonMinus className="h-4 w-4 text-gray-500 dark:text-white" />
+            )}
+            <div className="font-semibold">
+              {validator.withdrawalAddress.slice(0, 4)}
+            </div>
           </div>
         </div>
       )}
 
-      
-        <div className="flex-1">
-          <div className="flex items-center gap-2">
+      {/* Status Column */}
+      <div className="col-span-1">
+        <div className="flex items-center gap-2">
           {validator.status === ValidatorStatus.ACTIVE ? (
             <CirclePlay className="h-4 w-4 fill-green-500 text-white dark:text-black" />
           ) : (
             <CircleMinus className="h-4 w-4 fill-red-500 text-white dark:text-black" />
           )}
-            <span>{validator.status}</span>
-          </div>
+          <span>{validator.status}</span>
         </div>
-      
+      </div>
 
+      {/* Balance Column */}
       {!filterTableOptions.includes("Balance") && (
-        <div className="flex-1 flex flex-row justify-between">
+        <div className="col-span-1">
           <div className="flex items-center gap-1">
             <AlignLeft className="h-3 w-3" />
             <div className="font-semibold">{validator.balance}</div>
@@ -123,7 +127,8 @@ export const ValidatorRow: FC<IValidatorRowProps> = (props) => {
         </div>
       )}
 
-      <div className="flex-1">
+      {/* Actions Column */}
+      <div className="col-span-1 flex justify-end">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="icon">
@@ -163,6 +168,7 @@ export const ValidatorRow: FC<IValidatorRowProps> = (props) => {
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
+    </div>
     </div>
   );
 };
