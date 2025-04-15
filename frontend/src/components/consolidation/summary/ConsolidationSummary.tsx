@@ -141,10 +141,9 @@ export const ConsolidationSummary = () => {
               <p className="text-xs">
                 ({transactionsData.upgradeTransactions}{" "}
                 {transactionsData.upgradeTransactions > 1
-                  ? "transactions"
-                  : "transaction"}{" "}
-                are required to upgrade your validators from validator version
-                0x01 to 0x02)
+                  ? "transactions are "
+                  : "transaction is "}{" "}
+                required to upgrade your validators to version 0x02)
               </p>
             </div>
           )}

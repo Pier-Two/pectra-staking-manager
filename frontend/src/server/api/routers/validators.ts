@@ -155,7 +155,17 @@ export const validatorRouter = createTRPCRouter({
           numberOfWithdrawals: validator.total_withdrawals,
           activeSince,
           activeDuration,
+          upgradeSubmitted: false,
         };
+
+        const upgradeTx = await ConsolidationModel.findOne({
+          targetValidatorIndex: formattedValidator.validatorIndex,
+          sourceTargetValidatorIndex: formattedValidator.validatorIndex,
+        });
+
+        if (upgradeTx) {
+          formattedValidator.upgradeSubmitted = true;
+        }
 
         return formattedValidator;
       } catch (error) {

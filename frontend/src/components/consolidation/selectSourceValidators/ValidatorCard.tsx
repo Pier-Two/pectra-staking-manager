@@ -6,14 +6,24 @@ import type { ISourceValidatorCard } from "pec/types/validator";
 import type { FC } from "react";
 import { formatEther } from "viem";
 
-export const ValidatorCard: FC<ISourceValidatorCard> = (props) => {
-  const { checked, onClick, validator } = props;
+export const ValidatorCard: FC<
+  ISourceValidatorCard & { disabled?: boolean }
+> = (props) => {
+  const { checked, onClick, validator, disabled = false } = props;
   const withdrawalAddressPrefix = validator.withdrawalAddress.slice(0, 4);
 
   return (
     <div
-      className={`flex-col-3 flex w-full items-center justify-between gap-x-4 rounded-xl border border-gray-200 bg-white p-4 hover:border-indigo-500 dark:border-gray-800 dark:bg-black dark:hover:border-gray-600 ${checked ? "border-indigo-500 dark:border-indigo-400" : ""}`}
-      onClick={onClick}
+      className={`flex-col-3 flex w-full items-center justify-between gap-x-4 rounded-xl border bg-white p-4 dark:bg-black ${
+        checked
+          ? "border-indigo-500 dark:border-indigo-400"
+          : "border-gray-200 dark:border-gray-800"
+      } ${
+        disabled
+          ? "cursor-not-allowed opacity-50"
+          : "cursor-pointer hover:border-indigo-500 dark:hover:border-gray-600"
+      }`}
+      onClick={disabled ? undefined : onClick}
     >
       <div className="flex items-center gap-x-4">
         <Checkbox

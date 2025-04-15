@@ -47,14 +47,14 @@ export const DetectedValidators: FC<IDetectedValidators> = (props) => {
             width={24}
             height={24}
           />
-          <p className="font-570 text-[14px] leading-[14px] text-zinc-950">
-            {validators.length} {cardTitle}
+          <p className="text-[14px] font-570 leading-[14px] text-zinc-950">
+            {activeValidators.length} {cardTitle}
           </p>
         </div>
 
         <div className="flex items-center gap-x-4">
           <div className="flex items-center gap-1">
-            <p className="font-570 text-[14px] leading-[14px] text-zinc-950">
+            <p className="text-[14px] font-570 leading-[14px] text-zinc-950">
               Ξ {Number(formatEther(totalBalance)).toFixed(DECIMAL_PLACES)}
             </p>
           </div>

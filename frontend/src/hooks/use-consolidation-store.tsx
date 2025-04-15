@@ -1,13 +1,12 @@
 "use client";
 
 import {
-  Transaction,
-  TransactionStatus,
+  type Transaction,
+  type TransactionStatus,
   type ValidatorDetails,
 } from "pec/types/validator";
 
 import { useStore } from "zustand";
-import { persist } from "zustand/middleware";
 import { createStore } from "zustand/vanilla";
 
 // zustand doesnt writing bigints
@@ -73,98 +72,93 @@ type ConsolidationStore = {
 };
 
 export const consolidationStore = createStore<ConsolidationStore>()(
-  persist(
-    (set, get) => ({
-      progress: 1,
-      setProgress: (progress: number) => set({ progress }),
+  (set, get) => ({
+    progress: 1,
+    setProgress: (progress: number) => set({ progress }),
 
-      currentPubKey: undefined,
-      setCurrentPubKey: (pubKey: string | undefined) =>
-        set({ currentPubKey: pubKey }),
+    currentPubKey: undefined,
+    setCurrentPubKey: (pubKey: string | undefined) =>
+      set({ currentPubKey: pubKey }),
 
-      consolidationTarget: undefined,
-      setConsolidationTarget: (validator: ValidatorDetails | undefined) =>
-        set({
-          consolidationTarget: validator
-            ? serializeValidator(validator)
-            : undefined,
-        }),
+    consolidationTarget: undefined,
+    setConsolidationTarget: (validator: ValidatorDetails | undefined) =>
+      set({
+        consolidationTarget: validator
+          ? serializeValidator(validator)
+          : undefined,
+      }),
 
-      validatorsToConsolidate: [],
-      bulkSetConsolidationTargets: (validators: ValidatorDetails[]) =>
-        set(() => ({
-          validatorsToConsolidate: validators.map(serializeValidator),
-        })),
+    validatorsToConsolidate: [],
+    bulkSetConsolidationTargets: (validators: ValidatorDetails[]) =>
+      set(() => ({
+        validatorsToConsolidate: validators.map(serializeValidator),
+      })),
 
-      addValidatorToConsolidate: (validator: ValidatorDetails) =>
-        set(() => ({
-          validatorsToConsolidate: [
-            ...get().validatorsToConsolidate,
-            serializeValidator(validator),
-          ],
-        })),
+    addValidatorToConsolidate: (validator: ValidatorDetails) =>
+      set(() => ({
+        validatorsToConsolidate: [
+          ...get().validatorsToConsolidate,
+          serializeValidator(validator),
+        ],
+      })),
 
-      removeValidatorToConsolidate: (validator: ValidatorDetails) =>
-        set((state) => ({
-          validatorsToConsolidate: state.validatorsToConsolidate.filter(
-            (v) => v.publicKey !== validator.publicKey,
-          ),
-        })),
+    removeValidatorToConsolidate: (validator: ValidatorDetails) =>
+      set((state) => ({
+        validatorsToConsolidate: state.validatorsToConsolidate.filter(
+          (v) => v.publicKey !== validator.publicKey,
+        ),
+      })),
 
-      updateConsolidatedValidator: (
-        validator: ValidatorDetails,
-        txHash: string | undefined,
-        status: TransactionStatus,
-      ) =>
-        set((state) => ({
-          validatorsToConsolidate: state.validatorsToConsolidate.map((v) =>
-            v.publicKey === validator.publicKey
-              ? {
-                  ...v,
-                  consolidationTransaction: {
-                    hash: txHash,
-                    status: status,
-                  } as Transaction,
-                }
-              : v,
-          ),
-        })),
+    updateConsolidatedValidator: (
+      validator: ValidatorDetails,
+      txHash: string | undefined,
+      status: TransactionStatus,
+    ) =>
+      set((state) => ({
+        validatorsToConsolidate: state.validatorsToConsolidate.map((v) =>
+          v.publicKey === validator.publicKey
+            ? {
+                ...v,
+                consolidationTransaction: {
+                  hash: txHash,
+                  status: status,
+                } as Transaction,
+              }
+            : v,
+        ),
+      })),
 
-      // Email fields implementation
-      summaryEmail: "",
-      setSummaryEmail: (email: string) => set({ summaryEmail: email }),
-      consolidationEmail: "",
-      setConsolidationEmail: (email: string) =>
-        set({ consolidationEmail: email }),
+    // Email fields implementation
+    summaryEmail: "",
+    setSummaryEmail: (email: string) => set({ summaryEmail: email }),
+    consolidationEmail: "",
+    setConsolidationEmail: (email: string) =>
+      set({ consolidationEmail: email }),
 
-      // Reset method implementation
-      reset: () =>
-        set({
-          progress: 1,
-          currentPubKey: undefined,
-          consolidationTarget: undefined,
-          validatorsToConsolidate: [],
-          summaryEmail: "",
-          consolidationEmail: "",
-        }),
+    // Reset method implementation
+    reset: () =>
+      set({
+        progress: 1,
+        currentPubKey: undefined,
+        consolidationTarget: undefined,
+        validatorsToConsolidate: [],
+        summaryEmail: "",
+        consolidationEmail: "",
+      }),
 
-      // Getter methods to deserialize data
-      getConsolidationTarget: () => {
-        const target = get().consolidationTarget;
-        return target ? deserialiseValidator(target) : undefined;
-      },
-      getValidatorsToConsolidate: () => {
-        return get().validatorsToConsolidate.map(deserialiseValidator);
-      },
-
-      manuallySettingValidator: false,
-      setManuallySettingValidator: (yes: boolean) =>
-        set({ manuallySettingValidator: yes }),
-    }),
-    {
-      name: "consolidation-store",
+    // Getter methods to deserialize data
+    getConsolidationTarget: () => {
+      const target = get().consolidationTarget;
+      return target ? deserialiseValidator(target) : undefined;
     },
-  ),
+    getValidatorsToConsolidate: () => {
+      return get().validatorsToConsolidate.map(deserialiseValidator);
+    },
+
+    manuallySettingValidator: false,
+    setManuallySettingValidator: (yes: boolean) =>
+      set({ manuallySettingValidator: yes }),
+  }),
 );
 
 // Custom hook to return deserialized data
