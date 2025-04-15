@@ -43,10 +43,10 @@ export const TopBar = () => {
           />
 
           <div className="flex flex-col gap-y-[3px] text-right md:text-left">
-            <h1 className="font-570 text-[19.8px] leading-[18px] dark:text-white">
+            <h1 className="text-[19.8px] font-570 leading-[18px] dark:text-white">
               Pectra Staking
             </h1>
-            <h1 className="font-570 text-[19.8px] leading-[18px] dark:text-white">
+            <h1 className="text-[19.8px] font-570 leading-[18px] dark:text-white">
               Manager
             </h1>
           </div>
@@ -73,6 +73,7 @@ export const TopBar = () => {
               >
                 <Settings className="text-gray-700 dark:text-white" />
               </Button>
+
               <UserModal
                 open={open}
                 setOpen={setOpen}

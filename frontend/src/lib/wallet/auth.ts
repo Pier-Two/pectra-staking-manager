@@ -1,11 +1,11 @@
 "use server";
 
 import { env } from "pec/env";
-import { createAuth, VerifyLoginPayloadParams } from "thirdweb/auth";
+import { createAuth, type VerifyLoginPayloadParams } from "thirdweb/auth";
 import { client } from "./client";
 import { cookies } from "next/headers";
 import { privateKeyToAccount } from "thirdweb/wallets";
-import { IResponse } from "pec/types/response";
+import type { IResponse } from "pec/types/response";
 import { COOKIE_NAME } from "pec/constants/cookie";
 
 const thirdwebAuth = createAuth({
