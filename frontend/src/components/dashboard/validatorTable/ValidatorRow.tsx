@@ -1,15 +1,5 @@
 "use client";
 
-import type { FC } from "react";
-import { useRouter } from "next/navigation";
-import Image from "next/image";
-import { Button } from "pec/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "pec/components/ui/dropdown-menu";
 import {
   AlignLeft,
   ArrowDownToDot,
@@ -20,12 +10,32 @@ import {
   MoreVertical,
   OctagonMinus,
 } from "lucide-react";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { Button } from "pec/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "pec/components/ui/dropdown-menu";
+import { Separator } from "pec/components/ui/separator";
 import { ValidatorStatus } from "pec/types/validator";
 import type { IValidatorRowProps } from "pec/types/validatorTable";
-import { Separator } from "pec/components/ui/separator";
+import type { FC } from "react";
 
+/**
+ * @Description This is a component that renders a row of a validator in the validator table.
+ * 
+ * 
+ * @param_validator - The validator object to render
+ * 
+ * @param_filterTableOptions - The current filter Options for the table
+ *   - Expected Functionality if an item is in the FilterTablesOptions array, ** IT SHOULD NOT BE RENDERED **
+ * 
+ */
 export const ValidatorRow: FC<IValidatorRowProps> = (props) => {
-  const { validator } = props;
+  const { validator, filterTableOptions } = props;
   const router = useRouter();
 
   const handleDepositNavigation = () => {
@@ -65,6 +75,7 @@ export const ValidatorRow: FC<IValidatorRowProps> = (props) => {
         </div>
       </div>
 
+      {!filterTableOptions.includes("Active since") && (
       <div className="flex-1">
         <div className="flex flex-col">
           <span>{validator.activeSince}</span>
@@ -73,9 +84,11 @@ export const ValidatorRow: FC<IValidatorRowProps> = (props) => {
           </span>
         </div>
       </div>
+      )}
 
-      <div className="flex-1">
-        <div className="flex items-center gap-1">
+      {!filterTableOptions.includes("Status") && (
+        <div className="flex-1">
+          <div className="flex items-center gap-1">
           {validator.withdrawalAddress.includes("0x02") ? (
             <CircleCheck className="h-4 w-4 fill-green-500 text-white dark:text-black" />
           ) : (
@@ -84,26 +97,33 @@ export const ValidatorRow: FC<IValidatorRowProps> = (props) => {
           <div className="font-semibold">
             {validator.withdrawalAddress.slice(0, 4)}
           </div>
+          </div>
         </div>
-      </div>
+      )}
 
-      <div className="flex-1">
-        <div className="flex items-center gap-2">
+      
+        <div className="flex-1">
+          <div className="flex items-center gap-2">
           {validator.status === ValidatorStatus.ACTIVE ? (
             <CirclePlay className="h-4 w-4 fill-green-500 text-white dark:text-black" />
           ) : (
             <CircleMinus className="h-4 w-4 fill-red-500 text-white dark:text-black" />
           )}
-          <span>{validator.status}</span>
+            <span>{validator.status}</span>
+          </div>
         </div>
-      </div>
+      
 
-      <div className="flex-1 flex flex-row justify-between">
-        <div className="flex items-center gap-1">
-          <AlignLeft className="h-3 w-3" />
-          <div className="font-semibold">{validator.balance}</div>
+      {!filterTableOptions.includes("Balance") && (
+        <div className="flex-1 flex flex-row justify-between">
+          <div className="flex items-center gap-1">
+            <AlignLeft className="h-3 w-3" />
+            <div className="font-semibold">{validator.balance}</div>
+          </div>
         </div>
+      )}
 
+      <div className="flex-1">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="icon">

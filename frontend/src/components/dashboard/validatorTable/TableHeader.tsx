@@ -9,10 +9,15 @@ import type { FC } from "react";
 export const TableHeader: FC<ITableHeadersRowProps> = ({
   sortConfig,
   onSort,
+  filterTableOptions,
 }) => {
+
+  const tableHeaderItems = DASHBOARD_VALIDATOR_COLUMN_HEADERS.filter((header) => !filterTableOptions.includes(header.label));
+
+
   return (
     <div className="hidden md:flex flex-row items-center justify-between gap-1 px-6">
-      {DASHBOARD_VALIDATOR_COLUMN_HEADERS.map((header) => (
+      {tableHeaderItems.map((header) => (
         <div
           className="flex-1 cursor-pointer"
           key={header.sortKey}
