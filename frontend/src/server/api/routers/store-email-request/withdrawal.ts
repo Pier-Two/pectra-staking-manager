@@ -1,16 +1,17 @@
-import axios, { type AxiosResponse } from "axios";
+import { type AxiosResponse } from "axios";
 import { BEACONCHAIN_OK_STATUS, CHUNK_SIZE } from "pec/lib/constants";
-import { UserModel, WithdrawalModel } from "pec/lib/database/models";
+import { WithdrawalModel } from "pec/lib/database/models";
 import { generateErrorResponse } from "pec/lib/utils";
 import { ACTIVE_STATUS, INACTIVE_STATUS } from "pec/types/app";
 import type { IResponse } from "pec/types/response";
 import { chunk, groupBy, maxBy } from "lodash";
 import type { Withdrawal } from "pec/lib/database/classes/withdrawal";
 import { z } from "zod";
-import { getBeaconChainURL } from "pec/constants/beaconchain";
-import { env } from "pec/env";
 import { sendEmailNotification } from "pec/lib/services/emailService";
-import { EMAIL_NAMES } from "pec/constants/email";
+import { SupportedNetworkIds } from "pec/constants/chain";
+import { getBeaconChainAxios } from "pec/lib/server/axios";
+import { HOODI_CHAIN_ID } from "@piertwo/contracts/constants/networks";
+import { isPopulated } from "pec/lib/utils/type-guards";
 
 const WithdrawalDataSchema = z.object({
   epoch: z.number(),
@@ -31,22 +32,26 @@ type WithdrawalResponse = z.infer<typeof WithdrawalResponseSchema>;
 
 export const storeWithdrawalRequest = async (
   validatorIndex: number,
+  network: SupportedNetworkIds,
 ): Promise<IResponse> => {
   try {
-    const response = await axios.get<WithdrawalResponse>(
-      `${getBeaconChainURL()}/api/v1/validator/${validatorIndex}/withdrawals?apikey=${env.BEACONCHAIN_API_KEY}`,
+    const response = await getBeaconChainAxios(network).get<WithdrawalResponse>(
+      `/api/v1/validator/${validatorIndex}/withdrawals`,
     );
 
-    if (!isResponseValid(response)) return storeWithdrawal(validatorIndex, 0);
+    if (!isResponseValid(response)) {
+      console.error(
+        `Invalid response from BeaconChain API: ${response.status}`,
+      );
+      return storeWithdrawal(validatorIndex, 0);
+    }
 
     const lastWithdrawal = maxBy(response.data.data, "withdrawalindex");
-    if (!lastWithdrawal) return storeWithdrawal(validatorIndex, 0);
-    const lastWithdrawalIndex = Number(lastWithdrawal.withdrawalindex) ?? 0;
 
-    if (!lastWithdrawalIndex || lastWithdrawalIndex === 0)
-      return storeWithdrawal(validatorIndex, 0);
-
-    return storeWithdrawal(validatorIndex, lastWithdrawalIndex);
+    return storeWithdrawal(
+      validatorIndex,
+      lastWithdrawal?.withdrawalindex ?? 0,
+    );
   } catch (error) {
     return generateErrorResponse(error);
   }
@@ -57,12 +62,6 @@ export const processWithdrawals = async (): Promise<IResponse> => {
     const withdrawals = await WithdrawalModel.find({
       status: ACTIVE_STATUS,
     });
-
-    if (!withdrawals)
-      return {
-        success: false,
-        error: "Withdrawal query failed to execute.",
-      };
 
     if (withdrawals.length === 0)
       return {
@@ -77,66 +76,57 @@ export const processWithdrawals = async (): Promise<IResponse> => {
         .map((item) => item.validatorIndex)
         .join(",");
 
-      // TODO hardcoded env here
-      const response = await axios.get<WithdrawalResponse>(
-        `${getBeaconChainURL(true)}/api/v1/validator/${validatorIndexString}/withdrawals?apikey=${env.BEACONCHAIN_API_KEY}`,
+      const response = await getBeaconChainAxios(
+        HOODI_CHAIN_ID,
+      )<WithdrawalResponse>(
+        `/api/v1/validator/${validatorIndexString}/withdrawals`,
       );
 
-      if (!isResponseValid(response))
+      if (!isResponseValid(response)) {
         return generateErrorResponse(response.status);
+      }
 
-      const groupedValidators = groupWithdrawalsByValidator(response.data);
+      const groupedValidators = groupBy(response.data.data, "validatorindex");
 
       for (const validatorIndex in groupedValidators) {
-        const validatorWithdrawals = groupedValidators[validatorIndex];
-        if (!validatorWithdrawals) continue;
-
-        const lastWithdrawal = maxBy(validatorWithdrawals, "withdrawalindex");
-        if (!lastWithdrawal) continue;
-        const lastWithdrawalIndex = Number(lastWithdrawal.withdrawalindex) ?? 0;
-
         const currentWithdrawal = await WithdrawalModel.findOne({
           validatorIndex: Number(validatorIndex),
           status: ACTIVE_STATUS,
-        });
+        }).populate("user");
 
         if (!currentWithdrawal) continue;
 
-        const currentUser = await UserModel.findById(currentWithdrawal.user);
-        if (!currentUser) {
-          await WithdrawalModel.updateOne(
-            { validatorIndex },
-            { $set: { status: INACTIVE_STATUS } },
-          );
+        const validatorWithdrawals = groupedValidators[validatorIndex] ?? [];
+
+        const newLastWithdrawalIndex =
+          maxBy(validatorWithdrawals, "withdrawalindex")?.withdrawalindex ?? 0;
+
+        if (newLastWithdrawalIndex <= currentWithdrawal.withdrawalIndex)
           continue;
-        }
 
-        const email = await sendEmailNotification(
-          "PECTRA_STAKING_MANAGER_WITHDRAWAL_COMPLETE",
-          {
-            ...currentUser,
-          },
-        );
-
-        if (!email.success) {
-          console.error("Error sending email notification:", email.error);
-          continue;
-        }
-
-        if (
-          lastWithdrawalIndex !== 0 &&
-          lastWithdrawalIndex > currentWithdrawal.withdrawalIndex
-        ) {
-          await WithdrawalModel.updateOne(
-            { validatorIndex },
+        if (isPopulated(currentWithdrawal.user)) {
+          const email = await sendEmailNotification(
+            "PECTRA_STAKING_MANAGER_WITHDRAWAL_COMPLETE",
             {
-              $set: {
-                withdrawalIndex: lastWithdrawalIndex,
-                status: INACTIVE_STATUS,
-              },
+              ...currentWithdrawal.user,
             },
           );
+
+          if (!email.success) {
+            console.error("Error sending email notification:", email.error);
+            continue;
+          }
         }
+
+        await WithdrawalModel.updateOne(
+          { validatorIndex },
+          {
+            $set: {
+              withdrawalIndex: newLastWithdrawalIndex,
+              status: INACTIVE_STATUS,
+            },
+          },
+        );
       }
     }
 
@@ -147,10 +137,6 @@ export const processWithdrawals = async (): Promise<IResponse> => {
   } catch (error) {
     return generateErrorResponse(error);
   }
-};
-
-const groupWithdrawalsByValidator = (data: WithdrawalResponse) => {
-  return groupBy(data.data, "validatorindex");
 };
 
 const chunkWithdrawals = (withdrawals: Withdrawal[]) => {

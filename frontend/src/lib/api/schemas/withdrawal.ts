@@ -14,12 +14,6 @@ export enum EWithdrawalStage {
   TRANSACTIONS_CONFIRMED = "TRANSACTIONS_CONFIRMED",
 }
 
-// export const WithdrawalSchema = z.array(
-//   ValidatorDataSchema.extend({
-//     withdrawalAmount: z.number().optional(),
-//   }),
-// );
-
 export const WithdrawalSchema = z.object({
   withdrawals: z.array(WithdrawalDataSchema),
 });

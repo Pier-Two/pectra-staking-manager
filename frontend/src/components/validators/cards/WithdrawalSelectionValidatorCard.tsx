@@ -44,8 +44,6 @@ export const WithdrawalSelectionValidatorCard = ({
     return numValue;
   };
 
-  console.log(Number(formatEther(validator.balance)));
-
   return (
     <div
       className={cn(

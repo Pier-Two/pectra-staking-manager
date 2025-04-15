@@ -85,7 +85,6 @@ const Withdrawal: FC = () => {
   if (!validators) return <WithdrawalLoading />;
 
   const handleValidatorSelect = (validator: ValidatorDetails) => {
-    // console.log("handleValidatorSelect: ", validator);
     // Find if this validator is already in the array
     const existingIndex = withdrawals.findIndex(
       (field) => field.validator.validatorIndex === validator.validatorIndex,
@@ -132,7 +131,8 @@ const Withdrawal: FC = () => {
       (withdrawal) => withdrawal.amount > 0,
     );
     // TODO: Send off tx
-    //
+    // TODO: STore req
+
     console.log("onSubmit for withdrawal HIT: ", filteredData);
   };
 

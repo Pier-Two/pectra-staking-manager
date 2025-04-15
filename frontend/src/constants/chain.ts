@@ -24,3 +24,5 @@ export const SUPPORTED_NETWORKS_IDS = [
   HOODI_CHAIN_DETAILS.id,
   mainnet.id,
 ] as const;
+
+export type SupportedNetworkIds = (typeof SUPPORTED_NETWORKS_IDS)[number];
