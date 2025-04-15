@@ -120,6 +120,46 @@ export const validatorRouter = createTRPCRouter({
       }
     }),
 
+  getValidatorDetails: publicProcedure
+    .input(z.object({ searchTerm: z.string() }))
+    .query(async ({ input: { searchTerm } }) => {
+      try {
+        const { data } = await axios.get<BeaconChainValidatorDetailsResponse>(
+          `${getBeaconChainURL()}/api/v1/validator/${searchTerm}?apikey=${env.BEACONCHAIN_API_KEY}`,
+        );
+
+        const validator = data.data;
+
+        if (!validator.validatorindex) {
+          return "NOT_FOUND";
+        }
+
+        const { activeSince, activeDuration } = getValidatorActiveInfo(
+          validator.activationepoch,
+        );
+
+        const formattedValidator = {
+          validatorIndex: validator.validatorindex,
+          publicKey: validator.pubkey,
+          withdrawalAddress: validator.withdrawalcredentials,
+          balance: BigInt(validator.balance) * BigInt(10 ** 9),
+          effectiveBalance:
+            BigInt(validator.effectivebalance) * BigInt(10 ** 9),
+          status: validator.status.toLowerCase().includes("active")
+            ? ValidatorStatus.ACTIVE
+            : ValidatorStatus.INACTIVE,
+          numberOfWithdrawals: validator.total_withdrawals,
+          activeSince,
+          activeDuration,
+        };
+
+        return formattedValidator;
+      } catch (error) {
+        console.error("Error getting validator: ", error);
+        return "NOT_FOUND";
+      }
+    }),
+
   updateConsolidationRecord: publicProcedure
     .input(
       z.object({
