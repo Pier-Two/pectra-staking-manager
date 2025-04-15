@@ -3,6 +3,7 @@ import { getValidatorActiveInfo } from "pec/lib/utils/validatorActivity";
 import { createTRPCRouter, publicProcedure } from "pec/server/api/trpc";
 import type {
   BeaconChainAllValidatorsResponse,
+  BeaconChainValidatorArrayDetailsResponse,
   BeaconChainValidatorDetailsResponse,
 } from "pec/types/api";
 import {
@@ -39,7 +40,7 @@ export const validatorRouter = createTRPCRouter({
 
         const validatorDetails = await getBeaconChainAxios(
           network,
-        ).get<BeaconChainValidatorDetailsResponse>(
+        ).get<BeaconChainValidatorArrayDetailsResponse>(
           `/api/v1/validator/${validatorIndexes.join(",")}`,
         );
 
@@ -121,11 +122,15 @@ export const validatorRouter = createTRPCRouter({
     }),
 
   getValidatorDetails: publicProcedure
-    .input(z.object({ searchTerm: z.string() }))
-    .query(async ({ input: { searchTerm } }) => {
+    .input(
+      z.object({ searchTerm: z.string(), network: SupportedChainIdSchema }),
+    )
+    .query(async ({ input: { searchTerm, network } }) => {
       try {
-        const { data } = await axios.get<BeaconChainValidatorDetailsResponse>(
-          `${getBeaconChainURL()}/api/v1/validator/${searchTerm}?apikey=${env.BEACONCHAIN_API_KEY}`,
+        const { data } = await getBeaconChainAxios(
+          network,
+        ).get<BeaconChainValidatorDetailsResponse>(
+          `/api/v1/validator/${searchTerm}`,
         );
 
         const validator = data.data;
