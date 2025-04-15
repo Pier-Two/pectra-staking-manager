@@ -5,7 +5,7 @@ import { eth_call } from "thirdweb";
 import { fromHex, encodePacked, parseEther } from "viem";
 import { useActiveAccount } from "thirdweb/react";
 import { api } from "pec/trpc/react";
-import { WithdrawalFormType } from "pec/lib/api/schemas/withdrawal";
+import { type WithdrawalFormType } from "pec/lib/api/schemas/withdrawal";
 import { toast } from "sonner";
 import { useActiveChainWithDefault } from "./useChain";
 import { parseError } from "pec/lib/utils/parseError";
@@ -69,7 +69,7 @@ export const useSubmitWithdraw = () => {
         const txHash = await account.sendTransaction({
           to: contracts.consolidation.address,
           value: withdrawalFee,
-          data: callData as `0x${string}`,
+          data: callData,
           chainId: chain.id,
         });
 
@@ -86,6 +86,7 @@ export const useSubmitWithdraw = () => {
 
         if (!result.success) {
           console.log("Error saving withdrawal to database:", result.error);
+
           toast.error("There was an error withdrawing", {
             description: result.error,
           });

@@ -13,9 +13,8 @@ import { useValidators } from "pec/hooks/useValidators";
 const Consolidation: FC = () => {
   const router = useRouter();
   const walletAddress = useWalletAddress();
-  if (!walletAddress) return <ConsolidationLoading />;
-
   const { data } = useValidators();
+
   if (!data) return <ConsolidationLoading />;
 
   const handleConsolidationRedirect = () => {

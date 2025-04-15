@@ -1,5 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unnecessary-type-assertion */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+
 import axios from "axios";
-import { IError } from "pec/types/response";
+import { type IError } from "pec/types/response";
 import { z } from "zod";
 
 export const parseError = (
@@ -16,6 +20,13 @@ export const parseError = (
 
   if (error instanceof Error) {
     return error.message;
+  }
+
+  if (
+    "message" in (error as any) &&
+    typeof (error as any).message === "string"
+  ) {
+    return (error as any).message as string;
   }
 
   if (typeof error === "string") {
