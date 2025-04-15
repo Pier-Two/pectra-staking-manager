@@ -22,7 +22,7 @@ export const Connector: FC<IConnector> = (props) => {
 
         <p
           className={clsx(
-            "font-380 text-[15px] leading-[15px] text-zinc-950 dark:text-gray-400",
+            "font-380 w-full px-[2%] text-[15px] leading-[15px] text-zinc-950 dark:text-zinc-50",
             textAlignment === "center" ? "text-center" : "text-left",
           )}
         >

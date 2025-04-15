@@ -36,7 +36,7 @@ export const DetectedValidators: FC<IDetectedValidators> = (props) => {
       <div
         onClick={() => setShowValidators(!showValidators)}
         className={clsx(
-          "flex-col-2 flex w-full items-center justify-between gap-x-4 rounded-xl px-4 py-6 hover:cursor-pointer hover:border-indigo-300 dark:border-gray-800 dark:bg-black",
+          "flex-col-2 flex w-full items-center justify-between gap-x-4 rounded-2xl border border-indigo-300 bg-white px-4 py-6 transition-colors hover:cursor-pointer dark:border-gray-800 dark:bg-black",
           showValidators && "outline outline-[1px] outline-primary",
         )}
       >
@@ -47,14 +47,14 @@ export const DetectedValidators: FC<IDetectedValidators> = (props) => {
             width={24}
             height={24}
           />
-          <p className="font-570 text-[14px] leading-[14px] text-zinc-950">
+          <p className="font-570 text-[14px] leading-[14px] text-zinc-950 dark:text-zinc-50">
             {validators.length} {cardTitle}
           </p>
         </div>
 
         <div className="flex items-center gap-x-4">
           <div className="flex items-center gap-1">
-            <p className="font-570 text-[14px] leading-[14px] text-zinc-950">
+            <p className="font-570 text-[14px] leading-[14px] text-zinc-950 dark:text-zinc-50">
               Ξ {Number(formatEther(totalBalance)).toFixed(DECIMAL_PLACES)}
             </p>
           </div>

@@ -4,7 +4,7 @@ export const PectraSpinner = () => {
       className="h-6 w-6 animate-spin"
       viewBox="0 0 24 24"
       fill="none"
-      strokeWidth="2"
+      strokeWidth="1"
       strokeLinecap="round"
       strokeLinejoin="round"
     >
