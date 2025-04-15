@@ -61,13 +61,13 @@ export const processWithdrawals = async (): Promise<IResponse> => {
     if (!withdrawals)
       return {
         success: false,
-        message: "Withdrawal query failed to execute.",
+        error: "Withdrawal query failed to execute.",
       };
 
     if (withdrawals.length === 0)
       return {
         success: true,
-        message: "No active withdrawals found, nothing to process.",
+        data: null,
       };
 
     const chunkedWithdrawals = chunkWithdrawals(withdrawals);
@@ -111,18 +111,15 @@ export const processWithdrawals = async (): Promise<IResponse> => {
           continue;
         }
 
-        const email = await sendEmailNotification({
-          emailName: EMAIL_NAMES.PECTRA_STAKING_MANAGER_WITHDRAWAL_COMPLETE,
-          metadata: {
-            email: currentUser.email,
-            firstName: currentUser.firstName,
-            lastName: currentUser.lastName,
-            companyName: currentUser.companyName,
+        const email = await sendEmailNotification(
+          "PECTRA_STAKING_MANAGER_WITHDRAWAL_COMPLETE",
+          {
+            ...currentUser,
           },
-        });
+        );
 
         if (!email.success) {
-          console.error("Error sending email notification:", email.message);
+          console.error("Error sending email notification:", email.error);
           continue;
         }
 
@@ -145,7 +142,7 @@ export const processWithdrawals = async (): Promise<IResponse> => {
 
     return {
       success: true,
-      message: "Withdrawal requests processed successfully.",
+      data: null,
     };
   } catch (error) {
     return generateErrorResponse(error);
@@ -187,7 +184,7 @@ const storeWithdrawal = async (
 
     return {
       success: true,
-      message: "Withdrawal request stored successfully.",
+      data: null,
     };
   } catch (error) {
     return generateErrorResponse(error);

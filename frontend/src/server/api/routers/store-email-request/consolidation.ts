@@ -8,7 +8,6 @@ import { env } from "pec/env";
 import { z } from "zod";
 import { BEACONCHAIN_OK_STATUS } from "pec/lib/constants";
 import { sendEmailNotification } from "pec/lib/services/emailService";
-import { EMAIL_NAMES } from "pec/constants/email";
 
 const ConsolidationDataSchema = z.object({
   activationeligibilityepoch: z.number(),
@@ -47,13 +46,13 @@ export const processConsolidations = async (): Promise<IResponse> => {
     if (!consolidations)
       return {
         success: false,
-        message: "Consolidation query failed to execute.",
+        error: "Consolidation query failed to execute.",
       };
 
     if (consolidations.length === 0)
       return {
         success: true,
-        message: "No active consolidations found, nothing to process.",
+        data: null,
       };
 
     for (const consolidation of consolidations) {
@@ -76,19 +75,16 @@ export const processConsolidations = async (): Promise<IResponse> => {
       const consolidated = isConsolidationProcessed(consolidationData);
       if (!consolidated) continue;
 
-      const email = await sendEmailNotification({
-        emailName: EMAIL_NAMES.PECTRA_STAKING_MANAGER_CONSOLIDATION_COMPLETE,
-        metadata: {
-          email: currentUser.email,
-          firstName: currentUser.firstName,
-          lastName: currentUser.lastName,
-          companyName: currentUser.companyName,
+      const email = await sendEmailNotification(
+        "PECTRA_STAKING_MANAGER_CONSOLIDATION_COMPLETE",
+        {
+          ...currentUser,
           txHash,
         },
-      });
+      );
 
       if (!email.success) {
-        console.error("Error sending email notification:", email.message);
+        console.error("Error sending email notification:", email.error);
         continue;
       }
 
@@ -97,7 +93,7 @@ export const processConsolidations = async (): Promise<IResponse> => {
 
     return {
       success: true,
-      message: "Consolidations processed successfully.",
+      data: null,
     };
   } catch (error) {
     return generateErrorResponse(error);
