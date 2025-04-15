@@ -26,6 +26,7 @@
     "@nomicfoundation/hardhat-viem": "^2.0.6",
     "@typechain/ethers-v6": "^0.5.1",
     "@typechain/hardhat": "^9.1.0",
+    "axios": "^1.8.4",
     "chai": "4",
     "date-fns": "^4.1.0",
     "dotenv": "^16.4.7",
