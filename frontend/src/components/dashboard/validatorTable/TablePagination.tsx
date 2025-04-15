@@ -1,4 +1,3 @@
-import type { FC } from "react";
 import {
   Pagination,
   PaginationContent,
@@ -9,6 +8,7 @@ import {
   PaginationPrevious,
 } from "pec/components/ui/pagination";
 import type { ITablePaginationProps } from "pec/types/validatorTable";
+import type { FC } from "react";
 
 const getVisiblePages = (currentPage: number, totalPages: number): number[] => {
   const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
@@ -39,7 +39,7 @@ export const TablePagination: FC<ITablePaginationProps> = (props) => {
         <div>validators</div>
       </div>
 
-      <Pagination className="justify-end">
+      <Pagination className="justify-center sm:justify-end sm:pb-0 pb-4">
         <PaginationContent className="flex items-center gap-1 rounded-xl border border-gray-200 bg-white p-1 shadow-sm dark:border-gray-800 dark:bg-black">
           <PaginationItem>
             <PaginationPrevious

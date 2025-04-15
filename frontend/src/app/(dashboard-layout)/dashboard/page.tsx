@@ -36,7 +36,7 @@ const Dashboard: FC = () => {
   );
 
   return (
-    <div className="flex w-full flex-col items-center dark:text-white">
+    <div className="flex w-full flex-col items-center dark:text-white ">
       <div className="flex w-full items-center justify-center bg-indigo-50 p-12 dark:bg-gray-900">
         <div className="w-[78vw] space-y-6">
           <div className="text-2xl font-medium text-indigo-800 dark:text-indigo-200">

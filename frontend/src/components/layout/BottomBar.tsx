@@ -30,20 +30,20 @@ export const BottomBar: FC = () => {
   };
 
   return (
-    <footer className="sticky bottom-0 z-10 flex h-10 w-full items-center justify-between border-t bg-[rgba(255,255,255,0.98)] px-6 shadow-sm dark:border-gray-800 dark:bg-gray-950">
-      <div className="text-[11px] leading-[11px] text-zinc-950 dark:text-gray-300">
+    <footer className="sticky bottom-0 z-10 flex flex-col sm:flex-row p-4 w-full items-center justify-center sm:justify-between border-t gap-y-4 bg-[rgba(255,255,255,0.98)] px-6 shadow-sm dark:border-gray-800 dark:bg-gray-950">
+      <div className="text-[11px] leading-[11px] text-zinc-950 dark:text-gray-300 text-center sm:text-left">
         Built with 🩶 by and for the Ethereum community
       </div>
 
-      <div className="flex items-center gap-8 text-sm text-gray-600 dark:text-gray-300">
-        <div className="flex flex-wrap items-center gap-x-3">
+      <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-8 text-sm text-gray-600 dark:text-gray-300">
+        <div className="flex flex-wrap items-center justify-center gap-x-3">
           <p className="text-[11px] leading-[11px] text-zinc-950">
             Product by:
           </p>
           {renderLogo("PierTwo")}
         </div>
 
-        <div className="flex flex-wrap items-center gap-x-3">
+        <div className="flex flex-wrap items-center justify-center gap-x-3">
           <p className="text-[11px] leading-[11px] text-zinc-950">
             Produced by:{" "}
           </p>

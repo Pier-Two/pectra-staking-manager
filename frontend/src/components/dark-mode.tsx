@@ -1,5 +1,6 @@
 "use client";
 
+import clsx from "clsx";
 import { Moon, Sun } from "lucide-react";
 import { useTheme } from "pec/hooks/useTheme";
 import { Button } from "./ui/button";
@@ -9,11 +10,11 @@ const DarkMode = () => {
 
   return (
     <Button
-      className={`rounded-full border ${
+      className={clsx(`rounded-full border ${
         darkMode
-          ? "border-gray-700 dark:bg-black dark:hover:bg-gray-900"
-          : "border-primary/30 bg-gray-100 hover:bg-gray-200"
-      } p-3`}
+          ? "border-gray-700 dark:bg-gray-950 dark:hover:bg-gray-900"
+          : "border-primary/30 bg-white hover:bg-primary/10"
+      } p-3`)}
       onClick={toggleDarkMode}
     >
       {darkMode ? (

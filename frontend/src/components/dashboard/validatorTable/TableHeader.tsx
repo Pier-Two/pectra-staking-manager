@@ -1,19 +1,17 @@
-import type { FC } from "react";
+import { ChevronDown, ChevronsLeftRight, ChevronUp } from "lucide-react";
+import { DASHBOARD_VALIDATOR_COLUMN_HEADERS } from "pec/constants/columnHeaders";
 import {
   ESortDirection,
   type ITableHeadersRowProps,
 } from "pec/types/validatorTable";
-import { ChevronsLeftRight } from "lucide-react";
-import { ChevronDown } from "lucide-react";
-import { ChevronUp } from "lucide-react";
-import { DASHBOARD_VALIDATOR_COLUMN_HEADERS } from "pec/constants/columnHeaders";
+import type { FC } from "react";
 
 export const TableHeader: FC<ITableHeadersRowProps> = ({
   sortConfig,
   onSort,
 }) => {
   return (
-    <div className="flex flex-row items-center justify-between gap-1 px-6">
+    <div className="hidden md:flex flex-row items-center justify-between gap-1 px-6">
       {DASHBOARD_VALIDATOR_COLUMN_HEADERS.map((header) => (
         <div
           className="flex-1 cursor-pointer"
