@@ -75,11 +75,12 @@ export const ManuallyEnterValidator = () => {
     setProgress(2);
   };
 
-  const copyToClipboard = (text: string) => {
-    void navigator.clipboard.writeText(text); // TODO odd
-    toast("Copied!", {
-      description: "Public key copied to clipboard",
-    });
+  const [copied, setCopied] = useState(false);
+
+  const copyToClipboard = async (text: string) => {
+    await navigator.clipboard.writeText(text);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
   };
 
   return (
@@ -135,7 +136,9 @@ export const ManuallyEnterValidator = () => {
                       className="h-8 px-2"
                     >
                       <Copy className="mr-1 h-4 w-4" />
-                      <span className="text-xs">Copy</span>
+                      <span className="text-xs">
+                        {copied ? "Copied!" : "Copy"}
+                      </span>
                     </Button>
                   </div>
                   <div className="break-all font-mono text-sm">
