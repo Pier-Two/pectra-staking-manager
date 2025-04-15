@@ -27,7 +27,7 @@ const chartConfig = {
   },
 };
 
-export const AreaChartComponent: FC<IAreaChart> = ({ chart }) => {
+export const AreaChartComponent: FC<IAreaChart> = ({ chart, isFullscreen }) => {
   const { chartData, yAxis, legend, xAxis } = chart;
   const {
     lowerRange,
@@ -37,9 +37,6 @@ export const AreaChartComponent: FC<IAreaChart> = ({ chart }) => {
     showLabel: showYLabel,
     orientation: yOrientation,
   } = yAxis;
-
-  console.log("Range: ", lowerRange, " to ", upperRange);
-  console.log("Ticks: ", ticks);
 
   const {
     label: xLabel,
@@ -71,13 +68,22 @@ export const AreaChartComponent: FC<IAreaChart> = ({ chart }) => {
   };
 
   return (
-    <ChartContainer className="w-[90%] min-w-[800px]" config={chartConfig}>
+    <ChartContainer
+      className={`mx-auto w-full max-w-[800px] ${isFullscreen ? "max-w-none" : ""}`}
+      config={chartConfig}
+    >
       <AreaChart
         data={chartData}
-        margin={{ top: 10, right: 10, left: 10, bottom: 10 }}
-        width={800}
-        height={300}
-        className="max-sm:w-[280px]"
+        margin={{ top: 10, right: 50, left: 10, bottom: isFullscreen ? 200 : 10 }}
+        width={
+          typeof window !== "undefined"
+            ? isFullscreen
+              ? window.innerWidth - 40
+              : Math.min(window.innerWidth - 40, 800)
+            : 800
+        }
+        height={isFullscreen ? 400 : 300}
+        className="w-full"
       >
         <defs>
           <linearGradient id="fillPectra" x1="0" y1="0" x2="0" y2="1">

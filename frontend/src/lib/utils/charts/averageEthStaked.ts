@@ -32,8 +32,8 @@ export const constructAverageEthStakedChartData = (
     chartData: filteredChartData,
     yAxis,
     xAxis,
-    legend: true,
-    footer: `An overview of how much ETH is staked for each upgrade on average.`,
+    legend: false,
+    footer: `An overview of how much ETH is staked on average per validator for the Pectra upgrade.`,
   };
 };
 

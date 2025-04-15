@@ -1,4 +1,4 @@
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Expand } from "lucide-react";
 import Image from "next/image";
 import { Card, CardHeader } from "pec/components/ui/card";
 import { Skeleton } from "pec/components/ui/skeleton";
@@ -19,6 +19,7 @@ export const ChartSkeleton = () => {
           </div>
 
           <div className="flex flex-row items-center gap-2">
+            <Expand className="h-10 w-10 rounded-full border-2 p-2 dark:border-gray-800 dark:bg-gray-900 max-sm:hidden" />
             <ChevronLeft className="h-10 w-10 rounded-full border-2 p-2 dark:border-gray-800 dark:bg-gray-900 max-sm:h-8 max-sm:w-8 max-sm:p-1.5" />
             <ChevronRight className="h-10 w-10 rounded-full border-2 p-2 dark:border-gray-800 dark:bg-gray-900 max-sm:h-8 max-sm:w-8 max-sm:p-1.5" />
           </div>

@@ -5,6 +5,7 @@ export interface IChartContainer {
 }
 export interface IAreaChart {
   chart: IChart;
+  isFullscreen: boolean;
 }
 
 export interface IChart {
