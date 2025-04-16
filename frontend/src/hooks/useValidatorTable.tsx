@@ -1,12 +1,16 @@
-import { useState, useMemo } from "react";
-import { ESortDirection, type SortConfig } from "pec/types/validatorTable";
-import type { ValidatorDetails } from "pec/types/validator";
+import type { ValidatorDetails, ValidatorStatus } from "pec/types/validator";
+import type { IHeaderConfig, SortConfig } from "pec/types/validatorTable";
+import { ESortDirection, } from "pec/types/validatorTable";
+import { useMemo, useState } from "react";
+
 
 export function useValidatorTable(data: ValidatorDetails[], itemsPerPage = 10) {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<string[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [sortConfig, setSortConfig] = useState<SortConfig | null>(null);
+  const [filterTableOptions, setFilterTableOptions] = useState<IHeaderConfig['label'][]>([]);
+
 
   const filteredData = useMemo(() => {
     return (
@@ -51,6 +55,10 @@ export function useValidatorTable(data: ValidatorDetails[], itemsPerPage = 10) {
     );
   }, [sortedData, currentPage, itemsPerPage]);
 
+  const getValidatorCount = (status: ValidatorStatus) => {
+    return data.filter((validator) => validator.status === status).length;
+  };
+
   const totalPages = Math.ceil(filteredData.length / itemsPerPage);
 
   const handleSort = (key: string) => {
@@ -81,8 +89,15 @@ export function useValidatorTable(data: ValidatorDetails[], itemsPerPage = 10) {
     if (page >= 1 && page <= totalPages) setCurrentPage(page);
   };
 
+  const handleFilterTableOptionsChange = (option: IHeaderConfig['label']) => {
+    if (filterTableOptions.includes(option))
+      setFilterTableOptions(filterTableOptions.filter((v) => v !== option));
+    else setFilterTableOptions([...filterTableOptions, option]);
+  };
+
   return {
     // State
+    filterTableOptions,
     searchTerm,
     statusFilter,
     currentPage,
@@ -96,5 +111,7 @@ export function useValidatorTable(data: ValidatorDetails[], itemsPerPage = 10) {
     handleStatusFilterChange,
     handleSearchChange,
     handlePageChange,
+    getValidatorCount,
+    handleFilterTableOptionsChange,
   };
 }

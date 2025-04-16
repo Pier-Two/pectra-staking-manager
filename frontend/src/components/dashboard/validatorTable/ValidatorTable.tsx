@@ -1,17 +1,18 @@
 "use client";
 
-import type { FC } from "react";
-import { TableFilters } from "./TableFilters";
-import { TablePagination } from "./TablePagination";
 import { useValidatorTable } from "pec/hooks/useValidatorTable";
 import type { IGenericValidators } from "pec/types/validator";
+import type { FC } from "react";
 import { TableContent } from "./TableContent";
+import { TableFilters } from "./TableFilters";
+import { TablePagination } from "./TablePagination";
 
 export const ValidatorTable: FC<IGenericValidators> = (props) => {
   const { validators } = props;
   const {
     searchTerm,
     statusFilter,
+    filterTableOptions,
     currentPage,
     sortConfig,
     filteredData,
@@ -21,6 +22,8 @@ export const ValidatorTable: FC<IGenericValidators> = (props) => {
     handleStatusFilterChange,
     handleSearchChange,
     handlePageChange,
+    handleFilterTableOptionsChange,
+    getValidatorCount,
   } = useValidatorTable(validators);
 
   const itemsPerPage = 10;
@@ -32,12 +35,16 @@ export const ValidatorTable: FC<IGenericValidators> = (props) => {
         onSearchChange={handleSearchChange}
         statusFilter={statusFilter}
         onStatusFilterChange={handleStatusFilterChange}
+        filterTableOptions={filterTableOptions}
+        onFilterTableOptionsChange={handleFilterTableOptionsChange}
+        getValidatorCount={getValidatorCount}
       />
 
       <TableContent
         paginatedData={paginatedData}
         sortConfig={sortConfig}
         onSort={handleSort}
+        filterTableOptions={filterTableOptions}
       />
 
       <TablePagination
