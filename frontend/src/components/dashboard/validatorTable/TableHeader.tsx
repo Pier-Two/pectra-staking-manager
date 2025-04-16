@@ -7,7 +7,7 @@ import {
 } from "pec/types/validatorTable";
 import type { FC } from "react";
 
-// This is the config for the grid template columns for the table header it is shared between the table header and the validator row so that the columns are aligned and the same width
+// This is the config for the grid template columns MIN and MAX widths then the flex-grow
 export const getGridTemplateColumns = (filterLength: number) => {
   const templates = {
     0: "[grid-template-columns:minmax(150px,200px)_minmax(150px,200px)_minmax(100px,200px)_minmax(100px,200px)_minmax(100px,200px)_minmax(100px,100px)]",
@@ -16,7 +16,7 @@ export const getGridTemplateColumns = (filterLength: number) => {
     3: "[grid-template-columns:minmax(150px,200px)_minmax(150px,200px)_minmax(100px,100px)]",
   };
   return templates[filterLength as keyof typeof templates];
-}; 
+};
 
 export const TableHeader: FC<ITableHeadersRowProps> = ({
   sortConfig,
