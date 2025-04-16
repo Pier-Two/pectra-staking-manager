@@ -2,18 +2,15 @@ import Image from "next/image";
 import { AlignLeft, Check, ExternalLink } from "lucide-react";
 import { Separator } from "../../ui/separator";
 import { PrimaryButton } from "../../ui/custom/PrimaryButton";
-import { PectraSpinner } from "pec/components/ui/custom/pectraSpinner";
 import { EIconPosition } from "pec/types/components";
 import { SecondaryButton } from "pec/components/ui/custom/SecondaryButton";
 import { DECIMAL_PLACES } from "pec/lib/constants";
-import { formatEther } from "viem";
 import { DepositWorkflowStage } from "pec/types/batch-deposits";
 
 export interface IDistributionInformation {
-  buttonText: string;
-  disableButton: boolean;
   onSubmit?: () => void;
   resetBatchDeposit: () => void;
+  submitButtonDisabled?: boolean;
   numDeposits: number;
   stage: DepositWorkflowStage;
   totalAllocated: number;
@@ -21,10 +18,9 @@ export interface IDistributionInformation {
 }
 
 export const DistributionInformation = ({
-  buttonText,
-  disableButton,
   onSubmit,
   resetBatchDeposit,
+  submitButtonDisabled,
   numDeposits,
   stage,
   totalAllocated,
@@ -47,13 +43,6 @@ export const DistributionInformation = ({
       label: "Allocated",
     },
   ];
-
-  const handleViewTransaction = () => {
-    window.open(
-      "https://etherscan.io/tx/0x1234567890abcdef1234567890abcdef1234567890",
-      "_blank",
-    );
-  };
 
   const handleMakeAnotherDeposit = () => {
     resetBatchDeposit();
@@ -95,37 +84,31 @@ export const DistributionInformation = ({
         </div>
 
         <div className="w-1/4">
-          {stage === "transactions-confirmed" ? (
+          {stage.type === "transactions-finalised" && (
             <div className="flex flex-row items-center gap-2">
               <Check className="h-4 w-4 text-green-500" />
               <div className="text-sm">Done</div>
             </div>
-          ) : (
+          )}
+          {stage.type === "data-capture" && (
             <PrimaryButton
               className="w-full"
-              icon={
-                stage === "transactions-submitted" ? (
-                  <PectraSpinner />
-                ) : undefined
-              }
-              iconPosition={
-                stage === "transactions-submitted"
-                  ? EIconPosition.LEFT
-                  : undefined
-              }
-              disabled={disableButton}
               onClick={onSubmit}
-              label={buttonText}
+              label={"Deposit"}
+              disabled={submitButtonDisabled}
             />
           )}
         </div>
       </div>
 
-      {stage === "transactions-submitted" && (
+      {(stage.type === "transactions-submitted" ||
+        stage.type === "transactions-finalised") && (
         <>
           <div className="rounded-xl bg-gray-100 p-2 text-sm text-green-500">
-            Your transactions have been submitted successfully and will be
-            processed shortly. It is safe to leave this page.
+            Your transactions{" "}
+            {stage.type === "transactions-submitted"
+              ? "have been submitted successfully and will be processed shortly. It is safe to leave this page."
+              : "have been processed successfully."}
           </div>
 
           <SecondaryButton
@@ -133,15 +116,18 @@ export const DistributionInformation = ({
             icon={<ExternalLink className="h-4 w-4" />}
             iconPosition={EIconPosition.RIGHT}
             disabled={false}
-            onClick={handleViewTransaction}
-          />
-
-          <PrimaryButton
-            label="Make another deposit"
-            onClick={handleMakeAnotherDeposit}
-            disabled={false}
+            onClick={() => {
+              window.open(`https://etherscan.io/tx/${stage.txHash}`, "_blank");
+            }}
           />
         </>
+      )}
+      {stage.type !== "data-capture" && stage.type !== "sign-data" && (
+        <PrimaryButton
+          label="Make another deposit"
+          onClick={handleMakeAnotherDeposit}
+          disabled={false}
+        />
       )}
     </div>
   );

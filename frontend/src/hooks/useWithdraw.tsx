@@ -111,6 +111,5 @@ export const useSubmitWithdraw = () => {
 
   return {
     submitWithdrawalsMutationFn: mutationFn,
-    withdrawalFee,
   };
 };

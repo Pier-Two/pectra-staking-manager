@@ -3,12 +3,14 @@ import { DistributionInformation } from "../distribution/DistributionInformation
 import { DepositSignDataCard } from "pec/components/validators/cards/DepositSignDataCard";
 import { SIGN_DEPOSIT_COLUMN_HEADERS } from "pec/constants/columnHeaders";
 import { DepositData } from "pec/lib/api/schemas/deposit";
+import { DepositWorkflowStage } from "pec/types/batch-deposits";
 
 export interface IDepositList {
   deposits: DepositData[];
   resetBatchDeposit: () => void;
   totalAllocated: number;
   totalToDistribute: number;
+  stage: DepositWorkflowStage;
 }
 
 export const DepositList = ({
@@ -16,14 +18,13 @@ export const DepositList = ({
   resetBatchDeposit,
   totalAllocated,
   totalToDistribute,
+  stage,
 }: IDepositList) => {
   return (
     <>
       <DistributionInformation
-        buttonText="Submitting"
-        disableButton={false}
         resetBatchDeposit={resetBatchDeposit}
-        stage={"transactions-submitted"}
+        stage={stage}
         totalAllocated={totalAllocated}
         totalToDistribute={totalToDistribute}
         numDeposits={deposits.length}
@@ -44,6 +45,7 @@ export const DepositList = ({
             <DepositSignDataCard
               key={`deposit-${index}-${deposit.validator.validatorIndex}`}
               deposit={deposit}
+              stage={stage}
             />
           );
         })}

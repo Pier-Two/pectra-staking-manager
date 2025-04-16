@@ -1,8 +1,8 @@
 export type DepositWorkflowStage =
-  | "data-capture"
-  | "sign-data"
-  | "transactions-submitted"
-  | "transactions-confirmed";
+  | { type: "data-capture" }
+  | { type: "sign-data" }
+  | { type: "transactions-submitted"; txHash: string }
+  | { type: "transactions-finalised"; txHash: string };
 
 export interface IDistributionOptionProps {
   option: IDistributionOption;

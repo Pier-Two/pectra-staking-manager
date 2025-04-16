@@ -136,25 +136,3 @@ const isResponseValid = (
   const result = WithdrawalResponseSchema.safeParse(response.data);
   return result.success;
 };
-
-const storeWithdrawal = async (
-  validatorIndex: number,
-  withdrawalIndex: number,
-): Promise<IResponse> => {
-  try {
-    await WithdrawalModel.create({
-      data: {
-        validatorIndex,
-        withdrawalIndex,
-        status: ACTIVE_STATUS,
-      },
-    });
-
-    return {
-      success: true,
-      data: null,
-    };
-  } catch (error) {
-    return generateErrorResponse(error);
-  }
-};

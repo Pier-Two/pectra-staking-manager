@@ -10,12 +10,12 @@ import type { FieldErrors, UseFormRegister } from "react-hook-form";
 import { DISTRIBUTION_OPTIONS } from "pec/constants/deposit";
 
 export interface IDistributionMethodProps {
-  disableButton: boolean;
   distributionMethod: EDistributionMethod;
   onDistributionMethodChange: (method: EDistributionMethod) => void;
   onSubmit: () => void;
   resetBatchDeposit: () => void;
   numDeposits: number;
+  submitButtonDisabled: boolean;
   stage: DepositWorkflowStage;
   totalAllocated: number;
   totalToDistribute: number;
@@ -25,11 +25,11 @@ export interface IDistributionMethodProps {
 }
 
 export const DistributionMethod = ({
-  disableButton,
   distributionMethod,
   onDistributionMethodChange,
   onSubmit,
   resetBatchDeposit,
+  submitButtonDisabled,
   numDeposits,
   stage,
   totalAllocated,
@@ -67,8 +67,7 @@ export const DistributionMethod = ({
 
       <div className="space-y-2">
         <DistributionInformation
-          buttonText="Deposit"
-          disableButton={disableButton}
+          submitButtonDisabled={submitButtonDisabled}
           onSubmit={onSubmit}
           resetBatchDeposit={resetBatchDeposit}
           numDeposits={numDeposits}

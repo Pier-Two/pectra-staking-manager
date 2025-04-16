@@ -7,18 +7,16 @@ import {
   DepositSchema,
   type DepositType,
 } from "pec/lib/api/schemas/deposit";
-import {
-  DepositWorkflowStage,
-  EDistributionMethod,
-} from "pec/types/batch-deposits";
+import { EDistributionMethod } from "pec/types/batch-deposits";
 import type { ValidatorDetails } from "pec/types/validator";
 import { useForm, useWatch } from "react-hook-form";
 import { DistributionMethod } from "./distribution/DistributionMethod";
 import { SignatureDetails } from "./SignatureDetails";
 import { DepositList } from "./validators/DepositList";
 import { SelectValidators } from "./validators/SelectValidators";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { DECIMAL_PLACES } from "pec/lib/constants";
+import { useBatchDeposit } from "pec/hooks/useBatchDeposit";
 
 export interface IDepositWorkflowProps {
   validators: ValidatorDetails[];
@@ -29,7 +27,7 @@ export const DepositWorkflow = ({
   validators,
   balance,
 }: IDepositWorkflowProps) => {
-  const [stage, setStage] = useState<DepositWorkflowStage>("data-capture");
+  const { submitBatchDeposit, stage, resetStage } = useBatchDeposit();
 
   const initialValues: DepositType = {
     deposits: [],
@@ -75,7 +73,6 @@ export const DepositWorkflow = ({
 
   const handleDistributionMethodChange = (method: EDistributionMethod) => {
     setValue("distributionMethod", method);
-    setStage("data-capture");
 
     if (method === EDistributionMethod.SPLIT) {
       updateDepositsArrayWithSplitAmount(watchedDeposits, totalToDistribute);
@@ -133,24 +130,17 @@ export const DepositWorkflow = ({
 
   const handleResetBatchDeposit = () => {
     reset(initialValues);
+    resetStage();
   };
 
-  const onSubmit = (data: DepositType, realSubmit = false) => {
-    setStage("sign-data");
+  const onSubmit = async (data: DepositType) => {
+    const filteredData = data.deposits.filter((deposit) => deposit.amount > 0);
 
-    if (realSubmit) {
-      const filteredData = data.deposits.filter(
-        (deposit) => deposit.amount > 0,
-      );
-      console.log("onSubmit for deposit HIT: ", filteredData);
-    }
+    await submitBatchDeposit(filteredData, totalAllocated, data.email);
   };
 
   return (
-    <form
-      className="flex flex-col gap-y-4"
-      onSubmit={handleSubmit((data) => onSubmit(data, false))}
-    >
+    <div className="flex flex-col gap-y-4">
       <div className="space-y-8">
         <div className="flex flex-col gap-4">
           <div className="flex gap-x-4 text-indigo-800 dark:text-indigo-300">
@@ -163,7 +153,7 @@ export const DepositWorkflow = ({
           </div>
         </div>
 
-        {stage === "data-capture" && (
+        {stage.type === "data-capture" && (
           <>
             {balance === 0 ? (
               <SignatureDetails
@@ -178,12 +168,12 @@ export const DepositWorkflow = ({
                 />
 
                 <DistributionMethod
+                  submitButtonDisabled={shouldBeDisabled}
                   errors={errors}
                   register={register}
-                  disableButton={shouldBeDisabled}
                   distributionMethod={watchedDistributionMethod}
                   onDistributionMethodChange={handleDistributionMethodChange}
-                  onSubmit={handleSubmit((data) => onSubmit(data, true))}
+                  onSubmit={handleSubmit(onSubmit)}
                   resetBatchDeposit={handleResetBatchDeposit}
                   numDeposits={watchedDeposits.length}
                   stage={stage}
@@ -210,7 +200,7 @@ export const DepositWorkflow = ({
           </>
         )}
 
-        {stage !== "data-capture" && (
+        {stage.type !== "data-capture" && (
           <>
             <SignatureDetails
               title="Sign deposit data"
@@ -218,6 +208,7 @@ export const DepositWorkflow = ({
             />
 
             <DepositList
+              stage={stage}
               deposits={watchedDeposits}
               resetBatchDeposit={handleResetBatchDeposit}
               totalAllocated={totalAllocated}
@@ -226,6 +217,6 @@ export const DepositWorkflow = ({
           </>
         )}
       </div>
-    </form>
+    </div>
   );
 };

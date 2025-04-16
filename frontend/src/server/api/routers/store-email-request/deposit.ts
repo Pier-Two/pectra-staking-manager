@@ -128,7 +128,6 @@ const groupDepositsByValidator = (data: DepositResponse) => {
 
 const chunkDeposits = (deposits: Deposit[]) => {
   const formatted = deposits.map((deposit) => ({
-    user: deposit.user,
     validatorIndex: deposit.validatorIndex,
   }));
 
