@@ -73,8 +73,6 @@ export const useSubmitWithdraw = () => {
           chainId: chain.id,
         });
 
-        console.info("Withdrawal Transaction Hash:", txHash);
-
         const result = await saveWithdrawalToDatabase({
           requestData: {
             validatorIndex: withdrawal.validator.validatorIndex,
@@ -85,8 +83,6 @@ export const useSubmitWithdraw = () => {
         });
 
         if (!result.success) {
-          console.log("Error saving withdrawal to database:", result.error);
-
           toast.error("There was an error withdrawing", {
             description: result.error,
           });

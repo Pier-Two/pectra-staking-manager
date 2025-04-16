@@ -1,15 +1,15 @@
-import axios, { type AxiosResponse } from "axios";
+import { type AxiosResponse } from "axios";
 import { BEACONCHAIN_OK_STATUS, CHUNK_SIZE } from "pec/lib/constants";
-import { UserModel, WithdrawalModel } from "pec/lib/database/models";
+import { WithdrawalModel } from "pec/lib/database/models";
 import { generateErrorResponse } from "pec/lib/utils";
 import { ACTIVE_STATUS, INACTIVE_STATUS } from "pec/types/app";
 import type { IResponse } from "pec/types/response";
 import { chunk, groupBy, maxBy } from "lodash";
 import type { Withdrawal } from "pec/lib/database/classes/withdrawal";
 import { z } from "zod";
-import { getBeaconChainURL } from "pec/constants/beaconchain";
-import { env } from "pec/env";
 import { sendEmailNotification } from "pec/lib/services/emailService";
+import { getBeaconChainAxios } from "pec/lib/server/axios";
+import { MAIN_CHAIN } from "pec/lib/constants/contracts";
 
 const WithdrawalDataSchema = z.object({
   epoch: z.number(),
@@ -27,29 +27,6 @@ const WithdrawalResponseSchema = z.object({
 });
 
 type WithdrawalResponse = z.infer<typeof WithdrawalResponseSchema>;
-
-export const storeWithdrawalRequest = async (
-  validatorIndex: number,
-): Promise<IResponse> => {
-  try {
-    const response = await axios.get<WithdrawalResponse>(
-      `${getBeaconChainURL()}/api/v1/validator/${validatorIndex}/withdrawals?apikey=${env.BEACONCHAIN_API_KEY}`,
-    );
-
-    if (!isResponseValid(response)) return storeWithdrawal(validatorIndex, 0);
-
-    const lastWithdrawal = maxBy(response.data.data, "withdrawalindex");
-    if (!lastWithdrawal) return storeWithdrawal(validatorIndex, 0);
-    const lastWithdrawalIndex = Number(lastWithdrawal.withdrawalindex) ?? 0;
-
-    if (!lastWithdrawalIndex || lastWithdrawalIndex === 0)
-      return storeWithdrawal(validatorIndex, 0);
-
-    return storeWithdrawal(validatorIndex, lastWithdrawalIndex);
-  } catch (error) {
-    return generateErrorResponse(error);
-  }
-};
 
 export const processWithdrawals = async (): Promise<IResponse> => {
   try {
@@ -76,8 +53,10 @@ export const processWithdrawals = async (): Promise<IResponse> => {
         .map((item) => item.validatorIndex)
         .join(",");
 
-      const response = await axios.get<WithdrawalResponse>(
-        `${getBeaconChainURL()}/api/v1/validator/${validatorIndexString}/withdrawals?apikey=${env.BEACONCHAIN_API_KEY}`,
+      const response = await getBeaconChainAxios(
+        MAIN_CHAIN.id,
+      ).get<WithdrawalResponse>(
+        `/api/v1/validator/${validatorIndexString}/withdrawals`,
       );
 
       if (!isResponseValid(response))
@@ -99,42 +78,33 @@ export const processWithdrawals = async (): Promise<IResponse> => {
         });
 
         if (!currentWithdrawal) continue;
-
-        const currentUser = await UserModel.findById(currentWithdrawal.user);
-        if (!currentUser) {
-          await WithdrawalModel.updateOne(
-            { validatorIndex },
-            { $set: { status: INACTIVE_STATUS } },
-          );
+        if (
+          lastWithdrawalIndex === 0 ||
+          lastWithdrawalIndex <= currentWithdrawal.withdrawalIndex
+        )
           continue;
+
+        if (currentWithdrawal.email) {
+          const email = await sendEmailNotification(
+            "PECTRA_STAKING_MANAGER_WITHDRAWAL_COMPLETE",
+            currentWithdrawal.email,
+          );
+
+          if (!email.success) {
+            console.error("Error sending email notification:", email.error);
+            continue;
+          }
         }
 
-        const email = await sendEmailNotification(
-          "PECTRA_STAKING_MANAGER_WITHDRAWAL_COMPLETE",
+        await WithdrawalModel.updateOne(
+          { validatorIndex },
           {
-            ...currentUser,
+            $set: {
+              withdrawalIndex: lastWithdrawalIndex,
+              status: INACTIVE_STATUS,
+            },
           },
         );
-
-        if (!email.success) {
-          console.error("Error sending email notification:", email.error);
-          continue;
-        }
-
-        if (
-          lastWithdrawalIndex !== 0 &&
-          lastWithdrawalIndex > currentWithdrawal.withdrawalIndex
-        ) {
-          await WithdrawalModel.updateOne(
-            { validatorIndex },
-            {
-              $set: {
-                withdrawalIndex: lastWithdrawalIndex,
-                status: INACTIVE_STATUS,
-              },
-            },
-          );
-        }
       }
     }
 
