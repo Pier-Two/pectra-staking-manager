@@ -10,11 +10,11 @@ const DarkMode = () => {
 
   return (
     <Button
-      className={clsx(`rounded-full border ${
+      className={clsx("rounded-full border",
         darkMode
           ? "border-gray-700 dark:bg-gray-950 dark:hover:bg-gray-900"
           : "border-primary/30 bg-white hover:bg-primary/10"
-      } p-3`)}
+      )}
       onClick={toggleDarkMode}
     >
       {darkMode ? (

@@ -7,7 +7,7 @@ import {
 } from "pec/types/validatorTable";
 import type { FC } from "react";
 
-// This is the config for the grid template columns MIN and MAX widths then
+// This is the config for the grid template columns MIN and MAX widths then flexbox handles the rest
 export const getGridTemplateColumns = (filterLength: number) => {
   const templates = {
     0: "[grid-template-columns:minmax(150px,200px)_minmax(150px,200px)_minmax(100px,200px)_minmax(100px,200px)_minmax(75px,200px)_minmax(0px,100px)]",
