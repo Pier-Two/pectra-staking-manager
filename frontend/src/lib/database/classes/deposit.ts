@@ -1,5 +1,4 @@
-import { modelOptions, prop, type Ref } from "@typegoose/typegoose";
-import { User } from "./user";
+import { modelOptions, prop } from "@typegoose/typegoose";
 import { DatabaseDocumentStatuses } from "pec/types/app";
 import { DatabaseDepositType } from "pec/lib/api/schemas/database/deposit";
 
@@ -11,9 +10,6 @@ import { DatabaseDepositType } from "pec/lib/api/schemas/database/deposit";
   },
 })
 export class Deposit implements DatabaseDepositType {
-  @prop({ required: true, ref: () => User })
-  public user!: Ref<User>;
-
   @prop({ required: true, enum: DatabaseDocumentStatuses })
   public status!: (typeof DatabaseDocumentStatuses)[number];
 
@@ -22,4 +18,7 @@ export class Deposit implements DatabaseDepositType {
 
   @prop({ required: true })
   public txHash!: string;
+
+  @prop()
+  public email?: string;
 }

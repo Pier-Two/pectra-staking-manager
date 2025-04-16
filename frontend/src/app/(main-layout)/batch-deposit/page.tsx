@@ -8,6 +8,7 @@ import { useWalletBalance } from "thirdweb/react";
 import { client } from "pec/lib/wallet/client";
 import { DepositWorkflow } from "pec/components/batch-deposits/DepositWorkflow";
 import { useValidators } from "pec/hooks/useValidators";
+import { formatEther } from "viem";
 
 const BatchDeposit: FC = () => {
   const walletAddress = useWalletAddress();
@@ -32,9 +33,15 @@ const BatchDeposit: FC = () => {
     !isFetched ||
     isLoading ||
     isError;
+
   if (componentLoading) return <BatchDepositLoading />;
 
-  return <DepositWorkflow data={data} balance={Number(balance.value) ?? 0} />;
+  return (
+    <DepositWorkflow
+      validators={data}
+      balance={Number(formatEther(balance.value)) ?? 0}
+    />
+  );
 };
 
 export default BatchDeposit;

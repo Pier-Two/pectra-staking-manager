@@ -1,9 +1,11 @@
-import type { FC } from "react";
-import type { IWalletBalance } from "pec/types/batch-deposits";
 import { AlignLeft } from "lucide-react";
 import { DECIMAL_PLACES } from "pec/lib/constants";
 
-export const WalletBalance: FC<IWalletBalance> = ({ balance }) => {
+interface IWalletBalance {
+  balance: number;
+}
+
+export const WalletBalance = ({ balance }: IWalletBalance) => {
   return (
     <div className="flex flex-row items-center gap-1">
       <div className="text-xs text-gray-500 dark:text-gray-500">

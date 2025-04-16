@@ -1,31 +1,38 @@
-import { type FC, useState } from "react";
-import type { ISelectValidatorsProps } from "pec/types/batch-deposits";
+import { useState } from "react";
+import type { EDistributionMethod } from "pec/types/batch-deposits";
 import { DepositSelectionValidatorCard } from "../../validators/cards/DepositSelectionValidatorCard";
 import { ValidatorHeader } from "./ValidatorHeader";
 import { ValidatorListHeaders } from "./ValidatorListHeaders";
 import { keyBy, orderBy } from "lodash";
 import { type SortDirection } from "./ColumnHeader";
 import { DEPOSIT_COLUMN_HEADERS } from "pec/constants/columnHeaders";
-import type { DepositType } from "pec/lib/api/schemas/deposit";
+import type { DepositData, DepositType } from "pec/lib/api/schemas/deposit";
 import type { FieldErrors, UseFormRegister } from "react-hook-form";
+import { ValidatorDetails } from "pec/types/validator";
 
-interface ExtendedProps extends ISelectValidatorsProps {
+export interface ISelectValidatorsProps {
+  clearSelectedValidators: () => void;
+  distributionMethod: EDistributionMethod;
+  handleValidatorSelect: (validator: ValidatorDetails) => void;
+  deposits: DepositData[];
+  totalAllocated: number;
+  totalToDistribute: number;
+  validators: ValidatorDetails[];
   errors: FieldErrors<DepositType>;
   register: UseFormRegister<DepositType>;
 }
 
-export const SelectValidators: FC<ExtendedProps> = ({
+export const SelectValidators = ({
   clearSelectedValidators,
   distributionMethod,
   errors,
   register,
   handleValidatorSelect,
-  selectedValidators,
+  deposits,
   totalAllocated,
   totalToDistribute,
-  watchedDeposits,
   validators,
-}) => {
+}: ISelectValidatorsProps) => {
   const [sortColumn, setSortColumn] = useState<string | null>(null);
   const [sortDirection, setSortDirection] = useState<SortDirection>(null);
 
@@ -35,10 +42,7 @@ export const SelectValidators: FC<ExtendedProps> = ({
     setSortDirection(null);
   };
 
-  const selectedValidatorRecord = keyBy(
-    selectedValidators,
-    (v) => v.validatorIndex,
-  );
+  const depositRecord = keyBy(deposits, (v) => v.validator.validatorIndex);
 
   const handleSort = (column: string) => {
     if (sortColumn === column) {
@@ -61,7 +65,7 @@ export const SelectValidators: FC<ExtendedProps> = ({
   return (
     <>
       <ValidatorHeader
-        selectedCount={selectedValidators.length}
+        selectedCount={deposits.length}
         totalCount={validators?.length ?? 0}
         onClear={handleClearValidators}
       />
@@ -75,21 +79,26 @@ export const SelectValidators: FC<ExtendedProps> = ({
         />
 
         <div className="flex w-full flex-col gap-y-2">
-          {sortedValidators?.map((validator, index) => (
-            <DepositSelectionValidatorCard
-              key={`depositValidator-${validator.validatorIndex}-${index}`}
-              index={index}
-              depositAmount={watchedDeposits[index]?.amount ?? BigInt(0)}
-              errors={errors}
-              handleSelect={() => handleValidatorSelect(validator)}
-              register={register}
-              validator={validator}
-              distributionMethod={distributionMethod}
-              selected={!!selectedValidatorRecord[validator.validatorIndex]}
-              totalAllocated={totalAllocated}
-              totalToDistribute={totalToDistribute}
-            />
-          ))}
+          {sortedValidators?.map((validator) => {
+            const depositIndex = deposits.findIndex(
+              (d) => d.validator.validatorIndex === validator.validatorIndex,
+            );
+            return (
+              <DepositSelectionValidatorCard
+                key={`depositValidator-${validator.validatorIndex}`}
+                depositIndex={depositIndex}
+                depositAmount={deposits[depositIndex]?.amount ?? 0}
+                errors={errors}
+                handleSelect={() => handleValidatorSelect(validator)}
+                register={register}
+                validator={validator}
+                distributionMethod={distributionMethod}
+                selected={!!depositRecord[validator.validatorIndex]}
+                totalAllocated={totalAllocated}
+                totalToDistribute={totalToDistribute}
+              />
+            );
+          })}
         </div>
       </div>
     </>

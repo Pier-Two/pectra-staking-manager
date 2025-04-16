@@ -1,10 +1,15 @@
-import type { FC } from "react";
-import type { IValidatorHeaderProps } from "pec/types/batch-deposits";
 import { ChevronDown, ChevronUp, ChevronsUpDown } from "lucide-react";
 
 export type SortDirection = "asc" | "desc" | null;
 
-export const ColumnHeader: FC<IValidatorHeaderProps> = (props) => {
+export interface IValidatorHeaderProps {
+  label: string;
+  showSort: boolean;
+  sortDirection: SortDirection;
+  onSort: () => void;
+}
+
+export const ColumnHeader = (props: IValidatorHeaderProps) => {
   const { label, sortDirection, onSort, showSort } = props;
 
   return (

@@ -1,8 +1,7 @@
 import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "pec/server/api/trpc";
-import { storeDepositRequest } from "./deposit";
 import { SupportedChainIdSchema } from "pec/lib/api/schemas/network";
-import { WithdrawalModel } from "pec/lib/database/models";
+import { DepositModel, WithdrawalModel } from "pec/lib/database/models";
 import { getBeaconChainAxios } from "pec/lib/server/axios";
 import {
   BeaconchainWithdrawalResponse,
@@ -14,6 +13,7 @@ import { maxBy } from "lodash";
 import { IResponse } from "pec/types/response";
 import { generateErrorResponse } from "pec/lib/utils";
 import { getLoggedInUserOrCreate } from "pec/lib/server/user";
+import { DatabaseDepositSchema } from "pec/lib/api/schemas/database/deposit";
 
 export const storeEmailRequestRouter = createTRPCRouter({
   storeWithdrawalRequest: publicProcedure
@@ -36,28 +36,23 @@ export const storeEmailRequestRouter = createTRPCRouter({
           `/api/v1/validator/${requestData.validatorIndex}/withdrawals`,
         );
 
-        if (!isBeaconchainWithdrawalResponseValid(response)) {
-          await WithdrawalModel.create({
-            ...requestData,
-            withdrawalIndex: 0,
-            user: userResponse.data,
-            status: ACTIVE_STATUS,
-          });
+        const beaconchainResonseValid =
+          isBeaconchainWithdrawalResponseValid(response);
 
+        let withdrawalIndex = 0;
+        if (beaconchainResonseValid) {
+          const lastWithdrawal = maxBy(response.data.data, "withdrawalindex");
+
+          withdrawalIndex = lastWithdrawal?.withdrawalindex ?? 0;
+        } else {
           console.error(
             `Invalid response from BeaconChain API: ${response.status}`,
           );
-          return {
-            success: true,
-            data: null,
-          };
         }
-
-        const lastWithdrawal = maxBy(response.data.data, "withdrawalindex");
 
         await WithdrawalModel.create({
           ...requestData,
-          withdrawalIndex: lastWithdrawal?.withdrawalindex ?? 0,
+          withdrawalIndex,
           user: userResponse.data,
           status: ACTIVE_STATUS,
         });
@@ -72,9 +67,18 @@ export const storeEmailRequestRouter = createTRPCRouter({
     }),
 
   storeDepositRequest: publicProcedure
-    .input(z.object({ validatorIndex: z.number(), txHash: z.string() }))
-    .mutation(({ input }) => {
-      const { validatorIndex, txHash } = input;
-      return storeDepositRequest(validatorIndex, txHash);
+    .input(DatabaseDepositSchema.omit({ status: true }).array())
+    .mutation(async ({ input }): Promise<IResponse<null>> => {
+      try {
+        await DepositModel.create(input);
+
+        return {
+          success: true,
+          data: null,
+        };
+      } catch (error) {
+        console.log(error);
+        return generateErrorResponse(error);
+      }
     }),
 });

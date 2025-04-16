@@ -12,6 +12,12 @@ export const DEPOSIT_COLUMN_HEADERS = [
   { label: "Deposit", showSort: false },
 ] as const;
 
+export const SIGN_WITHDRAWAL_COLUMN_HEADERS = [
+  { label: "Validator", showSort: true },
+  { label: "Balance", showSort: true },
+  { label: "Status", showSort: false },
+] as const;
+
 export const DASHBOARD_VALIDATOR_COLUMN_HEADERS: IHeaderConfig[] = [
   { label: "Validator", sortKey: "validatorIndex" },
   { label: "Active since", sortKey: "activeSince" },

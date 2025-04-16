@@ -1,7 +1,6 @@
 "use client";
 
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { HOODI_CHAIN_DETAILS } from "pec/constants/chain";
 import { client } from "pec/lib/wallet/client";
 import { api } from "pec/trpc/react";
 import { TransactionStatus } from "pec/types/validator";
@@ -13,6 +12,8 @@ import { useConsolidationStore } from "./use-consolidation-store";
 import { useContracts } from "./useContracts";
 import { useRpcClient } from "./useRpcClient";
 import { type Account } from "thirdweb/wallets";
+import { ChainOptions } from "thirdweb/chains";
+import { useActiveChainWithDefault } from "./useChain";
 
 // helper function that is called within the useSubmitConsolidate() hook
 const consolidateValidator = async (
@@ -21,9 +22,14 @@ const consolidateValidator = async (
   srcAddress: string,
   targetAddress: string,
   feeData: bigint,
+  chain: Readonly<
+    ChainOptions & {
+      rpc: string;
+    }
+  >,
 ) => {
-  const srcAddressWithoutLeading = srcAddress.replace(/^0x/g, "");
-  const targetAddressWithoutLeading = targetAddress.replace(/^0x/g, "");
+  const srcAddressWithoutLeading = srcAddress.slice(2);
+  const targetAddressWithoutLeading = targetAddress.slice(2);
 
   // Concatenate and add the 0x prefix
   const callData = `0x${srcAddressWithoutLeading}${targetAddressWithoutLeading}`;
@@ -33,12 +39,12 @@ const consolidateValidator = async (
     to: consolidationContractAddress,
     value: feeData,
     data: callData as `0x${string}`,
-    chainId: HOODI_CHAIN_DETAILS.id, // TODO make dynamic
+    chainId: chain.id,
   });
 
   // wait for the tx to be confirmed
   const upgradeTx = await waitForReceipt({
-    chain: HOODI_CHAIN_DETAILS,
+    chain,
     client: client,
     transactionHash: upgradeTransaction.transactionHash,
   });
@@ -77,6 +83,7 @@ export const useSubmitConsolidate = () => {
   const contracts = useContracts();
   const rpcClient = useRpcClient();
   const account = useActiveAccount();
+  const chain = useActiveChainWithDefault();
 
   const {
     consolidationTarget,
@@ -124,6 +131,7 @@ export const useSubmitConsolidate = () => {
           consolidationTarget.publicKey,
           consolidationTarget.publicKey,
           feeData,
+          chain,
         );
 
         // save upgrade tx to db
@@ -170,6 +178,7 @@ export const useSubmitConsolidate = () => {
             validator.publicKey,
             validator.publicKey,
             feeData,
+            chain,
           );
 
           // save upgrade tx to db
@@ -195,6 +204,7 @@ export const useSubmitConsolidate = () => {
           validator.publicKey,
           consolidationTarget.publicKey,
           feeData,
+          chain,
         );
 
         updateConsolidatedValidator(
