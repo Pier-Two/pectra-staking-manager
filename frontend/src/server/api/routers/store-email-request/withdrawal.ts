@@ -10,7 +10,6 @@ import { z } from "zod";
 import { getBeaconChainURL } from "pec/constants/beaconchain";
 import { env } from "pec/env";
 import { sendEmailNotification } from "pec/lib/services/emailService";
-import { EMAIL_NAMES } from "pec/constants/email";
 
 const WithdrawalDataSchema = z.object({
   epoch: z.number(),
@@ -77,9 +76,8 @@ export const processWithdrawals = async (): Promise<IResponse> => {
         .map((item) => item.validatorIndex)
         .join(",");
 
-      // TODO hardcoded env here
       const response = await axios.get<WithdrawalResponse>(
-        `${getBeaconChainURL(true)}/api/v1/validator/${validatorIndexString}/withdrawals?apikey=${env.BEACONCHAIN_API_KEY}`,
+        `${getBeaconChainURL()}/api/v1/validator/${validatorIndexString}/withdrawals?apikey=${env.BEACONCHAIN_API_KEY}`,
       );
 
       if (!isResponseValid(response))

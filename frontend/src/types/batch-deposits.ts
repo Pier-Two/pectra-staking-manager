@@ -36,13 +36,6 @@ export interface IDistributionOption {
   description: string;
 }
 
-export interface IBatchDepositState {
-  distributionMethod: EDistributionMethod;
-  selectedValidators: IBatchDepositValidators[];
-  totalToDistribute: number;
-  totalAllocated: bigint;
-}
-
 export interface IDistributionMethodProps {
   disableButton: boolean;
   distributionMethod: EDistributionMethod;

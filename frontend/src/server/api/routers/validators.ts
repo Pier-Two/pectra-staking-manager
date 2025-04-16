@@ -1,6 +1,5 @@
 import axios from "axios";
 import { z } from "zod";
-
 import { getBeaconChainURL } from "pec/constants/beaconchain";
 import { env } from "pec/env";
 import {
@@ -76,7 +75,7 @@ export const validatorRouter = createTRPCRouter({
         });
 
         for (const validator of validators) {
-          const [withdrawTx, consolidationTx, depositTx] = await Promise.all([
+          const [, consolidationTx, depositTx] = await Promise.all([
             await WithdrawalModel.findOne({
               validatorIndex: validator.validatorIndex,
             }),
@@ -171,7 +170,6 @@ export const validatorRouter = createTRPCRouter({
       const { targetValidatorIndex, sourceTargetValidatorIndex, txHash, user } =
         input;
 
-      // Check if a record with these validator indexes already exists
       const existingRecord = await ConsolidationModel.findOne({
         $or: [
           {
@@ -185,13 +183,11 @@ export const validatorRouter = createTRPCRouter({
         ],
       });
 
-      if (existingRecord) {
+      if (existingRecord)
         throw new Error(
           `Consolidation record already exists for validators ${targetValidatorIndex} and ${sourceTargetValidatorIndex}`,
         );
-      }
 
-      // Create new consolidation record
       const newRecord = await ConsolidationModel.create({
         targetValidatorIndex,
         sourceTargetValidatorIndex,

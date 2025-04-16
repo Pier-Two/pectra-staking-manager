@@ -71,6 +71,7 @@ export const TopBar = () => {
               >
                 <Settings className="text-gray-700 dark:text-white" />
               </Button>
+
               <UserModal
                 open={open}
                 setOpen={setOpen}
