@@ -67,7 +67,6 @@ export const DetectedValidators: FC<IDetectedValidators> = (props) => {
           {activeValidators.map((validator, index) => (
             <ValidatorCard
               key={index + validator.validatorIndex}
-              hasBackground={true}
               hasHover={false}
               shrink={true}
               validator={validator}
@@ -76,7 +75,6 @@ export const DetectedValidators: FC<IDetectedValidators> = (props) => {
           {inactiveValidators.map((validator, index) => (
             <ValidatorCard
               key={index + validator.validatorIndex}
-              hasBackground={false}
               hasHover={false}
               shrink={true}
               validator={validator}

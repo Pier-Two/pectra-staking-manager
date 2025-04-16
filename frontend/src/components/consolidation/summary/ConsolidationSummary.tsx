@@ -5,11 +5,11 @@ import { PrimaryButton } from "pec/components/ui/custom/PrimaryButton";
 import { SecondaryButton } from "pec/components/ui/custom/SecondaryButton";
 import { ValidatorCard } from "pec/components/validators/cards/ValidatorCard";
 import { DetectedValidators } from "pec/components/validators/DetectedValidators";
+import { useSubmitConsolidate } from "pec/hooks/use-consolidation";
 import { useConsolidationStore } from "pec/hooks/use-consolidation-store";
 import { EIconPosition } from "pec/types/components";
 import { Email } from "./Email";
 import { Overview } from "./Overview";
-import { useSubmitConsolidate } from "pec/hooks/use-consolidation";
 
 export const ConsolidationSummary = () => {
   const {
@@ -55,7 +55,6 @@ export const ConsolidationSummary = () => {
 
           <div className="flex flex-col items-center justify-center gap-4">
             <ValidatorCard
-              hasBackground={true}
               hasHover={false}
               shrink={false}
               validator={consolidationTarget!}

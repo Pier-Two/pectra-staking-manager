@@ -1,12 +1,12 @@
+import {
+  TransactionSchema,
+  ValidatorDataSchema,
+} from "pec/lib/api/schemas/validator";
 import { z } from "zod";
 import type {
   EDistributionMethod,
   IBatchDepositValidators,
 } from "./batch-deposits";
-import {
-  TransactionSchema,
-  ValidatorDataSchema,
-} from "pec/lib/api/schemas/validator";
 
 export type ValidatorDetails = z.infer<typeof ValidatorDataSchema>;
 
@@ -38,7 +38,6 @@ export interface IGenericValidators {
 }
 
 export interface IValidatorCard {
-  hasBackground: boolean;
   hasHover: boolean;
   shrink: boolean;
   validator: ValidatorDetails;
