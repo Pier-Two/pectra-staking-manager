@@ -1,31 +1,31 @@
-"use client";
-
-import { type FC } from "react";
 import Image from "next/image";
 import { AlignLeft, Check, ExternalLink } from "lucide-react";
 import { Separator } from "../../ui/separator";
 import { PrimaryButton } from "../../ui/custom/PrimaryButton";
-import {
-  EBatchDepositStage,
-  type IDistributionInformation,
-} from "pec/types/batch-deposits";
-import { PectraSpinner } from "pec/components/ui/custom/pectraSpinner";
 import { EIconPosition } from "pec/types/components";
 import { SecondaryButton } from "pec/components/ui/custom/SecondaryButton";
 import { DECIMAL_PLACES } from "pec/lib/constants";
-import { formatEther } from "viem";
+import { type DepositWorkflowStage } from "pec/types/batch-deposits";
 
-export const DistributionInformation: FC<IDistributionInformation> = ({
-  buttonText,
-  disableButton,
+export interface IDistributionInformation {
+  onSubmit?: () => void;
+  resetBatchDeposit: () => void;
+  submitButtonDisabled?: boolean;
+  numDeposits: number;
+  stage: DepositWorkflowStage;
+  totalAllocated: number;
+  totalToDistribute: number;
+}
+
+export const DistributionInformation = ({
   onSubmit,
   resetBatchDeposit,
-  selectedValidators,
+  submitButtonDisabled,
+  numDeposits,
   stage,
-  setValue,
   totalAllocated,
   totalToDistribute,
-}) => {
+}: IDistributionInformation) => {
   const distributionStats = [
     {
       icon: <AlignLeft className="h-4 w-4" />,
@@ -34,27 +34,15 @@ export const DistributionInformation: FC<IDistributionInformation> = ({
     },
     {
       imageUrl: "/icons/EthValidator.svg",
-      value: selectedValidators.length,
+      value: numDeposits,
       label: "Selected",
     },
     {
       icon: <AlignLeft className="h-4 w-4" />,
-      value: formatEther(totalAllocated ?? 0n),
+      value: totalAllocated,
       label: "Allocated",
     },
   ];
-
-  const handleClick = () => {
-    if (setValue) setValue("stage", EBatchDepositStage.TRANSACTIONS_SUBMITTED);
-    if (onSubmit) onSubmit();
-  };
-
-  const handleViewTransaction = () => {
-    window.open(
-      "https://etherscan.io/tx/0x1234567890abcdef1234567890abcdef1234567890",
-      "_blank",
-    );
-  };
 
   const handleMakeAnotherDeposit = () => {
     resetBatchDeposit();
@@ -96,37 +84,31 @@ export const DistributionInformation: FC<IDistributionInformation> = ({
         </div>
 
         <div className="w-1/4">
-          {stage === EBatchDepositStage.TRANSACTIONS_CONFIRMED ? (
+          {stage.type === "transactions-finalised" && (
             <div className="flex flex-row items-center gap-2">
               <Check className="h-4 w-4 text-green-500" />
               <div className="text-sm">Done</div>
             </div>
-          ) : (
+          )}
+          {stage.type === "data-capture" && (
             <PrimaryButton
               className="w-full"
-              icon={
-                stage === EBatchDepositStage.TRANSACTIONS_SUBMITTED ? (
-                  <PectraSpinner />
-                ) : undefined
-              }
-              iconPosition={
-                stage === EBatchDepositStage.TRANSACTIONS_SUBMITTED
-                  ? EIconPosition.LEFT
-                  : undefined
-              }
-              disabled={disableButton}
-              onClick={handleClick}
-              label={buttonText}
+              onClick={onSubmit}
+              label={"Deposit"}
+              disabled={submitButtonDisabled}
             />
           )}
         </div>
       </div>
 
-      {stage === EBatchDepositStage.TRANSACTIONS_CONFIRMED && (
+      {(stage.type === "transactions-submitted" ||
+        stage.type === "transactions-finalised") && (
         <>
           <div className="rounded-xl bg-gray-100 p-2 text-sm text-green-500">
-            Your transactions have been submitted successfully and will be
-            processed shortly. It is safe to leave this page.
+            Your transactions{" "}
+            {stage.type === "transactions-submitted"
+              ? "have been submitted successfully and will be processed shortly. It is safe to leave this page."
+              : "have been processed successfully."}
           </div>
 
           <SecondaryButton
@@ -134,15 +116,18 @@ export const DistributionInformation: FC<IDistributionInformation> = ({
             icon={<ExternalLink className="h-4 w-4" />}
             iconPosition={EIconPosition.RIGHT}
             disabled={false}
-            onClick={handleViewTransaction}
-          />
-
-          <PrimaryButton
-            label="Make another deposit"
-            onClick={handleMakeAnotherDeposit}
-            disabled={false}
+            onClick={() => {
+              window.open(`https://etherscan.io/tx/${stage.txHash}`, "_blank");
+            }}
           />
         </>
+      )}
+      {stage.type !== "data-capture" && stage.type !== "sign-data" && (
+        <PrimaryButton
+          label="Make another deposit"
+          onClick={handleMakeAnotherDeposit}
+          disabled={false}
+        />
       )}
     </div>
   );

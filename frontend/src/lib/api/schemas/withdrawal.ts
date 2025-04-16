@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { ValidatorDataSchema } from "./validator";
+import { DatabaseWithdrawalSchema } from "./database/withdrawal";
 
 export const WithdrawalFormSchema = z.object({
   withdrawals: z.array(
@@ -14,10 +15,9 @@ export const WithdrawalFormSchema = z.object({
 
 export type WithdrawalFormType = z.infer<typeof WithdrawalFormSchema>;
 
-export const StoreWithdrawalRequestSchema = z.object({
-  validatorIndex: z.number(),
-  amount: z.number(),
-  txHash: z.string(),
+export const StoreWithdrawalRequestSchema = DatabaseWithdrawalSchema.omit({
+  status: true,
+  withdrawalIndex: true,
 });
 
 export type StoreWithdrawalRequestType = z.infer<

@@ -7,7 +7,6 @@ import { chunk, groupBy, maxBy } from "lodash";
 import type { Withdrawal } from "pec/lib/database/classes/withdrawal";
 import { sendEmailNotification } from "pec/lib/services/emailService";
 import { getBeaconChainAxios } from "pec/lib/server/axios";
-import { isPopulated } from "pec/lib/utils/type-guards";
 import { PROCESS_REQUESTS_NETWORK_ID } from "pec/lib/constants/feature-flags";
 import {
   BeaconchainWithdrawalResponse,
@@ -49,7 +48,7 @@ export const processWithdrawals = async (): Promise<IResponse> => {
         const currentWithdrawal = await WithdrawalModel.findOne({
           validatorIndex: Number(validatorIndex),
           status: ACTIVE_STATUS,
-        }).populate("user");
+        });
 
         if (!currentWithdrawal) continue;
 
@@ -61,12 +60,10 @@ export const processWithdrawals = async (): Promise<IResponse> => {
         if (newLastWithdrawalIndex <= currentWithdrawal.withdrawalIndex)
           continue;
 
-        if (isPopulated(currentWithdrawal.user)) {
+        if (currentWithdrawal.email) {
           const email = await sendEmailNotification(
             "PECTRA_STAKING_MANAGER_WITHDRAWAL_COMPLETE",
-            {
-              ...currentWithdrawal.user,
-            },
+            currentWithdrawal.email,
           );
 
           if (!email.success) {

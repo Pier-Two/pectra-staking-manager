@@ -28,6 +28,6 @@ export const Primary: Story = {
     resetWithdrawal: () => {},
     validatorsSelected: 8,
     withdrawalTotal: 100,
-    status: "idle",
+    stage: { type: "data-capture" },
   },
 };

@@ -17,3 +17,7 @@ export const DISTRIBUTION_OPTIONS: IDistributionOption[] = [
       "Enter individual deposit amount for each selected validator and submit one transaction for total.",
   },
 ];
+
+export const SIGNATURE_BYTE_LENGTH = 96;
+
+export const WITHDRAWAL_CREDENTIALS_BYTE_LENGTH = 32;

@@ -2,35 +2,35 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowDownToDot } from "lucide-react";
-import { useContracts } from "pec/hooks/useContracts";
-import { DepositSchema, type DepositType } from "pec/lib/api/schemas/deposit";
-import type { IDepositWorkflowProps } from "pec/types/batch-deposits";
 import {
-  EBatchDepositStage,
-  EDistributionMethod,
-  type IBatchDepositValidators,
-} from "pec/types/batch-deposits";
+  DepositData,
+  DepositSchema,
+  type DepositType,
+} from "pec/lib/api/schemas/deposit";
+import { EDistributionMethod } from "pec/types/batch-deposits";
 import type { ValidatorDetails } from "pec/types/validator";
-import type { FC } from "react";
-import { useFieldArray, useForm, useWatch } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { DistributionMethod } from "./distribution/DistributionMethod";
 import { SignatureDetails } from "./SignatureDetails";
 import { DepositList } from "./validators/DepositList";
 import { SelectValidators } from "./validators/SelectValidators";
+import { useEffect } from "react";
+import { DECIMAL_PLACES } from "pec/lib/constants";
+import { useBatchDeposit } from "pec/hooks/useBatchDeposit";
 
-export const DepositWorkflow: FC<IDepositWorkflowProps> = ({
-  data,
+export interface IDepositWorkflowProps {
+  validators: ValidatorDetails[];
+  balance: number;
+}
+
+export const DepositWorkflow = ({
+  validators,
   balance,
-}) => {
+}: IDepositWorkflowProps) => {
+  const { submitBatchDeposit, stage, resetStage } = useBatchDeposit();
+
   const initialValues: DepositType = {
-    selectedValidators: [],
-    stage: EBatchDepositStage.DATA_CAPTURE,
-    deposits: data
-      ? data?.map((validator) => ({
-          validator,
-          amount: 0n,
-        }))
-      : [],
+    deposits: [],
     totalToDistribute: 0,
     distributionMethod: EDistributionMethod.SPLIT,
   };
@@ -43,156 +43,104 @@ export const DepositWorkflow: FC<IDepositWorkflowProps> = ({
     reset,
     formState: { isValid, errors },
   } = useForm<DepositType>({
-    resolver: zodResolver(DepositSchema),
+    resolver: zodResolver(DepositSchema(balance)),
     defaultValues: initialValues,
     mode: "onChange",
   });
 
-  const { fields: deposits } = useFieldArray({
-    control,
-    name: "deposits",
-  });
+  const [watchedDeposits, watchedDistributionMethod, watchTotalToDistribute] =
+    useWatch({
+      control,
+      name: ["deposits", "distributionMethod", "totalToDistribute"],
+    });
 
-  const { append, remove } = useFieldArray({
-    control,
-    name: "selectedValidators",
-  });
+  // Stupid RHF doesn't handle an empty input and returns a string, even when you specify its a number
+  const totalToDistribute = isNaN(watchTotalToDistribute)
+    ? 0
+    : watchTotalToDistribute;
 
-  const watchedDeposits = useWatch({
-    control,
-    name: "deposits",
-  });
-
-  const watchedSelectedValidators = useWatch({
-    control,
-    name: "selectedValidators",
-  });
-
-  const stage = useWatch({
-    control,
-    name: "stage",
-  });
-
-  const watchedDistributionMethod = useWatch({
-    control,
-    name: "distributionMethod",
-  });
-
-  const totalToDistribute = useWatch({
-    control,
-    name: "totalToDistribute",
-  });
-
-  const totalAllocated = watchedDeposits.reduce(
-    (acc, curr) => acc + (curr.amount ?? 0n),
-    0n,
+  const totalAllocated = Number(
+    watchedDeposits
+      .reduce((acc, curr) => acc + (curr.amount ?? 0), 0)
+      .toFixed(DECIMAL_PLACES),
   );
 
   const shouldBeDisabled =
-    totalAllocated !== BigInt(totalToDistribute) ||
-    totalAllocated > totalToDistribute ||
+    !isValid ||
+    totalAllocated !== totalToDistribute ||
     totalToDistribute === 0 ||
-    totalAllocated === 0n;
+    totalAllocated > balance;
 
   const handleDistributionMethodChange = (method: EDistributionMethod) => {
     setValue("distributionMethod", method);
-    handleClearValidators();
-    setValue("stage", EBatchDepositStage.DATA_CAPTURE);
+
+    if (method === EDistributionMethod.SPLIT) {
+      updateDepositsArrayWithSplitAmount(watchedDeposits, totalToDistribute);
+    }
   };
 
   const handleClearValidators = () => {
-    setValue("selectedValidators", []);
     setValue("totalToDistribute", 0);
-    setValue(
-      "deposits",
-      data
-        ? data.map((validator) => ({
-            validator,
-            amount: BigInt(0),
-          }))
-        : [],
-    );
+    setValue("deposits", []);
   };
 
-  const updateDepositsForSplitDistribution = (
-    selectedValidator: ValidatorDetails,
-    isAdding: boolean,
+  const updateDepositsArrayWithSplitAmount = (
+    deposits: DepositData[],
+    totalToDistribute: number,
   ) => {
-    const validatorCount = isAdding
-      ? watchedSelectedValidators.length + 1
-      : watchedSelectedValidators.length - 1;
-    const splitAmount = totalToDistribute / validatorCount;
+    const splitAmount = totalToDistribute / deposits.length;
 
-    return watchedDeposits.map((deposit) => {
-      const isCurrentValidator =
-        deposit.validator.validatorIndex === selectedValidator.validatorIndex;
-
-      if (!isAdding && isCurrentValidator) return { ...deposit, amount: 0n };
-
-      const isSelected = watchedSelectedValidators.some(
-        (v) => v.validatorIndex === deposit.validator.validatorIndex,
-      );
-
-      return {
-        ...deposit,
-        amount:
-          isSelected || (isAdding && isCurrentValidator)
-            ? BigInt(splitAmount)
-            : 0n,
-      };
-    });
-  };
-
-  const updateDepositsForManualDistribution = (
-    selectedValidator: ValidatorDetails,
-  ) => {
-    return watchedDeposits.map((deposit) => ({
+    const updatedDeposits = deposits.map((deposit) => ({
       ...deposit,
-      amount:
-        deposit.validator.validatorIndex === selectedValidator.validatorIndex
-          ? 0n
-          : deposit.amount,
+      amount: splitAmount,
     }));
+
+    setValue("deposits", updatedDeposits);
   };
+
+  useEffect(() => {
+    if (watchedDistributionMethod !== EDistributionMethod.SPLIT) return;
+
+    updateDepositsArrayWithSplitAmount(watchedDeposits, totalToDistribute);
+  }, [watchTotalToDistribute]);
 
   const handleValidatorSelect = (validator: ValidatorDetails) => {
-    const existingIndex = watchedSelectedValidators.findIndex(
+    const existingIndex = watchedDeposits.findIndex(
       (selectedValidator) =>
-        selectedValidator.validatorIndex === validator.validatorIndex,
+        selectedValidator.validator.validatorIndex === validator.validatorIndex,
     );
 
-    const isAdding = existingIndex === -1;
+    const updatedDeposits = [...watchedDeposits];
 
-    if (isAdding) append(validator);
-    else remove(existingIndex);
+    if (existingIndex !== -1) {
+      updatedDeposits.splice(existingIndex, 1);
+    } else {
+      updatedDeposits.push({
+        validator,
+        amount: 0,
+      });
+    }
 
-    const newDeposits =
-      watchedDistributionMethod === EDistributionMethod.SPLIT
-        ? updateDepositsForSplitDistribution(validator, isAdding)
-        : updateDepositsForManualDistribution(validator);
-
-    setValue("deposits", newDeposits);
+    if (watchedDistributionMethod === EDistributionMethod.SPLIT) {
+      updateDepositsArrayWithSplitAmount(updatedDeposits, totalToDistribute);
+    } else {
+      setValue("deposits", updatedDeposits);
+    }
   };
 
   const handleResetBatchDeposit = () => {
     reset(initialValues);
+    resetStage();
   };
 
-  const onSubmit = (data: DepositType, realSubmit = false) => {
-    // TODO Max
-    if (realSubmit) {
-      const filteredData = data.deposits.filter(
-        (deposit) => deposit.amount > 0,
-      );
-      console.log("onSubmit for deposit HIT: ", filteredData);
-    }
+  const onSubmit = async (data: DepositType) => {
+    const filteredData = data.deposits.filter((deposit) => deposit.amount > 0);
+
+    await submitBatchDeposit(filteredData, totalAllocated, data.email);
   };
 
   return (
-    <form
-      className="flex flex-col gap-y-4"
-      onSubmit={handleSubmit((data) => onSubmit(data, false))}
-    >
+    <div className="flex flex-col gap-y-4">
       <div className="space-y-8">
         <div className="flex flex-col gap-4">
           <div className="flex gap-x-4 text-indigo-800 dark:text-indigo-300">
@@ -205,7 +153,7 @@ export const DepositWorkflow: FC<IDepositWorkflowProps> = ({
           </div>
         </div>
 
-        {stage === EBatchDepositStage.DATA_CAPTURE && (
+        {stage.type === "data-capture" && (
           <>
             {balance === 0 ? (
               <SignatureDetails
@@ -220,20 +168,17 @@ export const DepositWorkflow: FC<IDepositWorkflowProps> = ({
                 />
 
                 <DistributionMethod
+                  submitButtonDisabled={shouldBeDisabled}
                   errors={errors}
                   register={register}
-                  disableButton={shouldBeDisabled || !isValid}
                   distributionMethod={watchedDistributionMethod}
                   onDistributionMethodChange={handleDistributionMethodChange}
-                  onSubmit={handleSubmit((data) => onSubmit(data, true))}
+                  onSubmit={handleSubmit(onSubmit)}
                   resetBatchDeposit={handleResetBatchDeposit}
-                  selectedValidators={watchedSelectedValidators}
+                  numDeposits={watchedDeposits.length}
                   stage={stage}
-                  setValue={setValue}
                   totalAllocated={totalAllocated}
-                  totalToDistribute={
-                    isNaN(totalToDistribute) ? 0 : totalToDistribute
-                  }
+                  totalToDistribute={totalToDistribute}
                   walletBalance={balance}
                 />
 
@@ -244,11 +189,10 @@ export const DepositWorkflow: FC<IDepositWorkflowProps> = ({
                     clearSelectedValidators={handleClearValidators}
                     distributionMethod={watchedDistributionMethod}
                     handleValidatorSelect={handleValidatorSelect}
-                    selectedValidators={watchedSelectedValidators}
                     totalAllocated={totalAllocated}
                     totalToDistribute={totalToDistribute}
-                    watchedDeposits={watchedDeposits}
-                    validators={data}
+                    deposits={watchedDeposits}
+                    validators={validators}
                   />
                 )}
               </>
@@ -256,7 +200,7 @@ export const DepositWorkflow: FC<IDepositWorkflowProps> = ({
           </>
         )}
 
-        {stage !== EBatchDepositStage.DATA_CAPTURE && (
+        {stage.type !== "data-capture" && (
           <>
             <SignatureDetails
               title="Sign deposit data"
@@ -264,7 +208,8 @@ export const DepositWorkflow: FC<IDepositWorkflowProps> = ({
             />
 
             <DepositList
-              deposits={watchedDeposits as IBatchDepositValidators[]}
+              stage={stage}
+              deposits={watchedDeposits}
               resetBatchDeposit={handleResetBatchDeposit}
               totalAllocated={totalAllocated}
               totalToDistribute={totalToDistribute}
@@ -272,6 +217,6 @@ export const DepositWorkflow: FC<IDepositWorkflowProps> = ({
           </>
         )}
       </div>
-    </form>
+    </div>
   );
 };

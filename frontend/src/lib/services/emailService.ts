@@ -3,7 +3,6 @@ import { env } from "pec/env";
 import type { IResponse } from "pec/types/response";
 import { generateErrorResponse } from "../utils";
 import { type EmailNames } from "pec/types/emails";
-import { type UserType } from "../api/schemas/database/user";
 
 export const createContact = async (email: string): Promise<IResponse> => {
   try {
@@ -36,13 +35,16 @@ export const createContact = async (email: string): Promise<IResponse> => {
 
 export const sendEmailNotification = async (
   emailName: EmailNames,
-  metadata: UserType & { txHash?: string },
+  email: string,
 ): Promise<IResponse> => {
   try {
     const payload = {
       properties: {
         emailName,
-        metadata,
+        // TODO: Is this correct @stuart?
+        metadata: {
+          email,
+        },
       },
     };
 

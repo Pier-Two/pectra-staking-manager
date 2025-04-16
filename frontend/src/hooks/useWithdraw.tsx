@@ -1,14 +1,17 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useRpcClient } from "./useRpcClient";
 import { useContracts } from "./useContracts";
 import { eth_call } from "thirdweb";
-import { fromHex, encodePacked, parseEther } from "viem";
+import { fromHex, parseGwei } from "viem";
 import { useActiveAccount } from "thirdweb/react";
 import { api } from "pec/trpc/react";
 import { type WithdrawalFormType } from "pec/lib/api/schemas/withdrawal";
 import { toast } from "sonner";
 import { useActiveChainWithDefault } from "./useChain";
 import { parseError } from "pec/lib/utils/parseError";
+import { useState } from "react";
+import { WithdrawWorkflowStages } from "pec/types/withdraw";
+import { convertToLittleEndianUint64Hex } from "pec/lib/utils/bytes";
 
 export const useWithdraw = () => {
   const rpcClient = useRpcClient();
@@ -34,6 +37,9 @@ export const useWithdraw = () => {
 
 export const useSubmitWithdraw = () => {
   const { data: withdrawalFee } = useWithdraw();
+  const [stage, setStage] = useState<WithdrawWorkflowStages>({
+    type: "data-capture",
+  });
   const contracts = useContracts();
   const rpcClient = useRpcClient();
   const account = useActiveAccount();
@@ -51,29 +57,37 @@ export const useSubmitWithdraw = () => {
       return;
     }
 
+    const txHashes: Record<number, string> = {};
+
+    // We jump to this state because there is multiple signings
+    setStage({ type: "transactions-submitted", txHashes });
+
     const filteredWithdrawals = withdrawals.filter(
       (withdrawal) => withdrawal.amount > 0,
     );
 
     for (const withdrawal of filteredWithdrawals) {
       try {
-        // Encode the data using viem's encodePacked equivalent
-        const callData = encodePacked(
-          ["bytes", "uint256"],
-          [
-            withdrawal.validator.publicKey as `0x{string}`,
-            parseEther(withdrawal.amount.toString()),
-          ],
+        const amount = convertToLittleEndianUint64Hex(
+          parseGwei(withdrawal.amount.toString()),
         );
 
+        const callData =
+          `0x${withdrawal.validator.publicKey.slice(2)}${amount.slice(2)}` as `0x${string}`;
+
         const txHash = await account.sendTransaction({
-          to: contracts.consolidation.address,
+          to: contracts.withdrawal.address,
           value: withdrawalFee,
           data: callData,
           chainId: chain.id,
         });
 
-        console.info("Withdrawal Transaction Hash:", txHash);
+        txHashes[withdrawal.validator.validatorIndex] = txHash.transactionHash;
+
+        setStage({
+          type: "transactions-submitted",
+          txHashes,
+        });
 
         const result = await saveWithdrawalToDatabase({
           requestData: {
@@ -85,14 +99,14 @@ export const useSubmitWithdraw = () => {
         });
 
         if (!result.success) {
-          console.log("Error saving withdrawal to database:", result.error);
-
           toast.error("There was an error withdrawing", {
             description: result.error,
           });
 
           return;
         }
+
+        toast.success("Withdrawal request submitted successfully");
       } catch (error) {
         toast.error("There was an error withdrawing", {
           description: parseError(error),
@@ -100,19 +114,23 @@ export const useSubmitWithdraw = () => {
 
         console.error(error);
 
-        // Rethrow error so the mutation function can handle it
-        throw error;
+        setStage({
+          type: "data-capture",
+        });
+
+        return;
       }
     }
+
+    setStage({
+      type: "transactions-finalised",
+      txHashes,
+    });
   };
 
-  const mutationFn = useMutation({
-    mutationFn: submitWithdrawals,
-    mutationKey: ["withdrawals"],
-  });
-
   return {
-    submitWithdrawalsMutationFn: mutationFn,
-    withdrawalFee,
+    submitWithdrawals,
+    stage,
+    setStage,
   };
 };

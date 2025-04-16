@@ -1,10 +1,8 @@
 import { z } from "zod";
-import { Types } from "mongoose";
-import { UserSchema } from "./user";
 import { DatabaseDocumentStatuses } from "pec/types/app";
 
 export const DatabaseConsolidationSchema = z.object({
-  user: z.instanceof(Types.ObjectId).or(UserSchema),
+  email: z.string().email().optional(),
   status: z.enum(DatabaseDocumentStatuses),
   targetValidatorIndex: z.number(),
   sourceTargetValidatorIndex: z.number(),

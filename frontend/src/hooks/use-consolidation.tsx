@@ -1,7 +1,6 @@
 "use client";
 
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { HOODI_CHAIN_DETAILS } from "pec/constants/chain";
 import { client } from "pec/lib/wallet/client";
 import { api } from "pec/trpc/react";
 import { TransactionStatus } from "pec/types/validator";
@@ -12,6 +11,7 @@ import { fromHex } from "viem";
 import { useConsolidationStore } from "./use-consolidation-store";
 import { useContracts } from "./useContracts";
 import { useRpcClient } from "./useRpcClient";
+import { useActiveChainWithDefault } from "./useChain";
 
 export const useConsolidationFee = () => {
   const contracts = useContracts();
@@ -44,6 +44,7 @@ export const useSubmitConsolidate = () => {
   const contracts = useContracts();
   const rpcClient = useRpcClient();
   const account = useActiveAccount();
+  const chain = useActiveChainWithDefault();
 
   const {
     consolidationTarget,
@@ -98,12 +99,12 @@ export const useSubmitConsolidate = () => {
           to: contracts.consolidation.address,
           value: feeData,
           data: callData as `0x${string}`,
-          chainId: HOODI_CHAIN_DETAILS.id, // TODO make dynamic
+          chainId: chain.id, // TODO make dynamic
         });
 
         // wait for the tx to be confirmed
         const tx = await waitForReceipt({
-          chain: HOODI_CHAIN_DETAILS,
+          chain,
           client: client,
           transactionHash: transaction.transactionHash,
         });
