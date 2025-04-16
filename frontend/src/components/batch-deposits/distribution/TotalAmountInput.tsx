@@ -1,20 +1,21 @@
-import type { FC } from "react";
-import type { ITotalAmountInput } from "pec/types/batch-deposits";
 import { AlignLeft } from "lucide-react";
 import { WalletBalance } from "./WalletBalance";
 import type { DepositType } from "pec/lib/api/schemas/deposit";
 import type { FieldErrors, UseFormRegister } from "react-hook-form";
-interface ExtendedProps extends ITotalAmountInput {
+
+export interface ITotalAmountInput {
+  amount: number;
+  walletBalance: number;
   errors: FieldErrors<DepositType>;
   register: UseFormRegister<DepositType>;
 }
 
-export const TotalAmountInput: FC<ExtendedProps> = ({
+export const TotalAmountInput = ({
   amount,
   walletBalance,
   register,
   errors,
-}) => {
+}: ITotalAmountInput) => {
   return (
     <div className="space-y-2">
       <div className="text-md font-medium">Total Amount</div>
@@ -27,12 +28,9 @@ export const TotalAmountInput: FC<ExtendedProps> = ({
             step="any"
             {...register("totalToDistribute", {
               valueAsNumber: true,
-              setValueAs: (value: string) => {
-                if (value === "") return 0;
-                if (isNaN(Number(value))) return 0;
-                if (parseFloat(value) > walletBalance) return undefined;
-                return parseFloat(value);
-              },
+              required: true,
+              min: 0,
+              max: walletBalance,
             })}
           />
         </div>

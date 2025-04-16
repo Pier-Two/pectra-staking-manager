@@ -1,7 +1,6 @@
 "use client";
 
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { HOODI_CHAIN_DETAILS } from "pec/constants/chain";
 import { client } from "pec/lib/wallet/client";
 import { api } from "pec/trpc/react";
 import { TransactionStatus } from "pec/types/validator";
@@ -12,6 +11,46 @@ import { fromHex } from "viem";
 import { useConsolidationStore } from "./use-consolidation-store";
 import { useContracts } from "./useContracts";
 import { useRpcClient } from "./useRpcClient";
+import { type Account } from "thirdweb/wallets";
+import { ChainOptions } from "thirdweb/chains";
+import { useActiveChainWithDefault } from "./useChain";
+
+// helper function that is called within the useSubmitConsolidate() hook
+const consolidateValidator = async (
+  consolidationContractAddress: string, // TODO this shouldn't have to be an arg
+  account: Account,
+  srcAddress: string,
+  targetAddress: string,
+  feeData: bigint,
+  chain: Readonly<
+    ChainOptions & {
+      rpc: string;
+    }
+  >,
+) => {
+  const srcAddressWithoutLeading = srcAddress.slice(2);
+  const targetAddressWithoutLeading = targetAddress.slice(2);
+
+  // Concatenate and add the 0x prefix
+  const callData = `0x${srcAddressWithoutLeading}${targetAddressWithoutLeading}`;
+
+  // Call the consolidation contract with the fee
+  const upgradeTransaction = await account.sendTransaction({
+    to: consolidationContractAddress,
+    value: feeData,
+    data: callData as `0x${string}`,
+    chainId: chain.id,
+  });
+
+  // wait for the tx to be confirmed
+  const upgradeTx = await waitForReceipt({
+    chain,
+    client: client,
+    transactionHash: upgradeTransaction.transactionHash,
+  });
+
+  return upgradeTx;
+};
 
 export const useConsolidationFee = () => {
   const contracts = useContracts();
@@ -44,12 +83,14 @@ export const useSubmitConsolidate = () => {
   const contracts = useContracts();
   const rpcClient = useRpcClient();
   const account = useActiveAccount();
+  const chain = useActiveChainWithDefault();
 
   const {
     consolidationTarget,
     validatorsToConsolidate,
     updateConsolidatedValidator,
     setCurrentPubKey,
+    manuallySettingValidator,
   } = useConsolidationStore();
 
   const { mutateAsync: saveConsolidationToDatabase } =
@@ -76,9 +117,79 @@ export const useSubmitConsolidate = () => {
       (validator) => validator.consolidationTransaction === undefined,
     );
 
+    // if the user is consolidating to one of their own validators, and that validator is version
+    // 0x01, it must be updated to 0x02 first
+    if (
+      !manuallySettingValidator &&
+      consolidationTarget.withdrawalAddress.startsWith("0x01") &&
+      !consolidationTarget.upgradeSubmitted // if they have already submitted an upgrade tx but API returns 0x01, we use our DB flag
+    ) {
+      try {
+        const upgradeTx = await consolidateValidator(
+          contracts.consolidation.address,
+          account,
+          consolidationTarget.publicKey,
+          consolidationTarget.publicKey,
+          feeData,
+          chain,
+        );
+
+        // save upgrade tx to db
+        await saveConsolidationToDatabase({
+          targetValidatorIndex: consolidationTarget.validatorIndex,
+          sourceTargetValidatorIndex: consolidationTarget.validatorIndex,
+          txHash: upgradeTx.transactionHash,
+        });
+
+        toast.success(
+          `Validator ${consolidationTarget.validatorIndex} Upgraded`,
+          {
+            description:
+              "The transaction to update the validator version been submitted",
+          },
+        );
+      } catch (err) {
+        console.error(`Error upgrading validator`, err);
+
+        toast.error(
+          `Error Upgrading Validator ${consolidationTarget.validatorIndex}`,
+          {
+            description: "Please try again.",
+          },
+        );
+        return;
+      }
+    }
+
+    // this is the actual consolidation flow. First, it checks that the source validator is version 0x02. If it isn't,
+    // it submits an upgrade transaction first, before submitting the consolidation transaction
     for (const validator of nonConsolidateHashes) {
       try {
         setCurrentPubKey(validator.publicKey);
+
+        // if it's version 0x01 - submit the upgrade tx for this validator
+        if (
+          validator.withdrawalAddress.startsWith("0x01") &&
+          !validator.upgradeSubmitted
+        ) {
+          const upgradeTx = await consolidateValidator(
+            contracts.consolidation.address,
+            account,
+            validator.publicKey,
+            validator.publicKey,
+            feeData,
+            chain,
+          );
+
+          // save upgrade tx to db
+          await saveConsolidationToDatabase({
+            targetValidatorIndex: validator.validatorIndex,
+            sourceTargetValidatorIndex: validator.validatorIndex,
+            txHash: upgradeTx.transactionHash,
+          });
+        }
+
+        // now the actual consolidation process can occur
 
         // update the validator status to be in progress
         updateConsolidatedValidator(
@@ -87,42 +198,30 @@ export const useSubmitConsolidate = () => {
           TransactionStatus.IN_PROGRESS,
         );
 
-        const srcPubkey = validator.publicKey.replace(/^0x/g, "");
-        const targetPubkey = consolidationTarget.publicKey.replace(/^0x/g, "");
-
-        // Concatenate and add the 0x prefix back
-        const callData = `0x${srcPubkey}${targetPubkey}`;
-
-        // Call the consolidation contract with the fee
-        const transaction = await account.sendTransaction({
-          to: contracts.consolidation.address,
-          value: feeData,
-          data: callData as `0x${string}`,
-          chainId: HOODI_CHAIN_DETAILS.id, // TODO make dynamic
-        });
-
-        // wait for the tx to be confirmed
-        const tx = await waitForReceipt({
-          chain: HOODI_CHAIN_DETAILS,
-          client: client,
-          transactionHash: transaction.transactionHash,
-        });
+        const consolidationTx = await consolidateValidator(
+          contracts.consolidation.address,
+          account,
+          validator.publicKey,
+          consolidationTarget.publicKey,
+          feeData,
+          chain,
+        );
 
         updateConsolidatedValidator(
           validator,
-          tx.transactionHash,
+          consolidationTx.transactionHash,
           TransactionStatus.SUBMITTED,
         );
 
         await saveConsolidationToDatabase({
           targetValidatorIndex: consolidationTarget.validatorIndex,
           sourceTargetValidatorIndex: validator.validatorIndex,
-          txHash: tx.transactionHash,
+          txHash: consolidationTx.transactionHash,
         });
 
         results.push({
           validator,
-          txHash: tx.transactionHash,
+          txHash: consolidationTx.transactionHash,
           success: true,
         });
       } catch (error) {

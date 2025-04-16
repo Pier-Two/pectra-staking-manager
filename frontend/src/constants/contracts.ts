@@ -10,6 +10,7 @@ import { mainnet } from "thirdweb/chains";
 
 export const getContracts = (id: number | undefined): Contracts => {
   if (id === HOODI_CHAIN_DETAILS.id || id === mainnet.id) {
+    // TODO: Update to handle mainnet
     return {
       consolidation: getContract({
         client,

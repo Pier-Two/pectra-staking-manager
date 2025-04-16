@@ -11,6 +11,7 @@ export const PrimaryButton: FC<ICustomButton> = (props) => {
         "text-wrap rounded-full bg-primary text-[13px] leading-[13px] text-white hover:bg-indigo-400 dark:hover:bg-indigo-600",
         className,
       )}
+      type="button"
       {...rest}
     >
       {iconPosition === EIconPosition.LEFT && icon}

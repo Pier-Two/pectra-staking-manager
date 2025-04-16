@@ -18,11 +18,13 @@ import { Skeleton } from "pec/components/ui/skeleton";
 import { DECIMAL_PLACES } from "pec/lib/constants";
 import { api } from "pec/trpc/react";
 import { formatEther } from "viem";
+import { useActiveChainWithDefault } from "pec/hooks/useChain";
 
 export const ManuallyEnterValidator = () => {
   const { setConsolidationTarget, setProgress } = useConsolidationStore();
   const [input, setInput] = useState("");
   const [searchTerm, setSearchTerm] = useState<string>();
+  const chain = useActiveChainWithDefault();
 
   // Validate input (valid index or pub key)
   const isValidInput = (value: string): boolean => {
@@ -42,6 +44,7 @@ export const ManuallyEnterValidator = () => {
   } = api.validators.getValidatorDetails.useQuery(
     {
       searchTerm: searchTerm!,
+      network: chain.id,
     },
     {
       enabled: !!searchTerm && isValidInput(searchTerm),
@@ -97,15 +100,15 @@ export const ManuallyEnterValidator = () => {
 
       {searchTerm && (
         <Card className="overflow-hidden">
-          <CardHeader className="bg-gray-50 dark:bg-gray-800">
+          <CardHeader>
             <CardTitle>Validator Details</CardTitle>
           </CardHeader>
-          <CardContent className="pt-6">
+          <CardContent className="pt-4">
             {isLoadingValidator && (
-              <div className="space-y-4">
-                <Skeleton className="h-6 w-full" />
-                <Skeleton className="h-6 w-3/4" />
-                <Skeleton className="h-6 w-1/2" />
+              <div className="flex flex-col space-y-4">
+                <Skeleton className="h-12 w-32 rounded-xl bg-gray-200 dark:bg-gray-800" />
+                <Skeleton className="h-12 w-full rounded-xl bg-gray-200 dark:bg-gray-800" />
+                <Skeleton className="h-12 w-28 rounded-xl bg-gray-200 dark:bg-gray-800" />
               </div>
             )}
 
@@ -162,10 +165,24 @@ export const ManuallyEnterValidator = () => {
           </CardContent>
           <CardFooter>
             {validator && typeof validator !== "string" && (
-              <div className="flex flex-col">
-                <Button onClick={handleConfirmValidator}>
+              <div className="flex w-full flex-col gap-2">
+                <Button
+                  onClick={handleConfirmValidator}
+                  disabled={
+                    validator && !validator.withdrawalAddress.startsWith("0x02")
+                  }
+                >
                   Use {validator.validatorIndex} as Destination Validator
                 </Button>
+
+                {!validator.withdrawalAddress.startsWith("0x02") && (
+                  <p className="w-full text-center text-xs">
+                    You can&apos;t set this validator as a consolidation target
+                    as it is not the correct validator version. (Expected
+                    version 0x02, got{" "}
+                    {validator.withdrawalAddress.substring(0, 4)})
+                  </p>
+                )}
               </div>
             )}
           </CardFooter>

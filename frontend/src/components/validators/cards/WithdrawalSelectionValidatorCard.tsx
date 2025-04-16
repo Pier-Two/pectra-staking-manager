@@ -1,41 +1,62 @@
-"use client";
-
 import { AlignLeft, CircleCheck, CircleMinus, CirclePlus } from "lucide-react";
 import Image from "next/image";
-import type { WithdrawalType } from "pec/lib/api/schemas/withdrawal";
-import { DECIMAL_PLACES } from "pec/lib/constants";
-import type { IWithdrawalSelectionValidatorCard } from "pec/types/withdrawal";
-import type { FC } from "react";
+import type { WithdrawalFormType } from "pec/lib/api/schemas/withdrawal";
+import { cn } from "pec/lib/utils";
+import { parseEtherToFixedDecimals } from "pec/lib/utils/parseAmounts";
+import { ValidatorDetails } from "pec/types/validator";
 import type { FieldErrors, UseFormRegister } from "react-hook-form";
 import { formatEther } from "viem";
 
-interface ExtendedProps extends IWithdrawalSelectionValidatorCard {
-  errors: FieldErrors<WithdrawalType>;
-  register: UseFormRegister<WithdrawalType>;
+interface ExtendedProps {
+  availableAmount: bigint;
+  handleSelect: () => void;
+  withdrawalIndex: number;
+  selected: boolean;
+  validator: ValidatorDetails;
+  errors: FieldErrors<WithdrawalFormType>;
+  register: UseFormRegister<WithdrawalFormType>;
 }
 
-export const WithdrawalSelectionValidatorCard: FC<ExtendedProps> = ({
-  availableAmount,
+export const WithdrawalSelectionValidatorCard = ({
   errors,
   handleSelect,
-  index,
   register,
+  withdrawalIndex,
   selected,
   validator,
-}) => {
+}: ExtendedProps) => {
   const { validatorIndex, publicKey, balance } = validator;
-  const locked = availableAmount === 0n;
+  const locked = validator.balance === 0n;
+
+  const onClickHandler = () => {
+    if (selected || locked) return;
+
+    handleSelect();
+  };
+
+  const setValueHandler = (value: string) => {
+    const numValue = parseFloat(value);
+    if (isNaN(numValue)) return 0;
+
+    if (numValue > Number(formatEther(validator.balance)))
+      return Number(formatEther(validator.balance));
+
+    return numValue;
+  };
 
   return (
     <div
-      className={`flex w-full items-center justify-between gap-x-4 rounded-xl border bg-white px-4 py-3 ${
-        locked
-          ? "opacity-50"
-          : "group hover:border-indigo-500 dark:hover:border-gray-600"
-      } dark:border-gray-800 dark:bg-black ${
-        selected ? "border-indigo-500 dark:border-2 dark:border-indigo-900" : ""
-      } ${locked || selected ? "" : "cursor-pointer"}`}
-      onClick={selected || locked ? undefined : handleSelect}
+      className={cn(
+        "flex w-full items-center justify-between gap-x-4 rounded-xl border bg-white px-4 py-3",
+        "dark:border-gray-800 dark:bg-black",
+        {
+          "opacity-50": locked,
+          "group hover:border-indigo-500 dark:hover:border-gray-600": !locked,
+          "border-indigo-500 dark:border-2 dark:border-indigo-900": selected,
+          "cursor-pointer": !locked && !selected,
+        },
+      )}
+      onClick={onClickHandler}
     >
       <div className="flex flex-[1.2] items-center gap-x-4">
         {selected && !locked ? (
@@ -72,16 +93,13 @@ export const WithdrawalSelectionValidatorCard: FC<ExtendedProps> = ({
       <div className="flex flex-1 flex-col">
         <div className="flex items-center gap-1">
           <AlignLeft className="h-4 w-4" />
-          <div className="text-sm">
-            {Number(formatEther(balance)).toFixed(DECIMAL_PLACES)}
-          </div>
+          <div className="text-sm">{parseEtherToFixedDecimals(balance)}</div>
         </div>
 
         <div className="flex items-center gap-1 py-1 text-gray-700 dark:text-gray-300">
           <AlignLeft className="h-3 w-3" />
           <div className="text-sm">
-            {Number(formatEther(availableAmount)).toFixed(DECIMAL_PLACES)}{" "}
-            available
+            {parseEtherToFixedDecimals(validator.balance)} available
           </div>
         </div>
       </div>
@@ -98,29 +116,16 @@ export const WithdrawalSelectionValidatorCard: FC<ExtendedProps> = ({
                   disabled={locked}
                   type="number"
                   step="any"
-                  // Registers the withdrawal amount input field with React Hook Form
-                  // - Converts empty input to 0
-                  // - Prevents changes if `locked` is true
-                  // - Ensures valid numeric input
-                  // - Blocks withdrawals that would reduce balance below 32
-                  // - Blocks withdrawals exceeding the available amount
-                  // - Returns undefined for invalid values, preventing form submission and showing errors
-                  {...register(`withdrawals.${index}.amount`, {
-                    setValueAs: (value) => {
-                      if (value === "") return 0;
-                      if (locked) return 0;
-                      const numValue = parseFloat(value as string);
-                      if (isNaN(numValue)) return 0;
-                      if (numValue === 0) return 0;
-                      if (balance - BigInt(numValue) < 32) return undefined; // TODO check decimals
-                      if (numValue > availableAmount) return undefined;
-                      return numValue;
-                    },
+                  {...register(`withdrawals.${withdrawalIndex}.amount`, {
+                    // valueAsNumber: true,
+                    // required: true,
+                    // min: 0,
+                    setValueAs: setValueHandler,
                   })}
                 />
               </div>
 
-              {errors.withdrawals?.[index]?.amount && (
+              {errors.withdrawals?.[withdrawalIndex]?.amount && (
                 <div className="mt-1 text-xs text-red-500">
                   Please enter an amount less than or equal to your available
                   balance.

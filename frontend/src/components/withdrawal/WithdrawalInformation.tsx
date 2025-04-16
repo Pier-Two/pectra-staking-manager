@@ -1,10 +1,3 @@
-"use client";
-
-import type { FC } from "react";
-import {
-  EWithdrawalStage,
-  type IWithdrawalInformation,
-} from "pec/types/withdrawal";
 import { AlignLeft, Check } from "lucide-react";
 import { Separator } from "../ui/separator";
 import Image from "next/image";
@@ -13,8 +6,20 @@ import { SecondaryButton } from "../ui/custom/SecondaryButton";
 import { PectraSpinner } from "../ui/custom/pectraSpinner";
 import { EIconPosition } from "pec/types/components";
 import { DECIMAL_PLACES } from "pec/lib/constants";
+import { WithdrawWorkflowStages } from "pec/types/withdraw";
 
-export const WithdrawalInformation: FC<IWithdrawalInformation> = ({
+export interface IWithdrawalInformation {
+  buttonText: string;
+  handleMaxAllocation: () => void;
+  isValid: boolean;
+  onSubmit: () => void;
+  resetWithdrawal: () => void;
+  stage: WithdrawWorkflowStages;
+  validatorsSelected: number;
+  withdrawalTotal: number;
+}
+
+export const WithdrawalInformation = ({
   buttonText,
   handleMaxAllocation,
   isValid,
@@ -23,7 +28,7 @@ export const WithdrawalInformation: FC<IWithdrawalInformation> = ({
   stage,
   validatorsSelected,
   withdrawalTotal,
-}) => {
+}: IWithdrawalInformation) => {
   const distributionStats = [
     {
       imageUrl: "/icons/EthValidator.svg",
@@ -73,25 +78,14 @@ export const WithdrawalInformation: FC<IWithdrawalInformation> = ({
         </div>
 
         <div>
-          {stage === EWithdrawalStage.TRANSACTIONS_CONFIRMED && (
+          {stage.type === "transactions-finalised" && (
             <div className="flex flex-row items-center gap-2">
               <Check className="h-4 w-4 text-green-500" />
               <div className="text-sm">Done</div>
             </div>
           )}
 
-          {stage === EWithdrawalStage.TRANSACTIONS_SUBMITTED && (
-            <div className="flex flex-col items-center gap-2">
-              <PrimaryButton
-                label="Sign transactions"
-                disabled={true}
-                icon={<PectraSpinner />}
-                iconPosition={EIconPosition.LEFT}
-              />
-            </div>
-          )}
-
-          {stage === EWithdrawalStage.DATA_CAPTURE && (
+          {stage.type === "data-capture" && (
             <div className="flex flex-row gap-4">
               <SecondaryButton
                 label="Max"
@@ -110,7 +104,7 @@ export const WithdrawalInformation: FC<IWithdrawalInformation> = ({
         </div>
       </div>
 
-      {stage === EWithdrawalStage.TRANSACTIONS_CONFIRMED && (
+      {stage.type === "transactions-finalised" && (
         <>
           <div className="rounded-xl bg-gray-100 p-2 text-sm text-green-500">
             Your transactions have been submitted successfully and will be

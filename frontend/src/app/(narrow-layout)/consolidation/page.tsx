@@ -9,16 +9,12 @@ import { useConsolidationStore } from "pec/hooks/use-consolidation-store";
 import { useWalletAddress } from "pec/hooks/useWallet";
 import { api } from "pec/trpc/react";
 import ConsolidationLoading from "../consolidate/loading";
+import { useValidators } from "pec/hooks/useValidators";
 
 const ConsolidationWorkflow = () => {
   const walletAddress = useWalletAddress();
 
-  const { data, isFetched } = api.validators.getValidators.useQuery(
-    {
-      address: walletAddress || "",
-    },
-    { enabled: !!walletAddress },
-  );
+  const { data, isFetched } = useValidators();
 
   const {
     validatorsToConsolidate,

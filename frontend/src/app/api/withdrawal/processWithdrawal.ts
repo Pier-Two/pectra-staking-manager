@@ -1,44 +1,23 @@
-import { type AxiosResponse } from "axios";
-import { BEACONCHAIN_OK_STATUS, CHUNK_SIZE } from "pec/lib/constants";
+import { CHUNK_SIZE } from "pec/lib/constants";
 import { WithdrawalModel } from "pec/lib/database/models";
 import { generateErrorResponse } from "pec/lib/utils";
 import { ACTIVE_STATUS, INACTIVE_STATUS } from "pec/types/app";
 import type { IResponse } from "pec/types/response";
 import { chunk, groupBy, maxBy } from "lodash";
 import type { Withdrawal } from "pec/lib/database/classes/withdrawal";
-import { z } from "zod";
 import { sendEmailNotification } from "pec/lib/services/emailService";
 import { getBeaconChainAxios } from "pec/lib/server/axios";
-import { MAIN_CHAIN } from "pec/lib/constants/contracts";
-
-const WithdrawalDataSchema = z.object({
-  epoch: z.number(),
-  slot: z.number(),
-  blockroot: z.string(),
-  withdrawalindex: z.number(),
-  validatorindex: z.number(),
-  address: z.string(),
-  amount: z.number(),
-});
-
-const WithdrawalResponseSchema = z.object({
-  status: z.literal(BEACONCHAIN_OK_STATUS),
-  data: z.array(WithdrawalDataSchema),
-});
-
-type WithdrawalResponse = z.infer<typeof WithdrawalResponseSchema>;
+import { PROCESS_REQUESTS_NETWORK_ID } from "pec/lib/constants/feature-flags";
+import {
+  BeaconchainWithdrawalResponse,
+  isBeaconchainWithdrawalResponseValid,
+} from "pec/lib/api/schemas/beaconchain";
 
 export const processWithdrawals = async (): Promise<IResponse> => {
   try {
     const withdrawals = await WithdrawalModel.find({
       status: ACTIVE_STATUS,
     });
-
-    if (!withdrawals)
-      return {
-        success: false,
-        error: "Withdrawal query failed to execute.",
-      };
 
     if (withdrawals.length === 0)
       return {
@@ -54,34 +33,31 @@ export const processWithdrawals = async (): Promise<IResponse> => {
         .join(",");
 
       const response = await getBeaconChainAxios(
-        MAIN_CHAIN.id,
-      ).get<WithdrawalResponse>(
+        PROCESS_REQUESTS_NETWORK_ID,
+      )<BeaconchainWithdrawalResponse>(
         `/api/v1/validator/${validatorIndexString}/withdrawals`,
       );
 
-      if (!isResponseValid(response))
+      if (!isBeaconchainWithdrawalResponseValid(response)) {
         return generateErrorResponse(response.status);
+      }
 
-      const groupedValidators = groupWithdrawalsByValidator(response.data);
+      const groupedValidators = groupBy(response.data.data, "validatorindex");
 
       for (const validatorIndex in groupedValidators) {
-        const validatorWithdrawals = groupedValidators[validatorIndex];
-        if (!validatorWithdrawals) continue;
-
-        const lastWithdrawal = maxBy(validatorWithdrawals, "withdrawalindex");
-        if (!lastWithdrawal) continue;
-        const lastWithdrawalIndex = Number(lastWithdrawal.withdrawalindex) ?? 0;
-
         const currentWithdrawal = await WithdrawalModel.findOne({
           validatorIndex: Number(validatorIndex),
           status: ACTIVE_STATUS,
         });
 
         if (!currentWithdrawal) continue;
-        if (
-          lastWithdrawalIndex === 0 ||
-          lastWithdrawalIndex <= currentWithdrawal.withdrawalIndex
-        )
+
+        const validatorWithdrawals = groupedValidators[validatorIndex] ?? [];
+
+        const newLastWithdrawalIndex =
+          maxBy(validatorWithdrawals, "withdrawalindex")?.withdrawalindex ?? 0;
+
+        if (newLastWithdrawalIndex <= currentWithdrawal.withdrawalIndex)
           continue;
 
         if (currentWithdrawal.email) {
@@ -100,7 +76,7 @@ export const processWithdrawals = async (): Promise<IResponse> => {
           { validatorIndex },
           {
             $set: {
-              withdrawalIndex: lastWithdrawalIndex,
+              withdrawalIndex: newLastWithdrawalIndex,
               status: INACTIVE_STATUS,
             },
           },
@@ -117,22 +93,10 @@ export const processWithdrawals = async (): Promise<IResponse> => {
   }
 };
 
-const groupWithdrawalsByValidator = (data: WithdrawalResponse) => {
-  return groupBy(data.data, "validatorindex");
-};
-
 const chunkWithdrawals = (withdrawals: Withdrawal[]) => {
   const formatted = withdrawals.map((withdrawal) => ({
     validatorIndex: withdrawal.validatorIndex,
   }));
 
   return chunk(formatted, CHUNK_SIZE);
-};
-
-const isResponseValid = (
-  response: AxiosResponse<WithdrawalResponse>,
-): boolean => {
-  if (!response || response.status !== 200) return false;
-  const result = WithdrawalResponseSchema.safeParse(response.data);
-  return result.success;
 };

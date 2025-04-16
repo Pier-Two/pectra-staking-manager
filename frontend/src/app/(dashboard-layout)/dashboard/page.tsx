@@ -6,20 +6,15 @@ import { TotalDailyIncome } from "pec/components/dashboard/validators/TotalDaily
 import { TotalStake } from "pec/components/dashboard/validators/TotalStake";
 import { ValidatorTable } from "pec/components/dashboard/validatorTable/ValidatorTable";
 import { useWalletAddress } from "pec/hooks/useWallet";
-import { api } from "pec/trpc/react";
 import { ValidatorStatus } from "pec/types/validator";
 import type { FC } from "react";
 import DashboardLoading from "./loading";
+import { useValidators } from "pec/hooks/useValidators";
 
 const Dashboard: FC = () => {
   const walletAddress = useWalletAddress();
 
-  const { data, isFetched } = api.validators.getValidators.useQuery(
-    {
-      address: walletAddress,
-    },
-    { enabled: !!walletAddress },
-  );
+  const { data, isFetched } = useValidators();
 
   if (!walletAddress || !data || !isFetched) return <DashboardLoading />;
 
@@ -56,7 +51,7 @@ const Dashboard: FC = () => {
           // TODO: Refactor to note use vw
         */}
         <div className="w-[75vw] space-y-6">
-          <h2 className="text-[26px] font-570 leading-[26px] text-primary-dark dark:text-indigo-200">
+          <h2 className="font-570 text-primary-dark text-[26px] leading-[26px] dark:text-indigo-200">
             My Validators
           </h2>
 

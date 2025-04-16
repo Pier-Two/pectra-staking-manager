@@ -6,20 +6,15 @@ import { PrimaryButton } from "pec/components/ui/custom/PrimaryButton";
 import { SecondaryButton } from "pec/components/ui/custom/SecondaryButton";
 import { Connector } from "pec/components/validators/Connector";
 import { useWalletAddress } from "pec/hooks/useWallet";
-import { api } from "pec/trpc/react";
 import { EIconPosition } from "pec/types/components";
 import type { FC } from "react";
 import ValidatorsFoundLoading from "./loading";
+import { useValidators } from "pec/hooks/useValidators";
 
 const ValidatorsFound: FC = () => {
   const walletAddress = useWalletAddress();
 
-  const { data, isFetched } = api.validators.getValidators.useQuery(
-    {
-      address: walletAddress || "",
-    },
-    { enabled: !!walletAddress },
-  );
+  const { data, isFetched } = useValidators();
 
   if (!walletAddress || !data || !isFetched) return <ValidatorsFoundLoading />;
 

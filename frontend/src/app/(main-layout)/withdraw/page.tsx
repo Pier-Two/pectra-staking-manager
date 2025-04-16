@@ -1,93 +1,58 @@
 "use client";
 
-import { useMemo, type FC, useState } from "react";
-import { api } from "pec/trpc/react";
+import { type FC, useMemo, useState } from "react";
 import { useWalletAddress } from "pec/hooks/useWallet";
-import { useForm, useFieldArray, useWatch } from "react-hook-form";
+import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import WithdrawalLoading from "./loading";
 import { ArrowUpFromDot } from "lucide-react";
 import Image from "next/image";
-import { EWithdrawalStage } from "pec/types/withdrawal";
 import { WithdrawalInformation } from "pec/components/withdrawal/WithdrawalInformation";
 import { WithdrawalSelectionValidatorCard } from "pec/components/validators/cards/WithdrawalSelectionValidatorCard";
 import { ValidatorListHeaders } from "pec/components/batch-deposits/validators/ValidatorListHeaders";
 import {
-  WithdrawalSchema,
-  type WithdrawalType,
+  WithdrawalFormSchema,
+  type WithdrawalFormType,
 } from "pec/lib/api/schemas/withdrawal";
 import type { ValidatorDetails } from "pec/types/validator";
 import { ValidatorHeader } from "pec/components/batch-deposits/validators/ValidatorHeader";
 import type { SortDirection } from "pec/components/batch-deposits/validators/ColumnHeader";
 import { WITHDRAWAL_COLUMN_HEADERS } from "pec/constants/columnHeaders";
-import { orderBy } from "lodash";
+import { cloneDeep, orderBy, sumBy } from "lodash";
+import { formatAddressToShortenedString } from "pec/lib/utils/address";
+import { formatEther } from "viem";
+import { useValidators } from "pec/hooks/useValidators";
+import { useSubmitWithdraw } from "pec/hooks/useWithdraw";
 
 const Withdrawal: FC = () => {
   const walletAddress = useWalletAddress();
 
-  const { data, isFetched } = api.validators.getValidators.useQuery(
-    {
-      address: walletAddress || "",
-    },
-    { enabled: !!walletAddress },
-  );
-
-  const initialValues: WithdrawalType = {
-    selectedValidators: [],
-    stage: EWithdrawalStage.DATA_CAPTURE,
-    withdrawals:
-      data?.map((validator) => ({
-        validator,
-        amount: 0,
-      })) ?? [],
-  };
+  const { data: rawValidatorData } = useValidators();
+  const { submitWithdrawals, stage, setStage } = useSubmitWithdraw();
 
   const {
-    register,
-    control,
     handleSubmit,
     setValue,
     reset,
+    control,
+    watch,
+    register,
     formState: { isValid, errors },
-  } = useForm<WithdrawalType>({
-    resolver: zodResolver(WithdrawalSchema),
-    defaultValues: initialValues,
+  } = useForm<WithdrawalFormType>({
+    resolver: zodResolver(WithdrawalFormSchema),
+    defaultValues: { withdrawals: [] },
     mode: "onChange",
   });
 
-  const { fields: withdrawals } = useFieldArray({
+  const { remove, append } = useFieldArray({
     control,
     name: "withdrawals",
   });
 
-  const { append, remove } = useFieldArray({
-    control,
-    name: "selectedValidators",
-  });
+  const withdrawals = watch("withdrawals");
+  const withdrawalTotal = sumBy(withdrawals, (withdrawal) => withdrawal.amount);
 
-  const watchedWithdrawals = useWatch({
-    control,
-    name: "withdrawals",
-  });
-
-  const watchedSelectedValidators = useWatch({
-    control,
-    name: "selectedValidators",
-  });
-
-  const stage = useWatch({
-    control,
-    name: "stage",
-  });
-
-  const withdrawalTotal = useMemo(() => {
-    return watchedWithdrawals.reduce(
-      (acc, withdrawal) => acc + (withdrawal.amount ?? 0),
-      0,
-    );
-  }, [watchedWithdrawals]);
-
-  const [sortColumn, setSortColumn] = useState<string | null>(null);
+  const [sortColumn, setSortColumn] = useState<string | null>("validator");
   const [sortDirection, setSortDirection] = useState<SortDirection>(null);
 
   const handleSort = (column: string) => {
@@ -103,57 +68,65 @@ const Withdrawal: FC = () => {
     }
   };
 
-  const sortedValidators = (() => {
-    if (!sortColumn || !sortDirection || !data) return data;
-    return orderBy(data, ["validatorIndex", "balance"], [sortDirection]);
-  })();
+  const validators = useMemo(() => {
+    if (!sortColumn || !sortDirection) return rawValidatorData;
 
-  if (!walletAddress || !data || !isFetched) return <WithdrawalLoading />;
+    return orderBy(
+      rawValidatorData,
+      [sortColumn as keyof ValidatorDetails],
+      [sortDirection],
+    );
+  }, [rawValidatorData, sortColumn, sortDirection]);
+
+  if (!validators) return <WithdrawalLoading />;
 
   const handleValidatorSelect = (validator: ValidatorDetails) => {
-    const existingIndex = watchedSelectedValidators.findIndex(
-      (selectedValidator) =>
-        selectedValidator.validatorIndex === validator.validatorIndex,
+    // Find if this validator is already in the array
+    const existingIndex = withdrawals.findIndex(
+      (field) => field.validator.validatorIndex === validator.validatorIndex,
     );
 
-    if (existingIndex !== -1) remove(existingIndex);
-    else append(validator);
+    if (existingIndex === -1) {
+      // Add if not found
+      append({
+        validator: cloneDeep(validator),
+        amount: 0,
+      });
+    } else {
+      // Remove if found
+      remove(existingIndex);
+    }
   };
 
   const handleMaxAllocation = () => {
     setValue(
       "withdrawals",
-      sortedValidators?.map((validator) => ({
-        validator,
-        amount: Number(validator.balance),
-      })) ?? [],
-    );
-
-    setValue(
-      "selectedValidators",
-      sortedValidators?.map((validator) => validator) ?? [],
+      validators.map(
+        (validator) => ({
+          validator,
+          amount: Number(formatEther(validator.balance)),
+        }),
+        {
+          // These options are critical to ensure proper updates
+          shouldValidate: true,
+          shouldDirty: true,
+          shouldTouch: true,
+        },
+      ),
     );
   };
 
   const handleResetWithdrawal = () => {
-    reset(initialValues);
+    reset({ withdrawals: [] });
+    setStage({ type: "data-capture" });
   };
 
-  const onSubmit = (data: WithdrawalType, realSubmit = false) => {
-    // TODO Max
-    if (realSubmit) {
-      const filteredData = data.withdrawals.filter(
-        (withdrawal) => withdrawal.amount > 0,
-      );
-      console.log("onSubmit for withdrawal HIT: ", filteredData);
-    }
+  const onSubmit = async (data: WithdrawalFormType) => {
+    await submitWithdrawals(data.withdrawals);
   };
 
   return (
-    <form
-      className="flex flex-col gap-y-4"
-      onSubmit={handleSubmit((data) => onSubmit(data, false))}
-    >
+    <div className="flex flex-col gap-y-4">
       <div className="space-y-8">
         <div className="flex flex-col gap-4">
           <div className="flex gap-x-4 text-indigo-800 dark:text-indigo-300">
@@ -178,28 +151,24 @@ const Withdrawal: FC = () => {
 
           <div className="text-sm">Withdrawal address</div>
           <div className="text-sm text-gray-500 dark:text-gray-300">
-            {walletAddress.slice(0, 5)}...{walletAddress.slice(-5)}
+            {formatAddressToShortenedString(walletAddress)}
           </div>
         </div>
 
         <WithdrawalInformation
           buttonText="Withdraw"
           handleMaxAllocation={handleMaxAllocation}
-          isValid={
-            isValid &&
-            watchedSelectedValidators.length > 0 &&
-            withdrawalTotal > 0
-          }
-          onSubmit={handleSubmit((data) => onSubmit(data, true))}
+          isValid={isValid && withdrawalTotal > 0}
+          onSubmit={handleSubmit(onSubmit)}
           resetWithdrawal={handleResetWithdrawal}
           stage={stage}
-          validatorsSelected={watchedSelectedValidators.length}
+          validatorsSelected={withdrawals.length}
           withdrawalTotal={withdrawalTotal}
         />
 
         <ValidatorHeader
-          selectedCount={watchedSelectedValidators.length}
-          totalCount={data.length}
+          selectedCount={withdrawals.length}
+          totalCount={validators.length}
           onClear={handleResetWithdrawal}
         />
 
@@ -207,23 +176,25 @@ const Withdrawal: FC = () => {
           <ValidatorListHeaders
             columnHeaders={WITHDRAWAL_COLUMN_HEADERS}
             onSort={handleSort}
-            sortColumn={sortColumn ?? ""}
+            sortColumn={sortColumn}
             sortDirection={sortDirection}
           />
 
           <div className="flex w-full flex-col gap-y-2">
-            {sortedValidators?.map((validator, index) => {
+            {validators?.map((validator, index) => {
+              const withdrawalIndex = withdrawals.findIndex(
+                (field) =>
+                  field.validator.validatorIndex === validator.validatorIndex,
+              );
               return (
                 <WithdrawalSelectionValidatorCard
                   key={`${index}-${validator.validatorIndex}`}
                   availableAmount={validator.balance}
                   errors={errors}
                   handleSelect={() => handleValidatorSelect(validator)}
-                  index={index}
+                  withdrawalIndex={withdrawalIndex}
                   register={register}
-                  selected={watchedSelectedValidators.some(
-                    (v) => v.validatorIndex === validator.validatorIndex,
-                  )}
+                  selected={withdrawalIndex !== -1}
                   validator={validator}
                 />
               );
@@ -231,7 +202,7 @@ const Withdrawal: FC = () => {
           </div>
         </div>
       </div>
-    </form>
+    </div>
   );
 };
 

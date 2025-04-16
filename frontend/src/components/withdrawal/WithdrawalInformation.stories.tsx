@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { EWithdrawalStage } from "pec/types/withdrawal";
 import { WithdrawalInformation } from "./WithdrawalInformation";
 
 // More on how to set up stories at: https://storybook.js.org/docs/writing-stories#default-export
@@ -27,8 +26,8 @@ export const Primary: Story = {
     isValid: true,
     onSubmit: () => {},
     resetWithdrawal: () => {},
-    stage: EWithdrawalStage.TRANSACTIONS_CONFIRMED,
     validatorsSelected: 8,
     withdrawalTotal: 100,
+    stage: { type: "data-capture" },
   },
 };
