@@ -14,7 +14,7 @@ interface ViewItem {
   onClick: () => void;
 }
 
-// Default Options That Can Be Filtered
+// Default Options That Can Be Filtered in the view dropdown
 const defaultFilteredOptions = [
   "Active since",
   "Status",
@@ -23,13 +23,13 @@ const defaultFilteredOptions = [
 
 
 export const TableFilters: FC<ITableFiltersProps> = (props) => {
-  const { searchTerm, onSearchChange, statusFilter, onStatusFilterChange, filterTableOptions, onFilterTableOptionsChange } = props;
+  const { searchTerm, onSearchChange, statusFilter, onStatusFilterChange, filterTableOptions, onFilterTableOptionsChange, getValidatorCount } = props;
 
   // Create a array of items for the Status dropdown menu
   const statusItems = Object.values(ValidatorStatus).map((status) => ({
     label: status,
     value: status,
-    count: 20,
+    count: getValidatorCount(status),
     isSelected: statusFilter.includes(status),
     onClick: () => onStatusFilterChange(status),
   }));

@@ -1,4 +1,4 @@
-import type { ValidatorDetails } from "./validator";
+import type { ValidatorDetails, ValidatorStatus } from "./validator";
 
 export enum ESortDirection {
   ASC = "asc",
@@ -12,6 +12,7 @@ export interface ITableFiltersProps {
   onStatusFilterChange: (status: string) => void;
   filterTableOptions: IHeaderConfig['label'][];
   onFilterTableOptionsChange: (option: IHeaderConfig['label']) => void;
+  getValidatorCount: (status: ValidatorStatus) => number;
 }
 
 export interface IValidatorRowProps {

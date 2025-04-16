@@ -23,6 +23,7 @@ export const ValidatorTable: FC<IGenericValidators> = (props) => {
     handleSearchChange,
     handlePageChange,
     handleFilterTableOptionsChange,
+    getValidatorCount,
   } = useValidatorTable(validators);
 
   const itemsPerPage = 10;
@@ -36,6 +37,7 @@ export const ValidatorTable: FC<IGenericValidators> = (props) => {
         onStatusFilterChange={handleStatusFilterChange}
         filterTableOptions={filterTableOptions}
         onFilterTableOptionsChange={handleFilterTableOptionsChange}
+        getValidatorCount={getValidatorCount}
       />
 
       <TableContent
