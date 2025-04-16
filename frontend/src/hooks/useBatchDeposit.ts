@@ -1,4 +1,4 @@
-import { DepositData } from "pec/lib/api/schemas/deposit";
+import { type DepositData } from "pec/lib/api/schemas/deposit";
 import { useContracts } from "./useContracts";
 import { api } from "pec/trpc/react";
 import { prepareContractCall, sendTransaction, waitForReceipt } from "thirdweb";
@@ -11,7 +11,7 @@ import { useActiveChainWithDefault } from "./useChain";
 import { parseError } from "pec/lib/utils/parseError";
 import { generateByteString } from "pec/lib/utils/bytes";
 import { SIGNATURE_BYTE_LENGTH } from "pec/constants/deposit";
-import { DepositWorkflowStage } from "pec/types/batch-deposits";
+import { type DepositWorkflowStage } from "pec/types/batch-deposits";
 
 interface BatchDepositRequest {
   pubKey: `0x${string}`;
@@ -91,7 +91,7 @@ export const useBatchDeposit = () => {
 
       try {
         const txReceipt = await waitForReceipt({
-          transactionHash: receipt.transactionHash as `0x${string}`,
+          transactionHash: receipt.transactionHash,
           client,
           chain,
         });

@@ -4,7 +4,7 @@ export function generateByteString(length: number): `0x${string}` {
   const hex = Array.from(bytes)
     .map((b) => b.toString(16).padStart(2, "0"))
     .join("");
-  return `0x${hex}` as `0x${string}`;
+  return `0x${hex}`;
 }
 
 export function getByteLength(str: string): number {
@@ -18,7 +18,7 @@ export function getByteLength(str: string): number {
  */
 export const convertToBigEndianUint64Hex = (value: number | bigint): string => {
   // Convert to BigInt if not already
-  let bigIntValue = typeof value === "number" ? BigInt(value) : value;
+  const bigIntValue = typeof value === "number" ? BigInt(value) : value;
 
   // Check if the value fits in uint64 (0 to 2^64-1)
   if (bigIntValue < 0n || bigIntValue > 18446744073709551615n) {
@@ -26,7 +26,7 @@ export const convertToBigEndianUint64Hex = (value: number | bigint): string => {
   }
 
   // Create a hex string with proper padding to 16 characters (8 bytes)
-  let hexString = bigIntValue.toString(16).padStart(16, "0");
+  const hexString = bigIntValue.toString(16).padStart(16, "0");
 
   return `0x${hexString}`;
 };

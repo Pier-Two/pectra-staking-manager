@@ -121,8 +121,8 @@ const Withdrawal: FC = () => {
     setStage({ type: "data-capture" });
   };
 
-  const onSubmit = (data: WithdrawalFormType) => {
-    submitWithdrawals(data.withdrawals);
+  const onSubmit = async (data: WithdrawalFormType) => {
+    await submitWithdrawals(data.withdrawals);
   };
 
   return (

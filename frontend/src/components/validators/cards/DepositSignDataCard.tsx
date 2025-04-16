@@ -2,12 +2,12 @@ import Image from "next/image";
 import { AlignLeft, Check } from "lucide-react";
 import { DECIMAL_PLACES } from "pec/lib/constants";
 import { PectraSpinner } from "pec/components/ui/custom/pectraSpinner";
-import { DepositData } from "pec/lib/api/schemas/deposit";
-import { TransactionWorkflowStages } from "pec/types/batch-deposits";
+import { type DepositData } from "pec/lib/api/schemas/deposit";
+import { type DepositWorkflowStage } from "pec/types/batch-deposits";
 
 export interface IDepositSignDataCard {
   deposit: DepositData;
-  stage: TransactionWorkflowStages;
+  stage: DepositWorkflowStage;
 }
 
 export const DepositSignDataCard = ({

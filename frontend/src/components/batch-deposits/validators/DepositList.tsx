@@ -2,15 +2,15 @@ import { ValidatorListHeaders } from "./ValidatorListHeaders";
 import { DistributionInformation } from "../distribution/DistributionInformation";
 import { DepositSignDataCard } from "pec/components/validators/cards/DepositSignDataCard";
 import { SIGN_DEPOSIT_COLUMN_HEADERS } from "pec/constants/columnHeaders";
-import { DepositData } from "pec/lib/api/schemas/deposit";
-import { TransactionWorkflowStages } from "pec/types/batch-deposits";
+import { type DepositData } from "pec/lib/api/schemas/deposit";
+import { type DepositWorkflowStage } from "pec/types/batch-deposits";
 
 export interface IDepositList {
   deposits: DepositData[];
   resetBatchDeposit: () => void;
   totalAllocated: number;
   totalToDistribute: number;
-  stage: TransactionWorkflowStages;
+  stage: DepositWorkflowStage;
 }
 
 export const DepositList = ({

@@ -5,14 +5,14 @@ import { PrimaryButton } from "../../ui/custom/PrimaryButton";
 import { EIconPosition } from "pec/types/components";
 import { SecondaryButton } from "pec/components/ui/custom/SecondaryButton";
 import { DECIMAL_PLACES } from "pec/lib/constants";
-import { TransactionWorkflowStages } from "pec/types/batch-deposits";
+import { type DepositWorkflowStage } from "pec/types/batch-deposits";
 
 export interface IDistributionInformation {
   onSubmit?: () => void;
   resetBatchDeposit: () => void;
   submitButtonDisabled?: boolean;
   numDeposits: number;
-  stage: TransactionWorkflowStages;
+  stage: DepositWorkflowStage;
   totalAllocated: number;
   totalToDistribute: number;
 }
