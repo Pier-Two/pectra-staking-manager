@@ -29,6 +29,11 @@ export const validatorRouter = createTRPCRouter({
           network,
         ).get<BeaconChainAllValidatorsResponse>(
           `/api/v1/validator/withdrawalCredentials/${address}`,
+          {
+            params: {
+              limit: 200,
+            },
+          },
         );
 
         if (!validatorResponse.data || validatorResponse.data.data.length === 0)
