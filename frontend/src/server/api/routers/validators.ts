@@ -83,6 +83,7 @@ export const validatorRouter = createTRPCRouter({
                 targetValidatorIndex: validator.validatorIndex,
                 sourceTargetValidatorIndex: validator.validatorIndex,
               }),
+              // TODO make this exclusive OR?
               await ConsolidationModel.findOne({
                 $or: [
                   { targetValidatorIndex: Number(validator.validatorIndex) },
