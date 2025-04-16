@@ -26,6 +26,8 @@ import type { IValidatorRowProps } from "pec/types/validatorTable";
 import type { FC } from "react";
 import { formatEther } from "viem";
 
+import clsx from "clsx";
+import { getGridTemplateColumns } from "./TableHeader";
 /**
  * @Description This is a component that renders a row of a validator in the validator table.
  * 
@@ -56,9 +58,9 @@ export const ValidatorRow: FC<IValidatorRowProps> = (props) => {
   };
 
   return (
-    <div className="w-full rounded-xl border bg-indigo-50 p-4 text-sm hover:border-indigo-300 dark:bg-black dark:hover:bg-gray-900">
+    <div className="w-auto rounded-xl border bg-indigo-50 p-4 text-sm hover:border-indigo-300 dark:bg-black dark:hover:bg-gray-900">
       {/* Desktop View */}
-      <div className="hidden md:grid md:grid-cols-6 md:gap-4 md:items-center">
+      <div className={clsx("hidden md:grid md:gap-4 md:items-center", getGridTemplateColumns(filterTableOptions.length))}>
         <div>
           <div className="flex flex-row gap-2">
             <Image

@@ -1,3 +1,4 @@
+import { clsx } from "clsx";
 import { ChevronDown, ChevronsLeftRight, ChevronUp } from "lucide-react";
 import { DASHBOARD_VALIDATOR_COLUMN_HEADERS } from "pec/constants/columnHeaders";
 import {
@@ -5,6 +6,17 @@ import {
   type ITableHeadersRowProps,
 } from "pec/types/validatorTable";
 import type { FC } from "react";
+
+// This is the config for the grid template columns MIN and MAX widths then
+export const getGridTemplateColumns = (filterLength: number) => {
+  const templates = {
+    0: "[grid-template-columns:minmax(150px,200px)_minmax(150px,200px)_minmax(100px,200px)_minmax(100px,200px)_minmax(75px,200px)_minmax(0px,100px)]",
+    1: "[grid-template-columns:minmax(150px,200px)_minmax(150px,200px)_minmax(100px,200px)_minmax(75px,200px)_minmax(0px,100px)]",
+    2: "[grid-template-columns:minmax(150px,200px)_minmax(150px,200px)_minmax(75px,200px)_minmax(0px,100px)]",
+    3: "[grid-template-columns:minmax(150px,200px)_minmax(75px,200px)_minmax(0px,100px)]",
+  };
+  return templates[filterLength as keyof typeof templates];
+};
 
 export const TableHeader: FC<ITableHeadersRowProps> = ({
   sortConfig,
@@ -18,13 +30,13 @@ export const TableHeader: FC<ITableHeadersRowProps> = ({
   );
 
   // Get Validator and Credentials headers for mobile view
-  const validatorHeader = tableHeaderItems[0];
-  const credentialsHeader = tableHeaderItems[2];
+  const validatorHeader = { label: "Validator", sortKey: "validatorIndex" }
+  const credentialsHeader = { label: "Credentials", sortKey: "withdrawalAddress" }
 
   return (
-    <div className="w-full px-4">
+    <div className="w-auto flex justify-center items-center">
       {/* Desktop View */}
-      <div className="hidden md:grid md:grid-cols-6 md:gap-4 text-sm">
+      <div className={clsx("hidden md:grid md:gap-4 text-sm p-4 max-w-[90vw] w-full", getGridTemplateColumns(filterTableOptions.length))}>
         {tableHeaderItems.map((header) => (
           <div
             key={header.sortKey}
@@ -50,7 +62,8 @@ export const TableHeader: FC<ITableHeadersRowProps> = ({
 
       {/* Mobile View */}
       <div className="md:hidden">
-        <div className="grid grid-cols-3 gap-12 text-sm">
+        <div className="grid grid-cols-3 gap-12 text-sm p-4">
+
           {validatorHeader && (
             <div 
               className="cursor-pointer"
