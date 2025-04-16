@@ -1,5 +1,6 @@
 "use client";
 
+import clsx from "clsx";
 import {
   AlignLeft,
   ArrowDownToDot,
@@ -23,6 +24,7 @@ import { Separator } from "pec/components/ui/separator";
 import { ValidatorStatus } from "pec/types/validator";
 import type { IValidatorRowProps } from "pec/types/validatorTable";
 import type { FC } from "react";
+import { getGridTemplateColumns } from "./TableHeader";
 
 /**
  * @Description This is a component that renders a row of a validator in the validator table.
@@ -54,9 +56,10 @@ export const ValidatorRow: FC<IValidatorRowProps> = (props) => {
   };
 
   return (
-    <div className="flex flex-row">
     <div
-      className={`grid grid-cols-6 w-fit items-center rounded-xl border bg-indigo-50 p-4 text-sm hover:border-indigo-300 dark:bg-black dark:hover:bg-gray-900`}
+      className={clsx("grid w-fit items-center rounded-xl border bg-indigo-50 p-4 text-sm hover:border-indigo-300 dark:bg-black dark:hover:bg-gray-900", 
+        getGridTemplateColumns(filterTableOptions.length)
+      )}
     >
       {/* Validator Column */}
       <div className="col-span-1">
@@ -90,7 +93,7 @@ export const ValidatorRow: FC<IValidatorRowProps> = (props) => {
       )}
 
       {/* Credentials Column */}
-      {!filterTableOptions.includes("Status") && (
+      
         <div className="col-span-1">
           <div className="flex items-center gap-1">
             {validator.withdrawalAddress.includes("0x02") ? (
@@ -103,9 +106,10 @@ export const ValidatorRow: FC<IValidatorRowProps> = (props) => {
             </div>
           </div>
         </div>
-      )}
+      
 
       {/* Status Column */}
+      {!filterTableOptions.includes("Status") && (
       <div className="col-span-1">
         <div className="flex items-center gap-2">
           {validator.status === ValidatorStatus.ACTIVE ? (
@@ -116,6 +120,7 @@ export const ValidatorRow: FC<IValidatorRowProps> = (props) => {
           <span>{validator.status}</span>
         </div>
       </div>
+      )}
 
       {/* Balance Column */}
       {!filterTableOptions.includes("Balance") && (
@@ -168,7 +173,6 @@ export const ValidatorRow: FC<IValidatorRowProps> = (props) => {
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-    </div>
     </div>
   );
 };

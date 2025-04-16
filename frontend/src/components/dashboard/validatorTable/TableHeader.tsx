@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import { ChevronDown, ChevronsLeftRight, ChevronUp } from "lucide-react";
 import { DASHBOARD_VALIDATOR_COLUMN_HEADERS } from "pec/constants/columnHeaders";
 import {
@@ -5,6 +6,17 @@ import {
   type ITableHeadersRowProps,
 } from "pec/types/validatorTable";
 import type { FC } from "react";
+
+// This is the config for the grid template columns for the table header it is shared between the table header and the validator row so that the columns are aligned and the same width
+export const getGridTemplateColumns = (filterLength: number) => {
+  const templates = {
+    0: "[grid-template-columns:minmax(150px,200px)_minmax(150px,200px)_minmax(100px,200px)_minmax(100px,200px)_minmax(100px,200px)_minmax(100px,100px)]",
+    1: "[grid-template-columns:minmax(150px,200px)_minmax(150px,200px)_minmax(100px,200px)_minmax(100px,200px)_minmax(100px,100px)]",
+    2: "[grid-template-columns:minmax(150px,200px)_minmax(150px,200px)_minmax(100px,200px)_minmax(100px,100px)]",
+    3: "[grid-template-columns:minmax(150px,200px)_minmax(150px,200px)_minmax(100px,100px)]",
+  };
+  return templates[filterLength as keyof typeof templates];
+}; 
 
 export const TableHeader: FC<ITableHeadersRowProps> = ({
   sortConfig,
@@ -16,7 +28,9 @@ export const TableHeader: FC<ITableHeadersRowProps> = ({
 
 
   return (
-    <div className="hidden md:grid grid-cols-6 items-center gap-1 px-6">
+    <div className={clsx("hidden md:grid w-fit items-center gap-1",
+      getGridTemplateColumns(filterTableOptions.length)
+    )}>
       {tableHeaderItems.map((header) => (
         <div
           className="col-span-1 cursor-pointer"
