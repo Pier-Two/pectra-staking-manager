@@ -1,38 +1,35 @@
-import axios from "axios";
 import { z } from "zod";
-
-import { getBeaconChainURL } from "pec/constants/beaconchain";
-import { env } from "pec/env";
-import {
-  ConsolidationModel,
-  DepositModel,
-  WithdrawalModel,
-} from "pec/lib/database/models";
 import { getValidatorActiveInfo } from "pec/lib/utils/validatorActivity";
 import { createTRPCRouter, publicProcedure } from "pec/server/api/trpc";
 import type {
   BeaconChainAllValidatorsResponse,
-  BeaconChainValidatorDetailsResponse,
   BeaconChainValidatorArrayDetailsResponse,
+  BeaconChainValidatorDetailsResponse,
 } from "pec/types/api";
-import { ACTIVE_STATUS } from "pec/types/app";
 import {
   TransactionStatus,
   type ValidatorDetails,
   ValidatorStatus,
 } from "pec/types/validator";
+import {
+  ConsolidationModel,
+  DepositModel,
+  WithdrawalModel,
+} from "pec/lib/database/models";
+import { ACTIVE_STATUS } from "pec/types/app";
+import { SupportedChainIdSchema } from "pec/lib/api/schemas/network";
+import { getBeaconChainAxios } from "pec/lib/server/axios";
 
 export const validatorRouter = createTRPCRouter({
   getValidators: publicProcedure
-    .input(z.object({ address: z.string() }))
-    .query(async ({ input: { address } }) => {
+    .input(z.object({ address: z.string(), chainId: SupportedChainIdSchema }))
+    .query(async ({ input: { address, chainId: network } }) => {
       try {
-        const validators: ValidatorDetails[] = [];
-
-        const validatorResponse =
-          await axios.get<BeaconChainAllValidatorsResponse>(
-            `${getBeaconChainURL()}api/v1/validator/withdrawalCredentials/${address}?apikey=${env.BEACONCHAIN_API_KEY}&limit=200`,
-          );
+        const validatorResponse = await getBeaconChainAxios(
+          network,
+        ).get<BeaconChainAllValidatorsResponse>(
+          `/api/v1/validator/withdrawalCredentials/${address}`,
+        );
 
         if (!validatorResponse.data || validatorResponse.data.data.length === 0)
           return [];
@@ -41,59 +38,69 @@ export const validatorRouter = createTRPCRouter({
           (validator) => validator.validatorindex,
         );
 
-        if (validatorIndexes.length === 0) return [];
+        const validatorDetails = await getBeaconChainAxios(
+          network,
+        ).get<BeaconChainValidatorArrayDetailsResponse>(
+          `/api/v1/validator/${validatorIndexes.join(",")}`,
+        );
 
-        const validatorDetails =
-          await axios.get<BeaconChainValidatorArrayDetailsResponse>(
-            `${getBeaconChainURL()}/api/v1/validator/${validatorIndexes.join(",")}?apikey=${env.BEACONCHAIN_API_KEY}`,
-          );
+        if (!validatorDetails.data) return [];
 
-        if (!validatorDetails.data || validatorDetails.data.data.length === 0)
-          return [];
+        const validators: ValidatorDetails[] = validatorDetails.data.data.map(
+          (validator): ValidatorDetails => {
+            const { activeSince, activeDuration } = getValidatorActiveInfo(
+              validator.activationepoch,
+            );
 
-        validatorDetails.data.data.forEach((validator) => {
-          const { activeSince, activeDuration } = getValidatorActiveInfo(
-            validator.activationepoch,
-          );
-
-          validators.push({
-            validatorIndex: validator.validatorindex,
-            publicKey: validator.pubkey,
-            withdrawalAddress: validator.withdrawalcredentials,
-            balance: BigInt(validator.balance) * BigInt(10 ** 9),
-            effectiveBalance:
-              BigInt(validator.effectivebalance) * BigInt(10 ** 9),
-            status: validator.status.toLowerCase().includes("active")
-              ? ValidatorStatus.ACTIVE
-              : ValidatorStatus.INACTIVE,
-            numberOfWithdrawals: validator.total_withdrawals,
-            activeSince,
-            activeDuration,
-            withdrawalTransaction: undefined,
-            consolidationTransaction: undefined,
-            depositTransaction: undefined,
-            upgradeSubmitted: false,
-          });
-        });
+            return {
+              validatorIndex: validator.validatorindex,
+              publicKey: validator.pubkey,
+              withdrawalAddress: validator.withdrawalcredentials,
+              balance: BigInt(validator.balance) * BigInt(10 ** 9),
+              effectiveBalance:
+                BigInt(validator.effectivebalance) * BigInt(10 ** 9),
+              status: validator.status.toLowerCase().includes("active")
+                ? ValidatorStatus.ACTIVE
+                : ValidatorStatus.INACTIVE,
+              numberOfWithdrawals: validator.total_withdrawals,
+              activeSince,
+              activeDuration,
+              withdrawalTransactions: [],
+              consolidationTransaction: undefined,
+              depositTransaction: undefined,
+              upgradeSubmitted: false,
+            };
+          },
+        );
 
         for (const validator of validators) {
-          const [upgradeTx, consolidationTx, depositTx] = await Promise.all([
-            await ConsolidationModel.findOne({
-              targetValidatorIndex: validator.validatorIndex,
-              sourceTargetValidatorIndex: validator.validatorIndex,
-            }),
-            await ConsolidationModel.findOne({
-              $or: [
-                { targetValidatorIndex: Number(validator.validatorIndex) },
-                {
-                  sourceTargetValidatorIndex: Number(validator.validatorIndex),
-                },
-              ],
-            }),
-            await DepositModel.findOne({
-              validatorIndex: validator.validatorIndex,
-            }),
-          ]);
+          const [withdrawTx, upgradeTx, consolidationTx, depositTx] =
+            await Promise.all([
+              await WithdrawalModel.find({
+                validatorIndex: validator.validatorIndex,
+              }),
+              await ConsolidationModel.findOne({
+                targetValidatorIndex: validator.validatorIndex,
+                sourceTargetValidatorIndex: validator.validatorIndex,
+              }),
+              await ConsolidationModel.findOne({
+                $or: [
+                  { targetValidatorIndex: Number(validator.validatorIndex) },
+                  {
+                    sourceTargetValidatorIndex: Number(
+                      validator.validatorIndex,
+                    ),
+                  },
+                ],
+              }),
+              await DepositModel.findOne({
+                validatorIndex: validator.validatorIndex,
+              }),
+            ]);
+
+          if (withdrawTx) {
+            validator.withdrawalTransactions = withdrawTx;
+          }
 
           if (upgradeTx) {
             validator.upgradeSubmitted = true;
@@ -125,11 +132,15 @@ export const validatorRouter = createTRPCRouter({
     }),
 
   getValidatorDetails: publicProcedure
-    .input(z.object({ searchTerm: z.string() }))
-    .query(async ({ input: { searchTerm } }) => {
+    .input(
+      z.object({ searchTerm: z.string(), network: SupportedChainIdSchema }),
+    )
+    .query(async ({ input: { searchTerm, network } }) => {
       try {
-        const { data } = await axios.get<BeaconChainValidatorDetailsResponse>(
-          `${getBeaconChainURL()}/api/v1/validator/${searchTerm}?apikey=${env.BEACONCHAIN_API_KEY}`,
+        const { data } = await getBeaconChainAxios(
+          network,
+        ).get<BeaconChainValidatorDetailsResponse>(
+          `/api/v1/validator/${searchTerm}`,
         );
 
         const validator = data.data;
@@ -142,7 +153,7 @@ export const validatorRouter = createTRPCRouter({
           validator.activationepoch,
         );
 
-        const formattedValidator = {
+        const formattedValidator: ValidatorDetails = {
           validatorIndex: validator.validatorindex,
           publicKey: validator.pubkey,
           withdrawalAddress: validator.withdrawalcredentials,
@@ -156,6 +167,7 @@ export const validatorRouter = createTRPCRouter({
           activeSince,
           activeDuration,
           upgradeSubmitted: false,
+          withdrawalTransactions: [],
         };
 
         const upgradeTx = await ConsolidationModel.findOne({
@@ -187,7 +199,6 @@ export const validatorRouter = createTRPCRouter({
       const { targetValidatorIndex, sourceTargetValidatorIndex, txHash, user } =
         input;
 
-      // Check if a record with these validator indexes already exists
       const existingRecord = await ConsolidationModel.findOne({
         $or: [
           {
@@ -201,13 +212,11 @@ export const validatorRouter = createTRPCRouter({
         ],
       });
 
-      if (existingRecord) {
+      if (existingRecord)
         throw new Error(
           `Consolidation record already exists for validators ${targetValidatorIndex} and ${sourceTargetValidatorIndex}`,
         );
-      }
 
-      // Create new consolidation record
       const newRecord = await ConsolidationModel.create({
         targetValidatorIndex,
         sourceTargetValidatorIndex,

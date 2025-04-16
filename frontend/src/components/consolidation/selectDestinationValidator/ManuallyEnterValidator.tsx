@@ -18,11 +18,13 @@ import { Skeleton } from "pec/components/ui/skeleton";
 import { DECIMAL_PLACES } from "pec/lib/constants";
 import { api } from "pec/trpc/react";
 import { formatEther } from "viem";
+import { useActiveChainWithDefault } from "pec/hooks/useChain";
 
 export const ManuallyEnterValidator = () => {
   const { setConsolidationTarget, setProgress } = useConsolidationStore();
   const [input, setInput] = useState("");
   const [searchTerm, setSearchTerm] = useState<string>();
+  const chain = useActiveChainWithDefault();
 
   // Validate input (valid index or pub key)
   const isValidInput = (value: string): boolean => {
@@ -42,6 +44,7 @@ export const ManuallyEnterValidator = () => {
   } = api.validators.getValidatorDetails.useQuery(
     {
       searchTerm: searchTerm!,
+      network: chain.id,
     },
     {
       enabled: !!searchTerm && isValidInput(searchTerm),

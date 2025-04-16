@@ -36,13 +36,6 @@ export interface IDistributionOption {
   description: string;
 }
 
-export interface IBatchDepositState {
-  distributionMethod: EDistributionMethod;
-  selectedValidators: IBatchDepositValidators[];
-  totalToDistribute: number;
-  totalAllocated: bigint;
-}
-
 export interface IDistributionMethodProps {
   disableButton: boolean;
   distributionMethod: EDistributionMethod;
@@ -111,18 +104,6 @@ export interface IDepositList {
   resetBatchDeposit: () => void;
   totalAllocated: bigint;
   totalToDistribute: number;
-}
-
-interface IColumnHeader {
-  label: string;
-  showSort: boolean;
-}
-
-export interface IValidatorListHeaders {
-  columnHeaders: IColumnHeader[];
-  sortColumn: string;
-  sortDirection: SortDirection;
-  onSort: (column: string) => void;
 }
 
 export interface IDepositSignDataCard {

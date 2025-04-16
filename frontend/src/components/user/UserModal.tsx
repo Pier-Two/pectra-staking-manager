@@ -15,7 +15,7 @@ import { Label } from "pec/components/ui/label";
 import { PrimaryButton } from "../ui/custom/PrimaryButton";
 import { api } from "pec/trpc/react";
 import { toast } from "sonner";
-import { UserType } from "pec/lib/api/schemas/database/user";
+import type { UserType } from "pec/lib/api/schemas/database/user";
 
 interface IUserModal {
   open: boolean;
@@ -39,17 +39,14 @@ export const UserModal: FC<IUserModal> = ({ open, setOpen, userDetails }) => {
 
   const onSubmit = async (data: User) => {
     await new Promise((resolve) => setTimeout(resolve, 5000));
-    // ETH signature validation logic for Ben needed here first
+
     const response = await createOrUpdateUser({
       ...data,
       address: userDetails.address,
     });
 
-    if (!response.success) {
-      toast.error(response.error);
-    } else {
-      setOpen(false);
-    }
+    if (!response.success) toast.error(response.error);
+    else setOpen(false);
   };
 
   return (
@@ -78,6 +75,7 @@ export const UserModal: FC<IUserModal> = ({ open, setOpen, userDetails }) => {
               type="email"
               {...register("email")}
             />
+
             {errors.email && (
               <p className="text-sm text-red-500">{errors.email.message}</p>
             )}
@@ -93,6 +91,7 @@ export const UserModal: FC<IUserModal> = ({ open, setOpen, userDetails }) => {
               id="firstName"
               {...register("firstName")}
             />
+
             {errors.firstName && (
               <p className="text-sm text-red-500">{errors.firstName.message}</p>
             )}
@@ -108,6 +107,7 @@ export const UserModal: FC<IUserModal> = ({ open, setOpen, userDetails }) => {
               id="lastName"
               {...register("lastName")}
             />
+
             {errors.lastName && (
               <p className="text-sm text-red-500">{errors.lastName.message}</p>
             )}
@@ -123,6 +123,7 @@ export const UserModal: FC<IUserModal> = ({ open, setOpen, userDetails }) => {
               id="companyName"
               {...register("companyName")}
             />
+
             {errors.companyName && (
               <p className="text-sm text-red-500">
                 {errors.companyName.message}

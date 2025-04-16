@@ -12,14 +12,13 @@ import {
 import { ValidatorCard } from "pec/components/validators/cards/ValidatorCard";
 import { DetectedValidators } from "pec/components/validators/DetectedValidators";
 import { useConsolidationStore } from "pec/hooks/use-consolidation-store";
-import { useWalletAddress } from "pec/hooks/useWallet";
 import { DECIMAL_PLACES } from "pec/lib/constants";
-import { api } from "pec/trpc/react";
 import { EIconPosition } from "pec/types/components";
 import type { ValidatorDetails } from "pec/types/validator";
 import { useEffect, useMemo, useState } from "react";
 import { formatEther } from "viem";
 import { ValidatorList } from "./ValidatorList";
+import { useValidators } from "pec/hooks/useValidators";
 
 export const SelectSourceValidators = () => {
   const {
@@ -31,16 +30,9 @@ export const SelectSourceValidators = () => {
     addValidatorToConsolidate,
   } = useConsolidationStore();
 
-  const walletAddress = useWalletAddress();
-
   const [activeTab, setActiveTab] = useState<string>("maxConsolidate");
 
-  const { data: validators } = api.validators.getValidators.useQuery(
-    {
-      address: walletAddress || "",
-    },
-    { enabled: !!walletAddress },
-  );
+  const { data: validators } = useValidators();
 
   const availableSourceValidators = useMemo(() => {
     return validators?.filter(
@@ -104,7 +96,6 @@ export const SelectSourceValidators = () => {
           <div className="flex flex-col items-center justify-center gap-4">
             {consolidationTarget && (
               <ValidatorCard
-                hasBackground={true}
                 hasHover={false}
                 shrink={false}
                 validator={consolidationTarget}

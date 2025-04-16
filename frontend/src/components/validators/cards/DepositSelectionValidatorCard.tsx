@@ -1,5 +1,3 @@
-"use client";
-
 import { AlignLeft, CircleCheck, CirclePlus } from "lucide-react";
 import Image from "next/image";
 import type { DepositType } from "pec/lib/api/schemas/deposit";

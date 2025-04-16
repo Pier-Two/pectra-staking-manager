@@ -1,9 +1,9 @@
 "use client";
 
-import {
-  type Transaction,
-  type TransactionStatus,
-  type ValidatorDetails,
+import type {
+  Transaction,
+  TransactionStatus,
+  ValidatorDetails,
 } from "pec/types/validator";
 
 import { useStore } from "zustand";
