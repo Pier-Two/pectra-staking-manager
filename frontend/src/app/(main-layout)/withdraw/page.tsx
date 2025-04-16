@@ -192,6 +192,7 @@ const Withdrawal: FC = () => {
                 (field) =>
                   field.validator.validatorIndex === validator.validatorIndex,
               );
+
               return (
                 <WithdrawalSelectionValidatorCard
                   key={`${index}-${validator.validatorIndex}`}

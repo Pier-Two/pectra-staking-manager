@@ -1,14 +1,18 @@
-import type { FC } from "react";
-import type { IValidatorHeader } from "pec/types/batch-deposits";
 import { TertiaryButton } from "pec/components/ui/custom/TertiaryButton";
 import { EIconPosition } from "pec/types/components";
 import { X } from "lucide-react";
 
-export const ValidatorHeader: FC<IValidatorHeader> = ({
+export interface IValidatorHeader {
+  selectedCount: number;
+  totalCount: number;
+  onClear: () => void;
+}
+
+export const ValidatorHeader = ({
   selectedCount,
   totalCount,
   onClear,
-}) => {
+}: IValidatorHeader) => {
   return (
     <div className="flex flex-row justify-between">
       <div className="text-md font-medium">Select Validators</div>

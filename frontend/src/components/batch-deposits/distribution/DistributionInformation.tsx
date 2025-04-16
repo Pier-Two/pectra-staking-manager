@@ -1,31 +1,35 @@
-"use client";
-
-import { type FC } from "react";
 import Image from "next/image";
 import { AlignLeft, Check, ExternalLink } from "lucide-react";
 import { Separator } from "../../ui/separator";
 import { PrimaryButton } from "../../ui/custom/PrimaryButton";
-import {
-  EBatchDepositStage,
-  type IDistributionInformation,
-} from "pec/types/batch-deposits";
 import { PectraSpinner } from "pec/components/ui/custom/pectraSpinner";
 import { EIconPosition } from "pec/types/components";
 import { SecondaryButton } from "pec/components/ui/custom/SecondaryButton";
 import { DECIMAL_PLACES } from "pec/lib/constants";
 import { formatEther } from "viem";
+import { DepositWorkflowStage } from "pec/types/batch-deposits";
 
-export const DistributionInformation: FC<IDistributionInformation> = ({
+export interface IDistributionInformation {
+  buttonText: string;
+  disableButton: boolean;
+  onSubmit?: () => void;
+  resetBatchDeposit: () => void;
+  numDeposits: number;
+  stage: DepositWorkflowStage;
+  totalAllocated: number;
+  totalToDistribute: number;
+}
+
+export const DistributionInformation = ({
   buttonText,
   disableButton,
   onSubmit,
   resetBatchDeposit,
-  selectedValidators,
+  numDeposits,
   stage,
-  setValue,
   totalAllocated,
   totalToDistribute,
-}) => {
+}: IDistributionInformation) => {
   const distributionStats = [
     {
       icon: <AlignLeft className="h-4 w-4" />,
@@ -34,20 +38,15 @@ export const DistributionInformation: FC<IDistributionInformation> = ({
     },
     {
       imageUrl: "/icons/EthValidator.svg",
-      value: selectedValidators.length,
+      value: numDeposits,
       label: "Selected",
     },
     {
       icon: <AlignLeft className="h-4 w-4" />,
-      value: formatEther(totalAllocated ?? 0n),
+      value: totalAllocated,
       label: "Allocated",
     },
   ];
-
-  const handleClick = () => {
-    if (setValue) setValue("stage", EBatchDepositStage.TRANSACTIONS_SUBMITTED);
-    if (onSubmit) onSubmit();
-  };
 
   const handleViewTransaction = () => {
     window.open(
@@ -96,7 +95,7 @@ export const DistributionInformation: FC<IDistributionInformation> = ({
         </div>
 
         <div className="w-1/4">
-          {stage === EBatchDepositStage.TRANSACTIONS_CONFIRMED ? (
+          {stage === "transactions-confirmed" ? (
             <div className="flex flex-row items-center gap-2">
               <Check className="h-4 w-4 text-green-500" />
               <div className="text-sm">Done</div>
@@ -105,24 +104,24 @@ export const DistributionInformation: FC<IDistributionInformation> = ({
             <PrimaryButton
               className="w-full"
               icon={
-                stage === EBatchDepositStage.TRANSACTIONS_SUBMITTED ? (
+                stage === "transactions-submitted" ? (
                   <PectraSpinner />
                 ) : undefined
               }
               iconPosition={
-                stage === EBatchDepositStage.TRANSACTIONS_SUBMITTED
+                stage === "transactions-submitted"
                   ? EIconPosition.LEFT
                   : undefined
               }
               disabled={disableButton}
-              onClick={handleClick}
+              onClick={onSubmit}
               label={buttonText}
             />
           )}
         </div>
       </div>
 
-      {stage === EBatchDepositStage.TRANSACTIONS_CONFIRMED && (
+      {stage === "transactions-submitted" && (
         <>
           <div className="rounded-xl bg-gray-100 p-2 text-sm text-green-500">
             Your transactions have been submitted successfully and will be

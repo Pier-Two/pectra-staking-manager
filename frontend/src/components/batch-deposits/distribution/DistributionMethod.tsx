@@ -1,9 +1,6 @@
-"use client";
-
-import { type FC } from "react";
 import type {
+  DepositWorkflowStage,
   EDistributionMethod,
-  IDistributionMethodProps,
 } from "pec/types/batch-deposits";
 import { DistributionInformation } from "./DistributionInformation";
 import { DistributionOption } from "./DistributionOption";
@@ -11,26 +8,36 @@ import { TotalAmountInput } from "./TotalAmountInput";
 import type { DepositType } from "pec/lib/api/schemas/deposit";
 import type { FieldErrors, UseFormRegister } from "react-hook-form";
 import { DISTRIBUTION_OPTIONS } from "pec/constants/deposit";
-interface ExtendedProps extends IDistributionMethodProps {
+
+export interface IDistributionMethodProps {
+  disableButton: boolean;
+  distributionMethod: EDistributionMethod;
+  onDistributionMethodChange: (method: EDistributionMethod) => void;
+  onSubmit: () => void;
+  resetBatchDeposit: () => void;
+  numDeposits: number;
+  stage: DepositWorkflowStage;
+  totalAllocated: number;
+  totalToDistribute: number;
+  walletBalance: number;
   errors: FieldErrors<DepositType>;
   register: UseFormRegister<DepositType>;
 }
 
-export const DistributionMethod: FC<ExtendedProps> = ({
+export const DistributionMethod = ({
   disableButton,
   distributionMethod,
   onDistributionMethodChange,
   onSubmit,
   resetBatchDeposit,
-  selectedValidators,
+  numDeposits,
   stage,
-  setValue,
   totalAllocated,
   totalToDistribute,
   walletBalance,
   errors,
   register,
-}) => {
+}: IDistributionMethodProps) => {
   const handleDistributionMethodChange = (method: EDistributionMethod) => {
     onDistributionMethodChange(method);
   };
@@ -64,9 +71,8 @@ export const DistributionMethod: FC<ExtendedProps> = ({
           disableButton={disableButton}
           onSubmit={onSubmit}
           resetBatchDeposit={resetBatchDeposit}
-          selectedValidators={selectedValidators}
+          numDeposits={numDeposits}
           stage={stage}
-          setValue={setValue}
           totalAllocated={totalAllocated}
           totalToDistribute={totalToDistribute}
         />

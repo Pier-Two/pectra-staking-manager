@@ -1,17 +1,15 @@
-"use client";
-
-import type { FC } from "react";
 import Image from "next/image";
-import type { IDepositSignDataCard } from "pec/types/batch-deposits";
 import { AlignLeft } from "lucide-react";
 import { DECIMAL_PLACES } from "pec/lib/constants";
 import { PectraSpinner } from "pec/components/ui/custom/pectraSpinner";
 import { formatEther } from "viem";
+import { DepositData } from "pec/lib/api/schemas/deposit";
 
-export const DepositSignDataCard: FC<IDepositSignDataCard> = ({
-  deposit,
-  stage,
-}) => {
+export interface IDepositSignDataCard {
+  deposit: DepositData;
+}
+
+export const DepositSignDataCard = ({ deposit }: IDepositSignDataCard) => {
   const { validator, amount } = deposit;
 
   return (
