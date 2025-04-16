@@ -68,9 +68,14 @@ export const storeEmailRequestRouter = createTRPCRouter({
 
   storeDepositRequest: publicProcedure
     .input(DatabaseDepositSchema.omit({ status: true }).array())
-    .mutation(async ({ input }) => {
+    .mutation(async ({ input }): Promise<IResponse<null>> => {
       try {
         await DepositModel.create([{ ...input }]);
+
+        return {
+          success: true,
+          data: null,
+        };
       } catch (error) {
         return generateErrorResponse(error);
       }

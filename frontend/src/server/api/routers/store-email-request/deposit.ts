@@ -3,6 +3,7 @@ import { chunk, groupBy } from "lodash";
 import { getBeaconChainURL } from "pec/constants/beaconchain";
 import { env } from "pec/env";
 import { BEACONCHAIN_OK_STATUS, CHUNK_SIZE } from "pec/lib/constants";
+import { MAIN_CHAIN } from "pec/lib/constants/contracts";
 import type { Deposit } from "pec/lib/database/classes/deposit";
 import { DepositModel, UserModel } from "pec/lib/database/models";
 import { getBeaconChainAxios } from "pec/lib/server/axios";
@@ -60,7 +61,9 @@ export const processDeposits = async (): Promise<IResponse> => {
         .map((item) => item.validatorIndex)
         .join(",");
 
-      const response = await getBeaconChainAxios(network).get<DepositResponse>(
+      const response = await getBeaconChainAxios(
+        MAIN_CHAIN.id,
+      ).get<DepositResponse>(
         `${getBeaconChainURL()}api/v1/validator/${validatorIndexString}/deposits?apikey=${env.BEACONCHAIN_API_KEY}`,
       );
 
