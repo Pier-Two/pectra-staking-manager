@@ -1,7 +1,6 @@
 import axios, { type AxiosResponse } from "axios";
 import { chunk, groupBy } from "lodash";
 import { getBeaconChainURL } from "pec/constants/beaconchain";
-import { EMAIL_NAMES } from "pec/constants/email";
 import { env } from "pec/env";
 import { BEACONCHAIN_OK_STATUS, CHUNK_SIZE } from "pec/lib/constants";
 import type { Deposit } from "pec/lib/database/classes/deposit";

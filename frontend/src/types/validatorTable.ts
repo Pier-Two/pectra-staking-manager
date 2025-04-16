@@ -5,16 +5,6 @@ export enum ESortDirection {
   DESC = "desc",
 }
 
-export interface ITableHeaderProps {
-  label: string;
-  sortKey: string;
-  sortConfig: {
-    key: string;
-    direction: ESortDirection;
-  } | null;
-  onSort: (key: string) => void;
-}
-
 export interface ITableFiltersProps {
   searchTerm: string;
   onSearchChange: (term: string) => void;

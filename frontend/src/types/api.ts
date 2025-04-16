@@ -1,4 +1,4 @@
-export interface BeaconChainAllValidators {
+interface BeaconChainAllValidators {
   publickey: string;
   valid_signature: boolean;
   validatorindex: number;
@@ -26,7 +26,12 @@ export interface BeaconChainValidatorDetails {
   total_withdrawals: number;
 }
 
-export interface BeaconChainValidatorDetailsResponse {
+export interface BeaconChainValidatorArrayDetailsResponse {
   status: string;
   data: BeaconChainValidatorDetails[];
+}
+
+export interface BeaconChainValidatorDetailsResponse {
+  status: string;
+  data: BeaconChainValidatorDetails;
 }

@@ -1,9 +1,9 @@
 "use client";
 
-import {
+import type {
   Transaction,
   TransactionStatus,
-  type ValidatorDetails,
+  ValidatorDetails,
 } from "pec/types/validator";
 
 import { useStore } from "zustand";
@@ -65,6 +65,11 @@ type ConsolidationStore = {
   // Getter methods to deserialize data
   getConsolidationTarget: () => ValidatorDetails | undefined;
   getValidatorsToConsolidate: () => ValidatorDetails[];
+
+  // ability for user to set destination validator to one that is not linked
+  // to their EVM account
+  manuallySettingValidator: boolean;
+  setManuallySettingValidator: (yes: boolean) => void;
 };
 
 export const consolidationStore = createStore<ConsolidationStore>()(
@@ -151,6 +156,10 @@ export const consolidationStore = createStore<ConsolidationStore>()(
       getValidatorsToConsolidate: () => {
         return get().validatorsToConsolidate.map(deserialiseValidator);
       },
+
+      manuallySettingValidator: false,
+      setManuallySettingValidator: (yes: boolean) =>
+        set({ manuallySettingValidator: yes }),
     }),
     {
       name: "consolidation-store",

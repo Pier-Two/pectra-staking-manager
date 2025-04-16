@@ -1,12 +1,8 @@
-import { z } from "zod";
 import type {
-  EDistributionMethod,
-  IBatchDepositValidators,
-} from "./batch-deposits";
-import {
   TransactionSchema,
   ValidatorDataSchema,
 } from "pec/lib/api/schemas/validator";
+import type { z } from "zod";
 
 export type ValidatorDetails = z.infer<typeof ValidatorDataSchema>;
 
@@ -29,37 +25,16 @@ export interface IDetectedValidators {
   validators: ValidatorDetails[];
 }
 
-export interface IGenericValidator {
-  validator: ValidatorDetails;
-}
-
 export interface IGenericValidators {
   validators: ValidatorDetails[];
 }
 
 export interface IValidatorCard {
-  hasBackground: boolean;
   hasHover: boolean;
   shrink: boolean;
   validator: ValidatorDetails;
   onClick?: () => void;
-}
-
-export interface IBatchDepositValidatorCard {
-  clearedSelectedValidators: boolean;
-  depositAmount: bigint;
-  distributionMethod: EDistributionMethod;
-  selected: boolean;
-  setClearedSelectedValidators: (cleared: boolean) => void;
-  totalAllocated: bigint;
-  totalToDistribute: number;
-  validator: ValidatorDetails;
-  onClick: (
-    validator: ValidatorDetails,
-    distributionMethod: EDistributionMethod,
-    depositAmount: bigint,
-  ) => void;
-  onDepositChange: (validator: IBatchDepositValidators) => void;
+  info?: string;
 }
 
 export interface ISourceValidatorCard {

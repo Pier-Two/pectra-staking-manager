@@ -1,8 +1,8 @@
 import { getModelForClass, type DocumentType } from "@typegoose/typegoose";
 import mongoose, { type Model, type Mongoose } from "mongoose";
 import { env } from "pec/env";
-import { Deposit } from "../classes/deposit";
 import { Consolidation } from "../classes/consolidation";
+import { Deposit } from "../classes/deposit";
 import { User } from "../classes/user";
 import { ValidatorSummary } from "../classes/validatorSummary";
 import { Withdrawal } from "../classes/withdrawal";
@@ -11,18 +11,12 @@ import { Withdrawal } from "../classes/withdrawal";
 let conn: Mongoose | null = null;
 
 export const connect = async () => {
-  if (conn === null) {
-    conn = await mongoose.connect(env.MONGODB_URI, {
-      serverSelectionTimeoutMS: 5000,
-    });
-  }
-
+  conn ??= await mongoose.connect(env.MONGODB_URI, {
+    serverSelectionTimeoutMS: 5000,
+  });
+  
   return conn;
 };
-
-await connect();
-
-// USERS
 
 export const UserModel: Model<User> =
   mongoose.models.User ?? getModelForClass(User);
