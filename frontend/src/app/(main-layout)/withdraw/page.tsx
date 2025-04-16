@@ -28,13 +28,7 @@ const Withdrawal: FC = () => {
   const walletAddress = useWalletAddress();
 
   const { data: rawValidatorData } = useValidators();
-  const {
-    submitWithdrawalsMutationFn: {
-      mutate: submitWithdrawals,
-      status,
-      reset: resetMutation,
-    },
-  } = useSubmitWithdraw();
+  const { submitWithdrawals, stage, setStage } = useSubmitWithdraw();
 
   const {
     handleSubmit,
@@ -124,7 +118,7 @@ const Withdrawal: FC = () => {
 
   const handleResetWithdrawal = () => {
     reset({ withdrawals: [] });
-    resetMutation();
+    setStage({ type: "data-capture" });
   };
 
   const onSubmit = (data: WithdrawalFormType) => {
@@ -167,7 +161,7 @@ const Withdrawal: FC = () => {
           isValid={isValid && withdrawalTotal > 0}
           onSubmit={handleSubmit(onSubmit)}
           resetWithdrawal={handleResetWithdrawal}
-          status={status}
+          stage={stage}
           validatorsSelected={withdrawals.length}
           withdrawalTotal={withdrawalTotal}
         />
@@ -192,7 +186,6 @@ const Withdrawal: FC = () => {
                 (field) =>
                   field.validator.validatorIndex === validator.validatorIndex,
               );
-
               return (
                 <WithdrawalSelectionValidatorCard
                   key={`${index}-${validator.validatorIndex}`}

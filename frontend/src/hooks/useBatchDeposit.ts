@@ -6,12 +6,12 @@ import { useActiveAccount } from "thirdweb/react";
 import { toast } from "sonner";
 import { parseEther } from "viem";
 import { useState } from "react";
-import { DepositWorkflowStage } from "pec/types/batch-deposits";
 import { client } from "pec/lib/wallet/client";
 import { useActiveChainWithDefault } from "./useChain";
 import { parseError } from "pec/lib/utils/parseError";
 import { generateByteString } from "pec/lib/utils/bytes";
 import { SIGNATURE_BYTE_LENGTH } from "pec/constants/deposit";
+import { DepositWorkflowStage } from "pec/types/batch-deposits";
 
 interface BatchDepositRequest {
   pubKey: `0x${string}`;

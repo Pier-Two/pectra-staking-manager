@@ -3,11 +3,11 @@ import { AlignLeft, Check } from "lucide-react";
 import { DECIMAL_PLACES } from "pec/lib/constants";
 import { PectraSpinner } from "pec/components/ui/custom/pectraSpinner";
 import { DepositData } from "pec/lib/api/schemas/deposit";
-import { DepositWorkflowStage } from "pec/types/batch-deposits";
+import { TransactionWorkflowStages } from "pec/types/batch-deposits";
 
 export interface IDepositSignDataCard {
   deposit: DepositData;
-  stage: DepositWorkflowStage;
+  stage: TransactionWorkflowStages;
 }
 
 export const DepositSignDataCard = ({

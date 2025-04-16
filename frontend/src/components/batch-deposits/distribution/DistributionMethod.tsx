@@ -1,5 +1,5 @@
 import type {
-  DepositWorkflowStage,
+  TransactionWorkflowStages,
   EDistributionMethod,
 } from "pec/types/batch-deposits";
 import { DistributionInformation } from "./DistributionInformation";
@@ -16,7 +16,7 @@ export interface IDistributionMethodProps {
   resetBatchDeposit: () => void;
   numDeposits: number;
   submitButtonDisabled: boolean;
-  stage: DepositWorkflowStage;
+  stage: TransactionWorkflowStages;
   totalAllocated: number;
   totalToDistribute: number;
   walletBalance: number;
