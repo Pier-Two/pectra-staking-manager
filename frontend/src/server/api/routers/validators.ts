@@ -68,29 +68,44 @@ export const validatorRouter = createTRPCRouter({
               withdrawalTransactions: [],
               consolidationTransaction: undefined,
               depositTransaction: undefined,
+              upgradeSubmitted: false,
             };
           },
         );
 
         for (const validator of validators) {
-          const [withdrawTx, consolidationTx, depositTx] = await Promise.all([
-            await WithdrawalModel.find({
-              validatorIndex: validator.validatorIndex,
-            }).lean(),
+          const [withdrawTx, upgradeTx, consolidationTx, depositTx] =
+            await Promise.all([
+              await WithdrawalModel.find({
+                validatorIndex: validator.validatorIndex,
+              }),
+              await ConsolidationModel.findOne({
+                targetValidatorIndex: validator.validatorIndex,
+                sourceTargetValidatorIndex: validator.validatorIndex,
+              }),
+              // TODO make this exclusive OR?
+              await ConsolidationModel.findOne({
+                $or: [
+                  { targetValidatorIndex: Number(validator.validatorIndex) },
+                  {
+                    sourceTargetValidatorIndex: Number(
+                      validator.validatorIndex,
+                    ),
+                  },
+                ],
+              }),
+              await DepositModel.findOne({
+                validatorIndex: validator.validatorIndex,
+              }),
+            ]);
 
-            await ConsolidationModel.findOne({
-              $or: [
-                { targetValidatorIndex: Number(validator.validatorIndex) },
-                {
-                  sourceTargetValidatorIndex: Number(validator.validatorIndex),
-                },
-              ],
-            }),
+          if (withdrawTx) {
+            validator.withdrawalTransactions = withdrawTx;
+          }
 
-            await DepositModel.findOne({
-              validatorIndex: validator.validatorIndex,
-            }),
-          ]);
+          if (upgradeTx) {
+            validator.upgradeSubmitted = true;
+          }
 
           if (consolidationTx) {
             validator.consolidationTransaction = {
@@ -107,10 +122,6 @@ export const validatorRouter = createTRPCRouter({
               hash: depositTx.txHash,
               status: TransactionStatus.SUBMITTED,
             };
-          }
-
-          if (withdrawTx) {
-            validator.withdrawalTransactions = withdrawTx;
           }
         }
 
@@ -156,8 +167,18 @@ export const validatorRouter = createTRPCRouter({
           numberOfWithdrawals: validator.total_withdrawals,
           activeSince,
           activeDuration,
+          upgradeSubmitted: false,
           withdrawalTransactions: [],
         };
+
+        const upgradeTx = await ConsolidationModel.findOne({
+          targetValidatorIndex: formattedValidator.validatorIndex,
+          sourceTargetValidatorIndex: formattedValidator.validatorIndex,
+        });
+
+        if (upgradeTx) {
+          formattedValidator.upgradeSubmitted = true;
+        }
 
         return formattedValidator;
       } catch (error) {
