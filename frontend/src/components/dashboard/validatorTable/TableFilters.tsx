@@ -95,7 +95,7 @@ export const TableFilters: FC<ITableFiltersProps> = (props) => {
         items={viewItems}
         trigger={
           <Button
-            className="flex rounded-full w-full md:w-auto px-4 border-indigo-200 dark:border-gray-800 shrink-0"
+            className="flex rounded-full w-full md:w-auto px-4 bg-white border-indigo-200 dark:border-gray-800 shrink-0 hover:bg-gray-50 dark:hover:bg-gray-900"
             variant="outline"
           >
             <SlidersHorizontal className="h-3 w-3 dark:text-white" />

@@ -11,7 +11,7 @@ export const TableContent: FC<IValidatorTableContentProps> = ({
   filterTableOptions,
 }) => {
   return (
-    <div className="space-y-4 flex flex-col justify-center items-center">
+    <div className="space-y-4 flex flex-wrap flex-col justify-center items-center max-w-[90vw]">
       <TableHeader sortConfig={sortConfig} onSort={onSort} filterTableOptions={filterTableOptions} />
       {paginatedData.length > 0 ? (
         paginatedData.map((validator) => (

@@ -1,6 +1,5 @@
 "use client";
 
-import clsx from "clsx";
 import {
   AlignLeft,
   ArrowDownToDot,
@@ -26,7 +25,6 @@ import { ValidatorStatus } from "pec/types/validator";
 import type { IValidatorRowProps } from "pec/types/validatorTable";
 import type { FC } from "react";
 import { formatEther } from "viem";
-import { getGridTemplateColumns } from "./TableHeader";
 
 /**
  * @Description This is a component that renders a row of a validator in the validator table.
@@ -58,45 +56,36 @@ export const ValidatorRow: FC<IValidatorRowProps> = (props) => {
   };
 
   return (
-    <div
-      className={clsx("grid w-fit items-center rounded-xl border bg-indigo-50 p-4 text-sm hover:border-indigo-300 dark:bg-black dark:hover:bg-gray-900", 
-        getGridTemplateColumns(filterTableOptions.length)
-      )}
-    >
-      {/* Validator Column */}
-      <div className="col-span-1">
-        <div className="flex flex-row gap-2">
-          <Image
-            src="/icons/EthValidator.svg"
-            alt="Wallet"
-            width={24}
-            height={24}
-          />
-          <div className="flex flex-col">
-            <div className="font-medium">{validator.validatorIndex}</div>
-            <div className="text-xs text-gray-500">
-              {validator.publicKey.slice(0, 7)}...
-              {validator.publicKey.slice(-5)}
+    <div className="w-full rounded-xl border bg-indigo-50 p-4 text-sm hover:border-indigo-300 dark:bg-black dark:hover:bg-gray-900">
+      {/* Desktop View */}
+      <div className="hidden md:grid md:grid-cols-6 md:gap-4 md:items-center">
+        <div>
+          <div className="flex flex-row gap-2">
+            <Image
+              src="/icons/EthValidator.svg"
+              alt="Wallet"
+              width={24}
+              height={24}
+            />
+            <div className="flex flex-col">
+              <div className="font-medium">{validator.validatorIndex}</div>
+              <div className="text-xs text-gray-500">
+                {validator.publicKey.slice(0, 7)}...{validator.publicKey.slice(-5)}
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      {/* Active Since Column */}
-      {!filterTableOptions.includes("Active since") && (
-        <div className="col-span-1">
-          <div className="flex flex-col">
-            <span>{validator.activeSince}</span>
-            <span className="text-xs text-gray-500">
-              {validator.activeDuration}
-            </span>
+        {!filterTableOptions.includes("Active since") && (
+          <div>
+            <div className="flex flex-col">
+              <span>{validator.activeSince}</span>
+              <span className="text-xs text-gray-500">{validator.activeDuration}</span>
+            </div>
           </div>
-        </div>
-      )}
+        )}
 
-      {/* Credentials Column */}
-      
-        <div className="col-span-1">
+        <div>
           <div className="flex items-center gap-1">
             {validator.withdrawalAddress.includes("0x02") ? (
               <CircleCheck className="h-4 w-4 fill-green-500 text-white dark:text-black" />
@@ -108,72 +97,174 @@ export const ValidatorRow: FC<IValidatorRowProps> = (props) => {
             </div>
           </div>
         </div>
-      
 
-      {/* Status Column */}
-      {!filterTableOptions.includes("Status") && (
-      <div className="col-span-1">
-        <div className="flex items-center gap-2">
-          {validator.status === ValidatorStatus.ACTIVE ? (
-            <CirclePlay className="h-4 w-4 fill-green-500 text-white dark:text-black" />
-          ) : (
-            <CircleMinus className="h-4 w-4 fill-red-500 text-white dark:text-black" />
-          )}
-          <span>{validator.status}</span>
+        {!filterTableOptions.includes("Status") && (
+          <div>
+            <div className="flex items-center gap-2">
+              {validator.status === ValidatorStatus.ACTIVE ? (
+                <CirclePlay className="h-4 w-4 fill-green-500 text-white dark:text-black" />
+              ) : (
+                <CircleMinus className="h-4 w-4 fill-red-500 text-white dark:text-black" />
+              )}
+              <span>{validator.status}</span>
+            </div>
+          </div>
+        )}
+
+        {!filterTableOptions.includes("Balance") && (
+          <div>
+            <div className="flex items-center gap-1">
+              <AlignLeft className="h-3 w-3" />
+              <div className="font-semibold">{Number(formatEther(validator.balance)).toFixed(DECIMAL_PLACES)} ETH</div>
+            </div>
+          </div>
+        )}
+
+        <div className="flex justify-end">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="icon">
+                <MoreVertical className="rotate-90 h-4 w-4" />
+                <span className="sr-only">Open menu</span>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent
+              className="space-y-2 rounded-xl bg-white p-2 dark:border-gray-500 dark:bg-gray-900 dark:text-white"
+              align="end"
+            >
+              <DropdownMenuItem
+                className="cursor-pointer hover:bg-gray-100"
+                onClick={handleDepositNavigation}
+              >
+                <ArrowDownToDot className="h-4 w-4 text-indigo-500 dark:text-indigo-300" />
+                Deposit
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                className="cursor-pointer hover:bg-gray-100"
+                onClick={handleWithdrawalNavigation}
+              >
+                <ArrowUpFromDot className="h-4 w-4 text-green-500 dark:text-green-300" />
+                Withdraw
+              </DropdownMenuItem>
+              <Separator className="bg-gray-200 dark:bg-gray-800" />
+              <DropdownMenuItem
+                className="cursor-pointer hover:bg-gray-100"
+                onClick={handleBeaconscanNavigation}
+              >
+                View on Beaconscan
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
-      )}
 
-      {/* Balance Column */}
-      {!filterTableOptions.includes("Balance") && (
-        <div className="col-span-1">
-          <div className="flex items-center gap-1">
-            <AlignLeft className="h-3 w-3" />
-            <div className="font-semibold">{Number(formatEther(validator.balance)).toFixed(DECIMAL_PLACES)} ETH</div>
+      {/* Mobile View */}
+      <div className="md:hidden">
+        <div className="grid grid-cols-3 gap-4 mb-4">
+          <div>
+            <div className="flex flex-row gap-2">
+              <Image
+                src="/icons/EthValidator.svg"
+                alt="Wallet"
+                width={24}
+                height={24}
+              />
+              <div className="flex flex-col">
+                <div className="font-medium">{validator.validatorIndex}</div>
+                <div className="text-xs text-gray-500">
+                  {validator.publicKey.slice(0, 7)}...{validator.publicKey.slice(-5)}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <div className="flex items-center gap-1">
+              {validator.withdrawalAddress.includes("0x02") ? (
+                <CircleCheck className="h-4 w-4 fill-green-500 text-white dark:text-black" />
+              ) : (
+                <OctagonMinus className="h-4 w-4 text-gray-500 dark:text-white" />
+              )}
+              <div className="font-semibold">
+                {validator.withdrawalAddress.slice(0, 4)}
+              </div>
+            </div>
+          </div>
+
+          <div className="flex justify-end">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon">
+                  <MoreVertical className="rotate-90 h-4 w-4" />
+                  <span className="sr-only">Open menu</span>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent
+                className="space-y-2 rounded-xl bg-white p-2 dark:border-gray-500 dark:bg-gray-900 dark:text-white"
+                align="end"
+              >
+                <DropdownMenuItem
+                  className="cursor-pointer hover:bg-gray-100"
+                  onClick={handleDepositNavigation}
+                >
+                  <ArrowDownToDot className="h-4 w-4 text-indigo-500 dark:text-indigo-300" />
+                  Deposit
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  className="cursor-pointer hover:bg-gray-100"
+                  onClick={handleWithdrawalNavigation}
+                >
+                  <ArrowUpFromDot className="h-4 w-4 text-green-500 dark:text-green-300" />
+                  Withdraw
+                </DropdownMenuItem>
+                <Separator className="bg-gray-200 dark:bg-gray-800" />
+                <DropdownMenuItem
+                  className="cursor-pointer hover:bg-gray-100"
+                  onClick={handleBeaconscanNavigation}
+                >
+                  View on Beaconscan
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
-      )}
 
-      {/* Actions Column */}
-      <div className="col-span-1 flex justify-end">
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon">
-              <MoreVertical className="rotate-90 h-4 w-4" />
-              <span className="sr-only">Open menu</span>
-            </Button>
-          </DropdownMenuTrigger>
+        {/* Mobile View - Items Stacked */}
+        <div className="space-y-2 mt-4 border-t pt-4 dark:border-gray-800">
+          {!filterTableOptions.includes("Active since") && (
+            <div className="flex justify-between items-center">
+              <span className="text-gray-500">Active since</span>
+              <div className="flex flex-col items-end">
+                <span>{validator.activeSince}</span>
+                <span className="text-xs text-gray-500">{validator.activeDuration}</span>
+              </div>
+            </div>
+          )}
 
-          <DropdownMenuContent
-            className="space-y-2 rounded-xl bg-white p-2 dark:border-gray-500 dark:bg-gray-900 dark:text-white"
-            align="end"
-          >
-            <DropdownMenuItem
-              className="cursor-pointer hover:bg-gray-100"
-              onClick={handleDepositNavigation}
-            >
-              <ArrowDownToDot className="h-4 w-4 text-indigo-500 dark:text-indigo-300" />
-              Deposit
-            </DropdownMenuItem>
+          {!filterTableOptions.includes("Status") && (
+            <div className="flex justify-between items-center">
+              <span className="text-gray-500">Status</span>
+              <div className="flex items-center gap-2">
+                {validator.status === ValidatorStatus.ACTIVE ? (
+                  <CirclePlay className="h-4 w-4 fill-green-500 text-white dark:text-black" />
+                ) : (
+                  <CircleMinus className="h-4 w-4 fill-red-500 text-white dark:text-black" />
+                )}
+                <span>{validator.status}</span>
+              </div>
+            </div>
+          )}
 
-            <DropdownMenuItem
-              className="cursor-pointer hover:bg-gray-100"
-              onClick={handleWithdrawalNavigation}
-            >
-              <ArrowUpFromDot className="h-4 w-4 text-green-500 dark:text-green-300" />
-              Withdraw
-            </DropdownMenuItem>
-
-            <Separator className="bg-gray-200 dark:bg-gray-800" />
-
-            <DropdownMenuItem
-              className="cursor-pointer hover:bg-gray-100"
-              onClick={handleBeaconscanNavigation}
-            >
-              View on Beaconscan
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+          {!filterTableOptions.includes("Balance") && (
+            <div className="flex justify-between items-center">
+              <span className="text-gray-500">Balance</span>
+              <div className="flex items-center gap-1">
+                <AlignLeft className="h-3 w-3" />
+                <div className="font-semibold">{Number(formatEther(validator.balance)).toFixed(DECIMAL_PLACES)} ETH</div>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
