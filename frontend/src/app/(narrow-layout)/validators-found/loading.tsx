@@ -16,18 +16,14 @@ const ValidatorsFoundLoading = () => {
         </div>
         <ConnectedAddress address={walletAddress} />
 
-        <div className="flex-col-2 flex w-full items-center justify-between rounded-xl border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-black">
+        <div className="flex-col-2 flex w-full items-center justify-between rounded-2xl bg-white p-4 dark:border-gray-800 dark:bg-black">
           <div className="flex items-center gap-x-4">
             <PectraSpinner />
             <div className="flex flex-col">
-              <div className="text-sm">
-                Finding validators with this withdrawal address
-              </div>
+              <div className="text-sm font-570">Finding your validators...</div>
             </div>
           </div>
         </div>
-
-        <div className="flex justify-center text-sm">Please wait...</div>
       </div>
     </div>
   );

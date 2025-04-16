@@ -1,8 +1,8 @@
-import type { z } from "zod";
 import type {
   TransactionSchema,
   ValidatorDataSchema,
 } from "pec/lib/api/schemas/validator";
+import type { z } from "zod";
 
 export type ValidatorDetails = z.infer<typeof ValidatorDataSchema>;
 
@@ -30,7 +30,6 @@ export interface IGenericValidators {
 }
 
 export interface IValidatorCard {
-  hasBackground: boolean;
   hasHover: boolean;
   shrink: boolean;
   validator: ValidatorDetails;
