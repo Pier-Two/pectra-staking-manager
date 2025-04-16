@@ -106,18 +106,6 @@ export interface IDepositList {
   totalToDistribute: number;
 }
 
-interface IColumnHeader {
-  label: string;
-  showSort: boolean;
-}
-
-export interface IValidatorListHeaders {
-  columnHeaders: IColumnHeader[];
-  sortColumn: string;
-  sortDirection: SortDirection;
-  onSort: (column: string) => void;
-}
-
 export interface IDepositSignDataCard {
   deposit: IBatchDepositValidators;
   stage: EBatchDepositStage;

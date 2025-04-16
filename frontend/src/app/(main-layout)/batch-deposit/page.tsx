@@ -3,11 +3,11 @@
 import type { FC } from "react";
 import BatchDepositLoading from "./loading";
 import { useWalletAddress } from "pec/hooks/useWallet";
-import { api } from "pec/trpc/react";
 import { useActiveChainWithDefault } from "pec/hooks/useChain";
 import { useWalletBalance } from "thirdweb/react";
 import { client } from "pec/lib/wallet/client";
 import { DepositWorkflow } from "pec/components/batch-deposits/DepositWorkflow";
+import { useValidators } from "pec/hooks/useValidators";
 
 const BatchDeposit: FC = () => {
   const walletAddress = useWalletAddress();
@@ -22,12 +22,7 @@ const BatchDeposit: FC = () => {
     client,
   });
 
-  const { data, isFetched } = api.validators.getValidators.useQuery(
-    {
-      address: walletAddress || "",
-    },
-    { enabled: !!walletAddress },
-  );
+  const { data, isFetched } = useValidators();
 
   const componentLoading =
     !walletAddress ||

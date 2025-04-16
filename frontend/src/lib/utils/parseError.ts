@@ -1,5 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unnecessary-type-assertion */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+
 import axios from "axios";
-import type { IError } from "pec/types/response";
+import { type IError } from "pec/types/response";
 import { z } from "zod";
 
 export const parseError = (

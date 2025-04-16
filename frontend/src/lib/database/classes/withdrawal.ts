@@ -21,4 +21,10 @@ export class Withdrawal implements DatabaseWithdrawalType {
 
   @prop({ required: true })
   public withdrawalIndex!: number;
+
+  @prop({ required: true })
+  public amount!: number;
+
+  @prop({ required: true })
+  public txHash!: string;
 }
