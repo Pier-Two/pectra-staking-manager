@@ -143,7 +143,7 @@ export const validatorRouter = createTRPCRouter({
           validator.activationepoch,
         );
 
-        const formattedValidator = {
+        const formattedValidator: ValidatorDetails = {
           validatorIndex: validator.validatorindex,
           publicKey: validator.pubkey,
           withdrawalAddress: validator.withdrawalcredentials,
@@ -156,6 +156,7 @@ export const validatorRouter = createTRPCRouter({
           numberOfWithdrawals: validator.total_withdrawals,
           activeSince,
           activeDuration,
+          withdrawalTransactions: [],
         };
 
         return formattedValidator;
