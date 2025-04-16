@@ -36,7 +36,7 @@ export const TableHeader: FC<ITableHeadersRowProps> = ({
   return (
     <div className="w-auto flex justify-center items-center">
       {/* Desktop View */}
-      <div className={clsx("hidden md:grid md:gap-4 text-sm p-4 max-w-[90vw] w-full", getGridTemplateColumns(filterTableOptions.length))}>
+      <div className={clsx("hidden md:grid md:gap-4 text-sm pl-4 max-w-[90vw] w-full", getGridTemplateColumns(filterTableOptions.length))}>
         {tableHeaderItems.map((header) => (
           <div
             key={header.sortKey}
