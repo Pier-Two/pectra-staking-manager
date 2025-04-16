@@ -12,6 +12,39 @@ import { fromHex } from "viem";
 import { useConsolidationStore } from "./use-consolidation-store";
 import { useContracts } from "./useContracts";
 import { useRpcClient } from "./useRpcClient";
+import { type Account } from "thirdweb/wallets";
+
+// helper function that is called within the useSubmitConsolidate() hook
+const consolidateValidator = async (
+  consolidationContractAddress: string, // TODO this shouldn't have to be an arg
+  account: Account,
+  srcAddress: string,
+  targetAddress: string,
+  feeData: bigint,
+) => {
+  const srcAddressWithoutLeading = srcAddress.replace(/^0x/g, "");
+  const targetAddressWithoutLeading = targetAddress.replace(/^0x/g, "");
+
+  // Concatenate and add the 0x prefix
+  const callData = `0x${srcAddressWithoutLeading}${targetAddressWithoutLeading}`;
+
+  // Call the consolidation contract with the fee
+  const upgradeTransaction = await account.sendTransaction({
+    to: consolidationContractAddress,
+    value: feeData,
+    data: callData as `0x${string}`,
+    chainId: HOODI_CHAIN_DETAILS.id, // TODO make dynamic
+  });
+
+  // wait for the tx to be confirmed
+  const upgradeTx = await waitForReceipt({
+    chain: HOODI_CHAIN_DETAILS,
+    client: client,
+    transactionHash: upgradeTransaction.transactionHash,
+  });
+
+  return upgradeTx;
+};
 
 export const useConsolidationFee = () => {
   const contracts = useContracts();
@@ -85,28 +118,13 @@ export const useSubmitConsolidate = () => {
       !consolidationTarget.upgradeSubmitted // if they have already submitted an upgrade tx but API returns 0x01, we use our DB flag
     ) {
       try {
-        const pubKeyWithoutLeadingHex = consolidationTarget.publicKey.replace(
-          /^0x/g,
-          "",
+        const upgradeTx = await consolidateValidator(
+          contracts.consolidation.address,
+          account,
+          consolidationTarget.publicKey,
+          consolidationTarget.publicKey,
+          feeData,
         );
-
-        // Concatenate and add the 0x prefix
-        const callData = `0x${pubKeyWithoutLeadingHex}${pubKeyWithoutLeadingHex}`;
-
-        // Call the consolidation contract with the fee
-        const upgradeTransaction = await account.sendTransaction({
-          to: contracts.consolidation.address,
-          value: feeData,
-          data: callData as `0x${string}`,
-          chainId: HOODI_CHAIN_DETAILS.id, // TODO make dynamic
-        });
-
-        // wait for the tx to be confirmed
-        const upgradeTx = await waitForReceipt({
-          chain: HOODI_CHAIN_DETAILS,
-          client: client,
-          transactionHash: upgradeTransaction.transactionHash,
-        });
 
         // save upgrade tx to db
         await saveConsolidationToDatabase({
@@ -141,36 +159,24 @@ export const useSubmitConsolidate = () => {
       try {
         setCurrentPubKey(validator.publicKey);
 
-        const srcPubkey = validator.publicKey.replace(/^0x/g, "");
-
         // if it's version 0x01 - submit the upgrade tx for this validator
         if (
           validator.withdrawalAddress.startsWith("0x01") &&
           !validator.upgradeSubmitted
         ) {
-          // Concatenate and add the 0x prefix back
-          const callData = `0x${srcPubkey}${srcPubkey}`;
-
-          // Call the consolidation contract with the fee
-          const upgradeTx = await account.sendTransaction({
-            to: contracts.consolidation.address,
-            value: feeData,
-            data: callData as `0x${string}`,
-            chainId: HOODI_CHAIN_DETAILS.id, // TODO make dynamic
-          });
-
-          // wait for the tx to be confirmed
-          const tx = await waitForReceipt({
-            chain: HOODI_CHAIN_DETAILS,
-            client: client,
-            transactionHash: upgradeTx.transactionHash,
-          });
+          const upgradeTx = await consolidateValidator(
+            contracts.consolidation.address,
+            account,
+            validator.publicKey,
+            validator.publicKey,
+            feeData,
+          );
 
           // save upgrade tx to db
           await saveConsolidationToDatabase({
             targetValidatorIndex: validator.validatorIndex,
             sourceTargetValidatorIndex: validator.validatorIndex,
-            txHash: tx.transactionHash,
+            txHash: upgradeTx.transactionHash,
           });
         }
 
@@ -183,41 +189,29 @@ export const useSubmitConsolidate = () => {
           TransactionStatus.IN_PROGRESS,
         );
 
-        const targetPubkey = consolidationTarget.publicKey.replace(/^0x/g, "");
-
-        // Concatenate and add the 0x prefix back
-        const callData = `0x${srcPubkey}${targetPubkey}`;
-
-        // Call the consolidation contract with the fee
-        const transaction = await account.sendTransaction({
-          to: contracts.consolidation.address,
-          value: feeData,
-          data: callData as `0x${string}`,
-          chainId: HOODI_CHAIN_DETAILS.id, // TODO make dynamic
-        });
-
-        // wait for the tx to be confirmed
-        const tx = await waitForReceipt({
-          chain: HOODI_CHAIN_DETAILS,
-          client: client,
-          transactionHash: transaction.transactionHash,
-        });
+        const consolidationTx = await consolidateValidator(
+          contracts.consolidation.address,
+          account,
+          validator.publicKey,
+          consolidationTarget.publicKey,
+          feeData,
+        );
 
         updateConsolidatedValidator(
           validator,
-          tx.transactionHash,
+          consolidationTx.transactionHash,
           TransactionStatus.SUBMITTED,
         );
 
         await saveConsolidationToDatabase({
           targetValidatorIndex: consolidationTarget.validatorIndex,
           sourceTargetValidatorIndex: validator.validatorIndex,
-          txHash: tx.transactionHash,
+          txHash: consolidationTx.transactionHash,
         });
 
         results.push({
           validator,
-          txHash: tx.transactionHash,
+          txHash: consolidationTx.transactionHash,
           success: true,
         });
       } catch (error) {
