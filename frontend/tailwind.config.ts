@@ -7,8 +7,8 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: ["var(--font-geist-sans)", ...fontFamily.sans],
-        montserrat: ["var(--font-montserrat)", ...fontFamily.sans],
+        sans: ["var(--font-saans)", ...fontFamily.sans],
+        inter: ["var(--font-inter)", ...fontFamily.sans],
       },
       fontWeight: {
         380: "300",

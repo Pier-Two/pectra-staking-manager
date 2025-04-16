@@ -1,7 +1,9 @@
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import swc from "unplugin-swc";
 
 import { defineConfig } from "vitest/config";
+import tsconfigPaths from "vite-tsconfig-paths";
 
 import { storybookTest } from "@storybook/experimental-addon-test/vitest-plugin";
 
@@ -12,7 +14,12 @@ const dirname =
 
 // More info at: https://storybook.js.org/docs/writing-tests/test-addon
 export default defineConfig({
+  plugins: [tsconfigPaths(), swc.vite()],
   test: {
+    globals: true,
+    environment: "node",
+    include: ["src/**/*.test.ts"],
+    setupFiles: ["./vitest.setup.ts"],
     workspace: [
       {
         extends: true,

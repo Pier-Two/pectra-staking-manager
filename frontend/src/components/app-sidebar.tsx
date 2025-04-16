@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import {
   Sidebar,
   SidebarContent,
@@ -7,9 +8,8 @@ import {
   SidebarGroup,
   SidebarHeader,
 } from "pec/components/ui/sidebar";
-import Image from "next/image";
-import { ConnectWalletButton } from "./ui/wallet/ConnectWallet";
 import { useActiveAccount } from "thirdweb/react";
+import { ConnectWalletButton } from "./ui/wallet/ConnectWallet";
 
 const links = [
   {
@@ -79,7 +79,7 @@ export function AppSidebar() {
           ))}
         </SidebarGroup>
       </SidebarContent>
-      <SidebarFooter>
+      <SidebarFooter className="pb-12 flex justify-center items-center w-full">
         <ConnectWalletButton />
       </SidebarFooter>
     </Sidebar>

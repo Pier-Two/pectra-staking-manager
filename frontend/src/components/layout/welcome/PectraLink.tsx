@@ -5,7 +5,7 @@ import type { FC } from "react";
 
 export const PectraLink: FC = () => {
   return (
-    <div className="relative">
+    <div className="relative z-10">
       <GlowEffect
         colors={["#FDBA74", "#5164DC", "#86EFAC", "#313C86"]}
         mode="pulse"

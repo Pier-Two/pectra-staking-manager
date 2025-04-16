@@ -178,7 +178,6 @@ export const validatorRouter = createTRPCRouter({
       const { targetValidatorIndex, sourceTargetValidatorIndex, txHash, user } =
         input;
 
-      // Check if a record with these validator indexes already exists
       const existingRecord = await ConsolidationModel.findOne({
         $or: [
           {
@@ -192,13 +191,11 @@ export const validatorRouter = createTRPCRouter({
         ],
       });
 
-      if (existingRecord) {
+      if (existingRecord)
         throw new Error(
           `Consolidation record already exists for validators ${targetValidatorIndex} and ${sourceTargetValidatorIndex}`,
         );
-      }
 
-      // Create new consolidation record
       const newRecord = await ConsolidationModel.create({
         targetValidatorIndex,
         sourceTargetValidatorIndex,

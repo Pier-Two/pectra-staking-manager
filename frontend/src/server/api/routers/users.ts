@@ -2,7 +2,8 @@ import { createTRPCRouter, publicProcedure } from "pec/server/api/trpc";
 import { UserSchema, type UserType } from "pec/lib/api/schemas/database/user";
 import { UserModel } from "pec/lib/database/models";
 import { createContact } from "pec/lib/services/emailService";
-import { IResponse } from "pec/types/response";
+import { isLoggedIn } from "pec/lib/wallet/auth";
+import type { IResponse } from "pec/types/response";
 import { generateErrorResponse } from "pec/lib/utils";
 import { getLoggedInUserOrCreate } from "pec/lib/server/user";
 

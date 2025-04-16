@@ -1,6 +1,4 @@
-import { GeistSans } from "geist/font/sans";
 import { type Metadata } from "next";
-import { Montserrat } from "next/font/google";
 import { AppSidebar } from "pec/components/app-sidebar";
 import { SidebarProvider } from "pec/components/ui/sidebar";
 import { Toaster } from "pec/components/ui/sonner";
@@ -8,10 +6,19 @@ import { NetworkContextProvider } from "pec/contexts/NetworkContext";
 import { cn } from "pec/lib/utils";
 import "pec/styles/globals.css";
 import { TRPCReactProvider } from "pec/trpc/react";
+import { Inter } from "next/font/google";
+import localFont from "next/font/local";
 
-const montserrat = Montserrat({
+export const saans = localFont({
+  src: "../fonts/Saans-TRIAL-VF.woff2",
+  variable: "--font-saans",
+  display: "swap",
+});
+
+export const inter = Inter({
   subsets: ["latin"],
-  variable: "--font-montserrat",
+  variable: "--font-inter",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -24,7 +31,7 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={cn(GeistSans.variable, montserrat.variable)}>
+    <html lang="en" className={cn(saans.variable, inter.variable)}>
       <NetworkContextProvider>
         <TRPCReactProvider>
           <body>
