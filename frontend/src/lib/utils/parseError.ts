@@ -3,11 +3,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 
 import axios from "axios";
-<<<<<<< HEAD
 import { type IError } from "pec/types/response";
-=======
-import type { IError } from "pec/types/response";
->>>>>>> main
 import { z } from "zod";
 
 export const parseError = (
