@@ -12,7 +12,6 @@ import { ACTIVE_STATUS } from "pec/types/app";
 import { maxBy } from "lodash";
 import { IResponse } from "pec/types/response";
 import { generateErrorResponse } from "pec/lib/utils";
-import { getLoggedInUserOrCreate } from "pec/lib/server/user";
 import { DatabaseDepositSchema } from "pec/lib/api/schemas/database/deposit";
 
 export const storeEmailRequestRouter = createTRPCRouter({
@@ -27,9 +26,6 @@ export const storeEmailRequestRouter = createTRPCRouter({
       const { requestData, network } = input;
 
       try {
-        const userResponse = await getLoggedInUserOrCreate();
-        if (!userResponse.success) return userResponse;
-
         const response = await getBeaconChainAxios(
           network,
         ).get<BeaconchainWithdrawalResponse>(
@@ -53,7 +49,6 @@ export const storeEmailRequestRouter = createTRPCRouter({
         await WithdrawalModel.create({
           ...requestData,
           withdrawalIndex,
-          user: userResponse.data,
           status: ACTIVE_STATUS,
         });
 

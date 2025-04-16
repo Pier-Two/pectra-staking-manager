@@ -1,11 +1,11 @@
-import axios, { type AxiosResponse } from "axios";
+import { type AxiosResponse } from "axios";
 import { chunk, groupBy } from "lodash";
 import { getBeaconChainURL } from "pec/constants/beaconchain";
 import { env } from "pec/env";
 import { BEACONCHAIN_OK_STATUS, CHUNK_SIZE } from "pec/lib/constants";
 import { MAIN_CHAIN } from "pec/lib/constants/contracts";
 import type { Deposit } from "pec/lib/database/classes/deposit";
-import { DepositModel, UserModel } from "pec/lib/database/models";
+import { DepositModel } from "pec/lib/database/models";
 import { getBeaconChainAxios } from "pec/lib/server/axios";
 import { sendEmailNotification } from "pec/lib/services/emailService";
 import { generateErrorResponse } from "pec/lib/utils";

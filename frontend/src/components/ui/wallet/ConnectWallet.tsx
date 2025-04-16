@@ -7,29 +7,25 @@ import { useRouter } from "next/navigation";
 import { SUPPORTED_CHAINS } from "pec/constants/chain";
 import { useTheme } from "pec/hooks/useTheme";
 import { useWalletAddress } from "pec/hooks/useWallet";
-import {
-  generatePayload,
-  isLoggedIn,
-  login,
-  logout,
-} from "pec/lib/wallet/auth";
 import { client, wallets } from "pec/lib/wallet/client";
-import { api } from "pec/trpc/react";
 import type { StyleableComponent } from "pec/types/components";
 import { useEffect, useState } from "react";
-import { ConnectButton, useEnsAvatar, useEnsName, useWalletDetailsModal } from "thirdweb/react";
+import {
+  ConnectButton,
+  useEnsAvatar,
+  useEnsName,
+  useWalletDetailsModal,
+} from "thirdweb/react";
 import { Button } from "../button";
 export const ConnectWalletButton = ({ className }: StyleableComponent) => {
   const router = useRouter();
-  const utils = api.useUtils();
   const { darkMode } = useTheme();
   const address = useWalletAddress();
   const detailsModal = useWalletDetailsModal();
   const [isMounted, setIsMounted] = useState(false);
   const { data: ensName } = useEnsName({ client, address });
   const { data: ensAvatar } = useEnsAvatar({ client, ensName });
-  
-  
+
   // This is to prevent the component from rendering on the server causing hydration errors from the dynamic theme styling
   useEffect(() => {
     setIsMounted(true);
@@ -37,9 +33,8 @@ export const ConnectWalletButton = ({ className }: StyleableComponent) => {
 
   if (!isMounted) return null;
 
-  
   return (
-    <ConnectButton   
+    <ConnectButton
       connectButton={{
         label: "Connect Wallet",
         className: clsx(
@@ -51,21 +46,27 @@ export const ConnectWalletButton = ({ className }: StyleableComponent) => {
         },
       }}
       theme={darkMode ? "dark" : "light"}
-
       // Details Button ---- Using a custom Component because matching the mocked styling with className Prop is not possible
       detailsButton={{
         render: () => {
           return (
             <Button
               variant="ghost"
-              className="h-10 rounded-full border border-primary/30 hover:bg-primary/10 dark:border-gray-700 dark:bg-black dark:hover:bg-gray-900 dark:text-white"
+              className="h-10 rounded-full border border-primary/30 hover:bg-primary/10 dark:border-gray-700 dark:bg-black dark:text-white dark:hover:bg-gray-900"
               onClick={() => {
-                detailsModal.open({ client, theme: darkMode ? "dark" : "light" });
+                detailsModal.open({
+                  client,
+                  theme: darkMode ? "dark" : "light",
+                });
               }}
             >
               {ensAvatar ? (
                 // eslint-disable-next-line @next/next/no-img-element -- Image comes from non-whitelisted url. Use img incase it can change
-                <img src={ensAvatar} alt="Avatar" className="h-4 w-4 rounded-full" />
+                <img
+                  src={ensAvatar}
+                  alt="Avatar"
+                  className="h-4 w-4 rounded-full"
+                />
               ) : (
                 <div className="h-4 w-4 rounded-full bg-primary" />
               )}
@@ -73,7 +74,7 @@ export const ConnectWalletButton = ({ className }: StyleableComponent) => {
               <ChevronDown size={16} />
             </Button>
           );
-        }
+        },
       }}
       autoConnect
       chains={SUPPORTED_CHAINS}
@@ -86,31 +87,7 @@ export const ConnectWalletButton = ({ className }: StyleableComponent) => {
       onDisconnect={() => {
         router.push("/welcome");
       }}
-      auth={{
-        isLoggedIn: async () => {
-          try {
-            const result = await isLoggedIn();
-            return result.success;
-          } catch (error) {
-            console.error("Error calling isLoggedIn:", error);
-            return false;
-          }
-        },
-        doLogin: async (params) => {
-          await login(params);
-          // Invalidate the user query after login
-
-          await utils.users.getUser.invalidate();
-        },
-        getLoginPayload: async ({ address }) => generatePayload({ address }),
-        doLogout: async () => {
-          await utils.users.getUser.invalidate();
-
-          await logout();
-
-          router.push("/welcome");
-        },
-      }}
     />
   );
 };
+
