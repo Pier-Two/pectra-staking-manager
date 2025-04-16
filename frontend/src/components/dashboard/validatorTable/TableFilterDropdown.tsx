@@ -1,6 +1,5 @@
 import clsx from "clsx";
 import { Search } from "lucide-react";
-import { Button } from "pec/components/ui/button";
 import { Checkbox } from "pec/components/ui/checkbox";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "pec/components/ui/dropdown-menu";
 import { Input } from "pec/components/ui/input";
@@ -66,13 +65,15 @@ export const TableFilterDropdown: FC<TableFilterDropdownProps> = ({ trigger, sho
 
           {/* Dropdown Items */}
           {items.map((item) => (
-            <DropdownMenuItem key={item.value}>
-              <Button
-                variant="default"
-                className={clsx("cursor-pointer bg-white px-2 hover:bg-gray-50 font-normal justify-between items-center rounded-md w-full dark:bg-black",
+            <DropdownMenuItem key={item.value} asChild>
+              <div
+                className={clsx("cursor-pointer bg-white px-2 hover:bg-gray-50 font-normal justify-between items-center rounded-md w-full dark:bg-black my-2",
                     {
+                      // Status dropdown styling
                       "text-indigo-500 dark:text-indigo-200 hover:bg-gray-50 dark:hover:bg-gray-900": item.isSelected,
                       "text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-900": !item.isSelected,
+
+                      // View dropdown styling
                       "bg-[#F1F3FF] text-indigo-500 dark:bg-gray-900 dark:text-white": item.isSelected && !showSearch,
                       "bg-white dark:bg-black": !item.isSelected && !showSearch,
                     }
@@ -92,7 +93,7 @@ export const TableFilterDropdown: FC<TableFilterDropdownProps> = ({ trigger, sho
                 {item.count !== undefined && (
                   <span className="text-sm font-normal">{item.count}</span>
                 )}
-              </Button>
+              </div>
             </DropdownMenuItem>
           ))}
         </DropdownMenuContent>
