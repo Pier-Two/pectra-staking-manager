@@ -21,9 +21,11 @@ import {
   DropdownMenuTrigger,
 } from "pec/components/ui/dropdown-menu";
 import { Separator } from "pec/components/ui/separator";
+import { DECIMAL_PLACES } from "pec/lib/constants";
 import { ValidatorStatus } from "pec/types/validator";
 import type { IValidatorRowProps } from "pec/types/validatorTable";
 import type { FC } from "react";
+import { formatEther } from "viem";
 import { getGridTemplateColumns } from "./TableHeader";
 
 /**
@@ -127,7 +129,7 @@ export const ValidatorRow: FC<IValidatorRowProps> = (props) => {
         <div className="col-span-1">
           <div className="flex items-center gap-1">
             <AlignLeft className="h-3 w-3" />
-            <div className="font-semibold">{validator.balance}</div>
+            <div className="font-semibold">{Number(formatEther(validator.balance)).toFixed(DECIMAL_PLACES)} ETH</div>
           </div>
         </div>
       )}

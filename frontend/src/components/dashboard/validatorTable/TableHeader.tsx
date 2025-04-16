@@ -7,16 +7,16 @@ import {
 } from "pec/types/validatorTable";
 import type { FC } from "react";
 
-// This is the config for the grid template columns MIN and MAX widths then the flex-grow
+// This is the config for the grid template columns MIN and MAX widths then
 export const getGridTemplateColumns = (filterLength: number) => {
   const templates = {
-    0: "[grid-template-columns:minmax(150px,200px)_minmax(150px,200px)_minmax(100px,200px)_minmax(100px,200px)_minmax(100px,200px)_minmax(100px,100px)]",
-    1: "[grid-template-columns:minmax(150px,200px)_minmax(150px,200px)_minmax(100px,200px)_minmax(100px,200px)_minmax(100px,100px)]",
-    2: "[grid-template-columns:minmax(150px,200px)_minmax(150px,200px)_minmax(100px,200px)_minmax(100px,100px)]",
-    3: "[grid-template-columns:minmax(150px,200px)_minmax(150px,200px)_minmax(100px,100px)]",
+    0: "[grid-template-columns:minmax(150px,200px)_minmax(150px,200px)_minmax(100px,200px)_minmax(100px,200px)_minmax(100px,200px)_minmax(50px,100px)]",
+    1: "[grid-template-columns:minmax(150px,200px)_minmax(150px,200px)_minmax(100px,200px)_minmax(100px,200px)_minmax(50px,100px)]",
+    2: "[grid-template-columns:minmax(150px,200px)_minmax(150px,200px)_minmax(100px,200px)_minmax(50px,100px)]",
+    3: "[grid-template-columns:minmax(150px,200px)_minmax(150px,200px)_minmax(50px,100px)]",
   };
   return templates[filterLength as keyof typeof templates];
-};
+}; 
 
 export const TableHeader: FC<ITableHeadersRowProps> = ({
   sortConfig,
@@ -28,7 +28,7 @@ export const TableHeader: FC<ITableHeadersRowProps> = ({
 
 
   return (
-    <div className={clsx("hidden md:grid w-fit items-center gap-1",
+    <div className={clsx("grid w-fit items-center gap-1",
       getGridTemplateColumns(filterTableOptions.length)
     )}>
       {tableHeaderItems.map((header) => (
