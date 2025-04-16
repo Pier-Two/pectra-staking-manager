@@ -8,6 +8,7 @@ import { PrimaryButton } from "pec/components/ui/custom/PrimaryButton";
 import { ConnectWalletButton } from "pec/components/ui/wallet/ConnectWallet";
 import { useWalletAddress } from "pec/hooks/useWallet";
 import type { FC } from "react";
+import { ChartContainer } from "pec/components/charts/ChartContainer";
 
 const Welcome: FC = () => {
   const router = useRouter();
@@ -24,7 +25,7 @@ const Welcome: FC = () => {
         <div className="flex w-full flex-col items-center justify-center gap-y-4">
           <PectraLink />
 
-          <p className="font-670 text-center text-[50px] leading-[54px]">
+          <p className="text-center text-[50px] font-670 leading-[54px]">
             <span>This is the Future of</span>
             <span className="md:block"> Ethereum Staking</span>
           </p>
@@ -35,7 +36,7 @@ const Welcome: FC = () => {
 
       <div className="flex w-full flex-col items-center justify-center gap-y-4">
         {!hasWalletAddress && (
-          <div className="font-570 text-center text-[14px] leading-[14px]">
+          <div className="text-center text-[14px] font-570 leading-[14px]">
             Connect your withdrawal address to access validators
           </div>
         )}
@@ -49,9 +50,14 @@ const Welcome: FC = () => {
               disabled={false}
             />
           ) : (
-            // TODO: Come back and address width appropriately
-            <ConnectWalletButton className="!min-w-[420px]" />
+            <ConnectWalletButton className="!w-[420px] !max-w-[90vw]" />
           )}
+        </div>
+    </div>
+
+      <div className="flex flex-col items-center justify-center">
+        <div className="flex flex-col items-center justify-center">
+          <ChartContainer />
         </div>
       </div>
 

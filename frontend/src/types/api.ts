@@ -1,4 +1,4 @@
-export interface BeaconChainAllValidators {
+interface BeaconChainAllValidators {
   publickey: string;
   valid_signature: boolean;
   validatorindex: number;

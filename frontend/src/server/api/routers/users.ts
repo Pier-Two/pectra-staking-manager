@@ -3,7 +3,7 @@ import { UserSchema, type UserType } from "pec/lib/api/schemas/database/user";
 import { UserModel } from "pec/lib/database/models";
 import { createContact } from "pec/lib/services/emailService";
 import { isLoggedIn } from "pec/lib/wallet/auth";
-import { IResponse } from "pec/types/response";
+import type { IResponse } from "pec/types/response";
 import { generateErrorResponse } from "pec/lib/utils";
 
 const findOrCreateUser = async (address: string) => {
@@ -67,10 +67,7 @@ export const userRouter = createTRPCRouter({
 
   getUser: publicProcedure.query(async (): Promise<IResponse<UserType>> => {
     const value = await isLoggedIn();
-
-    if (!value.success) {
-      return value;
-    }
+    if (!value.success) return value;
 
     try {
       const user = await findOrCreateUser(value.data.address);
