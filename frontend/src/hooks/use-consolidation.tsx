@@ -14,6 +14,7 @@ import { useRpcClient } from "./useRpcClient";
 import { type Account } from "thirdweb/wallets";
 import type { ChainOptions } from "thirdweb/chains";
 import { useActiveChainWithDefault } from "./useChain";
+import { createContact } from "pec/lib/services/emailService";
 
 // helper function that is called within the useSubmitConsolidate() hook
 const consolidateValidator = async (
@@ -117,6 +118,15 @@ export const useSubmitConsolidate = () => {
     const nonConsolidateHashes = validatorsToConsolidate.filter(
       (validator) => validator.consolidationTransaction === undefined,
     );
+
+    if (summaryEmail) {
+      const contactResponse = await createContact(summaryEmail);
+
+      if (!contactResponse.success)
+        toast.error(`Error creating contact in Hubspot for ${summaryEmail}`, {
+          description: "Please try again.",
+        });
+    }
 
     // if the user is consolidating to one of their own validators, and that validator is version
     // 0x01, it must be updated to 0x02 first

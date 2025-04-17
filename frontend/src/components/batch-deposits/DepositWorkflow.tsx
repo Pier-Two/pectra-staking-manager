@@ -3,7 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowDownToDot } from "lucide-react";
 import {
-  DepositData,
+  type DepositData,
   DepositSchema,
   type DepositType,
 } from "pec/lib/api/schemas/deposit";
@@ -107,7 +107,6 @@ export const DepositWorkflow = ({
 
   useEffect(() => {
     if (watchedDistributionMethod !== EDistributionMethod.SPLIT) return;
-
     updateDepositsArrayWithSplitAmount(watchedDeposits, totalToDistribute);
   }, [watchTotalToDistribute]);
 
@@ -140,7 +139,6 @@ export const DepositWorkflow = ({
 
   const onSubmit = async (data: DepositType) => {
     const filteredData = data.deposits.filter((deposit) => deposit.amount > 0);
-
     await submitBatchDeposit(filteredData, totalAllocated, data.email);
   };
 

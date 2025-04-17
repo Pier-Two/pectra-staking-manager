@@ -53,7 +53,7 @@ const Welcome: FC = () => {
             <ConnectWalletButton className="!w-[420px] !max-w-[90vw]" />
           )}
         </div>
-    </div>
+      </div>
 
       <div className="flex flex-col items-center justify-center">
         <div className="flex flex-col items-center justify-center">

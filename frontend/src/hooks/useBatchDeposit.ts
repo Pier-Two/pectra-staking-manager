@@ -12,6 +12,7 @@ import { parseError } from "pec/lib/utils/parseError";
 import { generateByteString } from "pec/lib/utils/bytes";
 import { SIGNATURE_BYTE_LENGTH } from "pec/constants/deposit";
 import { type DepositWorkflowStage } from "pec/types/batch-deposits";
+import { createContact } from "pec/lib/services/emailService";
 
 interface BatchDepositRequest {
   pubKey: `0x${string}`;
@@ -76,6 +77,15 @@ export const useBatchDeposit = () => {
       }));
 
       const result = await saveWithdrawalToDatabase(saveWithdrawalDetails);
+
+      if (email) {
+        const contactResponse = await createContact(email);
+
+        if (!contactResponse.success)
+          toast.error(`Error creating contact in Hubspot for ${email}`, {
+            description: "Please try again.",
+          });
+      }
 
       if (!result.success)
         toast.error("There was an error saving the deposit to the database");

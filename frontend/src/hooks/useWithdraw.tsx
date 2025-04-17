@@ -12,6 +12,7 @@ import { parseError } from "pec/lib/utils/parseError";
 import { useImmer } from "use-immer";
 import type { TxHashRecord, WithdrawWorkflowStages } from "pec/types/withdraw";
 import { client } from "pec/lib/wallet/client";
+import { createContact } from "pec/lib/services/emailService";
 
 export const useWithdraw = () => {
   const rpcClient = useRpcClient();
@@ -73,6 +74,15 @@ export const useSubmitWithdraw = () => {
     const filteredWithdrawals = withdrawals.filter(
       (withdrawal) => withdrawal.amount > 0,
     );
+
+    if (email) {
+      const contactResponse = await createContact(email);
+
+      if (!contactResponse.success)
+        toast.error(`Error creating contact in Hubspot for ${email}`, {
+          description: "Please try again.",
+        });
+    }
 
     for (const withdrawal of filteredWithdrawals) {
       try {
