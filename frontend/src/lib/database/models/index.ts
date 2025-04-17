@@ -3,7 +3,6 @@ import mongoose, { type Model, type Mongoose } from "mongoose";
 import { env } from "pec/env";
 import { Consolidation } from "../classes/consolidation";
 import { Deposit } from "../classes/deposit";
-import { User } from "../classes/user";
 import { ValidatorSummary } from "../classes/validatorSummary";
 import { Withdrawal } from "../classes/withdrawal";
 
@@ -14,14 +13,9 @@ export const connect = async () => {
   conn ??= await mongoose.connect(env.MONGODB_URI, {
     serverSelectionTimeoutMS: 5000,
   });
-  
+
   return conn;
 };
-
-export const UserModel: Model<User> =
-  mongoose.models.User ?? getModelForClass(User);
-
-export type UserDocumentType = DocumentType<User>;
 
 // WITHDRAWALS
 

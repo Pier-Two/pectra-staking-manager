@@ -1,6 +1,6 @@
 import axios, { type AxiosResponse } from "axios";
 import { getBeaconChainURL } from "pec/constants/beaconchain";
-import { ConsolidationModel, UserModel } from "pec/lib/database/models";
+import { ConsolidationModel } from "pec/lib/database/models";
 import { generateErrorResponse } from "pec/lib/utils";
 import { ACTIVE_STATUS, INACTIVE_STATUS } from "pec/types/app";
 import type { IResponse } from "pec/types/response";
@@ -56,39 +56,44 @@ export const processConsolidations = async (): Promise<IResponse> => {
       };
 
     for (const consolidation of consolidations) {
-      const { sourceTargetValidatorIndex, txHash, user } = consolidation;
-      const currentUser = await UserModel.findById(user);
-
-      if (!currentUser) {
-        await markConsolidationInactive(sourceTargetValidatorIndex, txHash);
-        continue;
-      }
+      const {
+        sourceTargetValidatorIndex,
+        txHash,
+        email: usersEmail,
+      } = consolidation;
 
       const response = await axios.get<ConsolidationResponse>(
         `${getBeaconChainURL()}api/v1/validator/${sourceTargetValidatorIndex}?apikey=${env.BEACONCHAIN_API_KEY}`,
       );
 
-      if (!isResponseValid(response)) continue;
+      if (!isResponseValid(response)) {
+        console.error(
+          "Invalid response from BeaconChain API:",
+          response.status,
+        );
+        continue;
+      }
       const consolidationData = response.data.data;
-      if (!consolidationData) continue;
 
       const consolidated = isConsolidationProcessed(consolidationData);
       if (!consolidated) continue;
 
-      const email = await sendEmailNotification(
-        "PECTRA_STAKING_MANAGER_CONSOLIDATION_COMPLETE",
-        {
-          ...currentUser,
-          txHash,
-        },
-      );
+      if (usersEmail) {
+        const email = await sendEmailNotification(
+          "PECTRA_STAKING_MANAGER_CONSOLIDATION_COMPLETE",
+          usersEmail,
+        );
 
-      if (!email.success) {
-        console.error("Error sending email notification:", email.error);
-        continue;
+        if (!email.success) {
+          console.error("Error sending email notification:", email.error);
+          continue;
+        }
       }
 
-      await markConsolidationInactive(sourceTargetValidatorIndex, txHash);
+      await ConsolidationModel.updateOne(
+        { sourceTargetValidatorIndex, txHash },
+        { $set: { status: INACTIVE_STATUS } },
+      );
     }
 
     return {
@@ -106,16 +111,6 @@ const isResponseValid = (
   if (!response || response.status !== 200) return false;
   const result = ConsolidationResponseSchema.safeParse(response.data);
   return result.success;
-};
-
-const markConsolidationInactive = async (
-  sourceTargetValidatorIndex: number,
-  txHash: string,
-): Promise<void> => {
-  await ConsolidationModel.updateOne(
-    { sourceTargetValidatorIndex, txHash },
-    { $set: { status: INACTIVE_STATUS } },
-  );
 };
 
 const isConsolidationProcessed = (

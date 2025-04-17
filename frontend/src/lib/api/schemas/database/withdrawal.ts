@@ -7,6 +7,7 @@ export const DatabaseWithdrawalSchema = z.object({
   withdrawalIndex: z.number().nullable(),
   amount: z.number(),
   txHash: z.string(),
+  email: z.string().email().optional(),
 });
 
 export type DatabaseWithdrawalType = z.infer<typeof DatabaseWithdrawalSchema>;

@@ -1,4 +1,4 @@
-import type { ValidatorDetails } from "./validator";
+import type { ValidatorDetails, ValidatorStatus } from "./validator";
 
 export enum ESortDirection {
   ASC = "asc",
@@ -10,10 +10,14 @@ export interface ITableFiltersProps {
   onSearchChange: (term: string) => void;
   statusFilter: string[];
   onStatusFilterChange: (status: string) => void;
+  filterTableOptions: IHeaderConfig['label'][];
+  onFilterTableOptionsChange: (option: IHeaderConfig['label']) => void;
+  getValidatorCount: (status: ValidatorStatus) => number;
 }
 
 export interface IValidatorRowProps {
   validator: ValidatorDetails;
+  filterTableOptions: IHeaderConfig['label'][];
 }
 
 export interface ITablePaginationProps {
@@ -32,6 +36,7 @@ export interface SortConfig {
 export interface ITableHeadersRowProps {
   sortConfig: SortConfig | null;
   onSort: (key: string) => void;
+  filterTableOptions: IHeaderConfig['label'][];
 }
 
 export interface IHeaderConfig {
@@ -42,4 +47,5 @@ export interface IValidatorTableContentProps {
   paginatedData: ValidatorDetails[];
   sortConfig: SortConfig | null;
   onSort: (key: string) => void;
+  filterTableOptions: IHeaderConfig['label'][];
 }

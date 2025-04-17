@@ -1,9 +1,6 @@
-"use client";
-
-import { type FC } from "react";
 import type {
+  DepositWorkflowStage,
   EDistributionMethod,
-  IDistributionMethodProps,
 } from "pec/types/batch-deposits";
 import { DistributionInformation } from "./DistributionInformation";
 import { DistributionOption } from "./DistributionOption";
@@ -11,26 +8,36 @@ import { TotalAmountInput } from "./TotalAmountInput";
 import type { DepositType } from "pec/lib/api/schemas/deposit";
 import type { FieldErrors, UseFormRegister } from "react-hook-form";
 import { DISTRIBUTION_OPTIONS } from "pec/constants/deposit";
-interface ExtendedProps extends IDistributionMethodProps {
+
+export interface IDistributionMethodProps {
+  distributionMethod: EDistributionMethod;
+  onDistributionMethodChange: (method: EDistributionMethod) => void;
+  onSubmit: () => void;
+  resetBatchDeposit: () => void;
+  numDeposits: number;
+  submitButtonDisabled: boolean;
+  stage: DepositWorkflowStage;
+  totalAllocated: number;
+  totalToDistribute: number;
+  walletBalance: number;
   errors: FieldErrors<DepositType>;
   register: UseFormRegister<DepositType>;
 }
 
-export const DistributionMethod: FC<ExtendedProps> = ({
-  disableButton,
+export const DistributionMethod = ({
   distributionMethod,
   onDistributionMethodChange,
   onSubmit,
   resetBatchDeposit,
-  selectedValidators,
+  submitButtonDisabled,
+  numDeposits,
   stage,
-  setValue,
   totalAllocated,
   totalToDistribute,
   walletBalance,
   errors,
   register,
-}) => {
+}: IDistributionMethodProps) => {
   const handleDistributionMethodChange = (method: EDistributionMethod) => {
     onDistributionMethodChange(method);
   };
@@ -60,13 +67,11 @@ export const DistributionMethod: FC<ExtendedProps> = ({
 
       <div className="space-y-2">
         <DistributionInformation
-          buttonText="Deposit"
-          disableButton={disableButton}
+          submitButtonDisabled={submitButtonDisabled}
           onSubmit={onSubmit}
           resetBatchDeposit={resetBatchDeposit}
-          selectedValidators={selectedValidators}
+          numDeposits={numDeposits}
           stage={stage}
-          setValue={setValue}
           totalAllocated={totalAllocated}
           totalToDistribute={totalToDistribute}
         />

@@ -1,17 +1,19 @@
-"use client";
-
-import type { FC } from "react";
 import Image from "next/image";
-import type { IDepositSignDataCard } from "pec/types/batch-deposits";
-import { AlignLeft } from "lucide-react";
+import { AlignLeft, Check } from "lucide-react";
 import { DECIMAL_PLACES } from "pec/lib/constants";
 import { PectraSpinner } from "pec/components/ui/custom/pectraSpinner";
-import { formatEther } from "viem";
+import { type DepositData } from "pec/lib/api/schemas/deposit";
+import { type DepositWorkflowStage } from "pec/types/batch-deposits";
 
-export const DepositSignDataCard: FC<IDepositSignDataCard> = ({
+export interface IDepositSignDataCard {
+  deposit: DepositData;
+  stage: DepositWorkflowStage;
+}
+
+export const DepositSignDataCard = ({
   deposit,
   stage,
-}) => {
+}: IDepositSignDataCard) => {
   const { validator, amount } = deposit;
 
   return (
@@ -35,15 +37,28 @@ export const DepositSignDataCard: FC<IDepositSignDataCard> = ({
 
       <div className="flex flex-1 items-center gap-1">
         <AlignLeft className="h-4 w-4" />
-        <div className="text-sm">
-          {Number(formatEther(amount)).toFixed(DECIMAL_PLACES)}
-        </div>
+        <div className="text-sm">{amount.toFixed(DECIMAL_PLACES)}</div>
       </div>
 
-      <div className="flex flex-1 items-center gap-1">
-        <PectraSpinner />
-        <div className="text-sm">Signing...</div>
-      </div>
+      {stage.type === "sign-data" && (
+        <div className="flex flex-1 items-center gap-1">
+          <PectraSpinner />
+          <div className="text-sm">Signing...</div>
+        </div>
+      )}
+      {stage.type === "transactions-submitted" && (
+        <div className="flex flex-1 items-center gap-1">
+          <PectraSpinner />
+          <div className="text-sm">Transactions submitted</div>
+        </div>
+      )}
+
+      {stage.type === "transactions-finalised" && (
+        <div className="flex flex-row items-center gap-2">
+          <Check className="h-4 w-4 text-green-500" />
+          <div className="text-sm">Done</div>
+        </div>
+      )}
     </div>
   );
 };

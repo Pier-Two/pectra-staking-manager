@@ -7,10 +7,10 @@ import { MyValidatorsCard } from "./MyValidatorsCard";
 export const TotalStake: FC<IGenericValidators> = (props) => {
   const { validators } = props;
   const totalStake = validators.reduce(
-    (acc, validator) => acc + validator.balance,
+    (acc, validator) => acc + BigInt(validator.balance),
     0n,
   );
-  const averageStake = totalStake / BigInt(validators.length);
+  const averageStake = validators.length > 0 ? totalStake / BigInt(validators.length) : 0n;
 
   return (
     <MyValidatorsCard
