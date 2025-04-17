@@ -1,9 +1,10 @@
 import { Footer } from "pec/components/layout/welcome/Footer";
 import { Information } from "pec/components/layout/welcome/Information";
 import { PectraLink } from "pec/components/layout/welcome/PectraLink";
-import type { FC } from "react";
+import { Suspense, type FC } from "react";
 import { EnterSiteButton } from "./_components/enter-site-button";
-import { ValidatorsChart } from "./_components/validators-chart";
+import { ChartPrefetch } from "pec/components/charts/ChartPrefetch";
+import { ChartSkeleton } from "pec/components/charts/ChartSkeleton";
 
 const Welcome: FC = async () => {
   return (
@@ -25,7 +26,9 @@ const Welcome: FC = async () => {
 
       <div className="flex flex-col items-center justify-center">
         <div className="flex flex-col items-center justify-center">
-          <ValidatorsChart />
+          <Suspense fallback={<ChartSkeleton />}>
+            <ChartPrefetch />
+          </Suspense>
         </div>
       </div>
 

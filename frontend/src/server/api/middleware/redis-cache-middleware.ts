@@ -31,7 +31,7 @@ export const redisCacheMiddleware = ({
           console.debug(
             `[Cache] Fresh cache hit for ${path} (age: ${cacheAge.toFixed(2)}s)`,
           );
-          return next();
+          return cachedData.data;
         }
 
         // If stale-while-revalidate is enabled and we have stale data
@@ -61,7 +61,7 @@ export const redisCacheMiddleware = ({
           })();
 
           // Return stale data immediately
-          return next();
+          return cachedData.data;
         }
       }
 

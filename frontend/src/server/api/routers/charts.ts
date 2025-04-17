@@ -38,7 +38,7 @@ export const chartRouter = createTRPCRouter({
       )
         return [];
 
-      const response = [
+      return [
         {
           key: "days",
           data: constructChartData(
@@ -64,8 +64,6 @@ export const chartRouter = createTRPCRouter({
           ),
         },
       ];
-
-      return response;
     }),
 });
 
