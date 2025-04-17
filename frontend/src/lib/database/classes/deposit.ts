@@ -10,7 +10,7 @@ import { DatabaseDepositType } from "pec/lib/api/schemas/database/deposit";
   },
 })
 export class Deposit implements DatabaseDepositType {
-  @prop({ required: true, enum: DatabaseDocumentStatuses })
+  @prop({ required: true, type: String })
   public status!: (typeof DatabaseDocumentStatuses)[number];
 
   @prop({ required: true })

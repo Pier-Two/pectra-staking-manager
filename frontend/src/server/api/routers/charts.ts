@@ -13,6 +13,8 @@ import { constructAverageEthStakedChartData } from "pec/lib/utils/charts/average
 
 export const chartRouter = createTRPCRouter({
   getChartData: publicProcedure.query(async () => {
+    console.time("getChartData");
+
     const validatorStatistics =
       await ValidatorSummaryModel.find<ValidatorStatistics>({
         timestamp: { $exists: true },
@@ -35,7 +37,7 @@ export const chartRouter = createTRPCRouter({
     )
       return [];
 
-    return [
+    const response = [
       {
         key: "days",
         data: constructChartData(
@@ -61,6 +63,10 @@ export const chartRouter = createTRPCRouter({
         ),
       },
     ];
+
+    console.timeEnd("getChartData");
+
+    return response;
   }),
 });
 
