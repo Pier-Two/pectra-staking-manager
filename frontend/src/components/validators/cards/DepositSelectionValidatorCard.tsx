@@ -58,9 +58,8 @@ export const DepositSelectionValidatorCard = ({
           "border-indigo-500 dark:border-2 dark:border-indigo-900": selected,
         },
       )}
-      onClick={handleSelect}
     >
-      <div className="flex flex-[1.2] items-center gap-x-4">
+      <div className="flex flex-[1.2] items-center gap-x-4" onClick={handleSelect}>
         {selected ? (
           <>
             <CircleCheck className="min-h-4 min-w-4 text-green-500 group-hover:hidden" />
@@ -87,7 +86,7 @@ export const DepositSelectionValidatorCard = ({
         </div>
       </div>
 
-      <div className="flex flex-1 items-center gap-1 p-2">
+      <div className="flex flex-1 items-center gap-1 p-2" onClick={handleSelect}>
         <AlignLeft className="h-4 w-4" />
         <div className="text-sm">
           {Number(formatEther(validator.balance)).toFixed(DECIMAL_PLACES)}
