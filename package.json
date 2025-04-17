@@ -11,5 +11,4 @@
     "storybook": "pnpm --filter frontend storybook",
     "schedule-jobs": "pnpm --filter frontend schedule-jobs"
   },
-  "packageManager": "pnpm@latest"
 }
