@@ -9,7 +9,7 @@ import { type WithdrawalFormType } from "pec/lib/api/schemas/withdrawal";
 import { toast } from "sonner";
 import { useActiveChainWithDefault } from "./useChain";
 import { parseError } from "pec/lib/utils/parseError";
-import { useState } from "react";
+import { useImmer } from "use-immer";
 import { TxHashRecord, WithdrawWorkflowStages } from "pec/types/withdraw";
 import { client } from "pec/lib/wallet/client";
 
@@ -37,7 +37,7 @@ export const useWithdraw = () => {
 
 export const useSubmitWithdraw = () => {
   const { data: withdrawalFee } = useWithdraw();
-  const [stage, setStage] = useState<WithdrawWorkflowStages>({
+  const [stage, setStage] = useImmer<WithdrawWorkflowStages>({
     type: "data-capture",
   });
   const contracts = useContracts();
@@ -57,10 +57,18 @@ export const useSubmitWithdraw = () => {
       return;
     }
 
+    // We mutate this object in place throughout this hook
+    // It looks a bit illegal but its perfectly fine and saves a heap of useState reads
+    // We use immer here so that it re-renders when the object contents change instead of the usual re-render when the entire object changes
     const txHashes: TxHashRecord = {};
+    for (const withdrawal of withdrawals) {
+      txHashes[withdrawal.validator.validatorIndex] = {
+        status: "pending",
+      };
+    }
 
     // We jump to this state because there is multiple signings
-    setStage({ type: "transactions-submitted", txHashes });
+    setStage({ type: "sign-submit-finalise", txHashes });
 
     const filteredWithdrawals = withdrawals.filter(
       (withdrawal) => withdrawal.amount > 0,
@@ -76,6 +84,15 @@ export const useSubmitWithdraw = () => {
           ],
         );
 
+        txHashes[withdrawal.validator.validatorIndex] = {
+          status: "signing",
+        };
+
+        setStage({
+          type: "sign-submit-finalise",
+          txHashes,
+        });
+
         const txHash = await account.sendTransaction({
           to: contracts.withdrawal.address,
           value: withdrawalFee,
@@ -84,12 +101,12 @@ export const useSubmitWithdraw = () => {
         });
 
         txHashes[withdrawal.validator.validatorIndex] = {
+          status: "submitted",
           txHash: txHash.transactionHash,
-          isFinalised: false,
         };
 
         setStage({
-          type: "transactions-submitted",
+          type: "sign-submit-finalise",
           txHashes,
         });
 
@@ -126,20 +143,26 @@ export const useSubmitWithdraw = () => {
       }
     }
 
-    for (const [validatorIndex, { txHash }] of Object.entries(txHashes)) {
-      const receipt = await waitForReceipt({
-        transactionHash: txHash,
+    for (const [validatorIndex, tx] of Object.entries(txHashes)) {
+      if (tx.status !== "submitted") {
+        console.error("Transaction in invalid state", tx);
+
+        continue;
+      }
+
+      await waitForReceipt({
+        transactionHash: tx.txHash,
         chain,
         client,
       });
 
       txHashes[Number(validatorIndex)] = {
-        txHash: receipt.transactionHash,
-        isFinalised: true,
+        status: "finalised",
+        txHash: tx.txHash,
       };
 
       setStage({
-        type: "transactions-submitted",
+        type: "sign-submit-finalise",
         txHashes,
       });
     }

@@ -40,9 +40,21 @@ export const WithdrawalInformation = ({
     },
   ];
 
+  // TODO: @ben the isSigning state is a bit broken, it toggles to false sometimes when in the middle of signing two txs
+  const isSigning =
+    stage.type === "sign-submit-finalise" &&
+    Object.values(stage.txHashes).some((tx) => tx.status === "signing");
+
+  const isSubmitting =
+    stage.type === "sign-submit-finalise" &&
+    !isSigning &&
+    Object.values(stage.txHashes).every(
+      (tx) => tx.status === "submitted" || tx.status === "finalised",
+    );
+
   const allTransactionsFinalised =
-    stage.type === "transactions-submitted" &&
-    Object.values(stage.txHashes).every((tx) => tx.isFinalised);
+    stage.type === "sign-submit-finalise" &&
+    Object.values(stage.txHashes).every((tx) => tx.status === "finalised");
 
   return (
     <div className="flex flex-col gap-4 rounded-xl border border-indigo-400 bg-white p-4 dark:border dark:border-gray-800 dark:bg-black">
@@ -106,7 +118,13 @@ export const WithdrawalInformation = ({
         </div>
       </div>
 
-      {stage.type === "transactions-submitted" && (
+      {isSigning && (
+        <div className="rounded-xl bg-gray-100 p-2 text-sm text-green-500">
+          Your transactions are being signed. Please wait.
+        </div>
+      )}
+
+      {isSubmitting && (
         <>
           <div className="rounded-xl bg-gray-100 p-2 text-sm text-green-500">
             Your transactions have been submitted successfully and will be
