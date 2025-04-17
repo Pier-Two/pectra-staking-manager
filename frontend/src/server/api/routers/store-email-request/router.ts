@@ -4,13 +4,13 @@ import { SupportedChainIdSchema } from "pec/lib/api/schemas/network";
 import { DepositModel, WithdrawalModel } from "pec/lib/database/models";
 import { getBeaconChainAxios } from "pec/lib/server/axios";
 import {
-  BeaconchainWithdrawalResponse,
+  type BeaconchainWithdrawalResponse,
   isBeaconchainWithdrawalResponseValid,
 } from "pec/lib/api/schemas/beaconchain";
 import { StoreWithdrawalRequestSchema } from "pec/lib/api/schemas/withdrawal";
 import { ACTIVE_STATUS } from "pec/types/app";
 import { maxBy } from "lodash";
-import { IResponse } from "pec/types/response";
+import type { IResponse } from "pec/types/response";
 import { generateErrorResponse } from "pec/lib/utils";
 import { DatabaseDepositSchema } from "pec/lib/api/schemas/database/deposit";
 
@@ -65,7 +65,7 @@ export const storeEmailRequestRouter = createTRPCRouter({
     .input(DatabaseDepositSchema.omit({ status: true }).array())
     .mutation(async ({ input }): Promise<IResponse<null>> => {
       try {
-        await DepositModel.create(input);
+        await DepositModel.create({ ...input, status: ACTIVE_STATUS });
 
         return {
           success: true,

@@ -118,5 +118,5 @@
   "overrides": {
     "react-is": "^19.0.0-rc-69d4b800-20241021"
   },
-  "packageManager": "pnpm@10.2.1"
+  "packageManager": "pnpm@latest"
 }

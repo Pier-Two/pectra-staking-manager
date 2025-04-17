@@ -23,6 +23,7 @@ import { formatAddressToShortenedString } from "pec/lib/utils/address";
 import { formatEther } from "viem";
 import { useValidators } from "pec/hooks/useValidators";
 import { useSubmitWithdraw } from "pec/hooks/useWithdraw";
+import { Email } from "pec/components/consolidation/summary/Email";
 
 const Withdrawal: FC = () => {
   const walletAddress = useWalletAddress();
@@ -40,7 +41,7 @@ const Withdrawal: FC = () => {
     formState: { isValid, errors },
   } = useForm<WithdrawalFormType>({
     resolver: zodResolver(WithdrawalFormSchema),
-    defaultValues: { withdrawals: [] },
+    defaultValues: { withdrawals: [], email: "" },
     mode: "onChange",
   });
 
@@ -50,6 +51,8 @@ const Withdrawal: FC = () => {
   });
 
   const withdrawals = watch("withdrawals");
+  const watchedEmail = watch("email");
+  const email = watchedEmail ?? "";
   const withdrawalTotal = sumBy(withdrawals, (withdrawal) => withdrawal.amount);
 
   const [sortColumn, setSortColumn] = useState<string | null>("validator");
@@ -122,7 +125,7 @@ const Withdrawal: FC = () => {
   };
 
   const onSubmit = async (data: WithdrawalFormType) => {
-    await submitWithdrawals(data.withdrawals);
+    await submitWithdrawals(data.withdrawals, data.email ?? "");
   };
 
   return (
@@ -164,6 +167,13 @@ const Withdrawal: FC = () => {
           stage={stage}
           validatorsSelected={withdrawals.length}
           withdrawalTotal={withdrawalTotal}
+        />
+
+        <Email
+          cardText="Add your email to receive an email when your withdrawals are complete."
+          cardTitle="Notify me when complete"
+          summaryEmail={email}
+          setSummaryEmail={(email) => setValue("email", email)}
         />
 
         <ValidatorHeader

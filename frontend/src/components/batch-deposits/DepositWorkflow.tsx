@@ -17,6 +17,7 @@ import { SelectValidators } from "./validators/SelectValidators";
 import { useEffect } from "react";
 import { DECIMAL_PLACES } from "pec/lib/constants";
 import { useBatchDeposit } from "pec/hooks/useBatchDeposit";
+import { Email } from "../consolidation/summary/Email";
 
 export interface IDepositWorkflowProps {
   validators: ValidatorDetails[];
@@ -33,6 +34,7 @@ export const DepositWorkflow = ({
     deposits: [],
     totalToDistribute: 0,
     distributionMethod: EDistributionMethod.SPLIT,
+    email: "",
   };
 
   const {
@@ -48,11 +50,15 @@ export const DepositWorkflow = ({
     mode: "onChange",
   });
 
-  const [watchedDeposits, watchedDistributionMethod, watchTotalToDistribute] =
-    useWatch({
-      control,
-      name: ["deposits", "distributionMethod", "totalToDistribute"],
-    });
+  const [
+    watchedDeposits,
+    watchedDistributionMethod,
+    watchTotalToDistribute,
+    watchEmail,
+  ] = useWatch({
+    control,
+    name: ["deposits", "distributionMethod", "totalToDistribute", "email"],
+  });
 
   // Stupid RHF doesn't handle an empty input and returns a string, even when you specify its a number
   const totalToDistribute = isNaN(watchTotalToDistribute)
@@ -71,12 +77,13 @@ export const DepositWorkflow = ({
     totalToDistribute === 0 ||
     totalAllocated > balance;
 
+  const email = watchEmail ?? "";
+
   const handleDistributionMethodChange = (method: EDistributionMethod) => {
     setValue("distributionMethod", method);
 
-    if (method === EDistributionMethod.SPLIT) {
+    if (method === EDistributionMethod.SPLIT)
       updateDepositsArrayWithSplitAmount(watchedDeposits, totalToDistribute);
-    }
   };
 
   const handleClearValidators = () => {
@@ -121,11 +128,9 @@ export const DepositWorkflow = ({
       });
     }
 
-    if (watchedDistributionMethod === EDistributionMethod.SPLIT) {
+    if (watchedDistributionMethod === EDistributionMethod.SPLIT)
       updateDepositsArrayWithSplitAmount(updatedDeposits, totalToDistribute);
-    } else {
-      setValue("deposits", updatedDeposits);
-    }
+    else setValue("deposits", updatedDeposits);
   };
 
   const handleResetBatchDeposit = () => {
@@ -180,6 +185,13 @@ export const DepositWorkflow = ({
                   totalAllocated={totalAllocated}
                   totalToDistribute={totalToDistribute}
                   walletBalance={balance}
+                />
+
+                <Email
+                  cardText="Add your email to receive an email when your deposits are complete."
+                  cardTitle="Notify me when complete"
+                  summaryEmail={email}
+                  setSummaryEmail={(email) => setValue("email", email)}
                 />
 
                 {totalToDistribute > 0 && (

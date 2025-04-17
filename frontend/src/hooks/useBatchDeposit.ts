@@ -43,7 +43,6 @@ export const useBatchDeposit = () => {
   ) => {
     if (!account) {
       toast.error("There was an error depositing");
-
       return;
     }
 
@@ -78,9 +77,8 @@ export const useBatchDeposit = () => {
 
       const result = await saveWithdrawalToDatabase(saveWithdrawalDetails);
 
-      if (!result.success) {
+      if (!result.success)
         toast.error("There was an error saving the deposit to the database");
-      }
 
       toast.success("Deposits saved successfully");
 
