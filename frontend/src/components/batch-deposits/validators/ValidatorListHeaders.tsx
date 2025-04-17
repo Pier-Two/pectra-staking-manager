@@ -1,5 +1,6 @@
-import { ColumnHeader } from "./ColumnHeader";
 import type { SortDirection } from "pec/components/batch-deposits/validators/ColumnHeader";
+import { WithdrawWorkflowStages } from "pec/types/withdraw";
+import { ColumnHeader } from "./ColumnHeader";
 
 interface IColumnHeader {
   label: string;
@@ -7,18 +8,26 @@ interface IColumnHeader {
 }
 
 export interface IValidatorListHeaders {
-  columnHeaders: readonly IColumnHeader[];
+  columns: readonly IColumnHeader[];
   sortColumn: string | null;
   sortDirection: SortDirection;
+  stage: WithdrawWorkflowStages;
   onSort: (column: string) => void;
 }
 
 export const ValidatorListHeaders = ({
-  columnHeaders,
+  columns,
+  stage,
   onSort,
   sortColumn,
   sortDirection,
 }: IValidatorListHeaders) => {
+
+  const signSubmitFinaliseInProgress = stage.type === "sign-submit-finalise";
+
+  // If we are in the sign-submit-finalise stage, we should only display the validator
+  const columnHeaders = signSubmitFinaliseInProgress ? columns.filter((column) => column.label === "Validator") : columns;
+  
   return (
     <div className="flex w-full items-center px-4">
       {columnHeaders.map((columnHeader, index) => (

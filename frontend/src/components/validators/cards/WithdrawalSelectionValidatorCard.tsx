@@ -4,15 +4,17 @@ import { Input } from "pec/components/ui/input";
 import type { WithdrawalFormType } from "pec/lib/api/schemas/withdrawal";
 import { cn } from "pec/lib/utils";
 import { parseEtherToFixedDecimals } from "pec/lib/utils/parseAmounts";
-import type { ValidatorDetails } from "pec/types/validator";
-import type { FieldErrors, UseFormRegister } from "react-hook-form";
+import { type ValidatorDetails } from "pec/types/validator";
+import type { WithdrawWorkflowStages } from "pec/types/withdraw";
+import { type FieldErrors, type UseFormRegister } from "react-hook-form";
 import { formatEther } from "viem";
-
+import { ValidatorLoadingCard } from "./ValidatorLoadingCard";
 interface ExtendedProps {
   availableAmount: bigint;
   handleSelect: () => void;
   withdrawalIndex: number;
   selected: boolean;
+  stage: WithdrawWorkflowStages;
   validator: ValidatorDetails;
   errors: FieldErrors<WithdrawalFormType>;
   register: UseFormRegister<WithdrawalFormType>;
@@ -25,9 +27,22 @@ export const WithdrawalSelectionValidatorCard = ({
   withdrawalIndex,
   selected,
   validator,
+  stage,
 }: ExtendedProps) => {
-  const { validatorIndex, publicKey, balance } = validator;
   const locked = validator.balance === 0n;
+  const { validatorIndex, publicKey, balance } = validator;
+  const signSubmitFinaliseInProgress = stage.type === "sign-submit-finalise";
+  const transactionStatus = signSubmitFinaliseInProgress ? stage?.txHashes[validatorIndex] : undefined;
+  
+  // IF we are submitting a withdrawal and the validator is not being withdrawn from, don't render the card
+  if (signSubmitFinaliseInProgress && !transactionStatus) {
+    return null;
+  }
+
+  // IF we are submitting a withdrawal and the validator is being withdrawn from, render the card with the status
+  if (signSubmitFinaliseInProgress && transactionStatus) {
+    return <ValidatorLoadingCard transactionStatus={transactionStatus} validator={validator} />;
+  }
 
   const onClickHandler = () => {
     if (locked) return;
@@ -104,8 +119,7 @@ export const WithdrawalSelectionValidatorCard = ({
           <div className="flex">
             <div className="flex w-full flex-col">
               <div className="flex flex-row items-center gap-2">
-                <AlignLeft className="h-4 w-4" />
-
+                <span className="text-sm">ETH</span>
                 <Input
                   className={`w-full rounded-xl border border-indigo-300 bg-white p-2 text-sm text-gray-700 dark:border-gray-800 dark:bg-black dark:text-gray-300 ${locked ? "opacity-50" : ""}`}
                   disabled={locked}

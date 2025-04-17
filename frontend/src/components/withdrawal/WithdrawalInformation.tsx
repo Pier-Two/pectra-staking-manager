@@ -1,7 +1,8 @@
 import { AlignLeft, Check } from "lucide-react";
 import Image from "next/image";
 import { DECIMAL_PLACES } from "pec/lib/constants";
-import { WithdrawWorkflowStages } from "pec/types/withdraw";
+import type { WithdrawWorkflowStages } from "pec/types/withdraw";
+import { PectraSpinner } from "../ui/custom/pectraSpinner";
 import { PrimaryButton } from "../ui/custom/PrimaryButton";
 import { SecondaryButton } from "../ui/custom/SecondaryButton";
 import { Separator } from "../ui/separator";
@@ -39,18 +40,18 @@ export const WithdrawalInformation = ({
       label: "Withdrawal total",
     },
   ];
-
+  
   // TODO: @ben the isSigning state is a bit broken, it toggles to false sometimes when in the middle of signing two txs
   const isSigning =
-    stage.type === "sign-submit-finalise" &&
-    Object.values(stage.txHashes).some((tx) => tx.status === "signing");
+  stage.type === "sign-submit-finalise" &&
+  Object.values(stage.txHashes).some((tx) => tx.status === "signing");
 
   const isSubmitting =
-    stage.type === "sign-submit-finalise" &&
-    !isSigning &&
-    Object.values(stage.txHashes).every(
-      (tx) => tx.status === "submitted" || tx.status === "finalised",
-    );
+  stage.type === "sign-submit-finalise" &&
+  !isSigning &&
+  Object.values(stage.txHashes).every(
+    (tx) => tx.status === "submitted" || tx.status === "finalised",
+  );
 
   const allTransactionsFinalised =
     stage.type === "sign-submit-finalise" &&
@@ -91,7 +92,15 @@ export const WithdrawalInformation = ({
           ))}
         </div>
 
-        <div>
+        <div className="px-6">
+          {(isSigning || isSubmitting) && !allTransactionsFinalised && (
+            <div className="flex flex-row items-center gap-2">
+              <PectraSpinner />
+            </div>
+          )}
+            
+
+
           {allTransactionsFinalised && (
             <div className="flex flex-row items-center gap-2">
               <Check className="h-4 w-4 text-green-500" />
@@ -118,15 +127,10 @@ export const WithdrawalInformation = ({
         </div>
       </div>
 
-      {isSigning && (
-        <div className="rounded-xl bg-gray-100 p-2 text-sm text-green-500">
-          Your transactions are being signed. Please wait.
-        </div>
-      )}
 
       {isSubmitting && (
         <>
-          <div className="rounded-xl bg-gray-100 p-2 text-sm text-green-500">
+          <div className="rounded-xl bg-gray-100 p-2 text-sm text-green-500 dark:bg-black">
             Your transactions have been submitted successfully and will be
             processed shortly. You can leave this page and check the status of
             your withdrawals in your dashboard.
