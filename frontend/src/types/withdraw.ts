@@ -1,4 +1,11 @@
+export type TxHashRecord = Record<
+  number,
+  { txHash: `0x${string}`; isFinalised: boolean }
+>;
+
 export type WithdrawWorkflowStages =
   | { type: "data-capture" }
-  | { type: "transactions-submitted"; txHashes: Record<number, string> }
-  | { type: "transactions-finalised"; txHashes: Record<number, string> };
+  | {
+      type: "transactions-submitted";
+      txHashes: TxHashRecord;
+    };

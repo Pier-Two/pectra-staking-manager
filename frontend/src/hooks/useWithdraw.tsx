@@ -1,8 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 import { useRpcClient } from "./useRpcClient";
 import { useContracts } from "./useContracts";
-import { eth_call } from "thirdweb";
-import { fromHex, parseGwei } from "viem";
+import { eth_call, waitForReceipt } from "thirdweb";
+import { encodePacked, fromHex, parseGwei } from "viem";
 import { useActiveAccount } from "thirdweb/react";
 import { api } from "pec/trpc/react";
 import { type WithdrawalFormType } from "pec/lib/api/schemas/withdrawal";
@@ -10,8 +10,8 @@ import { toast } from "sonner";
 import { useActiveChainWithDefault } from "./useChain";
 import { parseError } from "pec/lib/utils/parseError";
 import { useState } from "react";
-import { WithdrawWorkflowStages } from "pec/types/withdraw";
-import { convertToLittleEndianUint64Hex } from "pec/lib/utils/bytes";
+import { TxHashRecord, WithdrawWorkflowStages } from "pec/types/withdraw";
+import { client } from "pec/lib/wallet/client";
 
 export const useWithdraw = () => {
   const rpcClient = useRpcClient();
@@ -57,7 +57,7 @@ export const useSubmitWithdraw = () => {
       return;
     }
 
-    const txHashes: Record<number, string> = {};
+    const txHashes: TxHashRecord = {};
 
     // We jump to this state because there is multiple signings
     setStage({ type: "transactions-submitted", txHashes });
@@ -68,12 +68,13 @@ export const useSubmitWithdraw = () => {
 
     for (const withdrawal of filteredWithdrawals) {
       try {
-        const amount = convertToLittleEndianUint64Hex(
-          parseGwei(withdrawal.amount.toString()),
+        const callData = encodePacked(
+          ["bytes", "uint64"],
+          [
+            withdrawal.validator.publicKey as `0x${string}`,
+            parseGwei(withdrawal.amount.toString()),
+          ],
         );
-
-        const callData =
-          `0x${withdrawal.validator.publicKey.slice(2)}${amount.slice(2)}` as `0x${string}`;
 
         const txHash = await account.sendTransaction({
           to: contracts.withdrawal.address,
@@ -82,7 +83,10 @@ export const useSubmitWithdraw = () => {
           chainId: chain.id,
         });
 
-        txHashes[withdrawal.validator.validatorIndex] = txHash.transactionHash;
+        txHashes[withdrawal.validator.validatorIndex] = {
+          txHash: txHash.transactionHash,
+          isFinalised: false,
+        };
 
         setStage({
           type: "transactions-submitted",
@@ -122,10 +126,23 @@ export const useSubmitWithdraw = () => {
       }
     }
 
-    setStage({
-      type: "transactions-finalised",
-      txHashes,
-    });
+    for (const [validatorIndex, { txHash }] of Object.entries(txHashes)) {
+      const receipt = await waitForReceipt({
+        transactionHash: txHash,
+        chain,
+        client,
+      });
+
+      txHashes[Number(validatorIndex)] = {
+        txHash: receipt.transactionHash,
+        isFinalised: true,
+      };
+
+      setStage({
+        type: "transactions-submitted",
+        txHashes,
+      });
+    }
   };
 
   return {
