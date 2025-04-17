@@ -31,6 +31,7 @@ export const redisCacheMiddleware = ({
           console.debug(
             `[Cache] Fresh cache hit for ${path} (age: ${cacheAge.toFixed(2)}s)`,
           );
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-return
           return cachedData.data;
         }
 
@@ -61,6 +62,7 @@ export const redisCacheMiddleware = ({
           })();
 
           // Return stale data immediately
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-return
           return cachedData.data;
         }
       }
