@@ -10,64 +10,63 @@ import type { ValidatorSummary } from "pec/lib/database/classes/validatorSummary
 import { constructNumberOfValidatorsForEachUpgradeChartData } from "pec/lib/utils/charts/numberOfValidatorsForEachUpgrade";
 import { constructTotalEthStakedChartData } from "pec/lib/utils/charts/totalEthStaked";
 import { constructAverageEthStakedChartData } from "pec/lib/utils/charts/averageEthStaked";
+import { redisCacheMiddleware } from "../middleware/redis-cache-middleware";
 
 export const chartRouter = createTRPCRouter({
-  getChartData: publicProcedure.query(async () => {
-    console.time("getChartData");
+  getChartData: publicProcedure
+    .use(redisCacheMiddleware({ ttl: 10 }))
+    .query(async () => {
+      const validatorStatistics =
+        await ValidatorSummaryModel.find<ValidatorStatistics>({
+          timestamp: { $exists: true },
+        })
+          .select(
+            "avgStaked count totalStaked withdrawalCredentialPrefix timestamp",
+          )
+          .lean();
 
-    const validatorStatistics =
-      await ValidatorSummaryModel.find<ValidatorStatistics>({
-        timestamp: { $exists: true },
-      })
-        .select(
-          "avgStaked count totalStaked withdrawalCredentialPrefix timestamp",
-        )
-        .lean();
+      if (!validatorStatistics || validatorStatistics.length === 0) return [];
 
-    if (!validatorStatistics || validatorStatistics.length === 0) return [];
+      const { groupedValidators, groupedPectraValidators } =
+        getValidatorGroups(validatorStatistics);
 
-    const { groupedValidators, groupedPectraValidators } =
-      getValidatorGroups(validatorStatistics);
+      if (
+        !groupedValidators ||
+        Object.keys(groupedValidators).length === 0 ||
+        !groupedPectraValidators ||
+        Object.keys(groupedPectraValidators).length === 0
+      )
+        return [];
 
-    if (
-      !groupedValidators ||
-      Object.keys(groupedValidators).length === 0 ||
-      !groupedPectraValidators ||
-      Object.keys(groupedPectraValidators).length === 0
-    )
-      return [];
+      const response = [
+        {
+          key: "days",
+          data: constructChartData(
+            groupedValidators,
+            groupedPectraValidators,
+            "days",
+          ),
+        },
+        {
+          key: "months",
+          data: constructChartData(
+            groupedValidators,
+            groupedPectraValidators,
+            "months",
+          ),
+        },
+        {
+          key: "years",
+          data: constructChartData(
+            groupedValidators,
+            groupedPectraValidators,
+            "years",
+          ),
+        },
+      ];
 
-    const response = [
-      {
-        key: "days",
-        data: constructChartData(
-          groupedValidators,
-          groupedPectraValidators,
-          "days",
-        ),
-      },
-      {
-        key: "months",
-        data: constructChartData(
-          groupedValidators,
-          groupedPectraValidators,
-          "months",
-        ),
-      },
-      {
-        key: "years",
-        data: constructChartData(
-          groupedValidators,
-          groupedPectraValidators,
-          "years",
-        ),
-      },
-    ];
-
-    console.timeEnd("getChartData");
-
-    return response;
-  }),
+      return response;
+    }),
 });
 
 const getValidatorGroups = (validatorStatistics: ValidatorSummary[]) => {

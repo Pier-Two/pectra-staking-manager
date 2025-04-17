@@ -24,10 +24,7 @@ import { ZodError } from "zod";
  * @see https://trpc.io/docs/server/context
  */
 export const createTRPCContext = async (opts: { headers: Headers }) => {
-  console.time("createTRPCContext");
   await connect();
-
-  console.timeEnd("createTRPCContext");
 
   return {
     ...opts,
@@ -76,6 +73,8 @@ export const createCallerFactory = t.createCallerFactory;
  */
 export const createTRPCRouter = t.router;
 
+export const createTRPCMiddleware = t.middleware;
+
 /**
  * Middleware for timing procedure execution and adding an artificial delay in development.
  *
@@ -86,7 +85,6 @@ const timingMiddleware = t.middleware(async ({ next, path }) => {
   const start = Date.now();
 
   if (t._config.isDev) {
-    console.log("adding artificial delay");
     // artificial delay in dev
     const waitMs = Math.floor(Math.random() * 400) + 100;
     await new Promise((resolve) => setTimeout(resolve, waitMs));
