@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { ChartContainer } from "pec/components/charts/ChartContainer";
 import { Footer } from "pec/components/layout/welcome/Footer";
 import { Information } from "pec/components/layout/welcome/Information";
 import { PectraLink } from "pec/components/layout/welcome/PectraLink";
@@ -8,7 +9,6 @@ import { PrimaryButton } from "pec/components/ui/custom/PrimaryButton";
 import { ConnectWalletButton } from "pec/components/ui/wallet/ConnectWallet";
 import { useWalletAddress } from "pec/hooks/useWallet";
 import type { FC } from "react";
-import { ChartContainer } from "pec/components/charts/ChartContainer";
 
 const Welcome: FC = () => {
   const router = useRouter();
@@ -50,7 +50,7 @@ const Welcome: FC = () => {
               disabled={false}
             />
           ) : (
-            <ConnectWalletButton className="!w-[420px] !max-w-[90vw]" />
+            <ConnectWalletButton />
           )}
         </div>
     </div>
