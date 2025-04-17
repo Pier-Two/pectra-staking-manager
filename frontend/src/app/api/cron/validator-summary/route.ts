@@ -49,6 +49,7 @@ export const POST = async () => {
       acc["0x01"].balance = acc["0x01"].balance + BigInt(validator.balance);
       return acc;
     } else if (withdrawalCredentials.startsWith("0x02")) {
+      console.log("ox02 validator", validator);
       acc["0x02"].count = acc["0x02"].count + 1;
       acc["0x02"].balance = acc["0x02"].balance + BigInt(validator.balance);
       return acc;
