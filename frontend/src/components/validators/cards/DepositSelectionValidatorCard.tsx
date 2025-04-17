@@ -1,10 +1,11 @@
-import { AlignLeft, CircleCheck, CirclePlus } from "lucide-react";
+import { AlignLeft, CircleCheck, CircleMinus, CirclePlus } from "lucide-react";
 import Image from "next/image";
+import { Input } from "pec/components/ui/input";
 import type { DepositType } from "pec/lib/api/schemas/deposit";
 import { DECIMAL_PLACES } from "pec/lib/constants";
 import { cn } from "pec/lib/utils";
 import { EDistributionMethod } from "pec/types/batch-deposits";
-import { ValidatorDetails } from "pec/types/validator";
+import type { ValidatorDetails } from "pec/types/validator";
 import type { FieldErrors, UseFormRegister } from "react-hook-form";
 import { formatEther } from "viem";
 
@@ -52,22 +53,22 @@ export const DepositSelectionValidatorCard = ({
   return (
     <div
       className={cn(
-        "group flex w-full items-center justify-between gap-x-4 rounded-xl border bg-white p-4 hover:border-indigo-500 dark:border-gray-800 dark:bg-black dark:hover:border-gray-600",
+        "group flex w-full items-center justify-between cursor-pointer gap-x-4 rounded-xl border bg-white p-4 hover:border-indigo-500 dark:border-gray-800 dark:bg-black dark:hover:border-gray-600",
         {
           "border-indigo-500 dark:border-2 dark:border-indigo-900": selected,
-          "cursor-pointer": !selected,
         },
       )}
-      onClick={selected ? undefined : handleSelect}
     >
-      <div className="flex flex-[1.2] items-center gap-x-4">
+      <div className="flex flex-[1.2] items-center gap-x-4" onClick={handleSelect}>
         {selected ? (
-          <CircleCheck
-            className="min-h-4 min-w-4 fill-green-500 text-white hover:cursor-pointer dark:text-black"
-            onClick={handleSelect}
-          />
+          <>
+            <CircleCheck className="min-h-4 min-w-4 text-green-500 group-hover:hidden" />
+            <CircleMinus className="min-h-4 min-w-4 text-red-500 hidden group-hover:block" />
+          </>
         ) : (
-          <CirclePlus className="min-h-4 min-w-4 text-indigo-500 group-hover:fill-indigo-500 group-hover:text-white" />
+          <CirclePlus
+            className="min-h-4 min-w-4 text-indigo-500 group-hover:fill-indigo-500 group-hover:text-white"
+          />
         )}
 
         <Image
@@ -85,7 +86,7 @@ export const DepositSelectionValidatorCard = ({
         </div>
       </div>
 
-      <div className="flex flex-1 items-center gap-1 p-2">
+      <div className="flex flex-1 items-center gap-1 p-2" onClick={handleSelect}>
         <AlignLeft className="h-4 w-4" />
         <div className="text-sm">
           {Number(formatEther(validator.balance)).toFixed(DECIMAL_PLACES)}
@@ -98,7 +99,7 @@ export const DepositSelectionValidatorCard = ({
         >
           <AlignLeft className="h-4 w-4" />
 
-          <input
+          <Input
             className={`w-full rounded-xl border border-indigo-800 p-1 dark:border-gray-600 ${
               !selected ? "border-none bg-white dark:bg-black" : ""
             }`}
