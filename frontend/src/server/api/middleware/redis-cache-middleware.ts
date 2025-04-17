@@ -17,6 +17,7 @@ export const redisCacheMiddleware = ({
 
     try {
       // Try to get data from cache
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const cachedData = await redis.get<{ data: any; timestamp: number }>(
         cacheKey,
       );
@@ -39,7 +40,7 @@ export const redisCacheMiddleware = ({
             `[Cache] Stale cache hit for ${path} (age: ${cacheAge.toFixed(2)}s), starting background revalidation`,
           );
           // Start background revalidation
-          (async () => {
+          void (async () => {
             try {
               const result = await next();
               // Update the cache with fresh data
