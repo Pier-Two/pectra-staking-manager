@@ -14,7 +14,7 @@ import { redisCacheMiddleware } from "../middleware/redis-cache-middleware";
 
 export const chartRouter = createTRPCRouter({
   getChartData: publicProcedure
-    .use(redisCacheMiddleware({ ttl: 30, staleTime: 600 })) // ttl 30 seconds, stale time 10 minutes
+    .use(redisCacheMiddleware({ ttl: 21600, staleTime: 18000 })) // ttl 6 hours, stale time 5 hours
     .query(async () => {
       const validatorStatistics =
         await ValidatorSummaryModel.find<ValidatorStatistics>({
