@@ -199,11 +199,17 @@ export const validatorRouter = createTRPCRouter({
         sourceTargetValidatorIndex: z.number(),
         txHash: z.string(),
         user: z.string().default("67f60c4f4ce6567f9f511b2f"), // TODO figure this out
+        email: z.string().optional(),
       }),
     )
     .mutation(async ({ input }) => {
-      const { targetValidatorIndex, sourceTargetValidatorIndex, txHash, user } =
-        input;
+      const {
+        targetValidatorIndex,
+        sourceTargetValidatorIndex,
+        txHash,
+        user,
+        email,
+      } = input;
 
       const existingRecord = await ConsolidationModel.findOne({
         $or: [
@@ -229,6 +235,7 @@ export const validatorRouter = createTRPCRouter({
         status: ACTIVE_STATUS,
         txHash,
         user,
+        ...(email && email.trim() !== "" ? { email } : {}),
       });
 
       return {

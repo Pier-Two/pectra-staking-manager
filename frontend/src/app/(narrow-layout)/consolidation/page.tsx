@@ -7,7 +7,6 @@ import { SubmitConsolidationRequests } from "pec/components/consolidation/submit
 import { ConsolidationSummary } from "pec/components/consolidation/summary/ConsolidationSummary";
 import { useConsolidationStore } from "pec/hooks/use-consolidation-store";
 import { useWalletAddress } from "pec/hooks/useWallet";
-import { api } from "pec/trpc/react";
 import ConsolidationLoading from "../consolidate/loading";
 import { useValidators } from "pec/hooks/useValidators";
 
