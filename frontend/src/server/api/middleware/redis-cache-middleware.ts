@@ -30,18 +30,12 @@ export const redisCacheMiddleware = ({
 
         // If data is fresh (within TTL), return it immediately
         if (cacheAge < ttl) {
-          console.debug(
-            `[Cache] Fresh cache hit for ${path} (age: ${cacheAge.toFixed(2)}s)`,
-          );
           // eslint-disable-next-line @typescript-eslint/no-unsafe-return
           return cachedData.data;
         }
 
         // If stale-while-revalidate is enabled and we have stale data
         if (staleWhileRevalidate) {
-          console.debug(
-            `[Cache] Stale cache hit for ${path} (age: ${cacheAge.toFixed(2)}s), starting background revalidation`,
-          );
           // Start background revalidation
           void (async () => {
             try {
@@ -54,9 +48,6 @@ export const redisCacheMiddleware = ({
                   timestamp: Date.now(),
                 },
                 { ex: ttl + staleTime },
-              ); // Add some buffer to the expiry
-              console.debug(
-                `[Cache] Background revalidation completed for ${path}`,
               );
             } catch (error) {
               console.error("[Cache] Background revalidation failed:", error);
@@ -70,7 +61,6 @@ export const redisCacheMiddleware = ({
       }
 
       // If no cache hit or stale data without stale-while-revalidate, fetch fresh data
-      console.debug(`[Cache] Cache miss for ${path}, fetching fresh data`);
       const result = await next();
 
       // Store in cache
@@ -81,8 +71,7 @@ export const redisCacheMiddleware = ({
           timestamp: Date.now(),
         },
         { ex: ttl + staleTime },
-      ); // Add some buffer to the expiry
-      console.debug(`[Cache] Fresh data stored in cache for ${path}`);
+      );
 
       return result;
     } catch (error) {
