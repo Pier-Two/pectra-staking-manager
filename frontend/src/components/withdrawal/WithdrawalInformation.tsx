@@ -3,8 +3,6 @@ import { Separator } from "../ui/separator";
 import Image from "next/image";
 import { PrimaryButton } from "../ui/custom/PrimaryButton";
 import { SecondaryButton } from "../ui/custom/SecondaryButton";
-import { PectraSpinner } from "../ui/custom/pectraSpinner";
-import { EIconPosition } from "pec/types/components";
 import { DECIMAL_PLACES } from "pec/lib/constants";
 import { WithdrawWorkflowStages } from "pec/types/withdraw";
 
@@ -42,6 +40,22 @@ export const WithdrawalInformation = ({
     },
   ];
 
+  // TODO: @ben the isSigning state is a bit broken, it toggles to false sometimes when in the middle of signing two txs
+  const isSigning =
+    stage.type === "sign-submit-finalise" &&
+    Object.values(stage.txHashes).some((tx) => tx.status === "signing");
+
+  const isSubmitting =
+    stage.type === "sign-submit-finalise" &&
+    !isSigning &&
+    Object.values(stage.txHashes).every(
+      (tx) => tx.status === "submitted" || tx.status === "finalised",
+    );
+
+  const allTransactionsFinalised =
+    stage.type === "sign-submit-finalise" &&
+    Object.values(stage.txHashes).every((tx) => tx.status === "finalised");
+
   return (
     <div className="flex flex-col gap-4 rounded-xl border border-indigo-400 bg-white p-4 dark:border dark:border-gray-800 dark:bg-black">
       <div className="flex w-full flex-row items-center justify-between gap-4">
@@ -78,7 +92,7 @@ export const WithdrawalInformation = ({
         </div>
 
         <div>
-          {stage.type === "transactions-finalised" && (
+          {allTransactionsFinalised && (
             <div className="flex flex-row items-center gap-2">
               <Check className="h-4 w-4 text-green-500" />
               <div className="text-sm">Done</div>
@@ -104,7 +118,13 @@ export const WithdrawalInformation = ({
         </div>
       </div>
 
-      {stage.type === "transactions-finalised" && (
+      {isSigning && (
+        <div className="rounded-xl bg-gray-100 p-2 text-sm text-green-500">
+          Your transactions are being signed. Please wait.
+        </div>
+      )}
+
+      {isSubmitting && (
         <>
           <div className="rounded-xl bg-gray-100 p-2 text-sm text-green-500">
             Your transactions have been submitted successfully and will be

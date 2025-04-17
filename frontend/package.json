@@ -73,6 +73,7 @@
     "thirdweb": "^5.92.1",
     "unplugin-swc": "^1.5.1",
     "upgrade": "^1.1.0",
+    "use-immer": "^0.11.0",
     "viem": "^2.23.3",
     "vite": "^6.2.5",
     "vite-tsconfig-paths": "^5.1.4",
@@ -117,6 +118,5 @@
   },
   "overrides": {
     "react-is": "^19.0.0-rc-69d4b800-20241021"
-  },
-  "packageManager": "pnpm@10.2.1"
+  }
 }

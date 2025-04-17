@@ -1,11 +1,11 @@
-import Image from "next/image";
 import { AlignLeft, Check, ExternalLink } from "lucide-react";
-import { Separator } from "../../ui/separator";
-import { PrimaryButton } from "../../ui/custom/PrimaryButton";
-import { EIconPosition } from "pec/types/components";
+import Image from "next/image";
 import { SecondaryButton } from "pec/components/ui/custom/SecondaryButton";
 import { DECIMAL_PLACES } from "pec/lib/constants";
 import { type DepositWorkflowStage } from "pec/types/batch-deposits";
+import { EIconPosition } from "pec/types/components";
+import { PrimaryButton } from "../../ui/custom/PrimaryButton";
+import { Separator } from "../../ui/separator";
 
 export interface IDistributionInformation {
   onSubmit?: () => void;
@@ -49,9 +49,9 @@ export const DistributionInformation = ({
   };
 
   return (
-    <div className="flex flex-col gap-4 rounded-xl border border-indigo-400 bg-white p-4 dark:border dark:border-gray-800 dark:bg-black">
-      <div className="flex w-full flex-row items-center justify-between gap-4">
-        <div className="flex w-3/4 items-center gap-10">
+    <div className="flex flex-col w-full gap-4 rounded-xl border border-indigo-400 bg-white p-4 dark:border dark:border-gray-800 dark:bg-black">
+      <div className="flex w-full flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+        <div className="flex w-full flex-col gap-4 sm:flex-row sm:items-center sm:gap-10">
           {distributionStats.map((stat, index) => (
             <div key={stat.label} className="flex items-center">
               {index > 0 && (
@@ -83,7 +83,7 @@ export const DistributionInformation = ({
           ))}
         </div>
 
-        <div className="w-1/4">
+        <div className="flex w-full flex-shrink-0 lg:w-auto">
           {stage.type === "transactions-finalised" && (
             <div className="flex flex-row items-center gap-2">
               <Check className="h-4 w-4 text-green-500" />
@@ -92,7 +92,7 @@ export const DistributionInformation = ({
           )}
           {stage.type === "data-capture" && (
             <PrimaryButton
-              className="w-full"
+              className="w-full lg:w-auto"
               onClick={onSubmit}
               label={"Deposit"}
               disabled={submitButtonDisabled}
