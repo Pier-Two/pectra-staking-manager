@@ -12,7 +12,9 @@ const MainLayout: FC<ChildrenProp> = (props) => {
       <div className="flex min-h-screen w-screen flex-col">
         <TopBar />
         <div className="flex flex-1 justify-center bg-indigo-50 dark:bg-gray-950 dark:text-white">
-          <div className="w-[42vw] py-8">{children}</div>
+          <div className="w-full max-w-[90vw] min-h-screen md:max-w-[42vw] py-8">
+            {children}
+          </div>
         </div>
         <BottomBar />
       </div>

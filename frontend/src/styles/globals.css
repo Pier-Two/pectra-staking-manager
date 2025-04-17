@@ -49,3 +49,10 @@
     @apply bg-background text-foreground;
   }
 }
+
+
+/* Remove the default arrows for number inputs */
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}

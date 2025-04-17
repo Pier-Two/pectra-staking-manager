@@ -1,13 +1,13 @@
+import { DISTRIBUTION_OPTIONS } from "pec/constants/deposit";
+import type { DepositType } from "pec/lib/api/schemas/deposit";
 import type {
   DepositWorkflowStage,
   EDistributionMethod,
 } from "pec/types/batch-deposits";
+import type { FieldErrors, UseFormRegister } from "react-hook-form";
 import { DistributionInformation } from "./DistributionInformation";
 import { DistributionOption } from "./DistributionOption";
 import { TotalAmountInput } from "./TotalAmountInput";
-import type { DepositType } from "pec/lib/api/schemas/deposit";
-import type { FieldErrors, UseFormRegister } from "react-hook-form";
-import { DISTRIBUTION_OPTIONS } from "pec/constants/deposit";
 
 export interface IDistributionMethodProps {
   distributionMethod: EDistributionMethod;
@@ -46,7 +46,7 @@ export const DistributionMethod = ({
     <div className="space-y-6">
       <div className="space-y-4">
         <div className="text-md font-medium">Distribution Method</div>
-        <div className="flex flex-row justify-between gap-8">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-[repeat(auto-fit,minmax(200px,1fr))]">
           {DISTRIBUTION_OPTIONS.map((option) => (
             <DistributionOption
               key={option.method}
@@ -65,7 +65,7 @@ export const DistributionMethod = ({
         walletBalance={walletBalance}
       />
 
-      <div className="space-y-2">
+      <div className="space-y-2 w-full flex justify-center">
         <DistributionInformation
           submitButtonDisabled={submitButtonDisabled}
           onSubmit={onSubmit}
