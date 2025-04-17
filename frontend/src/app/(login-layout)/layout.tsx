@@ -3,7 +3,7 @@ import { ThemeProvider } from "pec/contexts/ThemeContext";
 import type { ChildrenProp } from "pec/types/app";
 import { type FC } from "react";
 
-const LoginLayout: FC<ChildrenProp> = async (props) => {
+const LoginLayout: FC<ChildrenProp> = (props) => {
   const { children } = props;
 
   return (
