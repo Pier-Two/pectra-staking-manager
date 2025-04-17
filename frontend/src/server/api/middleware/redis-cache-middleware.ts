@@ -6,10 +6,12 @@ export const redisCacheMiddleware = ({
   ttl = 30, // Default 30 seconds cache
   staleWhileRevalidate = true, // Enable stale-while-revalidate by default
   keyPrefix = "trpc-cache:",
+  staleTime = 60, // Default 60 seconds stale time
 }: {
   ttl?: number;
   staleWhileRevalidate?: boolean;
   keyPrefix?: string;
+  staleTime?: number;
 } = {}) => {
   return createTRPCMiddleware(async ({ ctx, input, path, next }) => {
     // Create a cache key based on the procedure path and input
@@ -51,7 +53,7 @@ export const redisCacheMiddleware = ({
                   data: result,
                   timestamp: Date.now(),
                 },
-                { ex: ttl + 60 },
+                { ex: ttl + staleTime },
               ); // Add some buffer to the expiry
               console.debug(
                 `[Cache] Background revalidation completed for ${path}`,
@@ -78,7 +80,7 @@ export const redisCacheMiddleware = ({
           data: result,
           timestamp: Date.now(),
         },
-        { ex: ttl + 60 },
+        { ex: ttl + staleTime },
       ); // Add some buffer to the expiry
       console.debug(`[Cache] Fresh data stored in cache for ${path}`);
 
