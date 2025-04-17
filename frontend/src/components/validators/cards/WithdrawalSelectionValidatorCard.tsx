@@ -1,9 +1,10 @@
 import { AlignLeft, CircleCheck, CircleMinus, CirclePlus } from "lucide-react";
 import Image from "next/image";
+import { Input } from "pec/components/ui/input";
 import type { WithdrawalFormType } from "pec/lib/api/schemas/withdrawal";
 import { cn } from "pec/lib/utils";
 import { parseEtherToFixedDecimals } from "pec/lib/utils/parseAmounts";
-import { ValidatorDetails } from "pec/types/validator";
+import type { ValidatorDetails } from "pec/types/validator";
 import type { FieldErrors, UseFormRegister } from "react-hook-form";
 import { formatEther } from "viem";
 
@@ -29,7 +30,7 @@ export const WithdrawalSelectionValidatorCard = ({
   const locked = validator.balance === 0n;
 
   const onClickHandler = () => {
-    if (selected || locked) return;
+    if (locked) return;
 
     handleSelect();
   };
@@ -53,26 +54,20 @@ export const WithdrawalSelectionValidatorCard = ({
           "opacity-50": locked,
           "group hover:border-indigo-500 dark:hover:border-gray-600": !locked,
           "border-indigo-500 dark:border-2 dark:border-indigo-900": selected,
-          "cursor-pointer": !locked && !selected,
+          "cursor-pointer": !locked,
         },
       )}
-      onClick={onClickHandler}
     >
-      <div className="flex flex-[1.2] items-center gap-x-4">
+      <div className="flex flex-[1.2] items-center gap-x-4" onClick={onClickHandler}>
         {selected && !locked ? (
-          <div className="group/icon">
-            <CircleCheck
-              className="h-4 w-4 fill-green-500 text-white hover:cursor-pointer group-hover/icon:hidden dark:text-black"
-              onClick={handleSelect}
-            />
-
-            <CircleMinus
-              className="hidden h-4 w-4 fill-red-500 text-white hover:cursor-pointer group-hover/icon:block dark:text-black"
-              onClick={handleSelect}
-            />
-          </div>
+          <>
+            <CircleCheck className="min-h-4 min-w-4 w-4 h-4 text-green-500 group-hover:hidden" />
+            <CircleMinus className="hidden min-h-4 w-4 h-4 min-w-4 text-red-500 group-hover:block" />
+          </>
         ) : (
-          <CirclePlus className="h-4 w-4 text-indigo-500 group-hover:fill-indigo-500 group-hover:text-white" />
+          <CirclePlus
+            className="min-h-4 min-w-4 w-4 h-4 text-indigo-500 group-hover:fill-indigo-500 group-hover:text-white"
+          />
         )}
 
         <Image
@@ -90,7 +85,7 @@ export const WithdrawalSelectionValidatorCard = ({
         </div>
       </div>
 
-      <div className="flex flex-1 flex-col">
+      <div className="flex flex-1 flex-col" onClick={onClickHandler}>
         <div className="flex items-center gap-1">
           <AlignLeft className="h-4 w-4" />
           <div className="text-sm">{parseEtherToFixedDecimals(balance)}</div>
@@ -111,7 +106,7 @@ export const WithdrawalSelectionValidatorCard = ({
               <div className="flex flex-row items-center gap-2">
                 <AlignLeft className="h-4 w-4" />
 
-                <input
+                <Input
                   className={`w-full rounded-xl border border-indigo-300 bg-white p-2 text-sm text-gray-700 dark:border-gray-800 dark:bg-black dark:text-gray-300 ${locked ? "opacity-50" : ""}`}
                   disabled={locked}
                   type="number"
@@ -136,7 +131,7 @@ export const WithdrawalSelectionValidatorCard = ({
         ) : (
           <div className="flex items-center gap-1">
             <AlignLeft className="h-4 w-4" />
-            <input
+            <Input
               className="w-full rounded-xl border-none bg-white p-2 text-sm text-gray-700 dark:border-gray-800 dark:bg-black dark:text-gray-300"
               disabled
               type="number"

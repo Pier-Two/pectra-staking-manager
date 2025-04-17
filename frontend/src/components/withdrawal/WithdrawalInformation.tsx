@@ -1,12 +1,10 @@
 import { AlignLeft, Check } from "lucide-react";
-import { Separator } from "../ui/separator";
 import Image from "next/image";
-import { PrimaryButton } from "../ui/custom/PrimaryButton";
-import { SecondaryButton } from "../ui/custom/SecondaryButton";
-import { PectraSpinner } from "../ui/custom/pectraSpinner";
-import { EIconPosition } from "pec/types/components";
 import { DECIMAL_PLACES } from "pec/lib/constants";
 import { WithdrawWorkflowStages } from "pec/types/withdraw";
+import { PrimaryButton } from "../ui/custom/PrimaryButton";
+import { SecondaryButton } from "../ui/custom/SecondaryButton";
+import { Separator } from "../ui/separator";
 
 export interface IWithdrawalInformation {
   buttonText: string;
@@ -43,14 +41,14 @@ export const WithdrawalInformation = ({
   ];
 
   return (
-    <div className="flex flex-col gap-4 rounded-xl border border-indigo-400 bg-white p-4 dark:border dark:border-gray-800 dark:bg-black">
-      <div className="flex w-full flex-row items-center justify-between gap-4">
-        <div className="flex items-center gap-10">
+    <div className="flex flex-col w-full gap-4 rounded-xl border border-indigo-400 bg-white p-4 dark:border dark:border-gray-800 dark:bg-black">
+      <div className="flex flex-col md:flex-row w-full items-center justify-between gap-4">
+        <div className="flex flex-wrap items-center gap-10">
           {distributionStats.map((stat, index) => (
             <div key={stat.label} className="flex items-center">
               {index > 0 && (
                 <Separator
-                  className="mx-5 h-12 border-l border-gray-200"
+                  className="mx-5 h-12 bg-gray-200 dark:bg-gray-800"
                   orientation="vertical"
                 />
               )}
@@ -77,7 +75,7 @@ export const WithdrawalInformation = ({
           ))}
         </div>
 
-        <div>
+        <div className="flex flex-shrink-0">
           {stage.type === "transactions-finalised" && (
             <div className="flex flex-row items-center gap-2">
               <Check className="h-4 w-4 text-green-500" />
