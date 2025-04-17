@@ -11,7 +11,7 @@ export interface IValidatorListHeaders {
   columns: readonly IColumnHeader[];
   sortColumn: string | null;
   sortDirection: SortDirection;
-  stage: WithdrawWorkflowStages;
+  stage?: WithdrawWorkflowStages;
   onSort: (column: string) => void;
 }
 
@@ -23,7 +23,7 @@ export const ValidatorListHeaders = ({
   sortDirection,
 }: IValidatorListHeaders) => {
 
-  const signSubmitFinaliseInProgress = stage.type === "sign-submit-finalise";
+  const signSubmitFinaliseInProgress = stage?.type === "sign-submit-finalise";
 
   // If we are in the sign-submit-finalise stage, we should only display the validator
   const columnHeaders = signSubmitFinaliseInProgress ? columns.filter((column) => column.label === "Validator") : columns;

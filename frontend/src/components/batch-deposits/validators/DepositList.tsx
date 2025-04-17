@@ -1,9 +1,9 @@
-import { ValidatorListHeaders } from "./ValidatorListHeaders";
-import { DistributionInformation } from "../distribution/DistributionInformation";
 import { DepositSignDataCard } from "pec/components/validators/cards/DepositSignDataCard";
 import { SIGN_DEPOSIT_COLUMN_HEADERS } from "pec/constants/columnHeaders";
 import { type DepositData } from "pec/lib/api/schemas/deposit";
 import { type DepositWorkflowStage } from "pec/types/batch-deposits";
+import { DistributionInformation } from "../distribution/DistributionInformation";
+import { ValidatorListHeaders } from "./ValidatorListHeaders";
 
 export interface IDepositList {
   deposits: DepositData[];
@@ -34,7 +34,7 @@ export const DepositList = ({
 
       <div className="flex flex-col gap-3">
         <ValidatorListHeaders
-          columnHeaders={SIGN_DEPOSIT_COLUMN_HEADERS}
+          columns={SIGN_DEPOSIT_COLUMN_HEADERS}
           sortColumn={""}
           sortDirection={null}
           onSort={() => {}}
