@@ -1,10 +1,9 @@
 "use server";
 
-import axios from "axios";
-import { env } from "pec/env";
 import type { IResponse } from "pec/types/response";
 import { generateErrorResponse } from "../utils";
 import { type EmailNames } from "pec/types/emails";
+import hubspotApi from "./hubspot-api";
 
 export const createContact = async (email: string): Promise<IResponse> => {
   try {
@@ -12,16 +11,7 @@ export const createContact = async (email: string): Promise<IResponse> => {
       emailAddress: email,
     };
 
-    await axios.post(
-      "https://gw-1.api.piertwo.io/integrations/hubspot/contacts",
-      payload,
-      {
-        headers: {
-          "api-key": env.HUBSPOT_API_KEY,
-          "Content-Type": "application/json",
-        },
-      },
-    );
+    await hubspotApi.post("/contacts", payload);
 
     return {
       success: true,
@@ -44,16 +34,7 @@ export const sendEmailNotification = async (
       },
     };
 
-    await axios.post(
-      "https://gw-1.api.piertwo.io/integrations/hubspot/email",
-      payload,
-      {
-        headers: {
-          "api-key": env.HUBSPOT_API_KEY,
-          "Content-Type": "application/json",
-        },
-      },
-    );
+    await hubspotApi.post("/email", payload);
 
     return {
       success: true,

@@ -19,6 +19,7 @@ import {
 import { ACTIVE_STATUS } from "pec/types/app";
 import { SupportedChainIdSchema } from "pec/lib/api/schemas/network";
 import { getBeaconChainAxios } from "pec/lib/server/axios";
+import { createContact } from "pec/lib/services/emailService";
 
 export const validatorRouter = createTRPCRouter({
   getValidators: publicProcedure
@@ -235,8 +236,18 @@ export const validatorRouter = createTRPCRouter({
         status: ACTIVE_STATUS,
         txHash,
         user,
-        ...(email && email.trim() !== "" ? { email } : {}),
+        email,
       });
+
+      if (email) {
+        const contactResponse = await createContact(email);
+
+        if (!contactResponse.success)
+          console.error(
+            `Error creating contact in Hubspot for ${email}`,
+            contactResponse.error,
+          );
+      }
 
       return {
         success: true,

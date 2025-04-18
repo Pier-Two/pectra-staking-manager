@@ -13,6 +13,7 @@ import { maxBy } from "lodash";
 import type { IResponse } from "pec/types/response";
 import { generateErrorResponse } from "pec/lib/utils";
 import { DatabaseDepositSchema } from "pec/lib/api/schemas/database/deposit";
+import { createContact } from "pec/lib/services/emailService";
 
 export const storeEmailRequestRouter = createTRPCRouter({
   storeWithdrawalRequest: publicProcedure
@@ -52,6 +53,16 @@ export const storeEmailRequestRouter = createTRPCRouter({
           status: ACTIVE_STATUS,
         });
 
+        if (requestData.email) {
+          const contactResponse = await createContact(requestData.email);
+
+          if (!contactResponse.success)
+            console.error(
+              `Error creating contact in Hubspot for ${requestData.email}`,
+              contactResponse.error,
+            );
+        }
+
         return {
           success: true,
           data: null,
@@ -65,7 +76,19 @@ export const storeEmailRequestRouter = createTRPCRouter({
     .input(DatabaseDepositSchema.omit({ status: true }).array())
     .mutation(async ({ input }): Promise<IResponse<null>> => {
       try {
+        //Each batched deposit request in the array will have the same email
+        const email = input[0]?.email ?? "";
         await DepositModel.create({ ...input, status: ACTIVE_STATUS });
+
+        if (email) {
+          const contactResponse = await createContact(email);
+
+          if (!contactResponse.success)
+            console.error(
+              `Error creating contact in Hubspot for ${email}`,
+              contactResponse.error,
+            );
+        }
 
         return {
           success: true,
