@@ -110,23 +110,25 @@ export const useSubmitWithdraw = () => {
           txHashes,
         });
 
-        const result = await saveWithdrawalToDatabase({
-          requestData: {
-            validatorIndex: withdrawal.validator.validatorIndex,
-            amount: withdrawal.amount,
-            txHash: txHash.transactionHash,
-            email,
-          },
-          network: chain.id,
-        });
-
-        if (!result.success) {
-          toast.error("There was an error withdrawing", {
-            description: result.error,
+        if (email) {
+          const result = await saveWithdrawalToDatabase({
+            requestData: {
+              validatorIndex: withdrawal.validator.validatorIndex,
+              amount: withdrawal.amount,
+              txHash: txHash.transactionHash,
+              email,
+            },
+            network: chain.id,
           });
 
-          return;
+          if (!result.success) {
+            toast.error("There was an error withdrawing", {
+              description: result.error,
+            });
+          }
         }
+
+        return;
 
         toast.success("Withdrawal request submitted successfully");
       } catch (error) {
