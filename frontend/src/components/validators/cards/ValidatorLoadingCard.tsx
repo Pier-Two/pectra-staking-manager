@@ -122,7 +122,7 @@ export const ValidatorLoadingCard = ({
             <Button 
                 variant="link" 
                 size="sm"
-                className={cn("mt-1", statusConfig.className)}
+                className="mt-1 dark:text-gray-400 text-gray-600"
                 onClick={() => openInNewTab(getBlockExplorerTxUrl(statusConfig.txHash))}
             >
                 View on Etherscan
