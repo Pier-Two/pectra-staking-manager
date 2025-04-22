@@ -7,6 +7,7 @@ import Image from "next/image";
 import type { SortDirection } from "pec/components/batch-deposits/validators/ColumnHeader";
 import { ValidatorHeader } from "pec/components/batch-deposits/validators/ValidatorHeader";
 import { ValidatorListHeaders } from "pec/components/batch-deposits/validators/ValidatorListHeaders";
+import { Email } from "pec/components/consolidation/summary/Email";
 import { WithdrawalSelectionValidatorCard } from "pec/components/validators/cards/WithdrawalSelectionValidatorCard";
 import { WithdrawalInformation } from "pec/components/withdrawal/WithdrawalInformation";
 import { WITHDRAWAL_COLUMN_HEADERS } from "pec/constants/columnHeaders";
@@ -40,7 +41,7 @@ const Withdrawal: FC = () => {
     formState: { isValid, errors },
   } = useForm<WithdrawalFormType>({
     resolver: zodResolver(WithdrawalFormSchema),
-    defaultValues: { withdrawals: [] },
+    defaultValues: { withdrawals: [], email: "" },
     mode: "onChange",
   });
 
@@ -50,6 +51,8 @@ const Withdrawal: FC = () => {
   });
 
   const withdrawals = watch("withdrawals");
+  const watchedEmail = watch("email");
+  const email = watchedEmail ?? "";
   const withdrawalTotal = sumBy(withdrawals, (withdrawal) => withdrawal.amount);
   const signSubmitFinaliseInProgress = stage?.type === "sign-submit-finalise";
   const columnHeaders = signSubmitFinaliseInProgress ? WITHDRAWAL_COLUMN_HEADERS.filter((column) => column.label === "Validator") : WITHDRAWAL_COLUMN_HEADERS;
@@ -124,7 +127,7 @@ const Withdrawal: FC = () => {
   };
 
   const onSubmit = async (data: WithdrawalFormType) => {
-    await submitWithdrawals(data.withdrawals);
+    await submitWithdrawals(data.withdrawals, data.email ?? "");
   };
 
   return (
@@ -166,6 +169,13 @@ const Withdrawal: FC = () => {
           stage={stage}
           validatorsSelected={withdrawals.length}
           withdrawalTotal={withdrawalTotal}
+        />
+
+        <Email
+          cardText="Add your email to receive an email when your withdrawals are complete."
+          cardTitle="Notify me when complete"
+          summaryEmail={email}
+          setSummaryEmail={(email) => setValue("email", email)}
         />
 
         <ValidatorHeader

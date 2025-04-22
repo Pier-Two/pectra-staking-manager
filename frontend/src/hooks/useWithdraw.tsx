@@ -50,10 +50,10 @@ export const useSubmitWithdraw = () => {
 
   const submitWithdrawals = async (
     withdrawals: WithdrawalFormType["withdrawals"],
+    email: string,
   ) => {
     if (!contracts || !rpcClient || !account || !withdrawalFee) {
       toast.error("There was an error withdrawing");
-
       return;
     }
 
@@ -116,6 +116,7 @@ export const useSubmitWithdraw = () => {
             validatorIndex: withdrawal.validator.validatorIndex,
             amount: withdrawal.amount,
             txHash: txHash.transactionHash,
+            email,
           },
           network: chain.id,
         });

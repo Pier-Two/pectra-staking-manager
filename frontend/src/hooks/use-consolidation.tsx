@@ -12,7 +12,7 @@ import { useConsolidationStore } from "./use-consolidation-store";
 import { useContracts } from "./useContracts";
 import { useRpcClient } from "./useRpcClient";
 import { type Account } from "thirdweb/wallets";
-import { ChainOptions } from "thirdweb/chains";
+import type { ChainOptions } from "thirdweb/chains";
 import { useActiveChainWithDefault } from "./useChain";
 
 // helper function that is called within the useSubmitConsolidate() hook
@@ -91,6 +91,7 @@ export const useSubmitConsolidate = () => {
     updateConsolidatedValidator,
     setCurrentPubKey,
     manuallySettingValidator,
+    summaryEmail,
   } = useConsolidationStore();
 
   const { mutateAsync: saveConsolidationToDatabase } =
@@ -139,6 +140,7 @@ export const useSubmitConsolidate = () => {
           targetValidatorIndex: consolidationTarget.validatorIndex,
           sourceTargetValidatorIndex: consolidationTarget.validatorIndex,
           txHash: upgradeTx.transactionHash,
+          email: summaryEmail,
         });
 
         toast.success(
@@ -186,6 +188,7 @@ export const useSubmitConsolidate = () => {
             targetValidatorIndex: validator.validatorIndex,
             sourceTargetValidatorIndex: validator.validatorIndex,
             txHash: upgradeTx.transactionHash,
+            email: summaryEmail,
           });
         }
 
@@ -217,6 +220,7 @@ export const useSubmitConsolidate = () => {
           targetValidatorIndex: consolidationTarget.validatorIndex,
           sourceTargetValidatorIndex: validator.validatorIndex,
           txHash: consolidationTx.transactionHash,
+          email: summaryEmail,
         });
 
         results.push({
