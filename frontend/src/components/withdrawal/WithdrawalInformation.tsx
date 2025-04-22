@@ -41,11 +41,9 @@ export const WithdrawalInformation = ({
     },
   ];
   
-  // TODO: @ben the isSigning state is a bit broken, it toggles to false sometimes when in the middle of signing two txs
-
   const someTransactionsFailed =
   stage.type === "sign-submit-finalise" &&
-  Object.values(stage.txHashes).some((tx) => tx.status === "failed");
+  Object.values(stage.txHashes).some((tx) => tx.status === "failedToSubmit");
 
   const isSigning =
   stage.type === "sign-submit-finalise" &&

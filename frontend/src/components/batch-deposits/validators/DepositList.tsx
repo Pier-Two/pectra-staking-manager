@@ -34,7 +34,7 @@ export const DepositList = ({
 
       <div className="flex flex-col gap-3">
         <ValidatorListHeaders
-          columns={SIGN_DEPOSIT_COLUMN_HEADERS}
+          columnHeaders={SIGN_DEPOSIT_COLUMN_HEADERS}
           sortColumn={""}
           sortDirection={null}
           onSort={() => {}}

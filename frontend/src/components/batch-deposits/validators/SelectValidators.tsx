@@ -2,7 +2,7 @@ import { keyBy, orderBy } from "lodash";
 import { DEPOSIT_COLUMN_HEADERS } from "pec/constants/columnHeaders";
 import type { DepositData, DepositType } from "pec/lib/api/schemas/deposit";
 import type { EDistributionMethod } from "pec/types/batch-deposits";
-import { ValidatorDetails } from "pec/types/validator";
+import type { ValidatorDetails } from "pec/types/validator";
 import { useState } from "react";
 import type { FieldErrors, UseFormRegister } from "react-hook-form";
 import { DepositSelectionValidatorCard } from "../../validators/cards/DepositSelectionValidatorCard";
@@ -72,7 +72,7 @@ export const SelectValidators = ({
 
       <div className="flex flex-col items-center gap-4">
         <ValidatorListHeaders
-          columns={DEPOSIT_COLUMN_HEADERS}
+          columnHeaders={DEPOSIT_COLUMN_HEADERS}
           onSort={handleSort}
           sortColumn={sortColumn ?? ""}
           sortDirection={sortDirection}

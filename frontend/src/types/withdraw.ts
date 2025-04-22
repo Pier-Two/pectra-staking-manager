@@ -5,7 +5,7 @@ type TransactionStatus =
   | { status: "submitted"; txHash: `0x${string}` }
   | { status: "finalised"; txHash: `0x${string}` }
   | { status: "failed", txHash: `0x${string}` }
-  | { status: "rejectedSigning" };
+  | { status: "failedToSubmit", error: string };
 
 export type TxHashRecord = Record<number, TransactionStatus>;
 

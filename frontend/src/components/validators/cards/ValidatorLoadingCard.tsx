@@ -63,9 +63,9 @@ const getStatusConfig = (data: ValidatorLoadingCardProps["transactionStatus"]): 
         txHash: data?.txHash,
         className: 'text-red-600 dark:text-red-400'
       };
-    case 'rejectedSigning':
+    case 'failedToSubmit':
       return {
-        text: 'Signing rejected',
+        text: data?.error,
         icon: <CircleX className="h-5 w-5" />,
         className: 'text-red-600 dark:text-red-400'
       };

@@ -51,6 +51,8 @@ const Withdrawal: FC = () => {
 
   const withdrawals = watch("withdrawals");
   const withdrawalTotal = sumBy(withdrawals, (withdrawal) => withdrawal.amount);
+  const signSubmitFinaliseInProgress = stage?.type === "sign-submit-finalise";
+  const columnHeaders = signSubmitFinaliseInProgress ? WITHDRAWAL_COLUMN_HEADERS.filter((column) => column.label === "Validator") : WITHDRAWAL_COLUMN_HEADERS;
 
   const [sortColumn, setSortColumn] = useState<string | null>("validator");
   const [sortDirection, setSortDirection] = useState<SortDirection>(null);
@@ -174,8 +176,7 @@ const Withdrawal: FC = () => {
 
         <div className="flex flex-col items-center gap-4">
           <ValidatorListHeaders
-            columns={WITHDRAWAL_COLUMN_HEADERS}
-            stage={stage}
+            columnHeaders={columnHeaders}
             onSort={handleSort}
             sortColumn={sortColumn}
             sortDirection={sortDirection}

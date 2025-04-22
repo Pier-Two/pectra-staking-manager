@@ -125,7 +125,7 @@ export const useSubmitWithdraw = () => {
             description: result.error,
           });
 
-          // Continue should be used here as some transactions may have been successful and some might still be waiting to be signed.
+          
           continue;
         }
 
@@ -136,21 +136,21 @@ export const useSubmitWithdraw = () => {
           description: parseError(error),
         });
 
-        // If the user rejected the signing, we set the status to rejectedSigning
-        if (typeof error === "object" && error !== null && "code" in error && error.code === 4001) {
-          txHashes[withdrawal.validator.validatorIndex] = {
-            status: "rejectedSigning",
-          };
+        
+        txHashes[withdrawal.validator.validatorIndex] = {
+          status: "failedToSubmit",
+           error: parseError(error)
+        };
 
-          setStage({
-            type: "sign-submit-finalise",
-            txHashes,
-          });
-        }
+        setStage({
+          type: "sign-submit-finalise",
+          txHashes,
+        });
       }
     }
 
     for (const [validatorIndex, tx] of Object.entries(txHashes)) {
+      if (tx.status === "failedToSubmit") continue;
       if (tx.status !== "submitted") {
         console.error("Transaction in invalid state", tx);
 
