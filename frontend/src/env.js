@@ -27,6 +27,8 @@ export const env = createEnv({
     HUBSPOT_API_KEY: z.string(),
     AUTH_JWT_VERIFYING_KEY: z.string(),
     COIN_MARKET_CAP_API_KEY: z.string(),
+    UPSTASH_REDIS_REST_URL: z.string(),
+    UPSTASH_REDIS_REST_TOKEN: z.string(),
   },
 
   /**
@@ -58,6 +60,8 @@ export const env = createEnv({
     HUBSPOT_API_KEY: process.env.HUBSPOT_API_KEY,
     AUTH_JWT_VERIFYING_KEY: process.env.AUTH_JWT_VERIFYING_KEY,
     COIN_MARKET_CAP_API_KEY: process.env.COIN_MARKET_CAP_API_KEY,
+    UPSTASH_REDIS_REST_URL: process.env.UPSTASH_REDIS_REST_URL,
+    UPSTASH_REDIS_REST_TOKEN: process.env.UPSTASH_REDIS_REST_TOKEN,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially
