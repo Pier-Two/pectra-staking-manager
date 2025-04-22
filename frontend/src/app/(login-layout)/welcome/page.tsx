@@ -1,24 +1,12 @@
-"use client";
-
-import { useRouter } from "next/navigation";
 import { Footer } from "pec/components/layout/welcome/Footer";
 import { Information } from "pec/components/layout/welcome/Information";
 import { PectraLink } from "pec/components/layout/welcome/PectraLink";
-import { PrimaryButton } from "pec/components/ui/custom/PrimaryButton";
-import { ConnectWalletButton } from "pec/components/ui/wallet/ConnectWallet";
-import { useWalletAddress } from "pec/hooks/useWallet";
-import type { FC } from "react";
-import { ChartContainer } from "pec/components/charts/ChartContainer";
+import { Suspense, type FC } from "react";
+import { EnterSiteButton } from "./_components/enter-site-button";
+import { ChartPrefetch } from "pec/components/charts/ChartPrefetch";
+import { ChartSkeleton } from "pec/components/charts/ChartSkeleton";
 
-const Welcome: FC = () => {
-  const router = useRouter();
-  const walletAddress = useWalletAddress();
-  const hasWalletAddress = !!walletAddress;
-
-  const handleEnterSite = () => {
-    router.push("/validators-found");
-  };
-
+const Welcome: FC = async () => {
   return (
     <div className="flex h-full w-full flex-col gap-y-[72px]">
       <div className="flex flex-col gap-y-4">
@@ -34,30 +22,13 @@ const Welcome: FC = () => {
 
       <Information />
 
-      <div className="flex w-full flex-col items-center justify-center gap-y-4">
-        {!hasWalletAddress && (
-          <div className="text-center text-[14px] font-570 leading-[14px]">
-            Connect your withdrawal address to access validators
-          </div>
-        )}
-
-        <div className="flex flex-col items-center justify-center gap-4">
-          {hasWalletAddress ? (
-            <PrimaryButton
-              className="h-10 w-full"
-              label={"View Validators"}
-              onClick={handleEnterSite}
-              disabled={false}
-            />
-          ) : (
-            <ConnectWalletButton className="!w-[420px] !max-w-[90vw]" />
-          )}
-        </div>
-    </div>
+      <EnterSiteButton />
 
       <div className="flex flex-col items-center justify-center">
         <div className="flex flex-col items-center justify-center">
-          <ChartContainer />
+          <Suspense fallback={<ChartSkeleton />}>
+            <ChartPrefetch />
+          </Suspense>
         </div>
       </div>
 

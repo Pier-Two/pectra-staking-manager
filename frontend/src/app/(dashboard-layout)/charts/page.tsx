@@ -1,7 +1,6 @@
-"use client";
-
-import type { FC } from "react";
-import { ChartContainer } from "pec/components/charts/ChartContainer";
+import { Suspense, type FC } from "react";
+import { ChartPrefetch } from "pec/components/charts/ChartPrefetch";
+import { ChartSkeleton } from "pec/components/charts/ChartSkeleton";
 
 const ChartsPage: FC = () => {
   return (
@@ -17,7 +16,9 @@ const ChartsPage: FC = () => {
           </div>
         </div>
 
-        <ChartContainer />
+        <Suspense fallback={<ChartSkeleton />}>
+          <ChartPrefetch />
+        </Suspense>
       </div>
     </div>
   );
