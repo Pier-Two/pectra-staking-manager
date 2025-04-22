@@ -16,17 +16,20 @@ import { useEthPrice } from "pec/hooks/useEthPrice";
 const Dashboard: FC = () => {
   const walletAddress = useWalletAddress();
   const { data: validators, isFetched: isValidatorsFetched } = useValidators();
-  const { data: ethPrice, isFetched: isEthPriceFetched } = useEthPrice();
-  const { data: performanceData, isFetched: isPerformanceFetched } =
-    useValidatorPerformance(ethPrice ?? 0, "daily");
+  const { data: ethPrice, isFetched: isEthPriceFetched } = useEthPrice(
+    "ETH",
+    "USD",
+  );
+  const { data: validatorPerformanceInGwei, isFetched: isPerformanceFetched } =
+    useValidatorPerformance("monthly");
 
   if (
     !walletAddress ||
     !validators ||
     !isValidatorsFetched ||
-    !performanceData ||
+    validatorPerformanceInGwei === undefined ||
     !isPerformanceFetched ||
-    !ethPrice ||
+    ethPrice === undefined ||
     !isEthPriceFetched
   )
     return <DashboardLoading />;
@@ -73,8 +76,13 @@ const Dashboard: FC = () => {
               activeValidators={activeValidators.length}
               inactiveValidators={inactiveValidators.length}
             />
+
             <TotalStake validators={validators} />
-            <TotalDailyIncome performanceData={performanceData} />
+
+            <TotalDailyIncome
+              validatorPerformanceInGwei={validatorPerformanceInGwei}
+              ethPrice={ethPrice}
+            />
           </div>
 
           <div className="pt-8">

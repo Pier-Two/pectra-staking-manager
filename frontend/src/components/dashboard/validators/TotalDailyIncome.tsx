@@ -1,18 +1,22 @@
 import type { FC } from "react";
 import { MyValidatorsCard } from "./MyValidatorsCard";
 import { DECIMAL_PLACES } from "pec/lib/constants";
+import { formatUnits } from "viem";
 
 interface ITotalDailyIncome {
-  performanceData: {
-    totalInEth: number;
-    totalInUsd: number;
-  };
+  validatorPerformanceInGwei: number;
+  ethPrice: number;
 }
 
 export const TotalDailyIncome: FC<ITotalDailyIncome> = ({
-  performanceData,
+  validatorPerformanceInGwei,
+  ethPrice,
 }) => {
-  const { totalInEth, totalInUsd } = performanceData;
+  const totalInEth = parseFloat(
+    formatUnits(BigInt(validatorPerformanceInGwei), 9),
+  );
+  const totalInUsd = totalInEth * ethPrice;
+
   return (
     <MyValidatorsCard
       title="Total Daily Income"

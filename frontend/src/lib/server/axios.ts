@@ -24,15 +24,9 @@ export const getBeaconChainAxios = (network: SupportedNetworkIds) => {
   return MainnetBeaconchainAxios;
 };
 
-export const CoinMarketCapAxios = (symbol: string, convert: string) => {
-  return axios.create({
-    baseURL: "https://pro-api.coinmarketcap.com/v1",
-    headers: {
-      "X-CMC_PRO_API_KEY": env.COIN_MARKET_CAP_API_KEY,
-    },
-    params: {
-      symbol,
-      convert,
-    },
-  });
-};
+export const CoinMarketCapAxios = axios.create({
+  baseURL: "https://pro-api.coinmarketcap.com/v1",
+  headers: {
+    "X-CMC_PRO_API_KEY": env.COIN_MARKET_CAP_API_KEY,
+  },
+});

@@ -3,18 +3,16 @@ import { useWalletAddress } from "./useWallet";
 import { useActiveChainWithDefault } from "./useChain";
 
 export const useValidatorPerformance = (
-  ethPrice: number,
   filter: "daily" | "weekly" | "monthly" | "yearly" | "overall",
 ) => {
   const walletAddress = useWalletAddress();
   const chain = useActiveChainWithDefault();
 
-  const queryFn = api.validators.getValidatorsPerformance.useQuery(
+  const queryFn = api.validators.getValidatorsPerformanceInGwei.useQuery(
     {
       address: walletAddress,
       chainId: chain.id,
       filter,
-      ethPrice,
     },
     { enabled: !!walletAddress },
   );

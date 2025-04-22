@@ -1,18 +1,13 @@
-import { useQuery } from "@tanstack/react-query";
+import { api } from "pec/trpc/react";
 
-interface EthPriceResponse {
-  ethPrice: number;
-}
-
-export const useEthPrice = () => {
-  return useQuery({
-    queryKey: ["eth-price"],
-    queryFn: async (): Promise<number> => {
-      const res = await fetch("/api/eth-price");
-      const data = (await res.json()) as EthPriceResponse;
-      return data.ethPrice ?? 0;
+export const useEthPrice = (symbol: string, convert: string) => {
+  const queryFn = api.pricing.getCurrentEthPrice.useQuery(
+    {
+      symbol,
+      convert,
     },
-    staleTime: 1000 * 60 * 5,
-    refetchInterval: 1000 * 60 * 5,
-  });
+    { enabled: !!symbol && !!convert },
+  );
+
+  return queryFn;
 };

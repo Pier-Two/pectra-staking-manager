@@ -20,7 +20,6 @@ import {
 import { ACTIVE_STATUS } from "pec/types/app";
 import { SupportedChainIdSchema } from "pec/lib/api/schemas/network";
 import { getBeaconChainAxios } from "pec/lib/server/axios";
-import { formatUnits } from "viem";
 
 export const validatorRouter = createTRPCRouter({
   getValidators: publicProcedure
@@ -139,88 +138,78 @@ export const validatorRouter = createTRPCRouter({
       }
     }),
 
-  getValidatorsPerformance: publicProcedure
+  getValidatorsPerformanceInGwei: publicProcedure
     .input(
       z.object({
         address: z.string(),
         chainId: SupportedChainIdSchema,
-        ethPrice: z.number(),
         filter: z.enum(["daily", "weekly", "monthly", "yearly", "overall"]),
       }),
     )
-    .query(
-      async ({ input: { address, chainId: network, filter, ethPrice } }) => {
-        try {
-          const validatorResponse = await getBeaconChainAxios(
-            network,
-          ).get<BeaconChainAllValidatorsResponse>(
-            `/api/v1/validator/withdrawalCredentials/${address}`,
-            {
-              params: {
-                limit: 200,
-              },
+    .query(async ({ input: { address, chainId: network, filter } }) => {
+      try {
+        const validatorResponse = await getBeaconChainAxios(
+          network,
+        ).get<BeaconChainAllValidatorsResponse>(
+          `/api/v1/validator/withdrawalCredentials/${address}`,
+          {
+            params: {
+              limit: 200,
             },
-          );
+          },
+        );
 
-          if (
-            !validatorResponse.data ||
-            validatorResponse.data.data.length === 0
-          )
-            return { totalInEth: 0, totalInUsd: 0 };
+        if (!validatorResponse.data || validatorResponse.data.data.length === 0)
+          return 0;
 
-          const validatorIndexes = validatorResponse.data.data.map(
-            (validator) => validator.validatorindex,
-          );
+        const validatorIndexes = validatorResponse.data.data.map(
+          (validator) => validator.validatorindex,
+        );
 
-          const validatorPerformances = await getBeaconChainAxios(
-            network,
-          ).get<BeaconChainValidatorPerformanceResponse>(
-            `/api/v1/validator/${validatorIndexes.join(",")}/execution/performance`,
-          );
+        const validatorPerformances = await getBeaconChainAxios(
+          network,
+        ).get<BeaconChainValidatorPerformanceResponse>(
+          `/api/v1/validator/${validatorIndexes.join(",")}/execution/performance`,
+        );
 
-          if (!validatorPerformances.data)
-            return { totalInEth: 0, totalInUsd: 0 };
+        if (!validatorPerformances.data) return 0;
 
-          let totalInGwei = 0;
+        let totalInGwei = 0;
 
-          for (const validatorPerformance of validatorPerformances.data.data) {
-            switch (filter) {
-              case "daily":
-                totalInGwei += validatorPerformance.performance1d;
-                break;
+        for (const validatorPerformance of validatorPerformances.data.data) {
+          switch (filter) {
+            case "daily":
+              totalInGwei += validatorPerformance.performance1d;
+              break;
 
-              case "weekly":
-                totalInGwei += validatorPerformance.performance7d;
-                break;
+            case "weekly":
+              totalInGwei += validatorPerformance.performance7d;
+              break;
 
-              case "monthly":
-                totalInGwei += validatorPerformance.performance31d;
-                break;
+            case "monthly":
+              totalInGwei += validatorPerformance.performance31d;
+              break;
 
-              case "yearly":
-                totalInGwei += validatorPerformance.performance365d;
-                break;
+            case "yearly":
+              totalInGwei += validatorPerformance.performance365d;
+              break;
 
-              case "overall":
-                totalInGwei += validatorPerformance.performanceTotal;
-                break;
+            case "overall":
+              totalInGwei += validatorPerformance.performanceTotal;
+              break;
 
-              default:
-                totalInGwei += validatorPerformance.performance1d;
-                break;
-            }
+            default:
+              totalInGwei += validatorPerformance.performance1d;
+              break;
           }
-
-          const totalInEth = parseFloat(formatUnits(BigInt(totalInGwei), 9));
-          const totalInUsd = totalInEth * ethPrice;
-
-          return { totalInEth, totalInUsd };
-        } catch (error) {
-          console.error("Error fetching validators performance:", error);
-          return { totalInEth: 0, totalInUsd: 0 };
         }
-      },
-    ),
+
+        return totalInGwei;
+      } catch (error) {
+        console.error("Error fetching validators performance:", error);
+        return 0;
+      }
+    }),
 
   getValidatorDetails: publicProcedure
     .input(
