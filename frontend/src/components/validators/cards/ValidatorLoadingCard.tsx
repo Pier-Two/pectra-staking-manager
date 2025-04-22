@@ -1,14 +1,14 @@
-import { CircleX, ExternalLink } from "lucide-react";
+import { ExternalLink } from "lucide-react";
 import Image from "next/image";
 import { Button } from "pec/components/ui/button";
 import { PectraSpinner } from "pec/components/ui/custom/pectraSpinner";
+import { getBlockExplorerTxUrl, openInNewTab } from "pec/helpers/getExternalLink";
 import { cn } from "pec/lib/utils";
 import { type ValidatorDetails } from "pec/types/validator";
 import type { TxHashRecord } from "pec/types/withdraw";
 
 interface StatusConfig {
   text: string;
-  icon: JSX.Element;
   className?: string;
   txHash?: string;
 }
@@ -18,61 +18,44 @@ interface ValidatorLoadingCardProps {
   validator: ValidatorDetails;
 }
 
-const getBlockExplorerTxUrl = (txHash: string | undefined) => {
-  if (!txHash) return '';
-  return `https://etherscan.io/tx/${txHash}`;
-};
-
-const openInNewTab = (url: string) => {
-  if (!url) return;
-  window.open(url, '_blank', 'noopener,noreferrer');
-};
-
 const getStatusConfig = (data: ValidatorLoadingCardProps["transactionStatus"]): StatusConfig => {
   switch (data?.status) {
     case 'pending':
       return {
         text: 'Waiting for signature...',
-        icon: <PectraSpinner />,
         className: 'text-gray-600 dark:text-gray-400'
       };
     case 'signing':
       return {
         text: 'Signing withdrawal...',
-        icon: <PectraSpinner />,
         className: 'text-indigo-600 dark:text-indigo-400'
       };
     case 'submitted':
       return {
         text: 'Submitting Transaction',
-        icon: <ExternalLink className="h-5 w-5" />,
         txHash: data?.txHash,
         className: 'text-blue-600 dark:text-blue-400'
       };
     case 'finalised':
       return {
         text: 'Withdrawal successful',
-        icon: <ExternalLink className="h-5 w-5" />,
         txHash: data?.txHash,
         className: 'text-green-600 dark:text-green-400'
       };
     case 'failed':
       return {
         text: 'Withdrawal failed',
-        icon: <ExternalLink className="h-5 w-5" />,
         txHash: data?.txHash,
         className: 'text-red-600 dark:text-red-400'
       };
     case 'failedToSubmit':
       return {
         text: data?.error,
-        icon: <CircleX className="h-5 w-5" />,
         className: 'text-red-600 dark:text-red-400'
       };
     default:
       return {
         text: 'Processing...',
-        icon: <PectraSpinner />,
         className: 'text-gray-600 dark:text-gray-400'
       };
   }
@@ -101,6 +84,8 @@ export const ValidatorLoadingCard = ({
       "transition-all duration-200"
     )}>
       <div className="flex items-center gap-x-4">
+
+        {/* Validator */}
         <Image
           src="/icons/EthValidator.svg"
           alt="Validator"
@@ -117,65 +102,30 @@ export const ValidatorLoadingCard = ({
             </div>
         </div>
 
-        {/* Desktop View */}
-        <div className={cn(
-            "hidden md:flex items-center gap-x-2",
-            statusConfig.className
-        )}>
-          {
-            showLoader && (
-              <PectraSpinner />
-            )
-          }
-            {statusConfig.text}
-        </div>
-        {statusConfig.txHash && (
-            <div className={cn(
-            "hidden md:flex items-center",
-            statusConfig.className
-            )}>
-            <Button 
-                variant="link" 
-                size="sm"
-                className="mt-1 dark:text-gray-400 text-gray-600"
-                onClick={() => openInNewTab(getBlockExplorerTxUrl(statusConfig.txHash))}
-            >
-                View on Etherscan
-                {statusConfig.icon}
-            </Button>
-            </div>
-        )}
-
-        {/* Mobile View */}
-        <div className="flex flex-row items-center gap-x-2 md:hidden">
-          {
-            showLoader && (
-              <PectraSpinner />
-            )
-          }
+        {/* Status */}
+        <div className="flex flex-col sm:flex-row items-center gap-2">
           <div className={cn(
-              "flex-col items-center flex md:hidden",
-              statusConfig.className
+            "flex items-center gap-x-2",
+            statusConfig.className
           )}>
-              {statusConfig.text}
-              {statusConfig.txHash && (
-              <div className={cn(
-              "flex items-center",
-              statusConfig.className
-              )}>
-              <Button 
-                  variant="link" 
-                  size="sm"
-                  className="mt-1 dark:text-gray-400 text-gray-600"
-                  onClick={() => openInNewTab(getBlockExplorerTxUrl(statusConfig.txHash))}
-              >
-                  View on Etherscan
-                  {statusConfig.icon}
-              </Button>
-              </div>
-          )}
+            {showLoader && <PectraSpinner />}
+            <span className="text-sm">{statusConfig.text}</span>
           </div>
+
+          {/* Etherscan Link */}
+          {statusConfig.txHash && (
+            <Button 
+              variant="link" 
+              size="sm"
+              className="text-indigo-500 dark:text-indigo-400 flex items-center gap-x-1"
+              onClick={() => openInNewTab(getBlockExplorerTxUrl(statusConfig.txHash))}
+            >
+              {statusConfig.txHash.slice(0, 6)}...
+              {statusConfig.txHash.slice(-4)}
+              <ExternalLink className="h-4 w-4" />
+            </Button>
+          )}
         </div>
-    </div>
+      </div>
   );
 };
