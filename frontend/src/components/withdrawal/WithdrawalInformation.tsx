@@ -43,7 +43,7 @@ export const WithdrawalInformation = ({
   
   const someTransactionsFailed =
   stage.type === "sign-submit-finalise" &&
-  Object.values(stage.txHashes).some((tx) => tx.status === "failedToSubmit");
+  Object.values(stage.txHashes).some((tx) => tx.status === "failed" || tx.status === "failedToSubmit");
 
   const isSigning =
   stage.type === "sign-submit-finalise" &&
