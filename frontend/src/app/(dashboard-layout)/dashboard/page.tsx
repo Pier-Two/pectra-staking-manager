@@ -27,6 +27,7 @@ const Dashboard: FC = () => {
   const inactiveValidators = data?.filter(
     (validator) =>
       validator?.status === ValidatorStatus.INACTIVE ||
+      validator?.status === ValidatorStatus.EXITED ||
       validator?.consolidationTransaction?.isConsolidatedValidator === false,
   );
 

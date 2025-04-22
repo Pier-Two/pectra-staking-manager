@@ -26,17 +26,18 @@ export const TransactionSchema = z.discriminatedUnion("status", [
 ]);
 
 export const ValidatorDataSchema = z.object({
-  validatorIndex: z.number(),
-  publicKey: z.string(),
-  withdrawalAddress: z.string(),
-  balance: z.bigint(),
-  effectiveBalance: z.bigint(),
-  status: z.nativeEnum(ValidatorStatus),
-  numberOfWithdrawals: z.number(),
-  activeSince: z.string(),
   activeDuration: z.string(),
+  activeSince: z.string(),
+  balance: z.bigint(),
   consolidationTransaction: TransactionSchema.optional(),
   depositTransaction: TransactionSchema.optional(),
+  effectiveBalance: z.bigint(),
+  hasPendingDeposit: z.boolean().default(false),
+  numberOfWithdrawals: z.number(),
+  publicKey: z.string(),
+  status: z.nativeEnum(ValidatorStatus),
   upgradeSubmitted: z.boolean().default(false),
+  validatorIndex: z.number(),
+  withdrawalAddress: z.string(),
   withdrawalTransactions: z.array(DatabaseWithdrawalSchema),
 });

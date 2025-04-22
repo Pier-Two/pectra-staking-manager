@@ -36,6 +36,7 @@ export const ValidatorList: FC<ISourceValidatorList> = (props) => {
   const inactiveValidators = validators?.filter(
     (validator) =>
       validator?.status === ValidatorStatus.INACTIVE ||
+      validator?.status === ValidatorStatus.EXITED ||
       validator?.consolidationTransaction?.isConsolidatedValidator === false,
   );
 

@@ -1,3 +1,4 @@
+import type { ValidatorLifecycleStatus } from "./validator";
 interface BeaconChainAllValidators {
   publickey: string;
   valid_signature: boolean;
@@ -19,7 +20,7 @@ export interface BeaconChainValidatorDetails {
   name: string;
   pubkey: string;
   slashed: boolean;
-  status: string;
+  status: ValidatorLifecycleStatus;
   validatorindex: number;
   withdrawableepoch: number;
   withdrawalcredentials: string;

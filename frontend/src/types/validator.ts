@@ -47,7 +47,21 @@ export enum ValidatorStatus {
   ACTIVE = "Active",
   PENDING = "Pending",
   INACTIVE = "Inactive",
+  EXITED = "Exited",
 }
+
+export type ValidatorLifecycleStatus =
+  | "pending_initialized"
+  | "pending_queued"
+  | "active_ongoing"
+  | "active_online"
+  | "active_offline"
+  | "active_exiting"
+  | "active_slashed"
+  | "exited_unslashed"
+  | "exited_slashed"
+  | "withdrawal_possible"
+  | "withdrawal_done";
 
 export enum TransactionStatus {
   IN_PROGRESS = "In Progress",

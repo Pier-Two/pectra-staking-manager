@@ -2,15 +2,12 @@
 
 import { ValidatorCard } from "pec/components/validators/cards/ValidatorCard";
 import { useConsolidationStore } from "pec/hooks/use-consolidation-store";
-import { useWalletAddress } from "pec/hooks/useWallet";
-import { api } from "pec/trpc/react";
 import { ValidatorStatus, type ValidatorDetails } from "pec/types/validator";
 import LoadingSkeletons from "./LoadingSkeletons";
 import { useValidators } from "pec/hooks/useValidators";
 
 export const ValidatorList = () => {
   const { setConsolidationTarget, setProgress } = useConsolidationStore();
-  const walletAddress = useWalletAddress();
 
   const { data: validators, isLoading } = useValidators();
 
@@ -23,6 +20,7 @@ export const ValidatorList = () => {
   const inactiveValidators = validators?.filter(
     (validator) =>
       validator?.status === ValidatorStatus.INACTIVE ||
+      validator?.status === ValidatorStatus.EXITED ||
       validator?.consolidationTransaction?.isConsolidatedValidator === false,
   );
 
