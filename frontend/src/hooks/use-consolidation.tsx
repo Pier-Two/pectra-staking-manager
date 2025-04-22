@@ -136,14 +136,12 @@ export const useSubmitConsolidate = () => {
         );
 
         // save upgrade tx to db
-        if (summaryEmail) {
-          await saveConsolidationToDatabase({
-            targetValidatorIndex: consolidationTarget.validatorIndex,
-            sourceTargetValidatorIndex: consolidationTarget.validatorIndex,
-            txHash: upgradeTx.transactionHash,
-            email: summaryEmail,
-          });
-        }
+        await saveConsolidationToDatabase({
+          targetValidatorIndex: consolidationTarget.validatorIndex,
+          sourceTargetValidatorIndex: consolidationTarget.validatorIndex,
+          txHash: upgradeTx.transactionHash,
+          email: summaryEmail,
+        });
 
         toast.success(
           `Validator ${consolidationTarget.validatorIndex} Upgraded`,
@@ -186,14 +184,12 @@ export const useSubmitConsolidate = () => {
           );
 
           // save upgrade tx to db
-          if (summaryEmail) {
-            await saveConsolidationToDatabase({
-              targetValidatorIndex: validator.validatorIndex,
-              sourceTargetValidatorIndex: validator.validatorIndex,
-              txHash: upgradeTx.transactionHash,
-              email: summaryEmail,
-            });
-          }
+          await saveConsolidationToDatabase({
+            targetValidatorIndex: validator.validatorIndex,
+            sourceTargetValidatorIndex: validator.validatorIndex,
+            txHash: upgradeTx.transactionHash,
+            email: summaryEmail,
+          });
         }
 
         // now the actual consolidation process can occur
@@ -220,14 +216,12 @@ export const useSubmitConsolidate = () => {
           TransactionStatus.SUBMITTED,
         );
 
-        if (summaryEmail) {
-          await saveConsolidationToDatabase({
-            targetValidatorIndex: consolidationTarget.validatorIndex,
-            sourceTargetValidatorIndex: validator.validatorIndex,
-            txHash: consolidationTx.transactionHash,
-            email: summaryEmail,
-          });
-        }
+        await saveConsolidationToDatabase({
+          targetValidatorIndex: consolidationTarget.validatorIndex,
+          sourceTargetValidatorIndex: validator.validatorIndex,
+          txHash: consolidationTx.transactionHash,
+          email: summaryEmail,
+        });
 
         results.push({
           validator,

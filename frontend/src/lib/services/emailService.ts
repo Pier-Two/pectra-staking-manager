@@ -1,5 +1,3 @@
-"use server";
-
 import type { IResponse } from "pec/types/response";
 import { generateErrorResponse } from "../utils";
 import { type EmailNames } from "pec/types/emails";

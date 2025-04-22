@@ -199,7 +199,6 @@ export const validatorRouter = createTRPCRouter({
         targetValidatorIndex: z.number(),
         sourceTargetValidatorIndex: z.number(),
         txHash: z.string(),
-        user: z.string().default("67f60c4f4ce6567f9f511b2f"), // TODO figure this out
         email: z.string().optional(),
       }),
     )
@@ -208,7 +207,6 @@ export const validatorRouter = createTRPCRouter({
         targetValidatorIndex,
         sourceTargetValidatorIndex,
         txHash,
-        user,
         email,
       } = input;
 
@@ -235,7 +233,6 @@ export const validatorRouter = createTRPCRouter({
         sourceTargetValidatorIndex,
         status: ACTIVE_STATUS,
         txHash,
-        user,
         email,
       });
 

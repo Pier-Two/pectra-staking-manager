@@ -77,7 +77,7 @@ export const storeEmailRequestRouter = createTRPCRouter({
     .mutation(async ({ input }): Promise<IResponse<null>> => {
       try {
         //Each batched deposit request in the array will have the same email
-        const email = input[0]?.email ?? "";
+        const email = input[0]?.email;
         await DepositModel.create({ ...input, status: ACTIVE_STATUS });
 
         if (email) {

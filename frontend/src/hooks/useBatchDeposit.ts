@@ -75,14 +75,12 @@ export const useBatchDeposit = () => {
         email: email,
       }));
 
-      if (email) {
-        const result = await saveDepositToDatabase(saveDepositDetails);
+      const result = await saveDepositToDatabase(saveDepositDetails);
 
-        if (!result.success)
-          toast.error("There was an error saving the deposit to the database");
+      if (!result.success)
+        toast.error("There was an error saving the deposit to the database");
 
-        toast.success("Deposits saved successfully");
-      }
+      toast.success("Deposits saved successfully");
 
       setStage({
         type: "transactions-submitted",
