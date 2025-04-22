@@ -180,27 +180,27 @@ export const validatorRouter = createTRPCRouter({
         for (const validatorPerformance of validatorPerformances.data.data) {
           switch (filter) {
             case "daily":
-              totalInGwei += validatorPerformance.performance1d;
+              totalInGwei += validatorPerformance.performance1d ?? 0;
               break;
 
             case "weekly":
-              totalInGwei += validatorPerformance.performance7d;
+              totalInGwei += validatorPerformance.performance7d ?? 0;
               break;
 
             case "monthly":
-              totalInGwei += validatorPerformance.performance31d;
+              totalInGwei += validatorPerformance.performance31d ?? 0;
               break;
 
             case "yearly":
-              totalInGwei += validatorPerformance.performance365d;
+              totalInGwei += validatorPerformance.performance365d ?? 0;
               break;
 
             case "overall":
-              totalInGwei += validatorPerformance.performanceTotal;
+              totalInGwei += validatorPerformance.performanceTotal ?? 0;
               break;
 
             default:
-              totalInGwei += validatorPerformance.performance1d;
+              totalInGwei += validatorPerformance.performance1d ?? 0;
               break;
           }
         }

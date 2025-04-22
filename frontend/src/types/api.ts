@@ -32,11 +32,11 @@ export interface BeaconChainValidatorArrayDetailsResponse {
 }
 
 export interface BeaconChainValidatorPerformance {
-  performance1d: number;
-  performance7d: number;
-  performance31d: number;
-  performance365d: number;
-  performanceTotal: number;
+  performance1d?: number;
+  performance7d?: number;
+  performance31d?: number;
+  performance365d?: number;
+  performanceTotal?: number;
   validatorindex: number;
 }
 
