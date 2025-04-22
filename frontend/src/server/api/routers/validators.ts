@@ -199,7 +199,7 @@ export const validatorRouter = createTRPCRouter({
         targetValidatorIndex: z.number(),
         sourceTargetValidatorIndex: z.number(),
         txHash: z.string(),
-        email: z.string().optional(),
+        email: z.string().email().optional(),
       }),
     )
     .mutation(async ({ input }) => {

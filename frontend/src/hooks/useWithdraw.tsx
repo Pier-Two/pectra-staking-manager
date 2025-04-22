@@ -126,8 +126,6 @@ export const useSubmitWithdraw = () => {
           });
         }
 
-        return;
-
         toast.success("Withdrawal request submitted successfully");
       } catch (error) {
         toast.error("There was an error withdrawing", {
