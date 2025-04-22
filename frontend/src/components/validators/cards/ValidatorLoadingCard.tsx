@@ -1,4 +1,4 @@
-import { ExternalLink } from "lucide-react";
+import { CircleX, ExternalLink } from "lucide-react";
 import Image from "next/image";
 import { Button } from "pec/components/ui/button";
 import { PectraSpinner } from "pec/components/ui/custom/pectraSpinner";
@@ -63,6 +63,12 @@ const getStatusConfig = (data: ValidatorLoadingCardProps["transactionStatus"]): 
         txHash: data?.txHash,
         className: 'text-red-600 dark:text-red-400'
       };
+    case 'rejectedSigning':
+      return {
+        text: 'Signing rejected',
+        icon: <CircleX className="h-5 w-5" />,
+        className: 'text-red-600 dark:text-red-400'
+      };
     default:
       return {
         text: 'Processing...',
@@ -111,10 +117,9 @@ export const ValidatorLoadingCard = ({
             </div>
         </div>
 
-        
-
+        {/* Desktop View */}
         <div className={cn(
-            "flex items-center gap-x-2",
+            "hidden md:flex items-center gap-x-2",
             statusConfig.className
         )}>
           {
@@ -124,10 +129,9 @@ export const ValidatorLoadingCard = ({
           }
             {statusConfig.text}
         </div>
-
         {statusConfig.txHash && (
             <div className={cn(
-            "flex items-center",
+            "hidden md:flex items-center",
             statusConfig.className
             )}>
             <Button 
@@ -141,6 +145,37 @@ export const ValidatorLoadingCard = ({
             </Button>
             </div>
         )}
+
+        {/* Mobile View */}
+        <div className="flex flex-row items-center gap-x-2 md:hidden">
+          {
+            showLoader && (
+              <PectraSpinner />
+            )
+          }
+          <div className={cn(
+              "flex-col items-center flex md:hidden",
+              statusConfig.className
+          )}>
+              {statusConfig.text}
+              {statusConfig.txHash && (
+              <div className={cn(
+              "flex items-center",
+              statusConfig.className
+              )}>
+              <Button 
+                  variant="link" 
+                  size="sm"
+                  className="mt-1 dark:text-gray-400 text-gray-600"
+                  onClick={() => openInNewTab(getBlockExplorerTxUrl(statusConfig.txHash))}
+              >
+                  View on Etherscan
+                  {statusConfig.icon}
+              </Button>
+              </div>
+          )}
+          </div>
+        </div>
     </div>
   );
 };

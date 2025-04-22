@@ -76,6 +76,7 @@ export const useSubmitWithdraw = () => {
     
     for (const withdrawal of filteredWithdrawals) {
       try {
+        
         const callData = encodePacked(
           ["bytes", "uint64"],
           [
@@ -124,22 +125,28 @@ export const useSubmitWithdraw = () => {
             description: result.error,
           });
 
-          return;
+          // Continue should be used here as some transactions may have been successful and some might still be waiting to be signed.
+          continue;
         }
 
         toast.success("Withdrawal request submitted successfully");
       } catch (error) {
+        console.error(error);
         toast.error("There was an error withdrawing", {
           description: parseError(error),
         });
 
-        console.error(error);
+        // If the user rejected the signing, we set the status to rejectedSigning
+        if (typeof error === "object" && error !== null && "code" in error && error.code === 4001) {
+          txHashes[withdrawal.validator.validatorIndex] = {
+            status: "rejectedSigning",
+          };
 
-        setStage({
-          type: "data-capture",
-        });
-
-        return;
+          setStage({
+            type: "sign-submit-finalise",
+            txHashes,
+          });
+        }
       }
     }
 
@@ -150,7 +157,6 @@ export const useSubmitWithdraw = () => {
         continue;
       }
 
-      try {
         const receipt = await waitForReceipt({
           transactionHash: tx.txHash,
           chain,
@@ -170,14 +176,11 @@ export const useSubmitWithdraw = () => {
             txHash: tx.txHash,
           };
         }
-      } catch (error) {
-        console.error(error);
-      } finally {
+
         setStage({
           type: "sign-submit-finalise",
           txHashes,
         });
-      }
     }
   };
 
