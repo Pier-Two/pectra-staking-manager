@@ -1,5 +1,6 @@
 "use client";
 
+import { ChevronDown } from "lucide-react";
 import Image from "next/image";
 import {
   Sidebar,
@@ -10,6 +11,13 @@ import {
 } from "pec/components/ui/sidebar";
 import { useActiveAccount } from "thirdweb/react";
 import { ConnectWalletButton } from "./ui/wallet/ConnectWallet";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "./ui/dropdown-menu";
+import { cardPresets } from "./dashboard/tools/ToolCard";
 
 const links = [
   {
@@ -22,12 +30,6 @@ const links = [
     id: "validators",
     name: "My Validators",
     href: "/dashboard",
-    requireAuth: true,
-  },
-  {
-    id: "tools",
-    name: "Tools",
-    href: "/tools",
     requireAuth: true,
   },
   {
@@ -77,9 +79,29 @@ export function AppSidebar() {
               {link.name}
             </a>
           ))}
+          {account && (
+            <DropdownMenu>
+              <DropdownMenuTrigger className="flex w-full items-center justify-between px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700">
+                <span>Tools</span>
+                <ChevronDown className="h-4 w-4" />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="mr-4">
+                {Object.entries(cardPresets).map(([key, preset]) => (
+                  <DropdownMenuItem key={key} className="px-4 py-2 text-sm">
+                    <a
+                      href={preset.url}
+                      className="w-full text-gray-700 dark:text-gray-200"
+                    >
+                      {preset.title}
+                    </a>
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )}
         </SidebarGroup>
       </SidebarContent>
-      <SidebarFooter className="pb-12 flex justify-center items-center w-full">
+      <SidebarFooter className="flex w-full items-center justify-center pb-12">
         <ConnectWalletButton />
       </SidebarFooter>
     </Sidebar>
