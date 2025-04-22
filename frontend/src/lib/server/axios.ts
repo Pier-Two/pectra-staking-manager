@@ -1,7 +1,7 @@
 import { HOODI_CHAIN_ID } from "@piertwo/contracts/constants/networks";
 import axios from "axios";
 import { getBeaconChainURL } from "pec/constants/beaconchain";
-import { SupportedNetworkIds } from "pec/constants/chain";
+import type { SupportedNetworkIds } from "pec/constants/chain";
 import { env } from "pec/env";
 
 export const HoodiBeaconchainAxios = axios.create({
@@ -23,3 +23,11 @@ export const getBeaconChainAxios = (network: SupportedNetworkIds) => {
 
   return MainnetBeaconchainAxios;
 };
+
+export const CoinMarketCapAxios = axios.create({
+  baseURL: "https://pro-api.coinmarketcap.com/v1",
+  headers: {
+    "X-CMC_PRO_API_KEY": env.COIN_MARKET_CAP_API_KEY,
+    "Cache-Control": "max-age=300", // 5 minutes cache
+  },
+});
