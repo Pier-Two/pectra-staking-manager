@@ -12,7 +12,7 @@ export class Withdrawal implements DatabaseWithdrawalType {
   @prop()
   public email?: string;
 
-  @prop({ required: true, enum: DatabaseDocumentStatuses })
+  @prop({ required: true, type: String })
   public status!: (typeof DatabaseDocumentStatuses)[number];
 
   @prop({ required: true })
