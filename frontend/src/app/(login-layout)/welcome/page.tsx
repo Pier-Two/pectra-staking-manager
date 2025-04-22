@@ -1,10 +1,10 @@
+import { ChartPrefetch } from "pec/components/charts/ChartPrefetch";
+import { ChartSkeleton } from "pec/components/charts/ChartSkeleton";
 import { Footer } from "pec/components/layout/welcome/Footer";
 import { Information } from "pec/components/layout/welcome/Information";
 import { PectraLink } from "pec/components/layout/welcome/PectraLink";
 import { Suspense, type FC } from "react";
 import { EnterSiteButton } from "./_components/enter-site-button";
-import { ChartPrefetch } from "pec/components/charts/ChartPrefetch";
-import { ChartSkeleton } from "pec/components/charts/ChartSkeleton";
 
 const Welcome: FC = async () => {
   return (

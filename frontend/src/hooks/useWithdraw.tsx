@@ -1,17 +1,17 @@
 import { useQuery } from "@tanstack/react-query";
-import { useRpcClient } from "./useRpcClient";
-import { useContracts } from "./useContracts";
-import { eth_call, waitForReceipt } from "thirdweb";
-import { encodePacked, fromHex, parseGwei } from "viem";
-import { useActiveAccount } from "thirdweb/react";
-import { api } from "pec/trpc/react";
 import { type WithdrawalFormType } from "pec/lib/api/schemas/withdrawal";
-import { toast } from "sonner";
-import { useActiveChainWithDefault } from "./useChain";
 import { parseError } from "pec/lib/utils/parseError";
-import { useImmer } from "use-immer";
-import type { TxHashRecord, WithdrawWorkflowStages } from "pec/types/withdraw";
 import { client } from "pec/lib/wallet/client";
+import { api } from "pec/trpc/react";
+import type { TxHashRecord, WithdrawWorkflowStages } from "pec/types/withdraw";
+import { toast } from "sonner";
+import { eth_call, waitForReceipt } from "thirdweb";
+import { useActiveAccount } from "thirdweb/react";
+import { useImmer } from "use-immer";
+import { encodePacked, fromHex, parseGwei } from "viem";
+import { useActiveChainWithDefault } from "./useChain";
+import { useContracts } from "./useContracts";
+import { useRpcClient } from "./useRpcClient";
 
 export const useWithdraw = () => {
   const rpcClient = useRpcClient();
@@ -73,9 +73,10 @@ export const useSubmitWithdraw = () => {
     const filteredWithdrawals = withdrawals.filter(
       (withdrawal) => withdrawal.amount > 0,
     );
-
+    
     for (const withdrawal of filteredWithdrawals) {
       try {
+        
         const callData = encodePacked(
           ["bytes", "uint64"],
           [
@@ -124,46 +125,63 @@ export const useSubmitWithdraw = () => {
           toast.error("There was an error withdrawing", {
             description: result.error,
           });
+
+          
+          continue;
         }
 
         toast.success("Withdrawal request submitted successfully");
       } catch (error) {
+        console.error(error);
         toast.error("There was an error withdrawing", {
           description: parseError(error),
         });
 
-        console.error(error);
+        
+        txHashes[withdrawal.validator.validatorIndex] = {
+          status: "failedToSubmit",
+           error: parseError(error)
+        };
 
         setStage({
-          type: "data-capture",
+          type: "sign-submit-finalise",
+          txHashes,
         });
-
-        return;
       }
     }
 
     for (const [validatorIndex, tx] of Object.entries(txHashes)) {
+      if (tx.status === "failedToSubmit") continue;
       if (tx.status !== "submitted") {
         console.error("Transaction in invalid state", tx);
 
         continue;
       }
 
-      await waitForReceipt({
-        transactionHash: tx.txHash,
-        chain,
-        client,
-      });
+        const receipt = await waitForReceipt({
+          transactionHash: tx.txHash,
+          chain,
+          client,
+        });
 
-      txHashes[Number(validatorIndex)] = {
-        status: "finalised",
-        txHash: tx.txHash,
-      };
+        if (receipt.status === "success") {
+          // If the transaction was successful
+          txHashes[Number(validatorIndex)] = {
+            status: "finalised",
+            txHash: receipt.transactionHash,
+          };
+        } else {
+          // If the transaction failed
+          txHashes[Number(validatorIndex)] = {
+            status: "failed",
+            txHash: tx.txHash,
+          };
+        }
 
-      setStage({
-        type: "sign-submit-finalise",
-        txHashes,
-      });
+        setStage({
+          type: "sign-submit-finalise",
+          txHashes,
+        });
     }
   };
 
