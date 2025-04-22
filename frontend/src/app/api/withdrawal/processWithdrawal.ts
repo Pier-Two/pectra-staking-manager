@@ -9,7 +9,7 @@ import { sendEmailNotification } from "pec/lib/services/emailService";
 import { getBeaconChainAxios } from "pec/lib/server/axios";
 import { PROCESS_REQUESTS_NETWORK_ID } from "pec/lib/constants/feature-flags";
 import {
-  BeaconchainWithdrawalResponse,
+  type BeaconchainWithdrawalResponse,
   isBeaconchainWithdrawalResponseValid,
 } from "pec/lib/api/schemas/beaconchain";
 

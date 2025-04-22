@@ -11,6 +11,7 @@ export const WithdrawalFormSchema = z.object({
         .min(0, { message: "Please enter an acceptable amount" }),
     }),
   ),
+  email: z.string().email().optional(),
 });
 
 export type WithdrawalFormType = z.infer<typeof WithdrawalFormSchema>;
