@@ -12,7 +12,7 @@ export class Consolidation implements DatabaseConsolidationType {
   @prop()
   public email?: string;
 
-  @prop({ required: true, enum: DatabaseDocumentStatuses })
+  @prop({ required: true, type: String })
   public status!: (typeof DatabaseDocumentStatuses)[number];
 
   @prop({ required: true })

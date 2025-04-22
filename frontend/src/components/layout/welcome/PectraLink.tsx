@@ -1,3 +1,5 @@
+"use client";
+
 import { ChevronRight } from "lucide-react";
 import { Button } from "pec/components/ui/button";
 import { GlowEffect } from "pec/components/ui/glow-effect";
