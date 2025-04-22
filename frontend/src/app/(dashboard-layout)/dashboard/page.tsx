@@ -10,21 +10,37 @@ import { ValidatorStatus } from "pec/types/validator";
 import type { FC } from "react";
 import DashboardLoading from "./loading";
 import { useValidators } from "pec/hooks/useValidators";
+import { useValidatorPerformance } from "pec/hooks/useValidatorPerformance";
+import { useEthPrice } from "pec/hooks/useEthPrice";
 
 const Dashboard: FC = () => {
   const walletAddress = useWalletAddress();
+  const { data: validators, isFetched: isValidatorsFetched } = useValidators();
+  const { data: ethPrice, isFetched: isEthPriceFetched } = useEthPrice(
+    "ETH",
+    "USD",
+  );
+  const { data: validatorPerformanceInGwei, isFetched: isPerformanceFetched } =
+    useValidatorPerformance("monthly");
 
-  const { data, isFetched } = useValidators();
+  if (
+    !walletAddress ||
+    !validators ||
+    !isValidatorsFetched ||
+    validatorPerformanceInGwei === undefined ||
+    !isPerformanceFetched ||
+    ethPrice === undefined ||
+    !isEthPriceFetched
+  )
+    return <DashboardLoading />;
 
-  if (!walletAddress || !data || !isFetched) return <DashboardLoading />;
-
-  const activeValidators = data?.filter(
+  const activeValidators = validators?.filter(
     (validator) =>
       validator?.status === ValidatorStatus.ACTIVE ||
       validator?.consolidationTransaction?.isConsolidatedValidator !== false,
   );
 
-  const inactiveValidators = data?.filter(
+  const inactiveValidators = validators?.filter(
     (validator) =>
       validator?.status === ValidatorStatus.INACTIVE ||
       validator?.consolidationTransaction?.isConsolidatedValidator === false,
@@ -51,7 +67,7 @@ const Dashboard: FC = () => {
           // TODO: Refactor to note use vw
         */}
         <div className="w-[75vw] space-y-6">
-          <h2 className="font-570 text-primary-dark text-[26px] leading-[26px] dark:text-indigo-200">
+          <h2 className="text-[26px] font-570 leading-[26px] text-primary-dark dark:text-indigo-200">
             My Validators
           </h2>
 
@@ -60,12 +76,17 @@ const Dashboard: FC = () => {
               activeValidators={activeValidators.length}
               inactiveValidators={inactiveValidators.length}
             />
-            <TotalStake validators={data} />
-            <TotalDailyIncome />
+
+            <TotalStake validators={validators} />
+
+            <TotalDailyIncome
+              validatorPerformanceInGwei={validatorPerformanceInGwei}
+              ethPrice={ethPrice}
+            />
           </div>
 
           <div className="pt-8">
-            <ValidatorTable validators={data} />
+            <ValidatorTable validators={validators} />
           </div>
         </div>
       </div>

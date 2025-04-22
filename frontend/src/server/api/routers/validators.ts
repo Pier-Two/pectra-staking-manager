@@ -5,6 +5,7 @@ import type {
   BeaconChainAllValidatorsResponse,
   BeaconChainValidatorArrayDetailsResponse,
   BeaconChainValidatorDetailsResponse,
+  BeaconChainValidatorPerformanceResponse,
 } from "pec/types/api";
 import {
   TransactionStatus,
@@ -135,6 +136,79 @@ export const validatorRouter = createTRPCRouter({
       } catch (error) {
         console.error("Error fetching validators:", error);
         return [];
+      }
+    }),
+
+  getValidatorsPerformanceInGwei: publicProcedure
+    .input(
+      z.object({
+        address: z.string(),
+        chainId: SupportedChainIdSchema,
+        filter: z.enum(["daily", "weekly", "monthly", "yearly", "overall"]),
+      }),
+    )
+    .query(async ({ input: { address, chainId: network, filter } }) => {
+      try {
+        const validatorResponse = await getBeaconChainAxios(
+          network,
+        ).get<BeaconChainAllValidatorsResponse>(
+          `/api/v1/validator/withdrawalCredentials/${address}`,
+          {
+            params: {
+              limit: 200,
+            },
+          },
+        );
+
+        if (!validatorResponse.data || validatorResponse.data.data.length === 0)
+          return 0;
+
+        const validatorIndexes = validatorResponse.data.data.map(
+          (validator) => validator.validatorindex,
+        );
+
+        const validatorPerformances = await getBeaconChainAxios(
+          network,
+        ).get<BeaconChainValidatorPerformanceResponse>(
+          `/api/v1/validator/${validatorIndexes.join(",")}/execution/performance`,
+        );
+
+        if (!validatorPerformances.data) return 0;
+
+        let totalInGwei = 0;
+
+        for (const validatorPerformance of validatorPerformances.data.data) {
+          switch (filter) {
+            case "daily":
+              totalInGwei += validatorPerformance.performance1d ?? 0;
+              break;
+
+            case "weekly":
+              totalInGwei += validatorPerformance.performance7d ?? 0;
+              break;
+
+            case "monthly":
+              totalInGwei += validatorPerformance.performance31d ?? 0;
+              break;
+
+            case "yearly":
+              totalInGwei += validatorPerformance.performance365d ?? 0;
+              break;
+
+            case "overall":
+              totalInGwei += validatorPerformance.performanceTotal ?? 0;
+              break;
+
+            default:
+              totalInGwei += validatorPerformance.performance1d ?? 0;
+              break;
+          }
+        }
+
+        return totalInGwei;
+      } catch (error) {
+        console.error("Error fetching validators performance:", error);
+        return 0;
       }
     }),
 
