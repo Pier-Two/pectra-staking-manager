@@ -56,6 +56,13 @@ const getStatusConfig = (data: ValidatorLoadingCardProps["transactionStatus"]): 
         txHash: data?.txHash,
         className: 'text-green-600 dark:text-green-400'
       };
+    case 'failed':
+      return {
+        text: 'Withdrawal failed',
+        icon: <ExternalLink className="h-5 w-5" />,
+        txHash: data?.txHash,
+        className: 'text-red-600 dark:text-red-400'
+      };
     default:
       return {
         text: 'Processing...',
@@ -78,6 +85,7 @@ export const ValidatorLoadingCard = ({
 }: ValidatorLoadingCardProps) => {
   const { validatorIndex, publicKey } = validator;
   const statusConfig = getStatusConfig(transactionStatus);
+  const showLoader = statusConfig.text === "Signing withdrawal..." || statusConfig.text === "Submitting Transaction";
 
   return (
     <div className={cn(
@@ -109,9 +117,12 @@ export const ValidatorLoadingCard = ({
             "flex items-center gap-x-2",
             statusConfig.className
         )}>
-            <span className="text-sm font-medium">
+          {
+            showLoader && (
+              <PectraSpinner />
+            )
+          }
             {statusConfig.text}
-            </span>
         </div>
 
         {statusConfig.txHash && (

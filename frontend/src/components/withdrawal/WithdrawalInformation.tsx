@@ -42,6 +42,11 @@ export const WithdrawalInformation = ({
   ];
   
   // TODO: @ben the isSigning state is a bit broken, it toggles to false sometimes when in the middle of signing two txs
+
+  const someTransactionsFailed =
+  stage.type === "sign-submit-finalise" &&
+  Object.values(stage.txHashes).some((tx) => tx.status === "failed");
+
   const isSigning =
   stage.type === "sign-submit-finalise" &&
   Object.values(stage.txHashes).some((tx) => tx.status === "signing");
@@ -55,7 +60,7 @@ export const WithdrawalInformation = ({
 
   const allTransactionsFinalised =
     stage.type === "sign-submit-finalise" &&
-    Object.values(stage.txHashes).every((tx) => tx.status === "finalised");
+    Object.values(stage.txHashes).every((tx) => tx.status === "finalised" || tx.status === "failed");
 
   return (
     <div className="flex flex-col w-full gap-4 rounded-xl border border-indigo-400 bg-white p-4 dark:border dark:border-gray-800 dark:bg-black">
@@ -102,10 +107,16 @@ export const WithdrawalInformation = ({
 
 
           {allTransactionsFinalised && (
+            <>
             <div className="flex flex-row items-center gap-2">
-              <Check className="h-4 w-4 text-green-500" />
+              {!someTransactionsFailed && (
+                <Check className="h-4 w-4 text-green-500" />  
+              )}
               <div className="text-sm">Done</div>
+              
             </div>
+            
+          </>
           )}
 
           {stage.type === "data-capture" && (
@@ -127,10 +138,23 @@ export const WithdrawalInformation = ({
         </div>
       </div>
 
+      {someTransactionsFailed && (
+          <>
+            <div className="rounded-xl bg-gray-100 p-2 text-sm text-gray-500 dark:bg-black">
+              Some transactions failed. Please check your validator statuses and try again.
+            </div>
+
+            <PrimaryButton
+              label="Make another withdrawal"
+              onClick={resetWithdrawal}
+              disabled={false}
+            />
+          </>
+      )}
 
       {isSubmitting && (
         <>
-          <div className="rounded-xl bg-gray-100 p-2 text-sm text-green-500 dark:bg-black">
+          <div className="rounded-xl bg-gray-100 p-2 text-sm text-gray-500 dark:bg-black">
             Your transactions have been submitted successfully and will be
             processed shortly. You can leave this page and check the status of
             your withdrawals in your dashboard.
