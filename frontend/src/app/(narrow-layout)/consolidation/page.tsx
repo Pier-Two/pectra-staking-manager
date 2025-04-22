@@ -6,9 +6,9 @@ import { SelectSourceValidators } from "pec/components/consolidation/selectSourc
 import { SubmitConsolidationRequests } from "pec/components/consolidation/submitRequests/SubmitConsolidationRequests";
 import { ConsolidationSummary } from "pec/components/consolidation/summary/ConsolidationSummary";
 import { useConsolidationStore } from "pec/hooks/use-consolidation-store";
+import { useValidators } from "pec/hooks/useValidators";
 import { useWalletAddress } from "pec/hooks/useWallet";
 import ConsolidationLoading from "../consolidate/loading";
-import { useValidators } from "pec/hooks/useValidators";
 
 const ConsolidationWorkflow = () => {
   const walletAddress = useWalletAddress();
@@ -32,7 +32,7 @@ const ConsolidationWorkflow = () => {
   }
 
   return (
-    <div className="flex w-full flex-col gap-4">
+    <div className="flex w-[90vw] flex-col gap-4 md:w-[42vw]">
       <ProgressBar progress={progress} setProgress={setProgress} />
 
       {progress === 1 && <SelectDestinationValidator />}
