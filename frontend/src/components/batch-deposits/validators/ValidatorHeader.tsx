@@ -1,6 +1,6 @@
+import { X } from "lucide-react";
 import { TertiaryButton } from "pec/components/ui/custom/TertiaryButton";
 import { EIconPosition } from "pec/types/components";
-import { X } from "lucide-react";
 
 export interface IValidatorHeader {
   selectedCount: number;
@@ -23,7 +23,7 @@ export const ValidatorHeader = ({
           </div>
 
           <TertiaryButton
-            className="border-indigo-200 text-indigo-800 dark:border-gray-600 dark:text-indigo-300"
+            className="border-indigo-200 dark:border-gray-600"
             label="Clear"
             icon={<X />}
             iconPosition={EIconPosition.LEFT}
