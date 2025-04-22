@@ -26,6 +26,7 @@ export const env = createEnv({
     BEACONCHAIN_API_KEY: z.string(),
     HUBSPOT_API_KEY: z.string(),
     AUTH_JWT_VERIFYING_KEY: z.string(),
+    COIN_MARKET_CAP_API_KEY: z.string(),
   },
 
   /**
@@ -56,6 +57,7 @@ export const env = createEnv({
     BEACONCHAIN_API_KEY: process.env.BEACONCHAIN_API_KEY,
     HUBSPOT_API_KEY: process.env.HUBSPOT_API_KEY,
     AUTH_JWT_VERIFYING_KEY: process.env.AUTH_JWT_VERIFYING_KEY,
+    COIN_MARKET_CAP_API_KEY: process.env.COIN_MARKET_CAP_API_KEY,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially

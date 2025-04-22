@@ -24,10 +24,15 @@ export const getBeaconChainAxios = (network: SupportedNetworkIds) => {
   return MainnetBeaconchainAxios;
 };
 
-export const CoinGeckoAxios = axios.create({
-  baseURL: "https://api.coingecko.com/api/v3",
-});
-
-export const getCoinGeckoAxios = () => {
-  return CoinGeckoAxios;
+export const CoinMarketCapAxios = (symbol: string, convert: string) => {
+  return axios.create({
+    baseURL: "https://pro-api.coinmarketcap.com/v1",
+    headers: {
+      "X-CMC_PRO_API_KEY": env.COIN_MARKET_CAP_API_KEY,
+    },
+    params: {
+      symbol,
+      convert,
+    },
+  });
 };

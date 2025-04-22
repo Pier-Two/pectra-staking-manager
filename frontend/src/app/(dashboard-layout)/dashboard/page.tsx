@@ -11,20 +11,23 @@ import type { FC } from "react";
 import DashboardLoading from "./loading";
 import { useValidators } from "pec/hooks/useValidators";
 import { useValidatorPerformance } from "pec/hooks/useValidatorPerformance";
+import { useEthPrice } from "pec/hooks/useEthPrice";
 
 const Dashboard: FC = () => {
   const walletAddress = useWalletAddress();
-
   const { data: validators, isFetched: isValidatorsFetched } = useValidators();
+  const { data: ethPrice, isFetched: isEthPriceFetched } = useEthPrice();
   const { data: performanceData, isFetched: isPerformanceFetched } =
-    useValidatorPerformance("daily");
+    useValidatorPerformance(ethPrice ?? 0, "daily");
 
   if (
     !walletAddress ||
     !validators ||
     !isValidatorsFetched ||
     !performanceData ||
-    !isPerformanceFetched
+    !isPerformanceFetched ||
+    !ethPrice ||
+    !isEthPriceFetched
   )
     return <DashboardLoading />;
 
