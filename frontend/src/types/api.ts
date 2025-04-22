@@ -31,7 +31,27 @@ export interface BeaconChainValidatorArrayDetailsResponse {
   data: BeaconChainValidatorDetails[];
 }
 
+export interface BeaconChainValidatorPerformance {
+  performance1d: number;
+  performance7d: number;
+  performance31d: number;
+  performance365d: number;
+  performanceTotal: number;
+  validatorindex: number;
+}
+
+export interface BeaconChainValidatorPerformanceResponse {
+  status: string;
+  data: BeaconChainValidatorPerformance[];
+}
+
 export interface BeaconChainValidatorDetailsResponse {
   status: string;
   data: BeaconChainValidatorDetails;
+}
+
+export interface CoinGeckoPriceResponse {
+  ethereum: {
+    usd: number;
+  };
 }

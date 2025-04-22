@@ -1,7 +1,7 @@
 import { HOODI_CHAIN_ID } from "@piertwo/contracts/constants/networks";
 import axios from "axios";
 import { getBeaconChainURL } from "pec/constants/beaconchain";
-import { SupportedNetworkIds } from "pec/constants/chain";
+import type { SupportedNetworkIds } from "pec/constants/chain";
 import { env } from "pec/env";
 
 export const HoodiBeaconchainAxios = axios.create({
@@ -22,4 +22,12 @@ export const getBeaconChainAxios = (network: SupportedNetworkIds) => {
   if (network === HOODI_CHAIN_ID) return HoodiBeaconchainAxios;
 
   return MainnetBeaconchainAxios;
+};
+
+export const CoinGeckoAxios = axios.create({
+  baseURL: "https://api.coingecko.com/api/v3",
+});
+
+export const getCoinGeckoAxios = () => {
+  return CoinGeckoAxios;
 };

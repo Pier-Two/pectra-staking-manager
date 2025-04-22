@@ -10,21 +10,31 @@ import { ValidatorStatus } from "pec/types/validator";
 import type { FC } from "react";
 import DashboardLoading from "./loading";
 import { useValidators } from "pec/hooks/useValidators";
+import { useValidatorPerformance } from "pec/hooks/useValidatorPerformance";
 
 const Dashboard: FC = () => {
   const walletAddress = useWalletAddress();
 
-  const { data, isFetched } = useValidators();
+  const { data: validators, isFetched: isValidatorsFetched } = useValidators();
+  const { data: performanceData, isFetched: isPerformanceFetched } =
+    useValidatorPerformance("daily");
 
-  if (!walletAddress || !data || !isFetched) return <DashboardLoading />;
+  if (
+    !walletAddress ||
+    !validators ||
+    !isValidatorsFetched ||
+    !performanceData ||
+    !isPerformanceFetched
+  )
+    return <DashboardLoading />;
 
-  const activeValidators = data?.filter(
+  const activeValidators = validators?.filter(
     (validator) =>
       validator?.status === ValidatorStatus.ACTIVE ||
       validator?.consolidationTransaction?.isConsolidatedValidator !== false,
   );
 
-  const inactiveValidators = data?.filter(
+  const inactiveValidators = validators?.filter(
     (validator) =>
       validator?.status === ValidatorStatus.INACTIVE ||
       validator?.consolidationTransaction?.isConsolidatedValidator === false,
@@ -51,7 +61,7 @@ const Dashboard: FC = () => {
           // TODO: Refactor to note use vw
         */}
         <div className="w-[75vw] space-y-6">
-          <h2 className="font-570 text-primary-dark text-[26px] leading-[26px] dark:text-indigo-200">
+          <h2 className="text-[26px] font-570 leading-[26px] text-primary-dark dark:text-indigo-200">
             My Validators
           </h2>
 
@@ -60,12 +70,12 @@ const Dashboard: FC = () => {
               activeValidators={activeValidators.length}
               inactiveValidators={inactiveValidators.length}
             />
-            <TotalStake validators={data} />
-            <TotalDailyIncome />
+            <TotalStake validators={validators} />
+            <TotalDailyIncome performanceData={performanceData} />
           </div>
 
           <div className="pt-8">
-            <ValidatorTable validators={data} />
+            <ValidatorTable validators={validators} />
           </div>
         </div>
       </div>

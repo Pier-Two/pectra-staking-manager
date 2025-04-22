@@ -5,6 +5,8 @@ import type {
   BeaconChainAllValidatorsResponse,
   BeaconChainValidatorArrayDetailsResponse,
   BeaconChainValidatorDetailsResponse,
+  BeaconChainValidatorPerformanceResponse,
+  CoinGeckoPriceResponse,
 } from "pec/types/api";
 import {
   TransactionStatus,
@@ -18,7 +20,8 @@ import {
 } from "pec/lib/database/models";
 import { ACTIVE_STATUS } from "pec/types/app";
 import { SupportedChainIdSchema } from "pec/lib/api/schemas/network";
-import { getBeaconChainAxios } from "pec/lib/server/axios";
+import { getBeaconChainAxios, getCoinGeckoAxios } from "pec/lib/server/axios";
+import { formatUnits } from "viem";
 
 export const validatorRouter = createTRPCRouter({
   getValidators: publicProcedure
@@ -134,6 +137,95 @@ export const validatorRouter = createTRPCRouter({
       } catch (error) {
         console.error("Error fetching validators:", error);
         return [];
+      }
+    }),
+
+  getValidatorsPerformance: publicProcedure
+    .input(
+      z.object({
+        address: z.string(),
+        chainId: SupportedChainIdSchema,
+        filter: z.enum(["daily", "weekly", "monthly", "yearly", "overall"]),
+      }),
+    )
+    .query(async ({ input: { address, chainId: network, filter } }) => {
+      try {
+        const validatorResponse = await getBeaconChainAxios(
+          network,
+        ).get<BeaconChainAllValidatorsResponse>(
+          `/api/v1/validator/withdrawalCredentials/${address}`,
+          {
+            params: {
+              limit: 200,
+            },
+          },
+        );
+
+        if (!validatorResponse.data || validatorResponse.data.data.length === 0)
+          return { totalInEth: 0, totalInUsd: 0 };
+
+        const validatorIndexes = validatorResponse.data.data.map(
+          (validator) => validator.validatorindex,
+        );
+
+        const validatorPerformances = await getBeaconChainAxios(
+          network,
+        ).get<BeaconChainValidatorPerformanceResponse>(
+          `/api/v1/validator/${validatorIndexes.join(",")}/execution/performance`,
+        );
+
+        console.log(validatorPerformances.data);
+
+        if (!validatorPerformances.data)
+          return { totalInEth: 0, totalInUsd: 0 };
+
+        let totalInGwei = 0;
+
+        const fetchEthPrice =
+          await getCoinGeckoAxios().get<CoinGeckoPriceResponse>(
+            "/simple/price?ids=ethereum&vs_currencies=usd",
+          );
+
+        if (!fetchEthPrice?.data?.ethereum?.usd)
+          return { totalInEth: 0, totalInUsd: 0 };
+
+        const ethPrice = fetchEthPrice.data.ethereum.usd;
+
+        for (const validatorPerformance of validatorPerformances.data.data) {
+          switch (filter) {
+            case "daily":
+              totalInGwei += validatorPerformance.performance1d;
+              break;
+
+            case "weekly":
+              totalInGwei += validatorPerformance.performance7d;
+              break;
+
+            case "monthly":
+              totalInGwei += validatorPerformance.performance31d;
+              break;
+
+            case "yearly":
+              totalInGwei += validatorPerformance.performance365d;
+              break;
+
+            case "overall":
+              totalInGwei += validatorPerformance.performanceTotal;
+              break;
+
+            default:
+              totalInGwei += validatorPerformance.performance1d;
+              break;
+          }
+        }
+
+        const totalInEth = parseFloat(formatUnits(BigInt(totalInGwei), 9));
+        const totalInUsd = totalInEth * ethPrice;
+
+        return { totalInEth, totalInUsd };
+      } catch (error) {
+        console.error("Error fetching validators performance:", error);
+        return { totalInEth: 0, totalInUsd: 0 };
       }
     }),
 
