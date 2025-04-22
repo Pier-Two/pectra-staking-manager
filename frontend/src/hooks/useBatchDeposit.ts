@@ -33,7 +33,7 @@ export const useBatchDeposit = () => {
   const account = useActiveAccount();
   const chain = useActiveChainWithDefault();
 
-  const { mutateAsync: saveWithdrawalToDatabase } =
+  const { mutateAsync: saveDepositToDatabase } =
     api.storeEmailRequest.storeDepositRequest.useMutation();
 
   const submitBatchDeposit = async (
@@ -43,7 +43,6 @@ export const useBatchDeposit = () => {
   ) => {
     if (!account) {
       toast.error("There was an error depositing");
-
       return;
     }
 
@@ -70,17 +69,16 @@ export const useBatchDeposit = () => {
         }),
       });
 
-      const saveWithdrawalDetails = deposits.map((deposit) => ({
+      const saveDepositDetails = deposits.map((deposit) => ({
         validatorIndex: deposit.validator.validatorIndex,
         txHash: receipt.transactionHash,
         email: email,
       }));
 
-      const result = await saveWithdrawalToDatabase(saveWithdrawalDetails);
+      const result = await saveDepositToDatabase(saveDepositDetails);
 
-      if (!result.success) {
+      if (!result.success)
         toast.error("There was an error saving the deposit to the database");
-      }
 
       toast.success("Deposits saved successfully");
 

@@ -10,7 +10,7 @@ import { toast } from "sonner";
 import { useActiveChainWithDefault } from "./useChain";
 import { parseError } from "pec/lib/utils/parseError";
 import { useImmer } from "use-immer";
-import { TxHashRecord, WithdrawWorkflowStages } from "pec/types/withdraw";
+import type { TxHashRecord, WithdrawWorkflowStages } from "pec/types/withdraw";
 import { client } from "pec/lib/wallet/client";
 
 export const useWithdraw = () => {
@@ -50,10 +50,10 @@ export const useSubmitWithdraw = () => {
 
   const submitWithdrawals = async (
     withdrawals: WithdrawalFormType["withdrawals"],
+    email: string,
   ) => {
     if (!contracts || !rpcClient || !account || !withdrawalFee) {
       toast.error("There was an error withdrawing");
-
       return;
     }
 
@@ -115,6 +115,7 @@ export const useSubmitWithdraw = () => {
             validatorIndex: withdrawal.validator.validatorIndex,
             amount: withdrawal.amount,
             txHash: txHash.transactionHash,
+            email,
           },
           network: chain.id,
         });
@@ -123,8 +124,6 @@ export const useSubmitWithdraw = () => {
           toast.error("There was an error withdrawing", {
             description: result.error,
           });
-
-          return;
         }
 
         toast.success("Withdrawal request submitted successfully");

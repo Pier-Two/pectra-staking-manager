@@ -3,7 +3,6 @@
 import { useRouter } from "next/navigation";
 import { TransactionValidatorCard } from "pec/components/validators/cards/TransactionValidatorCard";
 import { TransactionStatus } from "pec/types/validator";
-import { Email } from "../summary/Email";
 import { ArrowRightIcon } from "lucide-react";
 import { PrimaryButton } from "pec/components/ui/custom/PrimaryButton";
 import { EIconPosition } from "pec/types/components";
@@ -13,8 +12,6 @@ export const SubmitConsolidationRequests = () => {
   const {
     consolidationTarget,
     validatorsToConsolidate,
-    setConsolidationEmail,
-    consolidationEmail,
     reset,
   } = useConsolidationStore();
 
@@ -47,23 +44,14 @@ export const SubmitConsolidationRequests = () => {
         </div>
 
         {everyTransactionSubmitted && (
-          <>
-            <Email
-              cardText={"Enter your email to receive notifications."}
-              cardTitle={"Email me when consolidation completes"}
-              summaryEmail={consolidationEmail}
-              setSummaryEmail={setConsolidationEmail}
-            />
-
-            <PrimaryButton
-              className="w-full"
-              label="Track progress in my dashboard"
-              icon={<ArrowRightIcon className="h-4 w-4" />}
-              iconPosition={EIconPosition.RIGHT}
-              onClick={handleDashboardNavigation}
-              disabled={false}
-            />
-          </>
+          <PrimaryButton
+            className="w-full"
+            label="Track progress in my dashboard"
+            icon={<ArrowRightIcon className="h-4 w-4" />}
+            iconPosition={EIconPosition.RIGHT}
+            onClick={handleDashboardNavigation}
+            disabled={false}
+          />
         )}
 
         <div className="flex flex-col gap-2">

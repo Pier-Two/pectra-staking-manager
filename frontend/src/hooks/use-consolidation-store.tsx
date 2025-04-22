@@ -55,8 +55,6 @@ type ConsolidationStore = {
   // Email fields
   summaryEmail: string;
   setSummaryEmail: (email: string) => void;
-  consolidationEmail: string;
-  setConsolidationEmail: (email: string) => void;
 
   // Reset method
   reset: () => void;
@@ -131,9 +129,6 @@ export const consolidationStore = createStore<ConsolidationStore>()(
     // Email fields implementation
     summaryEmail: "",
     setSummaryEmail: (email: string) => set({ summaryEmail: email }),
-    consolidationEmail: "",
-    setConsolidationEmail: (email: string) =>
-      set({ consolidationEmail: email }),
 
     // Reset method implementation
     reset: () =>
@@ -143,7 +138,6 @@ export const consolidationStore = createStore<ConsolidationStore>()(
         consolidationTarget: undefined,
         validatorsToConsolidate: [],
         summaryEmail: "",
-        consolidationEmail: "",
       }),
 
     // Getter methods to deserialize data
