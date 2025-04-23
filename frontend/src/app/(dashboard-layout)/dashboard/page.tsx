@@ -23,8 +23,6 @@ const Dashboard: FC = () => {
   const { data: validatorPerformanceInWei, isFetched: isPerformanceFetched } =
     useValidatorPerformance("daily");
 
-  console.log("Validator Performance: ", validatorPerformanceInWei);
-
   if (
     !walletAddress ||
     !validators ||
