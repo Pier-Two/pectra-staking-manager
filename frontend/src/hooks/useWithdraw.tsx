@@ -1,10 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
+import { toast } from "pec/components/ui/Toast";
 import { type WithdrawalFormType } from "pec/lib/api/schemas/withdrawal";
 import { parseError } from "pec/lib/utils/parseError";
 import { client } from "pec/lib/wallet/client";
 import { api } from "pec/trpc/react";
 import type { TxHashRecord, WithdrawWorkflowStages } from "pec/types/withdraw";
-import { toast } from "sonner";
 import { eth_call, waitForReceipt } from "thirdweb";
 import { useActiveAccount } from "thirdweb/react";
 import { useImmer } from "use-immer";
@@ -53,7 +53,11 @@ export const useSubmitWithdraw = () => {
     email: string,
   ) => {
     if (!contracts || !rpcClient || !account || !withdrawalFee) {
-      toast.error("There was an error withdrawing");
+      toast({
+        title: "Error withdrawing",
+        description: "There was an error withdrawing",
+        variant: "error",
+      });
       return;
     }
 
@@ -122,19 +126,26 @@ export const useSubmitWithdraw = () => {
         });
 
         if (!result.success) {
-          toast.error("There was an error withdrawing", {
+          toast({
+            title: "Error withdrawing",
             description: result.error,
+            variant: "error",
           });
 
           
           continue;
         }
 
-        toast.success("Withdrawal request submitted successfully");
+        toast({
+          title: "Success",
+          description: "Withdrawal request submitted successfully",
+          variant: "success",
+        });
       } catch (error) {
-        console.error(error);
-        toast.error("There was an error withdrawing", {
+        toast({
+          title: "Error withdrawing",
           description: parseError(error),
+          variant: "error",
         });
 
         
