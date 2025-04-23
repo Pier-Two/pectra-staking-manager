@@ -15,7 +15,7 @@ type ToolCardProps = {
   preset: keyof typeof cardPresets;
 };
 
-const cardPresets = {
+export const cardPresets = {
   Consolidate: {
     title: "Consolidate",
     description:
