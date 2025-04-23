@@ -5,10 +5,10 @@ import { useRouter } from "next/navigation";
 import { PrimaryButton } from "pec/components/ui/custom/PrimaryButton";
 import { SecondaryButton } from "pec/components/ui/custom/SecondaryButton";
 import { Connector } from "pec/components/validators/Connector";
+import { useValidators } from "pec/hooks/useValidators";
 import { useWalletAddress } from "pec/hooks/useWallet";
 import type { FC } from "react";
 import ConsolidationLoading from "./loading";
-import { useValidators } from "pec/hooks/useValidators";
 
 const Consolidation: FC = () => {
   const router = useRouter();
@@ -28,13 +28,12 @@ const Consolidation: FC = () => {
   return (
     <div className="space-y-8">
       <div className="flex flex-col gap-4">
-        <div className="flex gap-x-4">
+        <div className="flex gap-x-4 justify-left">
           <Merge className="h-10 w-10 rotate-90 text-yellow-500" />
           <div className="text-3xl">Consolidate</div>
         </div>
 
         <Connector
-          title="Consolidate"
           description="Combine multiple validator balances into a single large-balance
           validator, as per Pectra EIP-7251."
           connectedAddress={walletAddress}
