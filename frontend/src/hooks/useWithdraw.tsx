@@ -1,17 +1,17 @@
 import { useQuery } from "@tanstack/react-query";
-import { useRpcClient } from "./useRpcClient";
-import { useContracts } from "./useContracts";
-import { eth_call, waitForReceipt } from "thirdweb";
-import { encodePacked, fromHex, parseGwei } from "viem";
-import { useActiveAccount } from "thirdweb/react";
-import { api } from "pec/trpc/react";
+import { toast } from "pec/components/ui/Toast";
 import { type WithdrawalFormType } from "pec/lib/api/schemas/withdrawal";
-import { toast } from "sonner";
-import { useActiveChainWithDefault } from "./useChain";
 import { parseError } from "pec/lib/utils/parseError";
-import { useImmer } from "use-immer";
-import type { TxHashRecord, WithdrawWorkflowStages } from "pec/types/withdraw";
 import { client } from "pec/lib/wallet/client";
+import { api } from "pec/trpc/react";
+import type { TxHashRecord, WithdrawWorkflowStages } from "pec/types/withdraw";
+import { eth_call, waitForReceipt } from "thirdweb";
+import { useActiveAccount } from "thirdweb/react";
+import { useImmer } from "use-immer";
+import { encodePacked, fromHex, parseGwei } from "viem";
+import { useActiveChainWithDefault } from "./useChain";
+import { useContracts } from "./useContracts";
+import { useRpcClient } from "./useRpcClient";
 
 export const useWithdraw = () => {
   const rpcClient = useRpcClient();
@@ -53,7 +53,11 @@ export const useSubmitWithdraw = () => {
     email: string,
   ) => {
     if (!contracts || !rpcClient || !account || !withdrawalFee) {
-      toast.error("There was an error withdrawing");
+      toast({
+        title: "Error withdrawing",
+        description: "There was an error withdrawing",
+        variant: "error",
+      });
       return;
     }
 
@@ -121,15 +125,23 @@ export const useSubmitWithdraw = () => {
         });
 
         if (!result.success) {
-          toast.error("There was an error withdrawing", {
+          toast({
+            title: "Error withdrawing",
             description: result.error,
+            variant: "error",
           });
         }
 
-        toast.success("Withdrawal request submitted successfully");
+        toast({
+          title: "Success",
+          description: "Withdrawal request submitted successfully",
+          variant: "success",
+        });
       } catch (error) {
-        toast.error("There was an error withdrawing", {
+        toast({
+          title: "Error withdrawing",
           description: parseError(error),
+          variant: "error",
         });
 
         console.error(error);
