@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useRouter, usePathname } from "next/navigation";
 import { ConnectWalletButton } from "pec/components/ui/wallet/ConnectWallet";
-import { FC } from "react";
+import type { FC } from "react";
 import { cn } from "pec/lib/utils";
 
 import DarkMode from "../dark-mode";
@@ -33,6 +33,10 @@ export const TopBar: FC<ITopBar> = (props) => {
     router.push("/charts");
   };
 
+  const handleValidatorsNavigation = () => {
+    router.push("/validators-found");
+  };
+
   return (
     <header className="sticky top-0 z-50 flex w-full items-center justify-between border-b border-zinc-200 bg-white/40 p-4 shadow-sm backdrop-blur-md dark:border-gray-800 dark:bg-gray-950">
       <div className="order-2 mr-4 flex items-center md:order-1 md:mr-0">
@@ -60,8 +64,17 @@ export const TopBar: FC<ITopBar> = (props) => {
 
       {type === "profile" && (
         <div className="order-3 hidden items-center gap-[clamp(1rem,2.5vw,4rem)] md:flex">
-          <div className="flex items-center space-x-2">
-            <div className="hidden font-inter text-black dark:text-zinc-50 lg:block">
+          <div
+            className="flex items-center space-x-2 hover:cursor-pointer"
+            onClick={handleValidatorsNavigation}
+          >
+            <div
+              className={cn(
+                "hidden font-inter transition-colors duration-200 hover:cursor-pointer hover:text-zinc-500 dark:text-zinc-50 dark:hover:text-zinc-400 lg:block",
+                pathname === "/validators-found" &&
+                  "text-zinc-500 dark:text-zinc-400",
+              )}
+            >
               My Validators
             </div>
 
