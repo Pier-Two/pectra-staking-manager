@@ -1,7 +1,5 @@
 "use client";
 
-import type { FC } from "react";
-import { Area, AreaChart, CartesianGrid, Label, XAxis, YAxis } from "recharts";
 import {
   ChartContainer,
   ChartLegend,
@@ -9,8 +7,11 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "pec/components/ui/chart";
-import type { IAreaChart } from "pec/types/chart";
 import { useTheme } from "pec/hooks/useTheme";
+import { cn } from "pec/lib/utils";
+import type { IAreaChart } from "pec/types/chart";
+import type { FC } from "react";
+import { Area, AreaChart, CartesianGrid, Label, XAxis, YAxis } from "recharts";
 
 const chartConfig = {
   pectra: {
@@ -47,7 +48,7 @@ export const AreaChartComponent: FC<IAreaChart> = ({ chart, isFullscreen }) => {
   const { darkMode } = useTheme();
 
   const axisTextStyle = {
-    stroke: darkMode ? "#e3e3e3" : "#27272A",
+    stroke: darkMode ? "#e3e3e3" : "#a1a1a1",
     fontSize: "11px",
     fontWeight: 180,
   };
@@ -69,7 +70,10 @@ export const AreaChartComponent: FC<IAreaChart> = ({ chart, isFullscreen }) => {
 
   return (
     <ChartContainer
-      className={`mx-auto w-full max-w-[800px] ${isFullscreen ? "max-w-none" : ""}`}
+      className={cn(
+        "mx-auto w-full min-h-[300px] max-w-[800px]",
+        isFullscreen && "max-w-none",
+      )}
       config={chartConfig}
     >
       <AreaChart

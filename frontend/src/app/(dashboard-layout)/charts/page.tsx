@@ -1,11 +1,11 @@
-import { Suspense, type FC } from "react";
 import { ChartPrefetch } from "pec/components/charts/ChartPrefetch";
 import { ChartSkeleton } from "pec/components/charts/ChartSkeleton";
+import { Suspense, type FC } from "react";
 
 const ChartsPage: FC = () => {
   return (
     <div className="flex w-full flex-col items-center dark:text-white">
-      <div className="flex w-[55vw] flex-col space-y-10 p-10">
+      <div className="flex w-[100vw] flex-col space-y-10 p-10 md:w-[55vw]">
         <div className="space-y-2">
           <div className="flex items-center justify-center text-2xl font-medium text-zinc-950 dark:text-zinc-50">
             Ethereum&apos;s Pectra Upgrade
