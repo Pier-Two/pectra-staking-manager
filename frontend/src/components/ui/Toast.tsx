@@ -111,7 +111,7 @@ const Toast = (
           onDismiss?.(props);
         }}
         variant="ghost"
-        className="absolute h-auto right-1 top-0 rounded-md border-none bg-transparent p-1 text-foreground/50 opacity-0 transition-opacity hover:text-foreground focus:opacity-100 focus:outline-none group-hover:opacity-100 "
+        className="absolute dark:text-gray-400 h-auto right-1 top-0 rounded-md border-none bg-transparent p-1 text-foreground/50 opacity-0 transition-opacity hover:text-foreground focus:opacity-100 focus:outline-none group-hover:opacity-100 "
       >
         <X className="h-4 w-4" />
       </Button>

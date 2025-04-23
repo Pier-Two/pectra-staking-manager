@@ -1,8 +1,8 @@
 "use client";
 
+import { toast } from "pec/components/ui/Toast";
 import { useConsolidationStore } from "pec/hooks/use-consolidation-store";
 import { useState } from "react";
-import { toast } from "sonner";
 
 import { Copy } from "lucide-react";
 import { Button } from "pec/components/ui/button";
@@ -15,10 +15,10 @@ import {
 } from "pec/components/ui/card";
 import { Input } from "pec/components/ui/input";
 import { Skeleton } from "pec/components/ui/skeleton";
+import { useActiveChainWithDefault } from "pec/hooks/useChain";
 import { DECIMAL_PLACES } from "pec/lib/constants";
 import { api } from "pec/trpc/react";
 import { formatEther } from "viem";
-import { useActiveChainWithDefault } from "pec/hooks/useChain";
 
 export const ManuallyEnterValidator = () => {
   const { setConsolidationTarget, setProgress } = useConsolidationStore();
@@ -55,16 +55,20 @@ export const ManuallyEnterValidator = () => {
     e.preventDefault();
 
     if (!input.trim()) {
-      toast.error("Error", {
+      toast({
+        title: "Invalid Selection",
         description: "Please enter a validator index or public key",
+        variant: "error",
       });
       return;
     }
 
     if (!isValidInput(input.trim())) {
-      toast.error("Invalid Input", {
+      toast({
+        title: "Invalid Input",
         description:
           "Please enter either a non-zero number or a public key (48 characters starting with 0x)",
+        variant: "error",
       });
       return;
     }
