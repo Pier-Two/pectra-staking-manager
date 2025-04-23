@@ -1,5 +1,5 @@
-import { ColumnHeader } from "./ColumnHeader";
 import type { SortDirection } from "pec/components/batch-deposits/validators/ColumnHeader";
+import { ColumnHeader } from "./ColumnHeader";
 
 interface IColumnHeader {
   label: string;
@@ -19,6 +19,7 @@ export const ValidatorListHeaders = ({
   sortColumn,
   sortDirection,
 }: IValidatorListHeaders) => {
+  
   return (
     <div className="flex w-full items-center px-4">
       {columnHeaders.map((columnHeader, index) => (

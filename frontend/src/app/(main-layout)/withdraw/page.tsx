@@ -1,29 +1,29 @@
 "use client";
 
-import { type FC, useMemo, useState } from "react";
-import { useWalletAddress } from "pec/hooks/useWallet";
-import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import WithdrawalLoading from "./loading";
+import { cloneDeep, orderBy, sumBy } from "lodash";
 import { ArrowUpFromDot } from "lucide-react";
 import Image from "next/image";
-import { WithdrawalInformation } from "pec/components/withdrawal/WithdrawalInformation";
-import { WithdrawalSelectionValidatorCard } from "pec/components/validators/cards/WithdrawalSelectionValidatorCard";
+import type { SortDirection } from "pec/components/batch-deposits/validators/ColumnHeader";
+import { ValidatorHeader } from "pec/components/batch-deposits/validators/ValidatorHeader";
 import { ValidatorListHeaders } from "pec/components/batch-deposits/validators/ValidatorListHeaders";
+import { Email } from "pec/components/consolidation/summary/Email";
+import { WithdrawalSelectionValidatorCard } from "pec/components/validators/cards/WithdrawalSelectionValidatorCard";
+import { WithdrawalInformation } from "pec/components/withdrawal/WithdrawalInformation";
+import { WITHDRAWAL_COLUMN_HEADERS } from "pec/constants/columnHeaders";
+import { useValidators } from "pec/hooks/useValidators";
+import { useWalletAddress } from "pec/hooks/useWallet";
+import { useSubmitWithdraw } from "pec/hooks/useWithdraw";
 import {
   WithdrawalFormSchema,
   type WithdrawalFormType,
 } from "pec/lib/api/schemas/withdrawal";
-import type { ValidatorDetails } from "pec/types/validator";
-import { ValidatorHeader } from "pec/components/batch-deposits/validators/ValidatorHeader";
-import type { SortDirection } from "pec/components/batch-deposits/validators/ColumnHeader";
-import { WITHDRAWAL_COLUMN_HEADERS } from "pec/constants/columnHeaders";
-import { cloneDeep, orderBy, sumBy } from "lodash";
 import { formatAddressToShortenedString } from "pec/lib/utils/address";
+import type { ValidatorDetails } from "pec/types/validator";
+import { type FC, useMemo, useState } from "react";
+import { useFieldArray, useForm } from "react-hook-form";
 import { formatEther } from "viem";
-import { useValidators } from "pec/hooks/useValidators";
-import { useSubmitWithdraw } from "pec/hooks/useWithdraw";
-import { Email } from "pec/components/consolidation/summary/Email";
+import WithdrawalLoading from "./loading";
 
 const Withdrawal: FC = () => {
   const walletAddress = useWalletAddress();
@@ -54,6 +54,8 @@ const Withdrawal: FC = () => {
   const watchedEmail = watch("email");
   const email = watchedEmail ?? "";
   const withdrawalTotal = sumBy(withdrawals, (withdrawal) => withdrawal.amount);
+  const signSubmitFinaliseInProgress = stage?.type === "sign-submit-finalise";
+  const columnHeaders = signSubmitFinaliseInProgress ? WITHDRAWAL_COLUMN_HEADERS.filter((column) => column.label === "Validator") : WITHDRAWAL_COLUMN_HEADERS;
 
   const [sortColumn, setSortColumn] = useState<string | null>("validator");
   const [sortDirection, setSortDirection] = useState<SortDirection>(null);
@@ -184,14 +186,14 @@ const Withdrawal: FC = () => {
 
         <div className="flex flex-col items-center gap-4">
           <ValidatorListHeaders
-            columnHeaders={WITHDRAWAL_COLUMN_HEADERS}
+            columnHeaders={columnHeaders}
             onSort={handleSort}
             sortColumn={sortColumn}
             sortDirection={sortDirection}
           />
 
           <div className="flex w-full flex-col gap-y-2">
-            {validators?.map((validator, index) => {
+            {validators?.map((validator: ValidatorDetails, index: number) => {
               const withdrawalIndex = withdrawals.findIndex(
                 (field) =>
                   field.validator.validatorIndex === validator.validatorIndex,
@@ -202,6 +204,7 @@ const Withdrawal: FC = () => {
                   availableAmount={validator.balance}
                   errors={errors}
                   handleSelect={() => handleValidatorSelect(validator)}
+                  stage={stage}
                   withdrawalIndex={withdrawalIndex}
                   register={register}
                   selected={withdrawalIndex !== -1}

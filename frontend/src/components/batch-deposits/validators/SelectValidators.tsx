@@ -1,14 +1,14 @@
-import { useState } from "react";
-import type { EDistributionMethod } from "pec/types/batch-deposits";
-import { DepositSelectionValidatorCard } from "../../validators/cards/DepositSelectionValidatorCard";
-import { ValidatorHeader } from "./ValidatorHeader";
-import { ValidatorListHeaders } from "./ValidatorListHeaders";
 import { keyBy, orderBy } from "lodash";
-import { type SortDirection } from "./ColumnHeader";
 import { DEPOSIT_COLUMN_HEADERS } from "pec/constants/columnHeaders";
 import type { DepositData, DepositType } from "pec/lib/api/schemas/deposit";
+import type { EDistributionMethod } from "pec/types/batch-deposits";
+import type { ValidatorDetails } from "pec/types/validator";
+import { useState } from "react";
 import type { FieldErrors, UseFormRegister } from "react-hook-form";
-import { ValidatorDetails } from "pec/types/validator";
+import { DepositSelectionValidatorCard } from "../../validators/cards/DepositSelectionValidatorCard";
+import { type SortDirection } from "./ColumnHeader";
+import { ValidatorHeader } from "./ValidatorHeader";
+import { ValidatorListHeaders } from "./ValidatorListHeaders";
 
 export interface ISelectValidatorsProps {
   clearSelectedValidators: () => void;

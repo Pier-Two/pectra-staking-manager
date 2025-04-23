@@ -60,14 +60,14 @@ export const DepositSelectionValidatorCard = ({
       )}
     >
       <div className="flex flex-[1.2] items-center gap-x-4" onClick={handleSelect}>
-        {selected ? (
+      {selected ? (
           <>
-            <CircleCheck className="min-h-4 min-w-4 text-green-500 group-hover:hidden" />
-            <CircleMinus className="min-h-4 min-w-4 text-red-500 hidden group-hover:block" />
+            <CircleCheck className="min-h-4 min-w-4 w-4 h-4 text-green-500 group-hover:hidden" />
+            <CircleMinus className="hidden min-h-4 w-4 h-4 min-w-4 text-red-500 group-hover:block" />
           </>
         ) : (
           <CirclePlus
-            className="min-h-4 min-w-4 text-indigo-500 group-hover:fill-indigo-500 group-hover:text-white"
+            className="min-h-4 min-w-4 w-4 h-4 text-indigo-500 group-hover:fill-indigo-500 group-hover:text-white"
           />
         )}
 
