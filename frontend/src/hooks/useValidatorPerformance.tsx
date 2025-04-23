@@ -8,7 +8,7 @@ export const useValidatorPerformance = (
   const walletAddress = useWalletAddress();
   const chain = useActiveChainWithDefault();
 
-  const queryFn = api.validators.getValidatorsPerformanceInGwei.useQuery(
+  const queryFn = api.validators.getValidatorsPerformanceInWei.useQuery(
     {
       address: walletAddress,
       chainId: chain.id,

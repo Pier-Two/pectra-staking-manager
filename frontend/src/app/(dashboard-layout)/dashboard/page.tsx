@@ -20,14 +20,14 @@ const Dashboard: FC = () => {
     "ETH",
     "USD",
   );
-  const { data: validatorPerformanceInGwei, isFetched: isPerformanceFetched } =
-    useValidatorPerformance("monthly");
+  const { data: validatorPerformanceInWei, isFetched: isPerformanceFetched } =
+    useValidatorPerformance("daily");
 
   if (
     !walletAddress ||
     !validators ||
     !isValidatorsFetched ||
-    validatorPerformanceInGwei === undefined ||
+    validatorPerformanceInWei === undefined ||
     !isPerformanceFetched ||
     ethPrice === undefined ||
     !isEthPriceFetched
@@ -80,7 +80,7 @@ const Dashboard: FC = () => {
             <TotalStake validators={validators} />
 
             <TotalDailyIncome
-              validatorPerformanceInGwei={validatorPerformanceInGwei}
+              validatorPerformanceInWei={validatorPerformanceInWei}
               ethPrice={ethPrice}
             />
           </div>
