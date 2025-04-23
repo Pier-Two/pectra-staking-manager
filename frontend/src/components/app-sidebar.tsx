@@ -116,7 +116,7 @@ export function AppSidebar() {
                   <DropdownMenuItem key={key} className="px-4 py-2 text-sm">
                     <a
                       href={preset.url}
-                      className="w-full text-gray-700 dark:text-gray-200"
+                      className="w-full text-gray-700 transition-colors duration-200 hover:text-zinc-500 dark:text-gray-200 dark:hover:text-zinc-400"
                     >
                       {preset.title}
                     </a>
