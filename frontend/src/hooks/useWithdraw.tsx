@@ -77,9 +77,10 @@ export const useSubmitWithdraw = () => {
     const filteredWithdrawals = withdrawals.filter(
       (withdrawal) => withdrawal.amount > 0,
     );
-
+    
     for (const withdrawal of filteredWithdrawals) {
       try {
+        
         const callData = encodePacked(
           ["bytes", "uint64"],
           [
@@ -130,6 +131,9 @@ export const useSubmitWithdraw = () => {
             description: result.error,
             variant: "error",
           });
+
+          
+          continue;
         }
 
         toast({
@@ -144,38 +148,51 @@ export const useSubmitWithdraw = () => {
           variant: "error",
         });
 
-        console.error(error);
+        
+        txHashes[withdrawal.validator.validatorIndex] = {
+          status: "failedToSubmit",
+           error: parseError(error)
+        };
 
         setStage({
-          type: "data-capture",
+          type: "sign-submit-finalise",
+          txHashes,
         });
-
-        return;
       }
     }
 
     for (const [validatorIndex, tx] of Object.entries(txHashes)) {
+      if (tx.status === "failedToSubmit") continue;
       if (tx.status !== "submitted") {
         console.error("Transaction in invalid state", tx);
 
         continue;
       }
 
-      await waitForReceipt({
-        transactionHash: tx.txHash,
-        chain,
-        client,
-      });
+        const receipt = await waitForReceipt({
+          transactionHash: tx.txHash,
+          chain,
+          client,
+        });
 
-      txHashes[Number(validatorIndex)] = {
-        status: "finalised",
-        txHash: tx.txHash,
-      };
+        if (receipt.status === "success") {
+          // If the transaction was successful
+          txHashes[Number(validatorIndex)] = {
+            status: "finalised",
+            txHash: receipt.transactionHash,
+          };
+        } else {
+          // If the transaction failed
+          txHashes[Number(validatorIndex)] = {
+            status: "failed",
+            txHash: tx.txHash,
+          };
+        }
 
-      setStage({
-        type: "sign-submit-finalise",
-        txHashes,
-      });
+        setStage({
+          type: "sign-submit-finalise",
+          txHashes,
+        });
     }
   };
 
