@@ -1,9 +1,9 @@
 "use client";
 
 import { Button } from "pec/components/ui/button";
-import { ValidatorList } from "./ValidatorList";
 import { useConsolidationStore } from "pec/hooks/use-consolidation-store";
 import { ManuallyEnterValidator } from "./ManuallyEnterValidator";
+import { ValidatorList } from "./ValidatorList";
 
 export const SelectDestinationValidator = () => {
   const {
@@ -27,7 +27,7 @@ export const SelectDestinationValidator = () => {
         </div>
       </div>
 
-      <div className="flex flex-row justify-between">
+      <div className="flex flex-col md:flex-row gap-4 justify-between">
         <div className="text-md font-medium">Select destination validator</div>
 
         <Button
