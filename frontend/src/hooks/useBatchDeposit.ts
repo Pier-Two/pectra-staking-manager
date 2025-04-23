@@ -1,17 +1,17 @@
+import { toast } from "pec/components/ui/Toast";
+import { SIGNATURE_BYTE_LENGTH } from "pec/constants/deposit";
 import { type DepositData } from "pec/lib/api/schemas/deposit";
-import { useContracts } from "./useContracts";
+import { generateByteString } from "pec/lib/utils/bytes";
+import { parseError } from "pec/lib/utils/parseError";
+import { client } from "pec/lib/wallet/client";
 import { api } from "pec/trpc/react";
+import { type DepositWorkflowStage } from "pec/types/batch-deposits";
+import { useState } from "react";
 import { prepareContractCall, sendTransaction, waitForReceipt } from "thirdweb";
 import { useActiveAccount } from "thirdweb/react";
-import { toast } from "sonner";
 import { parseEther } from "viem";
-import { useState } from "react";
-import { client } from "pec/lib/wallet/client";
 import { useActiveChainWithDefault } from "./useChain";
-import { parseError } from "pec/lib/utils/parseError";
-import { generateByteString } from "pec/lib/utils/bytes";
-import { SIGNATURE_BYTE_LENGTH } from "pec/constants/deposit";
-import { type DepositWorkflowStage } from "pec/types/batch-deposits";
+import { useContracts } from "./useContracts";
 
 interface BatchDepositRequest {
   pubKey: `0x${string}`;
@@ -42,7 +42,11 @@ export const useBatchDeposit = () => {
     email?: string,
   ) => {
     if (!account) {
-      toast.error("There was an error depositing");
+      toast({
+        title: "Error depositing",
+        description: "There was an error depositing",
+        variant: "error",
+      });
       return;
     }
 
@@ -78,9 +82,17 @@ export const useBatchDeposit = () => {
       const result = await saveDepositToDatabase(saveDepositDetails);
 
       if (!result.success)
-        toast.error("There was an error saving the deposit to the database");
+        toast({
+          title: "Error",
+          description: "There was an error saving the deposit.",
+          variant: "error",
+        });
 
-      toast.success("Deposits saved successfully");
+      toast({
+        title: "Success",
+        description: "Deposits saved successfully",
+        variant: "success",
+      });
 
       setStage({
         type: "transactions-submitted",
@@ -99,19 +111,27 @@ export const useBatchDeposit = () => {
           txHash: txReceipt.transactionHash,
         });
 
-        toast.success("Deposits finalised successfully");
+        toast({
+          title: "Success",
+          description: "Deposits finalised successfully",
+          variant: "success",
+        });
       } catch (error) {
         console.error("Error waiting for transaction receipt:", error);
-        toast.error("There was an error waiting for the transaction receipt", {
+        toast({
+          title: "Error",
           description: parseError(error),
+          variant: "error",
         });
 
         setStage({ type: "data-capture" });
       }
     } catch (error) {
       console.error("Error submitting batch deposit:", error);
-      toast.error("Error submitting batch deposit", {
+      toast({
+        title: "Error",
         description: parseError(error),
+        variant: "error",
       });
 
       setStage({ type: "data-capture" });
