@@ -87,7 +87,7 @@ export function AppSidebar() {
                       "linear-gradient(130.54deg, #00FFA7 11.34%, #5164DC 31.73%, #313C86 59.22%, rgba(113, 255, 224, 0.8) 100%)",
                   }}
                 >
-                  <div className="absolute inset-[1px] rounded-[3px] bg-white dark:bg-gray-900" />
+                  <div className="absolute inset-[1px] rounded-[3px] bg-sidebar" />
                   <p className="relative text-sm font-medium text-gray-700 dark:text-gray-200">
                     {validators?.length}
                   </p>
