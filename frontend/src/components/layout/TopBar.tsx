@@ -10,6 +10,7 @@ import DarkMode from "../dark-mode";
 import { SidebarTrigger } from "../ui/sidebar";
 import { Tools } from "./Tools";
 import { useValidators } from "pec/hooks/useValidators";
+import { PectraSpinner } from "../ui/custom/pectraSpinner";
 
 export interface ITopBar {
   type?: "profile" | "wallet_connect";
@@ -19,7 +20,7 @@ export const TopBar: FC<ITopBar> = (props) => {
   const { type } = props;
   const router = useRouter();
   const pathname = usePathname();
-  const { data: validators } = useValidators();
+  const { data: validators, isLoading: validatorsLoading } = useValidators();
 
   const handleWelcomeNavigation = () => {
     router.push("/welcome");
@@ -78,18 +79,22 @@ export const TopBar: FC<ITopBar> = (props) => {
               My Validators
             </div>
 
-            <div
-              className="relative flex h-6 w-6 items-center justify-center rounded-[3px] font-inter text-black dark:text-zinc-50"
-              style={{
-                background:
-                  "linear-gradient(130.54deg, #00FFA7 11.34%, #5164DC 31.73%, #313C86 59.22%, rgba(113, 255, 224, 0.8) 100%)",
-              }}
-            >
-              <div className="absolute inset-[1px] rounded-[3px] bg-white dark:bg-gray-950" />
-              <p className="relative text-sm font-medium">
-                {validators?.length}
-              </p>
-            </div>
+            {validatorsLoading ? (
+              <PectraSpinner />
+            ) : (
+              <div
+                className="relative flex h-6 w-6 items-center justify-center rounded-[3px] font-inter text-black dark:text-zinc-50"
+                style={{
+                  background:
+                    "linear-gradient(130.54deg, #00FFA7 11.34%, #5164DC 31.73%, #313C86 59.22%, rgba(113, 255, 224, 0.8) 100%)",
+                }}
+              >
+                <div className="absolute inset-[1px] rounded-[3px] bg-white dark:bg-gray-950" />
+                <p className="relative text-sm font-medium">
+                  {validators?.length}
+                </p>
+              </div>
+            )}
           </div>
 
           <Tools />
