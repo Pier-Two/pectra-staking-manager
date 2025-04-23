@@ -9,7 +9,7 @@ export type ValidatorDetails = z.infer<typeof ValidatorDataSchema>;
 export type Transaction = z.infer<typeof TransactionSchema>;
 
 export interface IConnector {
-  title: string;
+  title?: string;
   description?: string;
   connectedAddress: string;
   textAlignment: "left" | "center";

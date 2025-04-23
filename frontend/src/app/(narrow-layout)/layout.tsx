@@ -11,8 +11,8 @@ const NarrowLayout: FC<ChildrenProp> = (props) => {
     <ThemeProvider>
       <div className="flex min-h-screen w-screen flex-col">
         <TopBar type="profile" />
-        <div className="flex flex-1 justify-center bg-indigo-50 dark:bg-gray-950 dark:text-white">
-          <div className="px-4 py-12 sm:px-16">{children}</div>
+        <div className="flex flex-1 justify-center bg-indigo-50  dark:bg-gray-950 dark:text-white">
+          <div className="px-4 py-12 max-w-[90vw] md:max-w-[55vw]">{children}</div>
         </div>
         <BottomBar />
       </div>
