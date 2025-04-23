@@ -59,6 +59,7 @@ export type ValidatorLifecycleStatus =
   | "active_exiting"
   | "active_slashed"
   | "exited_unslashed"
+  | "exited"
   | "exited_slashed"
   | "withdrawal_possible"
   | "withdrawal_done";

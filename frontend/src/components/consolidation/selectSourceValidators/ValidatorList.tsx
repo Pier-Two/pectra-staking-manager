@@ -30,6 +30,7 @@ export const ValidatorList: FC<ISourceValidatorList> = (props) => {
   const activeValidators = validators?.filter(
     (validator) =>
       validator?.status === ValidatorStatus.ACTIVE &&
+      !validator?.hasPendingDeposit &&
       validator?.consolidationTransaction?.isConsolidatedValidator !== false,
   );
 
@@ -37,7 +38,8 @@ export const ValidatorList: FC<ISourceValidatorList> = (props) => {
     (validator) =>
       validator?.status === ValidatorStatus.INACTIVE ||
       validator?.status === ValidatorStatus.EXITED ||
-      validator?.consolidationTransaction?.isConsolidatedValidator === false,
+      validator?.consolidationTransaction?.isConsolidatedValidator === false ||
+      validator?.hasPendingDeposit,
   );
 
   return (
@@ -70,6 +72,7 @@ export const ValidatorList: FC<ISourceValidatorList> = (props) => {
           validator={validator}
         />
       ))}
+
       {inactiveValidators.map((validator, index) => (
         <ValidatorCard
           checked={validatorsToConsolidate

@@ -114,8 +114,10 @@ export const useSubmitConsolidate = () => {
 
     const results = [];
 
-    const nonConsolidateHashes = validatorsToConsolidate.filter(
-      (validator) => validator.consolidationTransaction === undefined,
+    const filteredValidatorsForConsolidation = validatorsToConsolidate.filter(
+      (validator) =>
+        validator.consolidationTransaction === undefined &&
+        !validator.hasPendingDeposit,
     );
 
     // if the user is consolidating to one of their own validators, and that validator is version
@@ -165,7 +167,7 @@ export const useSubmitConsolidate = () => {
 
     // this is the actual consolidation flow. First, it checks that the source validator is version 0x02. If it isn't,
     // it submits an upgrade transaction first, before submitting the consolidation transaction
-    for (const validator of nonConsolidateHashes) {
+    for (const validator of filteredValidatorsForConsolidation) {
       try {
         setCurrentPubKey(validator.publicKey);
 
@@ -242,7 +244,6 @@ export const useSubmitConsolidate = () => {
 
         // break out of the loop if it errors
         setCurrentPubKey("");
-        // TODO we should toast an error
 
         toast.error(
           `Error Consolidating Validator ${validator.validatorIndex}`,

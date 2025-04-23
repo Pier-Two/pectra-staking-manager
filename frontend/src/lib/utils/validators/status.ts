@@ -22,6 +22,7 @@ export const getValidatorStatus = (
     case "active_exiting":
     case "exited_unslashed":
     case "exited_slashed":
+    case "exited":
       return ValidatorStatus.EXITED;
 
     default:

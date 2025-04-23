@@ -12,6 +12,7 @@ import { parseError } from "pec/lib/utils/parseError";
 import { generateByteString } from "pec/lib/utils/bytes";
 import { SIGNATURE_BYTE_LENGTH } from "pec/constants/deposit";
 import { type DepositWorkflowStage } from "pec/types/batch-deposits";
+import { ValidatorStatus } from "pec/types/validator";
 
 interface BatchDepositRequest {
   pubKey: `0x${string}`;
@@ -46,10 +47,20 @@ export const useBatchDeposit = () => {
       return;
     }
 
+    const availableDeposits = deposits.filter(
+      (deposit) => deposit.validator.status !== ValidatorStatus.EXITED,
+    );
+
+    if (availableDeposits.length !== deposits.length) {
+      toast(
+        "Some validators are currently exiting so they have been removed from this deposit call.",
+      );
+    }
+
     setStage({ type: "sign-data" });
 
     try {
-      const formattedDeposits: BatchDepositRequest[] = deposits.map(
+      const formattedDeposits: BatchDepositRequest[] = availableDeposits.map(
         (deposit) => ({
           pubKey: deposit.validator.publicKey as `0x${string}`,
           amount: parseEther(deposit.amount.toString()),
@@ -69,7 +80,7 @@ export const useBatchDeposit = () => {
         }),
       });
 
-      const saveDepositDetails = deposits.map((deposit) => ({
+      const saveDepositDetails = availableDeposits.map((deposit) => ({
         validatorIndex: deposit.validator.validatorIndex,
         txHash: receipt.transactionHash,
         email: email,

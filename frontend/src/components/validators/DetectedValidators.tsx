@@ -14,15 +14,23 @@ export const DetectedValidators: FC<IDetectedValidators> = (props) => {
 
   const activeValidators = validators?.filter(
     (validator) =>
-      validator?.status === ValidatorStatus.ACTIVE ||
+      validator?.status === ValidatorStatus.ACTIVE &&
+      !validator?.hasPendingDeposit &&
       validator?.consolidationTransaction?.isConsolidatedValidator !== false,
   );
 
   const inactiveValidators = validators?.filter(
     (validator) =>
       validator?.status === ValidatorStatus.INACTIVE ||
-      validator?.status === ValidatorStatus.EXITED ||
       validator?.consolidationTransaction?.isConsolidatedValidator === false,
+  );
+
+  const exitedValidators = validators?.filter(
+    (validator) => validator?.status === ValidatorStatus.EXITED,
+  );
+
+  const depositPendingValidators = validators?.filter(
+    (validator) => validator?.hasPendingDeposit,
   );
 
   const [showValidators, setShowValidators] = useState<boolean>(false);
@@ -73,6 +81,7 @@ export const DetectedValidators: FC<IDetectedValidators> = (props) => {
               validator={validator}
             />
           ))}
+
           {inactiveValidators.map((validator, index) => (
             <ValidatorCard
               key={index + validator.validatorIndex}
@@ -80,6 +89,25 @@ export const DetectedValidators: FC<IDetectedValidators> = (props) => {
               shrink={true}
               validator={validator}
               info="(Consolidating)"
+            />
+          ))}
+
+          {exitedValidators.map((validator, index) => (
+            <ValidatorCard
+              key={index + validator.validatorIndex}
+              hasHover={false}
+              shrink={true}
+              validator={validator}
+            />
+          ))}
+
+          {depositPendingValidators.map((validator, index) => (
+            <ValidatorCard
+              key={index + validator.validatorIndex}
+              hasHover={false}
+              shrink={true}
+              validator={validator}
+              info="(Deposit Pending)"
             />
           ))}
         </div>

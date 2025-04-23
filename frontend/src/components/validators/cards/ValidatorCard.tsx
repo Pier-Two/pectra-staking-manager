@@ -3,13 +3,14 @@ import { BadgeMinus } from "lucide-react";
 import Image from "next/image";
 import { formatValidatorIndex } from "pec/helpers/formatValidatorIndex";
 import { DECIMAL_PLACES } from "pec/lib/constants";
-import type { IValidatorCard } from "pec/types/validator";
+import { ValidatorStatus, type IValidatorCard } from "pec/types/validator";
 import type { FC } from "react";
 import { formatEther } from "viem";
 
 export const ValidatorCard: FC<IValidatorCard> = (props) => {
   const { hasHover, shrink, validator, onClick, info } = props;
   const withdrawalAddressPrefix = validator.withdrawalAddress.slice(0, 4);
+  const isExited = validator.status === ValidatorStatus.EXITED;
 
   return (
     <div
@@ -29,26 +30,38 @@ export const ValidatorCard: FC<IValidatorCard> = (props) => {
         />
 
         <div className="flex h-10 flex-col gap-y-3">
-          <div className="font-570 text-[14px] leading-[14px] text-[#4C4C4C] dark:text-zinc-50">
+          <div className="text-[14px] font-570 leading-[14px] text-[#4C4C4C] dark:text-zinc-50">
             {formatValidatorIndex(validator.validatorIndex)} {info && info}
           </div>
-          <div className="font-380 text-[14px] leading-[14px] text-[#4C4C4C] dark:text-gray-300">
+          <div className="text-[14px] font-380 leading-[14px] text-[#4C4C4C] dark:text-gray-300">
             {validator.publicKey.slice(0, 5)}...
             {validator.publicKey.slice(-5)}
           </div>
         </div>
       </div>
 
-      <div className="flex grow basis-0 items-center justify-center gap-x-1">
-        <BadgeMinus className="h-4 w-4 text-zinc-400" />
-        <div className="font-570 mt-[2px] text-[14px] leading-[14px]">
-          {withdrawalAddressPrefix}
-        </div>
-      </div>
+      {!isExited && (
+        <>
+          <div className="flex grow basis-0 items-center justify-center gap-x-1">
+            <BadgeMinus className="h-4 w-4 text-zinc-400" />
+            <div className="mt-[2px] text-[14px] font-570 leading-[14px]">
+              {withdrawalAddressPrefix}
+            </div>
+          </div>
+          
+          <p className="grow basis-0 items-end text-right text-[14px] font-570">
+            Ξ{Number(formatEther(validator.balance)).toFixed(DECIMAL_PLACES)}
+          </p>
+        </>
+      )}
 
-      <p className="font-570 grow basis-0 items-end text-right text-[14px]">
-        Ξ{Number(formatEther(validator.balance)).toFixed(DECIMAL_PLACES)}
-      </p>
+      {isExited && (
+        <div className="flex grow basis-0 items-center justify-end gap-x-1">
+          <div className="text-[14px] font-570 leading-[14px] text-red-600">
+            Exited
+          </div>
+        </div>
+      )}
     </div>
   );
 };

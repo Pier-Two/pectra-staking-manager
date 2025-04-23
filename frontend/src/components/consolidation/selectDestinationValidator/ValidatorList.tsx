@@ -20,8 +20,15 @@ export const ValidatorList = () => {
   const inactiveValidators = validators?.filter(
     (validator) =>
       validator?.status === ValidatorStatus.INACTIVE ||
-      validator?.status === ValidatorStatus.EXITED ||
       validator?.consolidationTransaction?.isConsolidatedValidator === false,
+  );
+
+  const exitedValidators = validators?.filter(
+    (validator) => validator?.status === ValidatorStatus.EXITED,
+  );
+
+  const depositPendingValidators = validators?.filter(
+    (validator) => validator?.hasPendingDeposit,
   );
 
   const handleValidatorClick = (validator: ValidatorDetails) => {
@@ -72,11 +79,44 @@ export const ValidatorList = () => {
           <div className="text-md font-medium">
             Previously Consolidated Validators
           </div>
+
           {inactiveValidators.map((validator, index) => (
             <ValidatorCard
               key={`validator-${validator.validatorIndex}-${index}`}
               hasHover={false}
               onClick={() => handleValidatorClick(validator)}
+              shrink={false}
+              validator={validator}
+            />
+          ))}
+        </div>
+      )}
+
+      {exitedValidators && exitedValidators.length > 0 && (
+        <div className="mt-2 flex w-full flex-col gap-2">
+          <div className="text-md font-medium">Exited Validators</div>
+
+          {exitedValidators.map((validator, index) => (
+            <ValidatorCard
+              key={`validator-${validator.validatorIndex}-${index}`}
+              hasHover={false}
+              shrink={false}
+              validator={validator}
+            />
+          ))}
+        </div>
+      )}
+
+      {depositPendingValidators && depositPendingValidators.length > 0 && (
+        <div className="mt-2 flex w-full flex-col gap-2">
+          <div className="text-md font-medium">
+            Validators with Pending Deposits
+          </div>
+
+          {depositPendingValidators.map((validator, index) => (
+            <ValidatorCard
+              key={`validator-${validator.validatorIndex}-${index}`}
+              hasHover={false}
               shrink={false}
               validator={validator}
             />

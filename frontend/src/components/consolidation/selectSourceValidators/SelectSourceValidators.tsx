@@ -14,7 +14,7 @@ import { DetectedValidators } from "pec/components/validators/DetectedValidators
 import { useConsolidationStore } from "pec/hooks/use-consolidation-store";
 import { DECIMAL_PLACES } from "pec/lib/constants";
 import { EIconPosition } from "pec/types/components";
-import type { ValidatorDetails } from "pec/types/validator";
+import { ValidatorStatus, type ValidatorDetails } from "pec/types/validator";
 import { useEffect, useMemo, useState } from "react";
 import { formatEther } from "viem";
 import { ValidatorList } from "./ValidatorList";
@@ -48,7 +48,13 @@ export const SelectSourceValidators = () => {
       validatorsToConsolidate?.length === 0
     ) {
       if (availableSourceValidators) {
-        bulkSetConsolidationTargets(availableSourceValidators);
+        bulkSetConsolidationTargets(
+          availableSourceValidators.filter(
+            (validator) =>
+              validator.status === ValidatorStatus.ACTIVE &&
+              !validator.hasPendingDeposit,
+          ),
+        );
       }
     }
   }, [
@@ -126,7 +132,13 @@ export const SelectSourceValidators = () => {
             className="rounded-xl text-gray-800 data-[state=active]:bg-white data-[state=active]:text-indigo-800 dark:data-[state=active]:text-black"
             value="maxConsolidate"
             onClick={() =>
-              bulkSetConsolidationTargets(availableSourceValidators ?? [])
+              bulkSetConsolidationTargets(
+                availableSourceValidators?.filter(
+                  (validator) =>
+                    validator.status === ValidatorStatus.ACTIVE &&
+                    !validator.hasPendingDeposit,
+                ) ?? [],
+              )
             }
           >
             Max consolidate
