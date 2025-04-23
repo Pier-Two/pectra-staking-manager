@@ -71,7 +71,7 @@ export const AreaChartComponent: FC<IAreaChart> = ({ chart, isFullscreen }) => {
   return (
     <ChartContainer
       className={cn(
-        "mx-auto w-full min-h-[300px] max-w-[800px]",
+        "mx-auto w-full max-w-[800px]",
         isFullscreen && "max-w-none",
       )}
       config={chartConfig}
