@@ -1,13 +1,13 @@
 "use client";
 
-import { type FC, useState } from "react";
-import type { IConsolidationEmail } from "pec/types/consolidation";
 import { Mail } from "lucide-react";
-import { Switch } from "pec/components/ui/switch";
 import { Input } from "pec/components/ui/input";
+import { Switch } from "pec/components/ui/switch";
+import type { IConsolidationEmail } from "pec/types/consolidation";
+import { type FC, useState } from "react";
 
 export const Email: FC<IConsolidationEmail> = (props) => {
-  const { cardText, cardTitle, summaryEmail, setSummaryEmail } = props;
+  const { cardText, cardTitle, summaryEmail, setSummaryEmail, errors } = props;
   const [showEmail, setShowEmail] = useState<boolean>(false);
 
   return (
@@ -26,7 +26,10 @@ export const Email: FC<IConsolidationEmail> = (props) => {
 
         <Switch
           checked={showEmail}
-          onCheckedChange={() => setShowEmail(!showEmail)}
+          onCheckedChange={() => {
+            setShowEmail(!showEmail);
+            setSummaryEmail("");
+          }}
           className="relative items-center rounded-full transition-colors before:absolute before:h-5 before:w-5 before:rounded-full before:bg-white before:transition-transform before:duration-300 data-[state=checked]:bg-indigo-500 data-[state=unchecked]:bg-indigo-200 data-[state=unchecked]:dark:bg-gray-600 data-[state=checked]:before:translate-x-5 data-[state=unchecked]:before:translate-x-0"
         />
       </div>
@@ -39,6 +42,10 @@ export const Email: FC<IConsolidationEmail> = (props) => {
           onChange={(e) => setSummaryEmail(e.target.value)}
         />
       )}
+
+      <div className="mt-1 text-xs text-red-500">
+        {errors?.email && "Please enter a valid email address"}
+      </div>
     </div>
   );
 };

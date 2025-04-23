@@ -29,7 +29,7 @@ export const DepositWorkflow = ({
   balance,
 }: IDepositWorkflowProps) => {
   const { submitBatchDeposit, stage, resetStage } = useBatchDeposit();
-
+  
   const initialValues: DepositType = {
     deposits: [],
     totalToDistribute: 0,
@@ -43,7 +43,7 @@ export const DepositWorkflow = ({
     handleSubmit,
     setValue,
     reset,
-    formState: { errors },
+    formState: { isValid, errors },
   } = useForm<DepositType>({
     resolver: zodResolver(DepositSchema(balance)),
     defaultValues: initialValues,
@@ -72,6 +72,7 @@ export const DepositWorkflow = ({
   );
 
   const shouldBeDisabled =
+    !isValid ||
     totalAllocated !== totalToDistribute ||
     totalToDistribute <= 0 ||
     totalAllocated > balance;
@@ -188,7 +189,10 @@ export const DepositWorkflow = ({
                   cardText="Add your email to receive an email when your deposits are complete."
                   cardTitle="Notify me when complete"
                   summaryEmail={email}
-                  setSummaryEmail={(email) => setValue("email", email)}
+                  errors={errors}
+                  setSummaryEmail={(email) => setValue("email", email, {
+                    shouldValidate: true,
+                  })}
                 />
 
                 {totalToDistribute > 0 && (
