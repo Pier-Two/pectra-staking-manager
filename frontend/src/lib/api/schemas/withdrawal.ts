@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { ValidatorDataSchema } from "./validator";
 import { DatabaseWithdrawalSchema } from "./database/withdrawal";
+import { ValidatorDataSchema } from "./validator";
 
 export const WithdrawalFormSchema = z.object({
   withdrawals: z.array(
@@ -11,7 +11,7 @@ export const WithdrawalFormSchema = z.object({
         .min(0, { message: "Please enter an acceptable amount" }),
     }),
   ),
-  email: z.string().email().optional(),
+  email: z.string().email().optional().or(z.literal("")),
 });
 
 export type WithdrawalFormType = z.infer<typeof WithdrawalFormSchema>;

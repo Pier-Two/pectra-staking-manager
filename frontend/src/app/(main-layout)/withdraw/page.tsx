@@ -175,7 +175,10 @@ const Withdrawal: FC = () => {
           cardText="Add your email to receive an email when your withdrawals are complete."
           cardTitle="Notify me when complete"
           summaryEmail={email}
-          setSummaryEmail={(email) => setValue("email", email)}
+          setSummaryEmail={(email) => setValue("email", email, {
+            shouldValidate: true,
+          })}
+          errors={errors}
         />
 
         <ValidatorHeader
