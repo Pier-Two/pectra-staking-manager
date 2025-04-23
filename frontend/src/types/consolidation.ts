@@ -18,5 +18,5 @@ export interface IConsolidationEmail {
   cardTitle: string;
   summaryEmail: string;
   setSummaryEmail: (email: string) => void;
-  errors: FieldErrors<DepositType>;
+  errors?: FieldErrors<DepositType>;
 }
