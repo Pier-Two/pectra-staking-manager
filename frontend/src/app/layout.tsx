@@ -3,6 +3,7 @@ import { AppSidebar } from "pec/components/app-sidebar";
 import { SidebarProvider } from "pec/components/ui/sidebar";
 import { Toaster } from "pec/components/ui/sonner";
 import { NetworkContextProvider } from "pec/contexts/NetworkContext";
+import { ThemeProvider } from "pec/contexts/ThemeContext";
 import { cn } from "pec/lib/utils";
 import "pec/styles/globals.css";
 import { TRPCReactProvider } from "pec/trpc/react";
@@ -34,15 +35,17 @@ export default function RootLayout({
     <html lang="en" className={cn(saans.variable, inter.variable)}>
       <NetworkContextProvider>
         <TRPCReactProvider>
-          <body>
-            <SidebarProvider>
-              <div className="md:hidden">
-                <AppSidebar />
-              </div>
-              <main>{children}</main>
-            </SidebarProvider>
-            <Toaster />
-          </body>
+          <ThemeProvider>
+            <body>
+              <SidebarProvider>
+                <div className="md:hidden">
+                  <AppSidebar />
+                </div>
+                <main>{children}</main>
+              </SidebarProvider>
+              <Toaster />
+            </body>
+          </ThemeProvider>
         </TRPCReactProvider>
       </NetworkContextProvider>
     </html>
