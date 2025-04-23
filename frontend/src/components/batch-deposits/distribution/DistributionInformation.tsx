@@ -50,13 +50,13 @@ export const DistributionInformation = ({
 
   return (
     <div className="flex flex-col w-full gap-4 rounded-xl border border-indigo-400 bg-white p-4 dark:border dark:border-gray-800 dark:bg-black">
-      <div className="flex w-full flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-        <div className="flex w-full flex-col gap-4 sm:flex-row sm:items-center sm:gap-10">
+      <div className="flex flex-col md:flex-row gap-4 justify-around">
+        <div className="flex flex-row gap-4 items-center">
           {distributionStats.map((stat, index) => (
             <div key={stat.label} className="flex items-center">
               {index > 0 && (
                 <Separator
-                  className="mx-5 h-12 border-l border-gray-200"
+                  className="mx-5 h-12 bg-gray-300 dark:bg-gray-800"
                   orientation="vertical"
                 />
               )}
@@ -83,7 +83,7 @@ export const DistributionInformation = ({
           ))}
         </div>
 
-        <div className="flex w-full flex-shrink-0 lg:w-auto">
+        <div className="flex items-center justify-center md:min-w-52">
           {stage.type === "transactions-finalised" && (
             <div className="flex flex-row items-center gap-2">
               <Check className="h-4 w-4 text-green-500" />
@@ -92,7 +92,7 @@ export const DistributionInformation = ({
           )}
           {stage.type === "data-capture" && (
             <PrimaryButton
-              className="w-full lg:w-auto"
+              className="w-full"
               onClick={onSubmit}
               label={"Deposit"}
               disabled={submitButtonDisabled}
