@@ -19,4 +19,6 @@ export interface IConsolidationEmail {
   summaryEmail: string;
   setSummaryEmail: (email: string) => void;
   errors?: FieldErrors<DepositType>;
+  showEmail: boolean;
+  setShowEmail: (showEmail: boolean) => void;
 }

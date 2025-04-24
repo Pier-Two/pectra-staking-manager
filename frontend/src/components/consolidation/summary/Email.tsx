@@ -4,11 +4,10 @@ import { Mail } from "lucide-react";
 import { Input } from "pec/components/ui/input";
 import { Switch } from "pec/components/ui/switch";
 import type { IConsolidationEmail } from "pec/types/consolidation";
-import { type FC, useState } from "react";
+import { type FC } from "react";
 
 export const Email: FC<IConsolidationEmail> = (props) => {
-  const { cardText, cardTitle, summaryEmail, setSummaryEmail, errors } = props;
-  const [showEmail, setShowEmail] = useState<boolean>(false);
+  const { cardText, cardTitle, summaryEmail, setSummaryEmail, errors, showEmail, setShowEmail } = props;
 
   return (
     <div className="flex w-full flex-col items-center justify-between gap-x-4 space-y-4 rounded-xl border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-black">

@@ -11,7 +11,7 @@ import {
 import { DECIMAL_PLACES } from "pec/lib/constants";
 import { EDistributionMethod } from "pec/types/batch-deposits";
 import type { ValidatorDetails } from "pec/types/validator";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { Email } from "../consolidation/summary/Email";
 import { DistributionMethod } from "./distribution/DistributionMethod";
@@ -29,6 +29,7 @@ export const DepositWorkflow = ({
   balance,
 }: IDepositWorkflowProps) => {
   const { submitBatchDeposit, stage, resetStage } = useBatchDeposit();
+  const [showEmail, setShowEmail] = useState(false);
   
   const initialValues: DepositType = {
     deposits: [],
@@ -60,6 +61,8 @@ export const DepositWorkflow = ({
     name: ["deposits", "distributionMethod", "totalToDistribute", "email"],
   });
 
+  const email = watchEmail ?? "";
+
   // Stupid RHF doesn't handle an empty input and returns a string, even when you specify its a number
   const totalToDistribute = isNaN(watchTotalToDistribute)
     ? 0
@@ -75,9 +78,10 @@ export const DepositWorkflow = ({
     !isValid ||
     totalAllocated !== totalToDistribute ||
     totalToDistribute <= 0 ||
-    totalAllocated > balance;
+    totalAllocated > balance ||
+    (showEmail && email.length === 0);
 
-  const email = watchEmail ?? "";
+  
 
   const handleDistributionMethodChange = (method: EDistributionMethod) => {
     setValue("distributionMethod", method);
@@ -186,6 +190,8 @@ export const DepositWorkflow = ({
                 />
 
                 <Email
+                  showEmail={showEmail}
+                  setShowEmail={setShowEmail}
                   cardText="Add your email to receive an email when your deposits are complete."
                   cardTitle="Notify me when complete"
                   summaryEmail={email}

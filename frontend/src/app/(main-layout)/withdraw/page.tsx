@@ -27,7 +27,7 @@ import WithdrawalLoading from "./loading";
 
 const Withdrawal: FC = () => {
   const walletAddress = useWalletAddress();
-
+  const [showEmail, setShowEmail] = useState(false);
   const { data: rawValidatorData } = useValidators();
   const { submitWithdrawals, stage, setStage } = useSubmitWithdraw();
 
@@ -54,6 +54,7 @@ const Withdrawal: FC = () => {
   const watchedEmail = watch("email");
   const email = watchedEmail ?? "";
   const withdrawalTotal = sumBy(withdrawals, (withdrawal) => withdrawal.amount);
+  const disabled = isValid && withdrawalTotal > 0 && (showEmail ? email.length > 0 : true)
   const signSubmitFinaliseInProgress = stage?.type === "sign-submit-finalise";
   const columnHeaders = signSubmitFinaliseInProgress ? WITHDRAWAL_COLUMN_HEADERS.filter((column) => column.label === "Validator") : WITHDRAWAL_COLUMN_HEADERS;
 
@@ -163,7 +164,7 @@ const Withdrawal: FC = () => {
         <WithdrawalInformation
           buttonText="Withdraw"
           handleMaxAllocation={handleMaxAllocation}
-          isValid={isValid && withdrawalTotal > 0}
+          disabled={disabled}
           onSubmit={handleSubmit(onSubmit)}
           resetWithdrawal={handleResetWithdrawal}
           stage={stage}
@@ -179,6 +180,8 @@ const Withdrawal: FC = () => {
             shouldValidate: true,
           })}
           errors={errors}
+          showEmail={showEmail}
+          setShowEmail={setShowEmail}
         />
 
         <ValidatorHeader
