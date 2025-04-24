@@ -3,14 +3,13 @@ import { BadgeMinus } from "lucide-react";
 import Image from "next/image";
 import { formatValidatorIndex } from "pec/helpers/formatValidatorIndex";
 import { DECIMAL_PLACES } from "pec/lib/constants";
-import { ValidatorStatus, type IValidatorCard } from "pec/types/validator";
+import type { IValidatorCard } from "pec/types/validator";
 import type { FC } from "react";
 import { formatEther } from "viem";
 
 export const ValidatorCard: FC<IValidatorCard> = (props) => {
   const { hasHover, shrink, validator, onClick, info } = props;
   const withdrawalAddressPrefix = validator.withdrawalAddress.slice(0, 4);
-  const isExited = validator.status === ValidatorStatus.EXITED;
 
   return (
     <div
@@ -40,28 +39,16 @@ export const ValidatorCard: FC<IValidatorCard> = (props) => {
         </div>
       </div>
 
-      {!isExited && (
-        <>
-          <div className="flex grow basis-0 items-center justify-center gap-x-1">
-            <BadgeMinus className="h-4 w-4 text-zinc-400" />
-            <div className="mt-[2px] text-[14px] font-570 leading-[14px]">
-              {withdrawalAddressPrefix}
-            </div>
-          </div>
-          
-          <p className="grow basis-0 items-end text-right text-[14px] font-570">
-            Ξ{Number(formatEther(validator.balance)).toFixed(DECIMAL_PLACES)}
-          </p>
-        </>
-      )}
-
-      {isExited && (
-        <div className="flex grow basis-0 items-center justify-end gap-x-1">
-          <div className="text-[14px] font-570 leading-[14px] text-red-600">
-            Exited
-          </div>
+      <div className="flex grow basis-0 items-center justify-center gap-x-1">
+        <BadgeMinus className="h-4 w-4 text-zinc-400" />
+        <div className="mt-[2px] text-[14px] font-570 leading-[14px]">
+          {withdrawalAddressPrefix}
         </div>
-      )}
+      </div>
+
+      <p className="grow basis-0 items-end text-right text-[14px] font-570">
+        Ξ{Number(formatEther(validator.balance)).toFixed(DECIMAL_PLACES)}
+      </p>
     </div>
   );
 };

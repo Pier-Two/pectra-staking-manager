@@ -9,6 +9,7 @@ import { DepositSelectionValidatorCard } from "../../validators/cards/DepositSel
 import { type SortDirection } from "./ColumnHeader";
 import { ValidatorHeader } from "./ValidatorHeader";
 import { ValidatorListHeaders } from "./ValidatorListHeaders";
+import { validatorIsActive } from "pec/lib/utils/validators/status";
 
 export interface ISelectValidatorsProps {
   clearSelectedValidators: () => void;
@@ -34,9 +35,7 @@ export const SelectValidators = ({
   validators,
 }: ISelectValidatorsProps) => {
   const availableValidators = useMemo(() => {
-    return validators.filter(
-      (validator) => validator.status === ValidatorStatus.ACTIVE,
-    );
+    return validators.filter((validator) => validatorIsActive(validator));
   }, [validators]);
 
   const [sortColumn, setSortColumn] = useState<string | null>(null);
@@ -64,8 +63,14 @@ export const SelectValidators = ({
   };
 
   const sortedValidators = (() => {
-    if (!sortColumn || !sortDirection || !availableValidators) return availableValidators;
-    return orderBy(availableValidators, ["validatorIndex", "balance"], [sortDirection]);
+    if (!sortColumn || !sortDirection || !availableValidators)
+      return availableValidators;
+
+    return orderBy(
+      availableValidators,
+      ["validatorIndex", "balance"],
+      [sortDirection],
+    );
   })();
 
   return (

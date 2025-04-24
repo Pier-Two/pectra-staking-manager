@@ -35,6 +35,7 @@ export interface IValidatorCard {
   validator: ValidatorDetails;
   onClick?: () => void;
   info?: string;
+  tooltip?: string;
 }
 
 export interface ISourceValidatorCard {

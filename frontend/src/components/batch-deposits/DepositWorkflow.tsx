@@ -186,7 +186,7 @@ export const DepositWorkflow = ({
                 />
 
                 <Email
-                  cardText="Add your email to receive an email when your deposits are complete."
+                  cardText="Add your email to receive an email when your deposits has been processed."
                   cardTitle="Notify me when complete"
                   summaryEmail={email}
                   setSummaryEmail={(email) => setValue("email", email)}

@@ -4,34 +4,21 @@ import clsx from "clsx";
 import { ChevronsLeftRight } from "lucide-react";
 import Image from "next/image";
 import { DECIMAL_PLACES } from "pec/lib/constants";
-import { ValidatorStatus, type IDetectedValidators } from "pec/types/validator";
+import { type IDetectedValidators } from "pec/types/validator";
 import { useState, type FC } from "react";
 import { formatEther } from "viem";
 import { ValidatorCard } from "./cards/ValidatorCard";
+import { validatorIsActive } from "pec/lib/utils/validators/status";
 
 export const DetectedValidators: FC<IDetectedValidators> = (props) => {
   const { cardTitle, validators } = props;
 
-  const activeValidators = validators?.filter(
-    (validator) =>
-      validator?.status === ValidatorStatus.ACTIVE &&
-      !validator?.hasPendingDeposit &&
-      validator?.consolidationTransaction?.isConsolidatedValidator !== false,
+  const activeValidators = validators?.filter((validator) =>
+    validatorIsActive(validator),
   );
 
-  const inactiveValidators = validators?.filter(
-    (validator) =>
-      validator?.status === ValidatorStatus.INACTIVE ||
-      validator?.consolidationTransaction?.isConsolidatedValidator === false,
-  );
-
-  const exitedValidators = validators?.filter(
-    (validator) => validator?.status === ValidatorStatus.EXITED,
-  );
-
-  const depositPendingValidators = validators?.filter(
-    (validator) => validator?.hasPendingDeposit,
-  );
+  const numberOfInactiveValidators =
+    validators?.length - activeValidators?.length;
 
   const [showValidators, setShowValidators] = useState<boolean>(false);
 
@@ -57,7 +44,9 @@ export const DetectedValidators: FC<IDetectedValidators> = (props) => {
             height={24}
           />
           <p className="text-[14px] font-570 leading-[14px] text-zinc-950 dark:text-zinc-50">
-            {validators.length} {cardTitle}
+            {validators.length} {cardTitle}{" "}
+            {numberOfInactiveValidators > 0 &&
+              `(${numberOfInactiveValidators} of which are inactive/exiting)`}
           </p>
         </div>
 
@@ -79,35 +68,6 @@ export const DetectedValidators: FC<IDetectedValidators> = (props) => {
               hasHover={false}
               shrink={true}
               validator={validator}
-            />
-          ))}
-
-          {inactiveValidators.map((validator, index) => (
-            <ValidatorCard
-              key={index + validator.validatorIndex}
-              hasHover={false}
-              shrink={true}
-              validator={validator}
-              info="(Consolidating)"
-            />
-          ))}
-
-          {exitedValidators.map((validator, index) => (
-            <ValidatorCard
-              key={index + validator.validatorIndex}
-              hasHover={false}
-              shrink={true}
-              validator={validator}
-            />
-          ))}
-
-          {depositPendingValidators.map((validator, index) => (
-            <ValidatorCard
-              key={index + validator.validatorIndex}
-              hasHover={false}
-              shrink={true}
-              validator={validator}
-              info="(Deposit Pending)"
             />
           ))}
         </div>

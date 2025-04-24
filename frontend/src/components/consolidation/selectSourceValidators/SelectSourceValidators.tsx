@@ -19,6 +19,7 @@ import { ValidatorStatus, type ValidatorDetails } from "pec/types/validator";
 import { useEffect, useMemo, useState } from "react";
 import { formatEther } from "viem";
 import { ValidatorList } from "./ValidatorList";
+import { validatorIsActive } from "pec/lib/utils/validators/status";
 
 export const SelectSourceValidators = () => {
   const {
@@ -35,12 +36,8 @@ export const SelectSourceValidators = () => {
   const { data: validators } = useValidators();
 
   const availableSourceValidators = useMemo(() => {
-    return validators?.filter(
-      (validator) =>
-        validator.validatorIndex !== consolidationTarget?.validatorIndex &&
-        validator.consolidationTransaction?.isConsolidatedValidator !== false,
-    );
-  }, [validators, consolidationTarget]);
+    return validators?.filter((validator) => validatorIsActive(validator));
+  }, [validators]);
 
   useEffect(() => {
     if (
@@ -48,13 +45,7 @@ export const SelectSourceValidators = () => {
       validatorsToConsolidate?.length === 0
     ) {
       if (availableSourceValidators) {
-        bulkSetConsolidationTargets(
-          availableSourceValidators.filter(
-            (validator) =>
-              validator.status === ValidatorStatus.ACTIVE &&
-              !validator.hasPendingDeposit,
-          ),
-        );
+        bulkSetConsolidationTargets(availableSourceValidators);
       }
     }
   }, [
@@ -129,23 +120,17 @@ export const SelectSourceValidators = () => {
       >
         <TabsList className="grid w-full grid-cols-2 rounded-xl bg-gray-200 dark:bg-gray-900">
           <TabsTrigger
-            className="rounded-xl text-gray-800 dark:text-gray-200 data-[state=active]:bg-white data-[state=active]:text-indigo-800 dark:data-[state=active]:text-black"
+            className="rounded-xl text-gray-800 data-[state=active]:bg-white data-[state=active]:text-indigo-800 dark:text-gray-200 dark:data-[state=active]:text-black"
             value="maxConsolidate"
             onClick={() =>
-              bulkSetConsolidationTargets(
-                availableSourceValidators?.filter(
-                  (validator) =>
-                    validator.status === ValidatorStatus.ACTIVE &&
-                    !validator.hasPendingDeposit,
-                ) ?? [],
-              )
+              bulkSetConsolidationTargets(availableSourceValidators ?? [])
             }
           >
             Max consolidate
           </TabsTrigger>
 
           <TabsTrigger
-            className="rounded-xl text-gray-800 dark:text-gray-200 data-[state=active]:bg-white data-[state=active]:text-indigo-800 dark:data-[state=active]:text-black"
+            className="rounded-xl text-gray-800 data-[state=active]:bg-white data-[state=active]:text-indigo-800 dark:text-gray-200 dark:data-[state=active]:text-black"
             value="manuallySelect"
             onClick={() => bulkSetConsolidationTargets([])}
           >

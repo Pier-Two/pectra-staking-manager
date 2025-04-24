@@ -24,11 +24,17 @@ import { type FC, useMemo, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { formatEther } from "viem";
 import WithdrawalLoading from "./loading";
+import { validatorIsActive } from "pec/lib/utils/validators/status";
 
 const Withdrawal: FC = () => {
   const walletAddress = useWalletAddress();
 
   const { data: rawValidatorData } = useValidators();
+
+  const availableValidators = useMemo(() => {
+    return rawValidatorData?.filter((validator) => validatorIsActive(validator));
+  }, [rawValidatorData]);
+
   const { submitWithdrawals, stage, setStage } = useSubmitWithdraw();
 
   const {
@@ -74,14 +80,14 @@ const Withdrawal: FC = () => {
   };
 
   const validators = useMemo(() => {
-    if (!sortColumn || !sortDirection) return rawValidatorData;
+    if (!sortColumn || !sortDirection) return availableValidators;
 
     return orderBy(
-      rawValidatorData,
+      availableValidators,
       [sortColumn as keyof ValidatorDetails],
       [sortDirection],
     );
-  }, [rawValidatorData, sortColumn, sortDirection]);
+  }, [availableValidators, sortColumn, sortDirection]);
 
   if (!validators) return <WithdrawalLoading />;
 

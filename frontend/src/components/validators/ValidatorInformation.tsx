@@ -1,3 +1,4 @@
+import { validatorIsActive } from "pec/lib/utils/validators/status";
 import type { IGenericValidators } from "pec/types/validator";
 import type { FC } from "react";
 import { HiBolt } from "react-icons/hi2";
@@ -5,8 +6,10 @@ import { HiBolt } from "react-icons/hi2";
 export const ValidatorInformation: FC<IGenericValidators> = (props) => {
   const { validators } = props;
 
-  const numberOfOldValidators = validators.filter((validator) =>
-    validator.withdrawalAddress.startsWith("0x01"),
+  const numberOfOldValidators = validators.filter(
+    (validator) =>
+      validator.withdrawalAddress.startsWith("0x01") &&
+      validatorIsActive(validator),
   ).length;
 
   return (
