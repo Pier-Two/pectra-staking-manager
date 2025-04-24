@@ -15,8 +15,10 @@ import {
   useEnsAvatar,
   useEnsName,
   useWalletDetailsModal,
+  useActiveWalletConnectionStatus,
 } from "thirdweb/react";
 import { Button } from "../button";
+
 export const ConnectWalletButton = ({ className }: StyleableComponent) => {
   const router = useRouter();
   const { darkMode } = useTheme();
@@ -25,6 +27,14 @@ export const ConnectWalletButton = ({ className }: StyleableComponent) => {
   const [isMounted, setIsMounted] = useState(false);
   const { data: ensName } = useEnsName({ client, address });
   const { data: ensAvatar } = useEnsAvatar({ client, ensName });
+  const connectionStatus = useActiveWalletConnectionStatus();
+
+  // watch for disconnection and redirect to welcome page
+  useEffect(() => {
+    if (connectionStatus === "disconnected") {
+      router.push("/welcome");
+    }
+  }, [connectionStatus, router]);
 
   // This is to prevent the component from rendering on the server causing hydration errors from the dynamic theme styling
   useEffect(() => {
@@ -84,10 +94,6 @@ export const ConnectWalletButton = ({ className }: StyleableComponent) => {
         size: "wide",
         title: "Login/Sign up",
       }}
-      onDisconnect={() => {
-        router.push("/welcome");
-      }}
     />
   );
 };
-
