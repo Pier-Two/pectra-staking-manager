@@ -3,7 +3,7 @@ import type { FC } from "react";
 
 const BatchDepositLoading: FC = () => {
   return (
-    <div className="animate-pulse space-y-8">
+    <div className="w-full animate-pulse space-y-8">
       <div className="flex gap-x-4 text-indigo-800 dark:text-indigo-300">
         <ArrowDownToDot className="h-10 w-10" />
         <div className="text-3xl">Batch Deposit</div>

@@ -32,7 +32,9 @@ const Withdrawal: FC = () => {
   const { data: rawValidatorData } = useValidators();
 
   const availableValidators = useMemo(() => {
-    return rawValidatorData?.filter((validator) => validatorIsActive(validator));
+    return rawValidatorData?.filter((validator) =>
+      validatorIsActive(validator),
+    );
   }, [rawValidatorData]);
 
   const { submitWithdrawals, stage, setStage } = useSubmitWithdraw();
@@ -61,7 +63,9 @@ const Withdrawal: FC = () => {
   const email = watchedEmail ?? "";
   const withdrawalTotal = sumBy(withdrawals, (withdrawal) => withdrawal.amount);
   const signSubmitFinaliseInProgress = stage?.type === "sign-submit-finalise";
-  const columnHeaders = signSubmitFinaliseInProgress ? WITHDRAWAL_COLUMN_HEADERS.filter((column) => column.label === "Validator") : WITHDRAWAL_COLUMN_HEADERS;
+  const columnHeaders = signSubmitFinaliseInProgress
+    ? WITHDRAWAL_COLUMN_HEADERS.filter((column) => column.label === "Validator")
+    : WITHDRAWAL_COLUMN_HEADERS;
 
   const [sortColumn, setSortColumn] = useState<string | null>("validator");
   const [sortDirection, setSortDirection] = useState<SortDirection>(null);
@@ -137,7 +141,7 @@ const Withdrawal: FC = () => {
   };
 
   return (
-    <div className="flex flex-col gap-y-4">
+    <div className="flex w-full flex-col gap-y-4">
       <div className="space-y-8">
         <div className="flex flex-col gap-4">
           <div className="flex gap-x-4 text-indigo-800 dark:text-indigo-300">

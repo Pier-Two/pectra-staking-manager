@@ -19,7 +19,7 @@ const ValidatorsFound: FC = () => {
   if (!walletAddress || !data || !isFetched) return <ValidatorsFoundLoading />;
 
   return (
-    <div className="flex flex-col gap-y-9">
+    <div className="flex w-full flex-col gap-y-9">
       <Connector
         title="Validators found!"
         connectedAddress={walletAddress}
