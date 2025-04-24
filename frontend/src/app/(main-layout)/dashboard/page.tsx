@@ -11,13 +11,15 @@ import DashboardLoading from "./loading";
 import { useValidators } from "pec/hooks/useValidators";
 import { useValidatorPerformance } from "pec/hooks/useValidatorPerformance";
 import { useEthPrice } from "pec/hooks/useEthPrice";
-import { FULL_WIDTH_STYLE } from "pec/constants/styles";
-import { cn } from "pec/lib/utils";
-import { validatorIsActive } from "pec/lib/utils/validators/status";
+import { ValidatorStatus } from "pec/types/validator";
 
 const Dashboard: FC = () => {
   const walletAddress = useWalletAddress();
-  const { data: validators, isFetched: isValidatorsFetched } = useValidators();
+  const {
+    data: validators,
+    isFetched: isValidatorsFetched,
+    groupedValidators,
+  } = useValidators();
   const { data: ethPrice, isFetched: isEthPriceFetched } = useEthPrice(
     "ETH",
     "USD",
@@ -36,9 +38,7 @@ const Dashboard: FC = () => {
   )
     return <DashboardLoading />;
 
-  const activeValidators = validators?.filter((validator) =>
-    validatorIsActive(validator),
-  );
+  const activeValidators = groupedValidators[ValidatorStatus.ACTIVE] ?? [];
 
   const inactiveValidators = validators.length - activeValidators.length;
 
@@ -59,8 +59,8 @@ const Dashboard: FC = () => {
       </div>
 
       <div className="relative flex h-full w-screen justify-center bg-white">
-        <div className={"max-w-[80rem]"}>
-          <div className="w-full space-y-8 px-2 py-8 md:px-8">
+        <div className={"w-full max-w-[80rem]"}>
+          <div className="w-full space-y-8 px-2 py-8 md:px-8 xl:px-0">
             <h2 className="text-[26px] font-570 leading-[26px] text-primary-dark dark:text-indigo-200">
               My Validators
             </h2>
