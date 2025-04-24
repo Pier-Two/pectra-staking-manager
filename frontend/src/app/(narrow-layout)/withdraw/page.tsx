@@ -19,6 +19,7 @@ import {
   type WithdrawalFormType,
 } from "pec/lib/api/schemas/withdrawal";
 import { formatAddressToShortenedString } from "pec/lib/utils/address";
+import { parseEtherToFixedDecimals } from "pec/lib/utils/parseAmounts";
 import { validatorIsActive } from "pec/lib/utils/validators/status";
 import type { ValidatorDetails } from "pec/types/validator";
 import { type FC, useMemo, useState } from "react";
@@ -45,6 +46,7 @@ const Withdrawal: FC = () => {
     reset,
     control,
     watch,
+    trigger,
     register,
     formState: { isValid, errors },
   } = useForm<WithdrawalFormType>({
@@ -106,7 +108,7 @@ const Withdrawal: FC = () => {
       // Add if not found
       append({
         validator: cloneDeep(validator),
-        amount: 0,
+        amount: Number(parseEtherToFixedDecimals(validator.balance)),
       });
     } else {
       // Remove if found
@@ -142,36 +144,36 @@ const Withdrawal: FC = () => {
   };
 
   return (
-    <div className="flex w-full flex-col gap-y-4">
-      <div className="space-y-8">
-        <div className="flex flex-col gap-4">
-          <div className="flex gap-x-4 text-indigo-800 dark:text-indigo-300">
-            <ArrowUpFromDot className="h-8 w-8" />
-            <div className="text-2xl font-medium">Withdrawal</div>
+    <div className="flex w-full flex-col p-2">
+      <div className="space-y-8 px-4">
+        <div className="flex flex-col gap-2">
+          <div className="flex gap-x-4 items-center text-[#313C86] dark:text-indigo-300">
+            <ArrowUpFromDot className="h-6 w-6" />
+            <div className="text-[26px] font-570">Withdrawal</div>
           </div>
 
-          <div className="text-sm text-gray-700 dark:text-gray-300">
+          <div className="text-xs font-380 text-[#4C4C4C] dark:text-gray-300 font-inter">
             Submit onchain execution layer withdrawal requests against
             validators, as per Pectra EIP-7002.
           </div>
         </div>
 
-        <div className="ms-4 flex flex-row items-center gap-3">
-          <Image
-            className="h-4 w-4"
-            src="/icons/Wallet.svg"
-            alt="Withdrawal Wallet"
-            width={16}
-            height={16}
-          />
+        <div className="flex flex-col gap-5 pt-8">
+          <div className="flex flex-row pl-4 gap-3">
+            <Image
+              className="h-4 w-4"
+              src="/icons/Wallet.svg"
+              alt="Withdrawal Wallet"
+              width={16}
+              height={16}
+            />
 
-          <div className="text-sm">Withdrawal address</div>
-          <div className="text-sm text-gray-500 dark:text-gray-300">
-            {formatAddressToShortenedString(walletAddress)}
+            <div className="text-sm font-570">Withdrawal address</div>
+            <div className="text-sm text-[#4C4C4C] dark:text-gray-300">
+              {formatAddressToShortenedString(walletAddress)}
+            </div>
           </div>
-        </div>
-
-        <WithdrawalInformation
+          <WithdrawalInformation
           buttonText="Withdraw"
           handleMaxAllocation={handleMaxAllocation}
           disabled={disabled}
@@ -180,7 +182,8 @@ const Withdrawal: FC = () => {
           stage={stage}
           validatorsSelected={withdrawals.length}
           withdrawalTotal={withdrawalTotal}
-        />
+          />
+        </div>
 
         <Email
           cardText="Add your email to receive an email when your withdrawals are complete."

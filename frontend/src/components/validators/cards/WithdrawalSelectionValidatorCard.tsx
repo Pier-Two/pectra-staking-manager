@@ -34,7 +34,7 @@ export const WithdrawalSelectionValidatorCard = ({
   const balanceFixedDecimals = parseEtherToFixedDecimals(balance);
   const signSubmitFinaliseInProgress = stage.type === "sign-submit-finalise";
   const transactionStatus = signSubmitFinaliseInProgress ? stage?.txHashes[validatorIndex] : undefined;
-  
+
   // IF we are submitting a withdrawal and the validator is not being withdrawn from, don't render the card
   if (signSubmitFinaliseInProgress && !transactionStatus) {
     return null;
@@ -127,7 +127,6 @@ export const WithdrawalSelectionValidatorCard = ({
                       "opacity-50": locked,
                     })}
                     disabled={locked}
-                    defaultValue={balanceFixedDecimals}
                     type="number"
                     step="any"
                     {...register(`withdrawals.${withdrawalIndex}.amount`, {
