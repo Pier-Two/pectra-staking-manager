@@ -1,6 +1,7 @@
 import { AlignLeft, Check } from "lucide-react";
 import Image from "next/image";
 import { DECIMAL_PLACES } from "pec/lib/constants";
+import { cn } from "pec/lib/utils";
 import type { WithdrawWorkflowStages } from "pec/types/withdraw";
 import { PectraSpinner } from "../ui/custom/pectraSpinner";
 import { PrimaryButton } from "../ui/custom/PrimaryButton";
@@ -14,6 +15,7 @@ export interface IWithdrawalInformation {
   onSubmit: () => void;
   resetWithdrawal: () => void;
   stage: WithdrawWorkflowStages;
+  validatorsTotal: number;
   validatorsSelected: number;
   withdrawalTotal: number;
 }
@@ -25,6 +27,7 @@ export const WithdrawalInformation = ({
   onSubmit,
   resetWithdrawal,
   stage,
+  validatorsTotal,
   validatorsSelected,
   withdrawalTotal,
 }: IWithdrawalInformation) => {
@@ -117,18 +120,31 @@ export const WithdrawalInformation = ({
             
           </>
           )}
-
           {stage.type === "data-capture" && (
-            <div className="flex flex-row gap-4">
-              <SecondaryButton
-                className="border-gray-200 dark:border-gray-800"
-                label="Max"
-                disabled={false}
-                onClick={handleMaxAllocation}
-              />
+            <div className="flex flex-row gap-4 items-center relative">
+              <div
+                className={cn(
+                  "transition-all duration-500 ease-in-out",
+                  validatorsSelected !== validatorsTotal
+                    ? "opacity-100 translate-x-0"
+                    : "opacity-0 -translate-x-8 pointer-events-none"
+                )}
+              >
+                <SecondaryButton
+                  className="border-gray-200 dark:border-gray-800"
+                  label="Max"
+                  disabled={false}
+                  onClick={() => {
+                    handleMaxAllocation();
+                  }}
+                />
+              </div>
 
               <PrimaryButton
-                className="w-60"
+                className={cn(
+                  "w-60 transition-all duration-500 ease-in-out",
+                  validatorsSelected === validatorsTotal && "mr-4 w-64"
+                )}
                 label={buttonText}
                 disabled={!disabled}
                 onClick={onSubmit}

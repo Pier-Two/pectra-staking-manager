@@ -46,7 +46,6 @@ const Withdrawal: FC = () => {
     reset,
     control,
     watch,
-    trigger,
     register,
     formState: { isValid, errors },
   } = useForm<WithdrawalFormType>({
@@ -180,6 +179,7 @@ const Withdrawal: FC = () => {
           onSubmit={handleSubmit(onSubmit)}
           resetWithdrawal={handleResetWithdrawal}
           stage={stage}
+          validatorsTotal={validators.length}
           validatorsSelected={withdrawals.length}
           withdrawalTotal={withdrawalTotal}
           />
