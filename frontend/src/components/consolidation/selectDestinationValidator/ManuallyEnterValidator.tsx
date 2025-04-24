@@ -16,9 +16,8 @@ import {
 import { Input } from "pec/components/ui/input";
 import { Skeleton } from "pec/components/ui/skeleton";
 import { useActiveChainWithDefault } from "pec/hooks/useChain";
-import { DECIMAL_PLACES } from "pec/lib/constants";
 import { api } from "pec/trpc/react";
-import { formatEther } from "viem";
+import { displayedEthAmount } from "pec/lib/utils/validators/balance";
 
 export const ManuallyEnterValidator = () => {
   const { setConsolidationTarget, setProgress } = useConsolidationStore();
@@ -158,10 +157,7 @@ export const ManuallyEnterValidator = () => {
                     Balance
                   </div>
                   <div className="text-lg font-semibold">
-                    {Number(formatEther(validator.balance)).toFixed(
-                      DECIMAL_PLACES,
-                    )}{" "}
-                    ETH
+                    Ξ {displayedEthAmount(validator.balance)}
                   </div>
                 </div>
               </div>

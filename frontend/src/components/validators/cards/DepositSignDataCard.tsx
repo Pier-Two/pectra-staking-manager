@@ -1,9 +1,9 @@
 import Image from "next/image";
-import { AlignLeft, Check } from "lucide-react";
-import { DECIMAL_PLACES } from "pec/lib/constants";
+import { Check } from "lucide-react";
 import { PectraSpinner } from "pec/components/ui/custom/pectraSpinner";
 import { type DepositData } from "pec/lib/api/schemas/deposit";
 import { type DepositWorkflowStage } from "pec/types/batch-deposits";
+import { displayedEthAmount } from "pec/lib/utils/validators/balance";
 
 export interface IDepositSignDataCard {
   deposit: DepositData;
@@ -35,10 +35,7 @@ export const DepositSignDataCard = ({
         </div>
       </div>
 
-      <div className="flex flex-1 items-center gap-1">
-        <AlignLeft className="h-4 w-4" />
-        <div className="text-sm">{amount.toFixed(DECIMAL_PLACES)}</div>
-      </div>
+      <div className="font-semibold">Ξ {displayedEthAmount(amount)}</div>
 
       {stage.type === "sign-data" && (
         <div className="flex flex-1 items-center gap-1">

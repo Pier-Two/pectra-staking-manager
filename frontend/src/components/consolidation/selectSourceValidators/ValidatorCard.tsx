@@ -1,10 +1,9 @@
-import { AlignLeft, BadgeMinus } from "lucide-react";
+import { BadgeMinus } from "lucide-react";
 import Image from "next/image";
 import { Checkbox } from "pec/components/ui/checkbox";
-import { DECIMAL_PLACES } from "pec/lib/constants";
+import { displayedEthAmount } from "pec/lib/utils/validators/balance";
 import type { ISourceValidatorCard } from "pec/types/validator";
 import type { FC } from "react";
-import { formatEther } from "viem";
 
 export const ValidatorCard: FC<
   ISourceValidatorCard & { disabled?: boolean }
@@ -51,11 +50,8 @@ export const ValidatorCard: FC<
         <div className="text-sm">{withdrawalAddressPrefix}</div>
       </div>
 
-      <div className="flex items-center gap-1">
-        <AlignLeft className="h-3 w-3 text-gray-500" />
-        <div className="text-sm">
-          {Number(formatEther(validator.balance)).toFixed(DECIMAL_PLACES)}
-        </div>
+      <div className="font-semibold">
+        Ξ {displayedEthAmount(validator.balance)}
       </div>
     </div>
   );

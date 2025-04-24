@@ -1,6 +1,6 @@
 "use client";
 
-import { AlignLeft, Info } from "lucide-react";
+import { Info } from "lucide-react";
 import { PectraSpinner } from "pec/components/ui/custom/pectraSpinner";
 import { Separator } from "pec/components/ui/separator";
 import {
@@ -11,8 +11,8 @@ import {
 } from "pec/components/ui/tooltip";
 import { useConsolidationStore } from "pec/hooks/use-consolidation-store";
 import { useConsolidationFee } from "pec/hooks/use-consolidation";
-import { DECIMAL_PLACES } from "pec/lib/constants";
 import { formatEther, parseEther } from "viem";
+import { displayedEthAmount } from "pec/lib/utils/validators/balance";
 
 export const Overview = () => {
   const { data: consolidationFee, isLoading: isLoadingConsolidationFee } =
@@ -44,10 +44,10 @@ export const Overview = () => {
         </span>
 
         <div className="flex items-center gap-1">
-          <AlignLeft className="h-3 w-3 text-gray-500 dark:text-white" />
-          <span>
-            {Number(formatEther(newTotalBalance)).toFixed(DECIMAL_PLACES)}
-          </span>
+          <div className="font-semibold">
+            Ξ {displayedEthAmount(newTotalBalance)}
+          </div>
+
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
@@ -74,7 +74,7 @@ export const Overview = () => {
           </div>
 
           <div className="flex items-center gap-1">
-            <AlignLeft className="h-3 w-3" />
+            Ξ{" "}
             {isLoadingConsolidationFee || estimatedGasFee === null ? (
               <div className="flex items-center gap-2">
                 <PectraSpinner />

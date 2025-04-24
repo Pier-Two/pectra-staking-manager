@@ -1,4 +1,3 @@
-import { AlignLeft } from "lucide-react";
 import { Input } from "pec/components/ui/input";
 import type { DepositType } from "pec/lib/api/schemas/deposit";
 import type { FieldErrors, UseFormRegister } from "react-hook-form";
@@ -21,8 +20,8 @@ export const TotalAmountInput = ({
     <div className="space-y-2">
       <div className="text-md font-medium">Total Amount</div>
       <div className="space-y-1">
-        <div className="flex w-full items-center rounded-xl border dark:border-gray-800 bg-white p-4 text-black dark:bg-black dark:text-white">
-          <AlignLeft className="h-4 w-4" />
+        <div className="flex w-full items-center rounded-xl border bg-white p-4 text-black dark:border-gray-800 dark:bg-black dark:text-white">
+          <div className="mr-2">Ξ</div>
           <Input
             className="w-full border-none px-2 py-1"
             type="number"

@@ -3,12 +3,11 @@
 import clsx from "clsx";
 import { ChevronsLeftRight } from "lucide-react";
 import Image from "next/image";
-import { DECIMAL_PLACES } from "pec/lib/constants";
 import { type IDetectedValidators } from "pec/types/validator";
 import { useState, type FC } from "react";
-import { formatEther } from "viem";
 import { ValidatorCard } from "./cards/ValidatorCard";
 import { validatorIsActive } from "pec/lib/utils/validators/status";
+import { displayedEthAmount } from "pec/lib/utils/validators/balance";
 
 export const DetectedValidators: FC<IDetectedValidators> = (props) => {
   const { cardTitle, validators } = props;
@@ -53,7 +52,7 @@ export const DetectedValidators: FC<IDetectedValidators> = (props) => {
         <div className="flex items-center gap-x-4">
           <div className="flex items-center gap-1">
             <p className="text-[14px] font-570 leading-[14px] text-zinc-950 dark:text-zinc-50">
-              Ξ {Number(formatEther(totalBalance)).toFixed(DECIMAL_PLACES)}
+              Ξ {displayedEthAmount(totalBalance)}
             </p>
           </div>
           <ChevronsLeftRight className="h-4 w-4 rotate-90 text-gray-800 dark:text-white" />

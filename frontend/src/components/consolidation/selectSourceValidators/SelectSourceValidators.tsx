@@ -1,6 +1,6 @@
 "use client";
 
-import { AlignLeft, Pencil, Zap } from "lucide-react";
+import { Pencil, Zap } from "lucide-react";
 import { PrimaryButton } from "pec/components/ui/custom/PrimaryButton";
 import { SecondaryButton } from "pec/components/ui/custom/SecondaryButton";
 import {
@@ -13,13 +13,12 @@ import { ValidatorCard } from "pec/components/validators/cards/ValidatorCard";
 import { DetectedValidators } from "pec/components/validators/DetectedValidators";
 import { useConsolidationStore } from "pec/hooks/use-consolidation-store";
 import { useValidators } from "pec/hooks/useValidators";
-import { DECIMAL_PLACES } from "pec/lib/constants";
 import { EIconPosition } from "pec/types/components";
-import { ValidatorStatus, type ValidatorDetails } from "pec/types/validator";
+import type { ValidatorDetails } from "pec/types/validator";
 import { useEffect, useMemo, useState } from "react";
-import { formatEther } from "viem";
 import { ValidatorList } from "./ValidatorList";
 import { validatorIsActive } from "pec/lib/utils/validators/status";
+import { displayedEthAmount } from "pec/lib/utils/validators/balance";
 
 export const SelectSourceValidators = () => {
   const {
@@ -160,18 +159,12 @@ export const SelectSourceValidators = () => {
         <Zap className="h-4 w-4 fill-indigo-500 text-indigo-500" />
         <div>New destination balance:</div>
 
-        <div className="flex items-center gap-1 text-black dark:text-white">
-          <AlignLeft className="h-3 w-3" />
-          <span>
-            {Number(formatEther(newDestinationBalance)).toFixed(
-              DECIMAL_PLACES,
-            )}{" "}
-          </span>
+        <div className="font-semibold">
+          Ξ {displayedEthAmount(newDestinationBalance)}
         </div>
 
         <div className="flex items-center gap-1">
-          <AlignLeft className="h-3 w-3 text-gray-500" />
-          <span>2,048 max</span>
+          <span>Ξ 2,048 max</span>
         </div>
       </div>
 
