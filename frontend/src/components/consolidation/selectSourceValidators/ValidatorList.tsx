@@ -2,15 +2,10 @@
 
 import { useConsolidationStore } from "pec/hooks/use-consolidation-store";
 import type { ISourceValidatorList } from "pec/types/consolidation";
-import { ValidatorStatus, type ValidatorDetails } from "pec/types/validator";
+import type { ValidatorDetails } from "pec/types/validator";
 import { type FC } from "react";
 import { ValidatorCard } from "./ValidatorCard";
-import {
-  validatorHasPendingDeposit,
-  validatorIsActive,
-  validatorIsExited,
-  validatorIsInactive,
-} from "pec/lib/utils/validators/status";
+import { validatorIsActive } from "pec/lib/utils/validators/status";
 
 export const ValidatorList: FC<ISourceValidatorList> = (props) => {
   const { validators } = props;
@@ -35,18 +30,6 @@ export const ValidatorList: FC<ISourceValidatorList> = (props) => {
 
   const activeValidators = validators?.filter((validator) =>
     validatorIsActive(validator),
-  );
-
-  const inactiveValidators = validators?.filter((validator) =>
-    validatorIsInactive(validator),
-  );
-
-  const exitedValidators = validators?.filter((validator) =>
-    validatorIsExited(validator),
-  );
-
-  const pendingDepositValidators = validators?.filter((validator) =>
-    validatorHasPendingDeposit(validator),
   );
 
   return (
@@ -77,44 +60,6 @@ export const ValidatorList: FC<ISourceValidatorList> = (props) => {
           key={`validator-${validator.validatorIndex}-${index}`}
           onClick={() => handleValidatorClicked(validator)}
           validator={validator}
-        />
-      ))}
-
-      {inactiveValidators.map((validator, index) => (
-        <ValidatorCard
-          checked={validatorsToConsolidate
-            .map((item) => item.validatorIndex)
-            .includes(validator.validatorIndex)}
-          key={`validator-${validator.validatorIndex}-${index}`}
-          onClick={undefined!}
-          validator={validator}
-          disabled
-        />
-      ))}
-
-      {exitedValidators.map((validator, index) => (
-        <ValidatorCard
-          checked={validatorsToConsolidate
-            .map((item) => item.validatorIndex)
-            .includes(validator.validatorIndex)}
-          key={`validator-${validator.validatorIndex}-${index}`}
-          onClick={undefined!}
-          validator={validator}
-          disabled
-          tooltip="Exited/Exiting validators are disabled in the platform to prevent users from accidentally using them"
-        />
-      ))}
-
-      {pendingDepositValidators.map((validator, index) => (
-        <ValidatorCard
-          checked={validatorsToConsolidate
-            .map((item) => item.validatorIndex)
-            .includes(validator.validatorIndex)}
-          key={`validator-${validator.validatorIndex}-${index}`}
-          onClick={undefined!}
-          validator={validator}
-          disabled
-          tooltip="Validators with a pending deposit cannot be used as the source for a consolidation nor can they be exited on the platform. This prevent accidental misuse and lost funds."
         />
       ))}
     </div>
