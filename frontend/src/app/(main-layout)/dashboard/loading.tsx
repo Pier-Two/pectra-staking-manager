@@ -2,7 +2,7 @@ import { Skeleton } from "pec/components/ui/skeleton";
 
 const DashboardLoading = () => {
   return (
-    <div className="space-y-8 p-4 md:p-6 lg:p-8 dark:text-white">
+    <div className="w-full space-y-8 p-4 dark:text-white md:p-6 lg:p-8">
       {/* Tools Section */}
       <SectionTitle title="Tools" />
       <GridContainer>
@@ -22,9 +22,12 @@ const DashboardLoading = () => {
       {/* Validator Table */}
       <SectionTitle title="List of Validators" />
       <div className="rounded-xl border p-4">
-        <Skeleton className="h-12 w-full mb-4 bg-gray-200 dark:bg-gray-800" />
+        <Skeleton className="mb-4 h-12 w-full bg-gray-200 dark:bg-gray-800" />
         {Array.from({ length: 5 }).map((_, i) => (
-          <Skeleton key={`row-${i}`} className="h-16 w-full mb-3 bg-gray-200 dark:bg-gray-800" />
+          <Skeleton
+            key={`row-${i}`}
+            className="mb-3 h-16 w-full bg-gray-200 dark:bg-gray-800"
+          />
         ))}
       </div>
     </div>
@@ -36,13 +39,18 @@ const SectionTitle = ({ title }: { title: string }) => (
 );
 
 const GridContainer = ({ children }: { children: React.ReactNode }) => (
-  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">{children}</div>
+  <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+    {children}
+  </div>
 );
 
 const SkeletonCard = ({ lines }: { lines: number[] }) => (
-  <div className="rounded-xl border p-4 space-y-3">
+  <div className="space-y-3 rounded-xl border p-4">
     {lines.map((width, i) => (
-      <Skeleton key={i} className={`h-${i === 0 ? 8 : 4} w-[${width}px] bg-gray-200 dark:bg-gray-800`} />
+      <Skeleton
+        key={i}
+        className={`h-${i === 0 ? 8 : 4} w-[${width}px] bg-gray-200 dark:bg-gray-800`}
+      />
     ))}
   </div>
 );

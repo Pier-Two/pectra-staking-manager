@@ -26,9 +26,9 @@ const Consolidation: FC = () => {
   };
 
   return (
-    <div className="space-y-8">
+    <div className="w-full space-y-8">
       <div className="flex flex-col gap-4">
-        <div className="flex gap-x-4 justify-left">
+        <div className="justify-left flex gap-x-4">
           <Merge className="h-10 w-10 rotate-90 text-yellow-500" />
           <div className="text-3xl">Consolidate</div>
         </div>

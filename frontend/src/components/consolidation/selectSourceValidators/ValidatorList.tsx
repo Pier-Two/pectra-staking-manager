@@ -2,9 +2,10 @@
 
 import { useConsolidationStore } from "pec/hooks/use-consolidation-store";
 import type { ISourceValidatorList } from "pec/types/consolidation";
-import { ValidatorStatus, type ValidatorDetails } from "pec/types/validator";
+import type { ValidatorDetails } from "pec/types/validator";
 import { type FC } from "react";
 import { ValidatorCard } from "./ValidatorCard";
+import { validatorIsActive } from "pec/lib/utils/validators/status";
 
 export const ValidatorList: FC<ISourceValidatorList> = (props) => {
   const { validators } = props;
@@ -27,16 +28,8 @@ export const ValidatorList: FC<ISourceValidatorList> = (props) => {
     }
   };
 
-  const activeValidators = validators?.filter(
-    (validator) =>
-      validator?.status === ValidatorStatus.ACTIVE &&
-      validator?.consolidationTransaction?.isConsolidatedValidator !== false,
-  );
-
-  const inactiveValidators = validators?.filter(
-    (validator) =>
-      validator?.status === ValidatorStatus.INACTIVE ||
-      validator?.consolidationTransaction?.isConsolidatedValidator === false,
+  const activeValidators = validators?.filter((validator) =>
+    validatorIsActive(validator),
   );
 
   return (
@@ -67,17 +60,6 @@ export const ValidatorList: FC<ISourceValidatorList> = (props) => {
           key={`validator-${validator.validatorIndex}-${index}`}
           onClick={() => handleValidatorClicked(validator)}
           validator={validator}
-        />
-      ))}
-      {inactiveValidators.map((validator, index) => (
-        <ValidatorCard
-          checked={validatorsToConsolidate
-            .map((item) => item.validatorIndex)
-            .includes(validator.validatorIndex)}
-          key={`validator-${validator.validatorIndex}-${index}`}
-          onClick={undefined!}
-          validator={validator}
-          disabled
         />
       ))}
     </div>

@@ -11,11 +11,19 @@ export const TableContent: FC<IValidatorTableContentProps> = ({
   filterTableOptions,
 }) => {
   return (
-    <div className="space-y-4 flex flex-col justify-center items-center max-w-[90vw]">
-      <TableHeader sortConfig={sortConfig} onSort={onSort} filterTableOptions={filterTableOptions} />
+    <div className="flex flex-col items-center justify-center space-y-4">
+      <TableHeader
+        sortConfig={sortConfig}
+        onSort={onSort}
+        filterTableOptions={filterTableOptions}
+      />
       {paginatedData.length > 0 ? (
         paginatedData.map((validator) => (
-          <ValidatorRow key={validator.publicKey} validator={validator} filterTableOptions={filterTableOptions} />
+          <ValidatorRow
+            key={validator.publicKey}
+            validator={validator}
+            filterTableOptions={filterTableOptions}
+          />
         ))
       ) : (
         <TableNoResults />

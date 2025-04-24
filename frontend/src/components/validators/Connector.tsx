@@ -6,9 +6,13 @@ import { DetectedValidators } from "./DetectedValidators";
 import { ValidatorHelp } from "./ValidatorHelp";
 import { ValidatorInformation } from "./ValidatorInformation";
 
-export const Connector: FC<IConnector> = (props) => {
-  const { title, description, connectedAddress, validators, textAlignment } =
-    props;
+export const Connector: FC<IConnector> = ({
+  title,
+  description,
+  connectedAddress,
+  validators,
+  textAlignment,
+}) => {
   return (
     <div className="flex w-full flex-col gap-y-9">
       <div className="flex flex-col gap-y-4">
@@ -22,7 +26,7 @@ export const Connector: FC<IConnector> = (props) => {
 
         <p
           className={clsx(
-            "font-380 w-full px-[2%] text-[15px] leading-[15px] text-zinc-950 dark:text-zinc-50",
+            "w-full px-[2%] text-[15px] font-380 leading-[15px] text-zinc-950 dark:text-zinc-50",
             textAlignment === "center" ? "text-center" : "text-left",
           )}
         >

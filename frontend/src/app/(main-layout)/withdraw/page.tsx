@@ -24,11 +24,19 @@ import { type FC, useMemo, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { formatEther } from "viem";
 import WithdrawalLoading from "./loading";
+import { validatorIsActive } from "pec/lib/utils/validators/status";
 
 const Withdrawal: FC = () => {
   const walletAddress = useWalletAddress();
   const [showEmail, setShowEmail] = useState(false);
   const { data: rawValidatorData } = useValidators();
+
+  const availableValidators = useMemo(() => {
+    return rawValidatorData?.filter((validator) =>
+      validatorIsActive(validator),
+    );
+  }, [rawValidatorData]);
+
   const { submitWithdrawals, stage, setStage } = useSubmitWithdraw();
 
   const {
@@ -56,7 +64,9 @@ const Withdrawal: FC = () => {
   const withdrawalTotal = sumBy(withdrawals, (withdrawal) => withdrawal.amount);
   const disabled = isValid && withdrawalTotal > 0 && (showEmail ? email.length > 0 : true)
   const signSubmitFinaliseInProgress = stage?.type === "sign-submit-finalise";
-  const columnHeaders = signSubmitFinaliseInProgress ? WITHDRAWAL_COLUMN_HEADERS.filter((column) => column.label === "Validator") : WITHDRAWAL_COLUMN_HEADERS;
+  const columnHeaders = signSubmitFinaliseInProgress
+    ? WITHDRAWAL_COLUMN_HEADERS.filter((column) => column.label === "Validator")
+    : WITHDRAWAL_COLUMN_HEADERS;
 
   const [sortColumn, setSortColumn] = useState<string | null>("validator");
   const [sortDirection, setSortDirection] = useState<SortDirection>(null);
@@ -75,14 +85,14 @@ const Withdrawal: FC = () => {
   };
 
   const validators = useMemo(() => {
-    if (!sortColumn || !sortDirection) return rawValidatorData;
+    if (!sortColumn || !sortDirection) return availableValidators;
 
     return orderBy(
-      rawValidatorData,
+      availableValidators,
       [sortColumn as keyof ValidatorDetails],
       [sortDirection],
     );
-  }, [rawValidatorData, sortColumn, sortDirection]);
+  }, [availableValidators, sortColumn, sortDirection]);
 
   if (!validators) return <WithdrawalLoading />;
 
@@ -132,7 +142,7 @@ const Withdrawal: FC = () => {
   };
 
   return (
-    <div className="flex flex-col gap-y-4">
+    <div className="flex w-full flex-col gap-y-4">
       <div className="space-y-8">
         <div className="flex flex-col gap-4">
           <div className="flex gap-x-4 text-indigo-800 dark:text-indigo-300">

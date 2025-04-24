@@ -30,7 +30,7 @@ const ConsolidationWorkflow = () => {
 
   if (!walletAddress || !data || !isFetched) {
     return (
-      <div className="flex flex-col gap-4">
+      <div className="flex w-full flex-col gap-4">
         <ProgressBar progress={progress} setProgress={setProgress} />
         <ConsolidationLoading />
       </div>
@@ -38,7 +38,7 @@ const ConsolidationWorkflow = () => {
   }
 
   return (
-    <div className="flex w-[90vw] flex-col gap-4 md:w-[42vw]">
+    <div className="flex w-full flex-col gap-4">
       <ProgressBar progress={progress} setProgress={setProgress} />
 
       {progress === 1 && <SelectDestinationValidator />}

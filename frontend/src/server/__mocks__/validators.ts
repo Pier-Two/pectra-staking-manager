@@ -16,6 +16,8 @@ export const MOCK_VALIDATORS: ValidatorDetails[] = [
     consolidationTransaction: undefined,
     depositTransaction: undefined,
     withdrawalTransactions: [],
+    hasPendingDeposit: false,
+    upgradeSubmitted: false,
   },
   {
     validatorIndex: 501234,
@@ -32,6 +34,8 @@ export const MOCK_VALIDATORS: ValidatorDetails[] = [
     consolidationTransaction: undefined,
     depositTransaction: undefined,
     withdrawalTransactions: [],
+    hasPendingDeposit: false,
+    upgradeSubmitted: false,
   },
   {
     validatorIndex: 502890,
@@ -48,6 +52,8 @@ export const MOCK_VALIDATORS: ValidatorDetails[] = [
     consolidationTransaction: undefined,
     depositTransaction: undefined,
     withdrawalTransactions: [],
+    hasPendingDeposit: false,
+    upgradeSubmitted: false,
   },
   {
     validatorIndex: 503452,
@@ -64,6 +70,8 @@ export const MOCK_VALIDATORS: ValidatorDetails[] = [
     consolidationTransaction: undefined,
     depositTransaction: undefined,
     withdrawalTransactions: [],
+    hasPendingDeposit: false,
+    upgradeSubmitted: false,
   },
   {
     validatorIndex: 504321,
@@ -80,6 +88,8 @@ export const MOCK_VALIDATORS: ValidatorDetails[] = [
     consolidationTransaction: undefined,
     depositTransaction: undefined,
     withdrawalTransactions: [],
+    hasPendingDeposit: false,
+    upgradeSubmitted: false,
   },
   ...Array.from({ length: 15 }, (_, i) => ({
     validatorIndex: 500000 + i,
@@ -99,5 +109,7 @@ export const MOCK_VALIDATORS: ValidatorDetails[] = [
     consolidationTransaction: undefined,
     depositTransaction: undefined,
     withdrawalTransactions: [],
+    hasPendingDeposit: false,
+    upgradeSubmitted: false,
   })),
 ];
