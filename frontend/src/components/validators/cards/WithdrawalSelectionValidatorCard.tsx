@@ -32,8 +32,10 @@ export const WithdrawalSelectionValidatorCard = ({
   const locked = validator.balance === 0n;
   const { validatorIndex, publicKey, balance } = validator;
   const signSubmitFinaliseInProgress = stage.type === "sign-submit-finalise";
-  const transactionStatus = signSubmitFinaliseInProgress ? stage?.txHashes[validatorIndex] : undefined;
-  
+  const transactionStatus = signSubmitFinaliseInProgress
+    ? stage?.txHashes[validatorIndex]
+    : undefined;
+
   // IF we are submitting a withdrawal and the validator is not being withdrawn from, don't render the card
   if (signSubmitFinaliseInProgress && !transactionStatus) {
     return null;
@@ -41,7 +43,12 @@ export const WithdrawalSelectionValidatorCard = ({
 
   // IF we are submitting a withdrawal and the validator is being withdrawn from, render the card with the status
   if (signSubmitFinaliseInProgress && transactionStatus) {
-    return <ValidatorLoadingCard transactionStatus={transactionStatus} validator={validator} />;
+    return (
+      <ValidatorLoadingCard
+        transactionStatus={transactionStatus}
+        validator={validator}
+      />
+    );
   }
 
   const onClickHandler = () => {
@@ -73,16 +80,17 @@ export const WithdrawalSelectionValidatorCard = ({
         },
       )}
     >
-      <div className="flex flex-[1.2] items-center gap-x-4" onClick={onClickHandler}>
+      <div
+        className="flex flex-[1.2] items-center gap-x-4"
+        onClick={onClickHandler}
+      >
         {selected && !locked ? (
           <>
-            <CircleCheck className="min-h-4 min-w-4 w-4 h-4 text-green-500 group-hover:hidden" />
-            <CircleMinus className="hidden min-h-4 w-4 h-4 min-w-4 text-red-500 group-hover:block" />
+            <CircleCheck className="h-4 min-h-4 w-4 min-w-4 text-green-500 group-hover:hidden" />
+            <CircleMinus className="hidden h-4 min-h-4 w-4 min-w-4 text-red-500 group-hover:block" />
           </>
         ) : (
-          <CirclePlus
-            className="min-h-4 min-w-4 w-4 h-4 text-indigo-500 group-hover:fill-indigo-500 group-hover:text-white"
-          />
+          <CirclePlus className="h-4 min-h-4 w-4 min-w-4 text-indigo-500 group-hover:fill-indigo-500 group-hover:text-white" />
         )}
 
         <Image
@@ -102,14 +110,12 @@ export const WithdrawalSelectionValidatorCard = ({
 
       <div className="flex flex-1 flex-col" onClick={onClickHandler}>
         <div className="flex items-center gap-1">
-          <AlignLeft className="h-4 w-4" />
-          <div className="text-sm">{parseEtherToFixedDecimals(balance)}</div>
+          Ξ <div className="text-sm">{parseEtherToFixedDecimals(balance)}</div>
         </div>
 
         <div className="flex items-center gap-1 py-1 text-gray-700 dark:text-gray-300">
-          <AlignLeft className="h-3 w-3" />
           <div className="text-sm">
-            {parseEtherToFixedDecimals(validator.balance)} available
+            Ξ {parseEtherToFixedDecimals(validator.balance)} available
           </div>
         </div>
       </div>
@@ -144,7 +150,7 @@ export const WithdrawalSelectionValidatorCard = ({
           </div>
         ) : (
           <div className="flex items-center gap-1">
-            <AlignLeft className="h-4 w-4" />
+            Ξ{" "}
             <Input
               className="w-full rounded-xl border-none bg-white p-2 text-sm text-gray-700 dark:border-gray-800 dark:bg-black dark:text-gray-300"
               disabled

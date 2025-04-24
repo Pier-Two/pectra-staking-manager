@@ -4,7 +4,7 @@ import type { FC } from "react";
 export const Information: FC = () => {
   const benefits = [
     "Auto-compounding interest",
-    "Instant onchain withdrawals",
+    "Onchain withdrawals",
     "Validator consolidation",
   ];
 

@@ -28,6 +28,7 @@ import { formatEther } from "viem";
 
 import clsx from "clsx";
 import { getGridTemplateColumns } from "./TableHeader";
+import { displayedEthAmount } from "pec/lib/utils/validators/balance";
 /**
  * @Description This is a component that renders a row of a validator in the validator table.
  *
@@ -56,6 +57,10 @@ export const ValidatorRow: FC<IValidatorRowProps> = (props) => {
       "_blank",
     );
   };
+
+  const displayBalance = displayedEthAmount(
+    Number(formatEther(validator.balance)),
+  );
 
   return (
     <div className="w-full rounded-xl border bg-indigo-50 p-4 text-sm hover:border-indigo-300 dark:bg-black dark:hover:bg-gray-900">
@@ -122,15 +127,7 @@ export const ValidatorRow: FC<IValidatorRowProps> = (props) => {
         )}
 
         {!filterTableOptions.includes("Balance") && (
-          <div>
-            <div className="flex items-center gap-1">
-              <AlignLeft className="h-3 w-3" />
-              <div className="font-semibold">
-                {Number(formatEther(validator.balance)).toFixed(DECIMAL_PLACES)}{" "}
-                ETH
-              </div>
-            </div>
-          </div>
+          <div className="font-semibold">Ξ {displayBalance} ETH</div>
         )}
 
         <div className="flex justify-end">
@@ -274,15 +271,7 @@ export const ValidatorRow: FC<IValidatorRowProps> = (props) => {
           {!filterTableOptions.includes("Balance") && (
             <div className="flex items-center justify-between">
               <span className="text-gray-500">Balance</span>
-              <div className="flex items-center gap-1">
-                <AlignLeft className="h-3 w-3" />
-                <div className="font-semibold">
-                  {Number(formatEther(validator.balance)).toFixed(
-                    DECIMAL_PLACES,
-                  )}{" "}
-                  ETH
-                </div>
-              </div>
+              <div className="font-semibold">Ξ {displayBalance} ETH</div>
             </div>
           )}
         </div>

@@ -20,6 +20,7 @@ import { useEffect, useMemo, useState } from "react";
 import { formatEther } from "viem";
 import { ValidatorList } from "./ValidatorList";
 import { validatorIsActive } from "pec/lib/utils/validators/status";
+import { displayedEthAmount } from "pec/lib/utils/validators/balance";
 
 export const SelectSourceValidators = () => {
   const {
@@ -160,18 +161,12 @@ export const SelectSourceValidators = () => {
         <Zap className="h-4 w-4 fill-indigo-500 text-indigo-500" />
         <div>New destination balance:</div>
 
-        <div className="flex items-center gap-1 text-black dark:text-white">
-          <AlignLeft className="h-3 w-3" />
-          <span>
-            {Number(formatEther(newDestinationBalance)).toFixed(
-              DECIMAL_PLACES,
-            )}{" "}
-          </span>
+        <div className="font-semibold">
+          Ξ {displayedEthAmount(Number(formatEther(newDestinationBalance)))}
         </div>
 
         <div className="flex items-center gap-1">
-          <AlignLeft className="h-3 w-3 text-gray-500" />
-          <span>2,048 max</span>
+          <span>Ξ 2,048 max</span>
         </div>
       </div>
 

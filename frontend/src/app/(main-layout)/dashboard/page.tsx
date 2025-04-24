@@ -6,7 +6,6 @@ import { TotalDailyIncome } from "pec/components/dashboard/validators/TotalDaily
 import { TotalStake } from "pec/components/dashboard/validators/TotalStake";
 import { ValidatorTable } from "pec/components/dashboard/validatorTable/ValidatorTable";
 import { useWalletAddress } from "pec/hooks/useWallet";
-import { ValidatorStatus } from "pec/types/validator";
 import type { FC } from "react";
 import DashboardLoading from "./loading";
 import { useValidators } from "pec/hooks/useValidators";
@@ -14,6 +13,7 @@ import { useValidatorPerformance } from "pec/hooks/useValidatorPerformance";
 import { useEthPrice } from "pec/hooks/useEthPrice";
 import { MAX_WIDTH_STYLE } from "pec/constants/styles";
 import { cn } from "pec/lib/utils";
+import { validatorIsActive } from "pec/lib/utils/validators/status";
 
 const Dashboard: FC = () => {
   const walletAddress = useWalletAddress();
@@ -36,10 +36,8 @@ const Dashboard: FC = () => {
   )
     return <DashboardLoading />;
 
-  const activeValidators = validators?.filter(
-    (validator) =>
-      validator?.status === ValidatorStatus.ACTIVE ||
-      validator?.consolidationTransaction?.isConsolidatedValidator !== false,
+  const activeValidators = validators?.filter((validator) =>
+    validatorIsActive(validator),
   );
 
   const inactiveValidators = validators.length - activeValidators.length;

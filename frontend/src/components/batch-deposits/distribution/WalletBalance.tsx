@@ -1,5 +1,4 @@
-import { AlignLeft } from "lucide-react";
-import { DECIMAL_PLACES } from "pec/lib/constants";
+import { displayedEthAmount } from "pec/lib/utils/validators/balance";
 
 interface IWalletBalance {
   balance: number;
@@ -13,8 +12,8 @@ export const WalletBalance = ({ balance }: IWalletBalance) => {
       </div>
 
       <div className="flex items-center gap-1 p-2">
-        <AlignLeft className="h-4 w-4" />
-        <div className="text-xs">{balance.toFixed(DECIMAL_PLACES)}</div>
+        <div className="text-xs">Ξ</div>
+        <div className="text-xs">{displayedEthAmount(balance)}</div>
       </div>
     </div>
   );
