@@ -15,10 +15,11 @@ import { useConsolidationStore } from "pec/hooks/use-consolidation-store";
 import { useValidators } from "pec/hooks/useValidators";
 import { DECIMAL_PLACES } from "pec/lib/constants";
 import { EIconPosition } from "pec/types/components";
-import type { ValidatorDetails } from "pec/types/validator";
+import { ValidatorStatus, type ValidatorDetails } from "pec/types/validator";
 import { useEffect, useMemo, useState } from "react";
 import { formatEther } from "viem";
 import { ValidatorList } from "./ValidatorList";
+import { validatorIsActive } from "pec/lib/utils/validators/status";
 
 export const SelectSourceValidators = () => {
   const {
@@ -35,12 +36,8 @@ export const SelectSourceValidators = () => {
   const { data: validators } = useValidators();
 
   const availableSourceValidators = useMemo(() => {
-    return validators?.filter(
-      (validator) =>
-        validator.validatorIndex !== consolidationTarget?.validatorIndex &&
-        validator.consolidationTransaction?.isConsolidatedValidator !== false,
-    );
-  }, [validators, consolidationTarget]);
+    return validators?.filter((validator) => validatorIsActive(validator));
+  }, [validators]);
 
   useEffect(() => {
     if (
@@ -123,7 +120,7 @@ export const SelectSourceValidators = () => {
       >
         <TabsList className="grid w-full grid-cols-2 rounded-xl bg-gray-200 dark:bg-gray-900">
           <TabsTrigger
-            className="rounded-xl text-gray-800 dark:text-gray-200 data-[state=active]:bg-white data-[state=active]:text-indigo-800 dark:data-[state=active]:text-black"
+            className="rounded-xl text-gray-800 data-[state=active]:bg-white data-[state=active]:text-indigo-800 dark:text-gray-200 dark:data-[state=active]:text-black"
             value="maxConsolidate"
             onClick={() =>
               bulkSetConsolidationTargets(availableSourceValidators ?? [])
@@ -133,7 +130,7 @@ export const SelectSourceValidators = () => {
           </TabsTrigger>
 
           <TabsTrigger
-            className="rounded-xl text-gray-800 dark:text-gray-200 data-[state=active]:bg-white data-[state=active]:text-indigo-800 dark:data-[state=active]:text-black"
+            className="rounded-xl text-gray-800 data-[state=active]:bg-white data-[state=active]:text-indigo-800 dark:text-gray-200 dark:data-[state=active]:text-black"
             value="manuallySelect"
             onClick={() => bulkSetConsolidationTargets([])}
           >

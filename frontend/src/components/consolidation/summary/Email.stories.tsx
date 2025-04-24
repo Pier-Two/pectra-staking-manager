@@ -21,6 +21,8 @@ type Story = StoryObj<typeof meta>;
 // More on writing stories with args: https://storybook.js.org/docs/writing-stories/args
 export const Primary: Story = {
   args: {
+    showEmail: true,
+    setShowEmail: () => {},
     cardText: "Notify me when complete",
     cardTitle: "Add your email to receive an email when your consolidation is complete",
     summaryEmail: "test@test.com",

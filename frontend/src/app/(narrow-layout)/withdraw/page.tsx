@@ -19,6 +19,7 @@ import {
   type WithdrawalFormType,
 } from "pec/lib/api/schemas/withdrawal";
 import { formatAddressToShortenedString } from "pec/lib/utils/address";
+import { validatorIsActive } from "pec/lib/utils/validators/status";
 import type { ValidatorDetails } from "pec/types/validator";
 import { type FC, useMemo, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
@@ -27,8 +28,15 @@ import WithdrawalLoading from "./loading";
 
 const Withdrawal: FC = () => {
   const walletAddress = useWalletAddress();
-
+  const [showEmail, setShowEmail] = useState(false);
   const { data: rawValidatorData } = useValidators();
+
+  const availableValidators = useMemo(() => {
+    return rawValidatorData?.filter((validator) =>
+      validatorIsActive(validator),
+    );
+  }, [rawValidatorData]);
+
   const { submitWithdrawals, stage, setStage } = useSubmitWithdraw();
 
   const {
@@ -54,6 +62,7 @@ const Withdrawal: FC = () => {
   const watchedEmail = watch("email");
   const email = watchedEmail ?? "";
   const withdrawalTotal = sumBy(withdrawals, (withdrawal) => withdrawal.amount);
+  const disabled = isValid && withdrawalTotal > 0 && (showEmail ? email.length > 0 : true)
   const signSubmitFinaliseInProgress = stage?.type === "sign-submit-finalise";
   const columnHeaders = signSubmitFinaliseInProgress
     ? WITHDRAWAL_COLUMN_HEADERS.filter((column) => column.label === "Validator")
@@ -76,14 +85,14 @@ const Withdrawal: FC = () => {
   };
 
   const validators = useMemo(() => {
-    if (!sortColumn || !sortDirection) return rawValidatorData;
+    if (!sortColumn || !sortDirection) return availableValidators;
 
     return orderBy(
-      rawValidatorData,
+      availableValidators,
       [sortColumn as keyof ValidatorDetails],
       [sortDirection],
     );
-  }, [rawValidatorData, sortColumn, sortDirection]);
+  }, [availableValidators, sortColumn, sortDirection]);
 
   if (!validators) return <WithdrawalLoading />;
 
@@ -133,46 +142,45 @@ const Withdrawal: FC = () => {
   };
 
   return (
-    <div className="flex w-full max-w-[800px] flex-col p-2">
-      <div className="space-y-8 px-4">
-        <div className="flex flex-col gap-2">
-          <div className="flex gap-x-4 items-center text-[#313C86] dark:text-indigo-300">
-            <ArrowUpFromDot className="h-6 w-6" />
-            <div className="text-[26px] font-570">Withdrawal</div>
+    <div className="flex w-full flex-col gap-y-4">
+      <div className="space-y-8">
+        <div className="flex flex-col gap-4">
+          <div className="flex gap-x-4 text-indigo-800 dark:text-indigo-300">
+            <ArrowUpFromDot className="h-8 w-8" />
+            <div className="text-2xl font-medium">Withdrawal</div>
           </div>
 
-          <div className="text-xs font-380 text-[#4C4C4C] dark:text-gray-300 font-inter">
+          <div className="text-sm text-gray-700 dark:text-gray-300">
             Submit onchain execution layer withdrawal requests against
             validators, as per Pectra EIP-7002.
           </div>
         </div>
 
-        <div className="flex flex-col gap-5 pt-8">
-          <div className="flex flex-row pl-4 gap-3">
-            <Image
-              className="h-4 w-4"
-              src="/icons/Wallet.svg"
-              alt="Withdrawal Wallet"
-              width={16}
-              height={16}
-            />
+        <div className="ms-4 flex flex-row items-center gap-3">
+          <Image
+            className="h-4 w-4"
+            src="/icons/Wallet.svg"
+            alt="Withdrawal Wallet"
+            width={16}
+            height={16}
+          />
 
-            <div className="text-sm font-570">Withdrawal address</div>
-            <div className="text-sm text-[#4C4C4C] dark:text-gray-300">
-              {formatAddressToShortenedString(walletAddress)}
-            </div>
+          <div className="text-sm">Withdrawal address</div>
+          <div className="text-sm text-gray-500 dark:text-gray-300">
+            {formatAddressToShortenedString(walletAddress)}
           </div>
-          <WithdrawalInformation
+        </div>
+
+        <WithdrawalInformation
           buttonText="Withdraw"
           handleMaxAllocation={handleMaxAllocation}
-          isValid={isValid}
+          disabled={disabled}
           onSubmit={handleSubmit(onSubmit)}
           resetWithdrawal={handleResetWithdrawal}
           stage={stage}
           validatorsSelected={withdrawals.length}
           withdrawalTotal={withdrawalTotal}
-          />
-        </div>
+        />
 
         <Email
           cardText="Add your email to receive an email when your withdrawals are complete."
@@ -181,6 +189,9 @@ const Withdrawal: FC = () => {
           setSummaryEmail={(email) => setValue("email", email, {
             shouldValidate: true,
           })}
+          errors={errors}
+          showEmail={showEmail}
+          setShowEmail={setShowEmail}
         />
 
         <ValidatorHeader

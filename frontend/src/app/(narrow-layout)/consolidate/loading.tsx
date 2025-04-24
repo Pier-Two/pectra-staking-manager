@@ -4,7 +4,7 @@ import { Skeleton } from "pec/components/ui/skeleton";
 
 const ConsolidationLoading: FC = () => {
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex w-full flex-col gap-4">
       <div className="flex flex-col items-center gap-4">
         <div className="flex items-center gap-x-4">
           <Merge className="h-10 w-10 rotate-90 text-yellow-500" />

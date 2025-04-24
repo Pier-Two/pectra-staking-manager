@@ -9,8 +9,8 @@ import { Separator } from "../ui/separator";
 
 export interface IWithdrawalInformation {
   buttonText: string;
+  disabled: boolean;
   handleMaxAllocation: () => void;
-  isValid: boolean;
   onSubmit: () => void;
   resetWithdrawal: () => void;
   stage: WithdrawWorkflowStages;
@@ -21,7 +21,7 @@ export interface IWithdrawalInformation {
 export const WithdrawalInformation = ({
   buttonText,
   handleMaxAllocation,
-  isValid,
+  disabled,
   onSubmit,
   resetWithdrawal,
   stage,
@@ -130,7 +130,7 @@ export const WithdrawalInformation = ({
               <PrimaryButton
                 className="w-60"
                 label={buttonText}
-                disabled={!isValid}
+                disabled={!disabled}
                 onClick={onSubmit}
               />
             </div>

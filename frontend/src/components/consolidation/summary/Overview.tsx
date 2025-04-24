@@ -38,7 +38,7 @@ export const Overview = () => {
     <div className="flex min-h-[10vh] w-full flex-col justify-between gap-x-4 space-y-4 rounded-xl border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-black">
       <div className="flex items-end gap-x-2 text-sm text-black dark:text-white">
         <span>
-          Consolidate {totalSourceValidators} validator
+          Consolidate {totalSourceValidators + 1} validator
           {totalSourceValidators <= 1 ? "" : "s"} into validator with a new
           total balance of
         </span>

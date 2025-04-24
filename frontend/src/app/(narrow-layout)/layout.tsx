@@ -1,6 +1,5 @@
-import { BottomBar } from "pec/components/layout/BottomBar";
-import { TopBar } from "pec/components/layout/TopBar";
-import { ThemeProvider } from "pec/contexts/ThemeContext";
+import { SharedLayout } from "pec/components/layout";
+import { NARROW_MAX_WIDTH_STYLE } from "pec/constants/styles";
 import type { ChildrenProp } from "pec/types/app";
 import { type FC } from "react";
 
@@ -8,15 +7,9 @@ const NarrowLayout: FC<ChildrenProp> = (props) => {
   const { children } = props;
 
   return (
-    <ThemeProvider>
-      <div className="flex min-h-screen w-screen flex-col">
-        <TopBar type="profile" />
-        <div className="flex flex-1 justify-center bg-indigo-50  dark:bg-gray-950 dark:text-white">
-          <div className="px-4 py-12 max-w-[90vw] md:max-w-[55vw]">{children}</div>
-        </div>
-        <BottomBar />
-      </div>
-    </ThemeProvider>
+    <SharedLayout className={NARROW_MAX_WIDTH_STYLE} type="narrow">
+      {children}
+    </SharedLayout>
   );
 };
 
