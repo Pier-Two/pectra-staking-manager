@@ -31,6 +31,7 @@ export const WithdrawalSelectionValidatorCard = ({
 }: ExtendedProps) => {
   const locked = validator.balance === 0n;
   const { validatorIndex, publicKey, balance } = validator;
+  const balanceFixedDecimals = parseEtherToFixedDecimals(balance);
   const signSubmitFinaliseInProgress = stage.type === "sign-submit-finalise";
   const transactionStatus = signSubmitFinaliseInProgress ? stage?.txHashes[validatorIndex] : undefined;
   
@@ -103,35 +104,37 @@ export const WithdrawalSelectionValidatorCard = ({
       <div className="flex flex-1 flex-col" onClick={onClickHandler}>
         <div className="flex items-center gap-1">
           <AlignLeft className="h-4 w-4" />
-          <div className="text-sm">{parseEtherToFixedDecimals(balance)}</div>
+          <div className="text-sm">{balanceFixedDecimals}</div>
         </div>
 
         <div className="flex items-center gap-1 py-1 text-gray-700 dark:text-gray-300">
           <AlignLeft className="h-3 w-3" />
           <div className="text-sm">
-            {parseEtherToFixedDecimals(validator.balance)} available
+            {balanceFixedDecimals} available
           </div>
         </div>
       </div>
 
       <div className="flex-1">
-        {selected ? (
+        {selected && !locked && (
           <div className="flex">
             <div className="flex w-full flex-col">
               <div className="flex flex-row items-center gap-2">
-                <span className="text-sm">ETH</span>
-                <Input
-                  className={`w-full rounded-xl border border-indigo-300 bg-white p-2 text-sm text-gray-700 dark:border-gray-800 dark:bg-black dark:text-gray-300 ${locked ? "opacity-50" : ""}`}
-                  disabled={locked}
-                  type="number"
-                  step="any"
-                  {...register(`withdrawals.${withdrawalIndex}.amount`, {
-                    // valueAsNumber: true,
-                    // required: true,
-                    // min: 0,
-                    setValueAs: setValueHandler,
-                  })}
-                />
+                <div className="flex items-center rounded-full border border-indigo-300 bg-white p-2 text-sm text-gray-700 dark:border-gray-800 dark:bg-black dark:text-gray-300">
+                  <AlignLeft className="h-4 w-4" />
+                  <Input
+                    className={cn(`w-full h-6 border-none bg-transparent p-2 text-sm`, {
+                      "opacity-50": locked,
+                    })}
+                    disabled={locked}
+                    defaultValue={balanceFixedDecimals}
+                    type="number"
+                    step="any"
+                    {...register(`withdrawals.${withdrawalIndex}.amount`, {
+                      setValueAs: setValueHandler,
+                    })}
+                  />
+                </div>
               </div>
 
               {errors.withdrawals?.[withdrawalIndex]?.amount && (
@@ -141,16 +144,6 @@ export const WithdrawalSelectionValidatorCard = ({
                 </div>
               )}
             </div>
-          </div>
-        ) : (
-          <div className="flex items-center gap-1">
-            <AlignLeft className="h-4 w-4" />
-            <Input
-              className="w-full rounded-xl border-none bg-white p-2 text-sm text-gray-700 dark:border-gray-800 dark:bg-black dark:text-gray-300"
-              disabled
-              type="number"
-              value={0}
-            />
           </div>
         )}
       </div>

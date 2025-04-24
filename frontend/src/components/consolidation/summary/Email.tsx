@@ -11,14 +11,14 @@ export const Email: FC<IConsolidationEmail> = (props) => {
   const [showEmail, setShowEmail] = useState<boolean>(false);
 
   return (
-    <div className="flex w-full flex-col items-center justify-between gap-x-4 space-y-4 rounded-xl border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-black">
-      <div className="flex-col-2 flex w-full items-center justify-between gap-x-4">
+    <div className="flex w-full flex-col items-center justify-between space-y-4 rounded-2xl border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-black">
+      <div className="flex-col-2 flex w-full items-center justify-between">
         <div className="flex items-center gap-x-4">
           <Mail className="h-5 w-5 fill-indigo-500 text-gray-200 dark:text-black" />
-          <div className="flex-col items-center">
-            <div className="text-md">{cardTitle}</div>
+          <div className="flex-col items-center pt-2">
+            <div className="text-sm font-570">{cardTitle}</div>
 
-            <div className="text-sm text-gray-700 dark:text-gray-300">
+            <div className="text-xs text-gray-700 dark:text-gray-300">
               {cardText}
             </div>
           </div>

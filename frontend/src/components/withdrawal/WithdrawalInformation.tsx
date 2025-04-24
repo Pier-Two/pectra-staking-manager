@@ -35,7 +35,7 @@ export const WithdrawalInformation = ({
       label: "Validators selected",
     },
     {
-      icon: <AlignLeft className="h-4 w-4" />,
+      icon: <AlignLeft className="h-4 w-4 text-670" />,
       value: withdrawalTotal.toFixed(DECIMAL_PLACES),
       label: "Withdrawal total",
     },
@@ -61,9 +61,9 @@ export const WithdrawalInformation = ({
     Object.values(stage.txHashes).every((tx) => tx.status === "finalised" || tx.status === "failed");
 
   return (
-    <div className="flex flex-col w-full gap-4 rounded-xl border border-indigo-400 bg-white p-4 dark:border dark:border-gray-800 dark:bg-black">
+    <div className="flex flex-col justify-center w-full gap-4 rounded-2xl min-h-[90px] border bg-white pl-6 dark:border dark:border-gray-800 dark:bg-black">
       <div className="flex flex-col md:flex-row w-full items-center justify-between gap-4">
-        <div className="flex flex-wrap items-center gap-10">
+        <div className="flex flex-wrap items-center gap-2">
           {distributionStats.map((stat, index) => (
             <div key={stat.label} className="flex items-center">
               {index > 0 && (
@@ -80,14 +80,15 @@ export const WithdrawalInformation = ({
                     <Image
                       src={stat.imageUrl}
                       alt="Icon"
-                      width={24}
-                      height={24}
+                      width={16}
+                      height={16}
+                      className=""
                     />
                   )}
-                  <div className="text-sm">{stat.value}</div>
+                  <div className="text-sm font-inter font-670">{stat.value}</div>
                 </div>
 
-                <div className="text-sm text-gray-500 dark:text-gray-500">
+                <div className="text-xs text-gray-500 dark:text-gray-500 font-inter font-380">
                   {stat.label}
                 </div>
               </div>
@@ -120,13 +121,14 @@ export const WithdrawalInformation = ({
           {stage.type === "data-capture" && (
             <div className="flex flex-row gap-4">
               <SecondaryButton
+                className="border-gray-200 dark:border-gray-800"
                 label="Max"
                 disabled={false}
                 onClick={handleMaxAllocation}
               />
 
               <PrimaryButton
-                className="w-40"
+                className="w-60"
                 label={buttonText}
                 disabled={!isValid}
                 onClick={onSubmit}
