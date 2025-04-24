@@ -27,7 +27,7 @@ const Consolidation: FC = () => {
 
   return (
     <div className="w-full space-y-8">
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col">
         <div className="justify-left flex gap-x-4">
           <Merge className="h-10 w-10 rotate-90 text-yellow-500" />
           <div className="text-3xl">Consolidate</div>
@@ -37,7 +37,6 @@ const Consolidation: FC = () => {
           description="Combine multiple validator balances into a single large-balance
           validator, as per Pectra EIP-7251."
           connectedAddress={walletAddress}
-          textAlignment="left"
           validators={data}
         />
       </div>

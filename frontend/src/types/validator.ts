@@ -8,14 +8,6 @@ export type ValidatorDetails = z.infer<typeof ValidatorDataSchema>;
 
 export type Transaction = z.infer<typeof TransactionSchema>;
 
-export interface IConnector {
-  title?: string;
-  description?: string;
-  connectedAddress: string;
-  textAlignment: "left" | "center";
-  validators: ValidatorDetails[];
-}
-
 export interface IConnectedAddress {
   address: string;
 }

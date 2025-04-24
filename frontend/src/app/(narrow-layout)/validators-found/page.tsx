@@ -23,7 +23,7 @@ const ValidatorsFound: FC = () => {
       <Connector
         title="Validators found!"
         connectedAddress={walletAddress}
-        textAlignment="center"
+        className="text-center"
         validators={data}
       />
 
