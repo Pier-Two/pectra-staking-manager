@@ -19,12 +19,18 @@ import {
   DropdownMenuTrigger,
 } from "pec/components/ui/dropdown-menu";
 import { Separator } from "pec/components/ui/separator";
-import { ValidatorStatus } from "pec/types/validator";
-import type { IValidatorRowProps } from "pec/types/validatorTable";
+import { ValidatorDetails, ValidatorStatus } from "pec/types/validator";
 import type { FC } from "react";
 import clsx from "clsx";
 import { getGridTemplateColumns } from "./TableHeader";
 import { displayedEthAmount } from "pec/lib/utils/validators/balance";
+import { IHeaderConfig } from "pec/types/validatorTable";
+
+export interface IValidatorRowProps {
+  validator: ValidatorDetails;
+  filterTableOptions: IHeaderConfig["label"][];
+}
+
 /**
  * @Description This is a component that renders a row of a validator in the validator table.
  *

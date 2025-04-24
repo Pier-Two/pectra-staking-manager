@@ -3,7 +3,8 @@ import { ChevronDown, ChevronsLeftRight, ChevronUp } from "lucide-react";
 import { DASHBOARD_VALIDATOR_COLUMN_HEADERS } from "pec/constants/columnHeaders";
 import {
   ESortDirection,
-  type ITableHeadersRowProps,
+  IHeaderConfig,
+  SortConfig,
 } from "pec/types/validatorTable";
 import type { FC } from "react";
 
@@ -17,6 +18,12 @@ export const getGridTemplateColumns = (filterLength: number) => {
   };
   return templates[filterLength as keyof typeof templates];
 };
+
+export interface ITableHeadersRowProps {
+  sortConfig: SortConfig | null;
+  onSort: (key: string) => void;
+  filterTableOptions: IHeaderConfig["label"][];
+}
 
 export const TableHeader: FC<ITableHeadersRowProps> = ({
   sortConfig,

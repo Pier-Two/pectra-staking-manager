@@ -5,18 +5,24 @@ import {
   ConsolidationStep,
 } from "pec/types/consolidation";
 import type { FC } from "react";
+import { Button } from "../ui/button";
 
 export interface IProgressBar {
   progress: ConsolidationStep;
+  backHandler: () => void;
 }
 
 export const ProgressBar: FC<IProgressBar> = (props) => {
-  const { progress } = props;
+  const { progress, backHandler } = props;
   const activeStyle = "bg-black dark:bg-white";
   const inactiveStyle = "bg-gray-200 dark:bg-gray-800";
 
   return (
-    <div className="flex w-full gap-2">
+    <div className="flex w-full items-center gap-2">
+      <Button variant="outline" className="w-[20px]" onClick={backHandler}>
+        {"<"}
+      </Button>
+
       {[1, 2, 3, 4].map((step) => (
         <div
           key={step}

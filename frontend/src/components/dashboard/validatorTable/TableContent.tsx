@@ -1,8 +1,16 @@
-import type { IValidatorTableContentProps } from "pec/types/validatorTable";
 import type { FC } from "react";
 import { TableHeader } from "./TableHeader";
 import { TableNoResults } from "./TableNoResults";
 import { ValidatorRow } from "./ValidatorRow";
+import { ValidatorDetails } from "pec/types/validator";
+import { IHeaderConfig, SortConfig } from "pec/types/validatorTable";
+
+export interface IValidatorTableContentProps {
+  paginatedData: ValidatorDetails[];
+  sortConfig: SortConfig | null;
+  onSort: (key: string) => void;
+  filterTableOptions: IHeaderConfig["label"][];
+}
 
 export const TableContent: FC<IValidatorTableContentProps> = ({
   paginatedData,

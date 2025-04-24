@@ -4,7 +4,7 @@ import { Button } from "pec/components/ui/button";
 import { Input } from "pec/components/ui/input";
 import { Separator } from "pec/components/ui/separator";
 import { ValidatorStatus } from "pec/types/validator";
-import type { ITableFiltersProps } from "pec/types/validatorTable";
+import type { IHeaderConfig } from "pec/types/validatorTable";
 import type { FC } from "react";
 import { TableFilterDropdown } from "./TableFilterDropdown";
 interface ViewItem {
@@ -12,6 +12,16 @@ interface ViewItem {
   value: string;
   isSelected: boolean;
   onClick: () => void;
+}
+
+export interface ITableFiltersProps {
+  searchTerm: string;
+  onSearchChange: (term: string) => void;
+  statusFilter: string[];
+  onStatusFilterChange: (status: string) => void;
+  filterTableOptions: IHeaderConfig["label"][];
+  onFilterTableOptionsChange: (option: IHeaderConfig["label"]) => void;
+  getValidatorCount: (status: ValidatorStatus) => number;
 }
 
 // Default Options That Can Be Filtered in the view dropdown

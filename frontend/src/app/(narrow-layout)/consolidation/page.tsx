@@ -10,7 +10,6 @@ import { useValidators } from "pec/hooks/useValidators";
 import { useWalletAddress } from "pec/hooks/useWallet";
 import ConsolidationLoading from "../consolidate/loading";
 import { useEffect } from "react";
-import { Button } from "pec/components/ui/button";
 import { useRouter } from "next/navigation";
 
 const ConsolidationWorkflow = () => {
@@ -39,7 +38,7 @@ const ConsolidationWorkflow = () => {
   if (!walletAddress || !data || !isFetched) {
     return (
       <div className="flex flex-col gap-4">
-        <ProgressBar progress={progress} />
+        <ProgressBar progress={progress} backHandler={backHandler} />
         <ConsolidationLoading />
       </div>
     );
@@ -47,10 +46,7 @@ const ConsolidationWorkflow = () => {
 
   return (
     <div className="flex w-full flex-col gap-4">
-      <Button variant="outline" className="w-[50px]" onClick={backHandler}>
-        Back
-      </Button>
-      <ProgressBar progress={progress} />
+      <ProgressBar progress={progress} backHandler={backHandler} />
 
       {progress === "destination" && <SelectDestinationValidator />}
 

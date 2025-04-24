@@ -5,7 +5,7 @@ import type { IGenericValidators } from "pec/types/validator";
 import type { FC } from "react";
 import { TableContent } from "./TableContent";
 import { TableFilters } from "./TableFilters";
-import { TablePagination } from "./TablePagination";
+import { TablePagination } from "../../ui/table/TablePagination";
 
 export const ValidatorTable: FC<IGenericValidators> = (props) => {
   const { validators } = props;
