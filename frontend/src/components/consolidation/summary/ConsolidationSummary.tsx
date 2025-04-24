@@ -77,11 +77,7 @@ export const ConsolidationSummary = () => {
           <div className="text-md font-medium">Destination validator</div>
 
           <div className="flex flex-col items-center justify-center gap-4">
-            <ValidatorCard
-              hasHover={false}
-              shrink={false}
-              validator={consolidationTarget!}
-            />
+            <ValidatorCard shrink={false} validator={consolidationTarget!} />
 
             <SecondaryButton
               className="w-full"

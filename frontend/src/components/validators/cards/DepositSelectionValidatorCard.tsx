@@ -1,5 +1,6 @@
 import { CircleCheck, CircleMinus, CirclePlus } from "lucide-react";
 import Image from "next/image";
+import { ValidatorCardWrapper } from "pec/components/ui/custom/validator-card-wrapper";
 import { Input } from "pec/components/ui/input";
 import type { DepositType } from "pec/lib/api/schemas/deposit";
 import { cn } from "pec/lib/utils";
@@ -32,13 +33,6 @@ export const DepositSelectionValidatorCard = ({
   totalToDistribute,
   validator,
 }: IDepositSelectionValidatorCard) => {
-  // TODO: Check handling
-  // if (isNaN(numValue)) return 0;
-  // if (numValue === 0) return 0;
-  // if (numValue > totalToDistribute) return undefined;
-  // if (totalAllocated > totalToDistribute) return undefined;
-  // if (BigInt(numValue) + totalAllocated > totalToDistribute) return undefined;
-
   const setValueHandler = (value: string) => {
     const numValue = parseFloat(value);
     if (isNaN(numValue)) return 0;
@@ -49,13 +43,14 @@ export const DepositSelectionValidatorCard = ({
   };
 
   return (
-    <div
-      className={cn(
-        "group flex w-full cursor-pointer items-center justify-between gap-x-4 rounded-xl border bg-white p-4 hover:border-indigo-500 dark:border-gray-800 dark:bg-black dark:hover:border-gray-600",
-        {
-          "border-indigo-500 dark:border-2 dark:border-indigo-900": selected,
-        },
-      )}
+    <ValidatorCardWrapper
+      className={cn({
+        "border-indigo-500 dark:border-2 dark:border-indigo-900": selected,
+      })}
+      onClick={(e) => {
+        e.stopPropagation();
+        handleSelect();
+      }}
     >
       <div
         className="flex flex-[1.2] items-center gap-x-4"
@@ -108,6 +103,9 @@ export const DepositSelectionValidatorCard = ({
             }
             type="number"
             step="any"
+            onClick={(e) => {
+              e.stopPropagation();
+            }}
             value={depositAmount.toString()}
             // Registers the deposit amount input field with React Hook Form
             // - Converts empty input to 0
@@ -128,6 +126,6 @@ export const DepositSelectionValidatorCard = ({
           </div>
         )}
       </div>
-    </div>
+    </ValidatorCardWrapper>
   );
 };

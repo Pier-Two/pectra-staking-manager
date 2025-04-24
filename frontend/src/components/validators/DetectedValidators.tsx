@@ -45,7 +45,7 @@ export const DetectedValidators: FC<IDetectedValidators> = (props) => {
           <p className="text-[14px] font-570 leading-[14px] text-zinc-950 dark:text-zinc-50">
             {validators.length} {cardTitle}{" "}
             {numberOfInactiveValidators > 0 &&
-              `(${numberOfInactiveValidators} of which are inactive/exiting)`}
+              `(${numberOfInactiveValidators} inactive or exiting)`}
           </p>
         </div>
 
@@ -64,7 +64,6 @@ export const DetectedValidators: FC<IDetectedValidators> = (props) => {
           {activeValidators.map((validator, index) => (
             <ValidatorCard
               key={index + validator.validatorIndex}
-              hasHover={false}
               shrink={true}
               validator={validator}
               className="!bg-transparent"

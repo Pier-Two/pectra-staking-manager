@@ -44,7 +44,6 @@ export const ValidatorList = () => {
         activeValidators.map((validator, index) => (
           <ValidatorCard
             key={`validator-${validator.validatorIndex}-${index}`}
-            hasHover={true}
             onClick={() => handleValidatorClick(validator)}
             shrink={false}
             validator={validator}

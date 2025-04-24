@@ -11,12 +11,12 @@ export const ValidatorHelp: FC = () => {
   const [openNewFeatures, setOpenNewFeatures] = useState(false);
 
   return (
-    <div className="flex w-full flex-col rounded-lg border border-border bg-white px-4 text-sm dark:border-gray-800 dark:bg-black">
+    <div className="flex w-full flex-col rounded-lg border border-border bg-white px-4 text-left text-sm dark:border-gray-800 dark:bg-black">
       <div
         className="flex h-[52px] items-center justify-between hover:cursor-pointer"
         onClick={() => setOpenWhatIs(!openWhatIs)}
       >
-        <p className="font-570 text-[13px] text-zinc-950 dark:text-zinc-50">
+        <p className="text-[13px] font-570 text-zinc-950 dark:text-zinc-50">
           What is validator consolidation?
         </p>
         <Button variant="ghost" size="icon">
@@ -37,7 +37,7 @@ export const ValidatorHelp: FC = () => {
         className="flex h-[52px] items-center justify-between hover:cursor-pointer"
         onClick={() => setOpenWhyConsolidate(!openWhyConsolidate)}
       >
-        <p className="font-570 text-[13px] text-zinc-950 dark:text-zinc-50">
+        <p className="text-[13px] font-570 text-zinc-950 dark:text-zinc-50">
           Why should I consolidate?
         </p>
         <Button variant="ghost" size="icon">
@@ -62,7 +62,7 @@ export const ValidatorHelp: FC = () => {
         className="flex h-[52px] items-center justify-between hover:cursor-pointer"
         onClick={() => setOpenNewFeatures(!openNewFeatures)}
       >
-        <p className="font-570 text-[13px] text-zinc-950 dark:text-zinc-50">
+        <p className="text-[13px] font-570 text-zinc-950 dark:text-zinc-50">
           What new staking features does consolidating enable?
         </p>
 

@@ -88,11 +88,7 @@ export const SelectSourceValidators = () => {
 
           <div className="flex flex-col items-center justify-center gap-4">
             {consolidationTarget && (
-              <ValidatorCard
-                hasHover={false}
-                shrink={false}
-                validator={consolidationTarget}
-              />
+              <ValidatorCard shrink={false} validator={consolidationTarget} />
             )}
 
             <SecondaryButton
