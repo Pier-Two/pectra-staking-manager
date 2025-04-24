@@ -3,8 +3,8 @@ export enum ESortDirection {
   DESC = "desc",
 }
 
-export interface SortConfig {
-  key: string;
+export interface SortConfig<T> {
+  key: keyof T;
   direction: ESortDirection;
 }
 

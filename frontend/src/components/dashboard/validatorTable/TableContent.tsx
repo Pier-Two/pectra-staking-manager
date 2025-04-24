@@ -1,5 +1,5 @@
 import type { FC } from "react";
-import { TableHeader } from "./TableHeader";
+import { TableHeader } from "../../ui/table/TableHeader";
 import { TableNoResults } from "./TableNoResults";
 import { ValidatorRow } from "./ValidatorRow";
 import { ValidatorDetails } from "pec/types/validator";

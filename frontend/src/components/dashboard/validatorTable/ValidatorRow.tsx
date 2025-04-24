@@ -22,7 +22,7 @@ import { Separator } from "pec/components/ui/separator";
 import { ValidatorDetails, ValidatorStatus } from "pec/types/validator";
 import type { FC } from "react";
 import clsx from "clsx";
-import { getGridTemplateColumns } from "./TableHeader";
+import { getGridTemplateColumns } from "../../ui/table/TableHeader";
 import { displayedEthAmount } from "pec/lib/utils/validators/balance";
 import { IHeaderConfig } from "pec/types/validatorTable";
 

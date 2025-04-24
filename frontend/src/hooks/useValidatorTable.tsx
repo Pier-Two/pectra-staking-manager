@@ -1,19 +1,19 @@
 import type { ValidatorDetails, ValidatorStatus } from "pec/types/validator";
-import type { IHeaderConfig, SortConfig } from "pec/types/validatorTable";
-import { ESortDirection, } from "pec/types/validatorTable";
+import type { IHeaderConfig } from "pec/types/validatorTable";
+import { ESortDirection } from "pec/types/validatorTable";
 import { useMemo, useState } from "react";
+import { usePagination } from "./use-pagination";
+import { useValidatorSorting } from "./use-validator-sorting";
 
-
-export function useValidatorTable(data: ValidatorDetails[], itemsPerPage = 10) {
+export function useValidatorTable(data: ValidatorDetails[]) {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<string[]>([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [sortConfig, setSortConfig] = useState<SortConfig | null>(null);
-  const [filterTableOptions, setFilterTableOptions] = useState<IHeaderConfig['label'][]>([]);
-
+  const [filterTableOptions, setFilterTableOptions] = useState<
+    IHeaderConfig["label"][]
+  >([]);
 
   const filteredData = useMemo(() => {
-    return (
+    const filteredData =
       data?.filter((validator) => {
         const matchesSearch =
           searchTerm === "" ||
@@ -27,50 +27,22 @@ export function useValidatorTable(data: ValidatorDetails[], itemsPerPage = 10) {
           statusFilter.length === 0 || statusFilter.includes(validator.status);
 
         return matchesSearch && matchesStatus;
-      }) || []
-    );
+      }) || [];
+
+    return filteredData;
   }, [data, searchTerm, statusFilter]);
 
-  const sortedData = useMemo(() => {
-    return [...filteredData].sort((a, b) => {
-      if (!sortConfig) return 0;
+  const { sortedValidators, setSortConfig, sortConfig } = useValidatorSorting({
+    validators: filteredData,
+  });
 
-      const aValue = a[sortConfig.key as keyof typeof a] as number;
-      const bValue = b[sortConfig.key as keyof typeof b] as number;
-
-      if (aValue < bValue)
-        return sortConfig.direction === ESortDirection.ASC ? -1 : 1;
-
-      if (aValue > bValue)
-        return sortConfig.direction === ESortDirection.ASC ? 1 : -1;
-
-      return 0;
+  const { currentPage, setCurrentPage, paginatedData, totalPages } =
+    usePagination({
+      data: sortedValidators,
     });
-  }, [filteredData, sortConfig]);
-
-  const paginatedData = useMemo(() => {
-    return sortedData.slice(
-      (currentPage - 1) * itemsPerPage,
-      currentPage * itemsPerPage,
-    );
-  }, [sortedData, currentPage, itemsPerPage]);
 
   const getValidatorCount = (status: ValidatorStatus) => {
     return data.filter((validator) => validator.status === status).length;
-  };
-
-  const totalPages = Math.ceil(filteredData.length / itemsPerPage);
-
-  const handleSort = (key: string) => {
-    let direction = ESortDirection.ASC;
-
-    if (sortConfig && sortConfig.key === key) {
-      direction =
-        sortConfig.direction === ESortDirection.ASC
-          ? ESortDirection.DESC
-          : ESortDirection.ASC;
-    }
-    setSortConfig({ key, direction });
   };
 
   const handleStatusFilterChange = (status: string) => {
@@ -85,11 +57,7 @@ export function useValidatorTable(data: ValidatorDetails[], itemsPerPage = 10) {
     setCurrentPage(1);
   };
 
-  const handlePageChange = (page: number) => {
-    if (page >= 1 && page <= totalPages) setCurrentPage(page);
-  };
-
-  const handleFilterTableOptionsChange = (option: IHeaderConfig['label']) => {
+  const handleFilterTableOptionsChange = (option: IHeaderConfig["label"]) => {
     if (filterTableOptions.includes(option))
       setFilterTableOptions(filterTableOptions.filter((v) => v !== option));
     else setFilterTableOptions([...filterTableOptions, option]);
@@ -107,10 +75,10 @@ export function useValidatorTable(data: ValidatorDetails[], itemsPerPage = 10) {
     totalPages,
 
     // Handlers
-    handleSort,
+    handleSort: setSortConfig,
     handleStatusFilterChange,
     handleSearchChange,
-    handlePageChange,
+    handlePageChange: setCurrentPage,
     getValidatorCount,
     handleFilterTableOptionsChange,
   };
