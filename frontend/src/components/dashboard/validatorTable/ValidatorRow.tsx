@@ -30,13 +30,13 @@ import clsx from "clsx";
 import { getGridTemplateColumns } from "./TableHeader";
 /**
  * @Description This is a component that renders a row of a validator in the validator table.
- * 
- * 
+ *
+ *
  * @param_validator - The validator object to render
- * 
+ *
  * @param_filterTableOptions - The current filter Options for the table
  *   - Expected Functionality if an item is in the FilterTablesOptions array, ** IT SHOULD NOT BE RENDERED **
- * 
+ *
  */
 export const ValidatorRow: FC<IValidatorRowProps> = (props) => {
   const { validator, filterTableOptions } = props;
@@ -58,9 +58,14 @@ export const ValidatorRow: FC<IValidatorRowProps> = (props) => {
   };
 
   return (
-    <div className="w-auto rounded-xl border bg-indigo-50 p-4 text-sm hover:border-indigo-300 dark:bg-black dark:hover:bg-gray-900">
+    <div className="w-full rounded-xl border bg-indigo-50 p-4 text-sm hover:border-indigo-300 dark:bg-black dark:hover:bg-gray-900">
       {/* Desktop View */}
-      <div className={clsx("hidden md:grid md:gap-4 md:items-center", getGridTemplateColumns(filterTableOptions.length))}>
+      <div
+        className={clsx(
+          "hidden md:grid md:items-center md:gap-4",
+          getGridTemplateColumns(filterTableOptions.length),
+        )}
+      >
         <div>
           <div className="flex flex-row gap-2">
             <Image
@@ -72,7 +77,8 @@ export const ValidatorRow: FC<IValidatorRowProps> = (props) => {
             <div className="flex flex-col">
               <div className="font-medium">{validator.validatorIndex}</div>
               <div className="text-xs text-gray-500">
-                {validator.publicKey.slice(0, 7)}...{validator.publicKey.slice(-5)}
+                {validator.publicKey.slice(0, 7)}...
+                {validator.publicKey.slice(-5)}
               </div>
             </div>
           </div>
@@ -82,7 +88,9 @@ export const ValidatorRow: FC<IValidatorRowProps> = (props) => {
           <div>
             <div className="flex flex-col">
               <span>{validator.activeSince}</span>
-              <span className="text-xs text-gray-500">{validator.activeDuration}</span>
+              <span className="text-xs text-gray-500">
+                {validator.activeDuration}
+              </span>
             </div>
           </div>
         )}
@@ -117,7 +125,10 @@ export const ValidatorRow: FC<IValidatorRowProps> = (props) => {
           <div>
             <div className="flex items-center gap-1">
               <AlignLeft className="h-3 w-3" />
-              <div className="font-semibold">{Number(formatEther(validator.balance)).toFixed(DECIMAL_PLACES)} ETH</div>
+              <div className="font-semibold">
+                {Number(formatEther(validator.balance)).toFixed(DECIMAL_PLACES)}{" "}
+                ETH
+              </div>
             </div>
           </div>
         )}
@@ -126,7 +137,7 @@ export const ValidatorRow: FC<IValidatorRowProps> = (props) => {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" size="icon">
-                <MoreVertical className="rotate-90 h-4 w-4" />
+                <MoreVertical className="h-4 w-4 rotate-90" />
                 <span className="sr-only">Open menu</span>
               </Button>
             </DropdownMenuTrigger>
@@ -162,7 +173,7 @@ export const ValidatorRow: FC<IValidatorRowProps> = (props) => {
 
       {/* Mobile View */}
       <div className="md:hidden">
-        <div className="grid grid-cols-3 gap-4 mb-4">
+        <div className="mb-4 grid grid-cols-3 gap-4">
           <div>
             <div className="flex flex-row gap-2">
               <Image
@@ -174,7 +185,8 @@ export const ValidatorRow: FC<IValidatorRowProps> = (props) => {
               <div className="flex flex-col">
                 <div className="font-medium">{validator.validatorIndex}</div>
                 <div className="text-xs text-gray-500">
-                  {validator.publicKey.slice(0, 7)}...{validator.publicKey.slice(-5)}
+                  {validator.publicKey.slice(0, 7)}...
+                  {validator.publicKey.slice(-5)}
                 </div>
               </div>
             </div>
@@ -197,7 +209,7 @@ export const ValidatorRow: FC<IValidatorRowProps> = (props) => {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="icon">
-                  <MoreVertical className="rotate-90 h-4 w-4" />
+                  <MoreVertical className="h-4 w-4 rotate-90" />
                   <span className="sr-only">Open menu</span>
                 </Button>
               </DropdownMenuTrigger>
@@ -232,19 +244,21 @@ export const ValidatorRow: FC<IValidatorRowProps> = (props) => {
         </div>
 
         {/* Mobile View - Items Stacked */}
-        <div className="space-y-2 mt-4 border-t pt-4 dark:border-gray-800">
+        <div className="mt-4 space-y-2 border-t pt-4 dark:border-gray-800">
           {!filterTableOptions.includes("Active since") && (
-            <div className="flex justify-between items-center">
+            <div className="flex items-center justify-between">
               <span className="text-gray-500">Active since</span>
               <div className="flex flex-col items-end">
                 <span>{validator.activeSince}</span>
-                <span className="text-xs text-gray-500">{validator.activeDuration}</span>
+                <span className="text-xs text-gray-500">
+                  {validator.activeDuration}
+                </span>
               </div>
             </div>
           )}
 
           {!filterTableOptions.includes("Status") && (
-            <div className="flex justify-between items-center">
+            <div className="flex items-center justify-between">
               <span className="text-gray-500">Status</span>
               <div className="flex items-center gap-2">
                 {validator.status === ValidatorStatus.ACTIVE ? (
@@ -258,11 +272,16 @@ export const ValidatorRow: FC<IValidatorRowProps> = (props) => {
           )}
 
           {!filterTableOptions.includes("Balance") && (
-            <div className="flex justify-between items-center">
+            <div className="flex items-center justify-between">
               <span className="text-gray-500">Balance</span>
               <div className="flex items-center gap-1">
                 <AlignLeft className="h-3 w-3" />
-                <div className="font-semibold">{Number(formatEther(validator.balance)).toFixed(DECIMAL_PLACES)} ETH</div>
+                <div className="font-semibold">
+                  {Number(formatEther(validator.balance)).toFixed(
+                    DECIMAL_PLACES,
+                  )}{" "}
+                  ETH
+                </div>
               </div>
             </div>
           )}

@@ -9,15 +9,13 @@ const MainLayout: FC<ChildrenProp> = (props) => {
 
   return (
     <ThemeProvider>
-      <div className="flex min-h-screen w-screen flex-col">
+      <div className="flex min-h-screen w-screen flex-col items-center bg-indigo-50 dark:bg-gray-950 dark:text-white">
         <TopBar type="profile" />
-        <div className="flex flex-1 justify-center bg-indigo-50 dark:bg-gray-950 dark:text-white">
-          <div className="min-h-screen w-full max-w-[90vw] py-8 md:max-w-[42vw]">
-            {children}
-          </div>
+        <div className="flex max-w-[100rem] flex-1 justify-center py-8">
+          {children}
         </div>
-        <BottomBar />
       </div>
+      <BottomBar />
     </ThemeProvider>
   );
 };

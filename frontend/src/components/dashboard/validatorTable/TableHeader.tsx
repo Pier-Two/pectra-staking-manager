@@ -23,20 +23,27 @@ export const TableHeader: FC<ITableHeadersRowProps> = ({
   onSort,
   filterTableOptions,
 }) => {
-
   // Get all the headers that should be displayed in the table
   const tableHeaderItems = DASHBOARD_VALIDATOR_COLUMN_HEADERS.filter(
-    (header) => !filterTableOptions.includes(header.label)
+    (header) => !filterTableOptions.includes(header.label),
   );
 
   // Get Validator and Credentials headers for mobile view
-  const validatorHeader = { label: "Validator", sortKey: "validatorIndex" }
-  const credentialsHeader = { label: "Credentials", sortKey: "withdrawalAddress" }
+  const validatorHeader = { label: "Validator", sortKey: "validatorIndex" };
+  const credentialsHeader = {
+    label: "Credentials",
+    sortKey: "withdrawalAddress",
+  };
 
   return (
-    <div className="w-auto flex justify-center items-center">
+    <div className="flex w-full items-center justify-center">
       {/* Desktop View */}
-      <div className={clsx("hidden md:grid md:gap-4 text-sm pl-4 max-w-[90vw] w-full", getGridTemplateColumns(filterTableOptions.length))}>
+      <div
+        className={clsx(
+          "hidden w-full pl-4 text-sm md:grid md:gap-4",
+          getGridTemplateColumns(filterTableOptions.length),
+        )}
+      >
         {tableHeaderItems.map((header) => (
           <div
             key={header.sortKey}
@@ -62,10 +69,9 @@ export const TableHeader: FC<ITableHeadersRowProps> = ({
 
       {/* Mobile View */}
       <div className="md:hidden">
-        <div className="grid grid-cols-3 gap-12 text-sm p-4">
-
+        <div className="grid grid-cols-3 gap-12 p-4 text-sm">
           {validatorHeader && (
-            <div 
+            <div
               className="cursor-pointer"
               onClick={() => onSort(validatorHeader.sortKey)}
             >
@@ -85,7 +91,7 @@ export const TableHeader: FC<ITableHeadersRowProps> = ({
           )}
 
           {credentialsHeader && (
-            <div 
+            <div
               className="cursor-pointer"
               onClick={() => onSort(credentialsHeader.sortKey)}
             >

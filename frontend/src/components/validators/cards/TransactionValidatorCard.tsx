@@ -1,7 +1,10 @@
 import { CircleCheck, ExternalLink } from "lucide-react";
 import Image from "next/image";
 import { Button } from "pec/components/ui/button";
-import { getBlockExplorerTxUrl, openInNewTab } from "pec/helpers/getExternalLink";
+import {
+  getBlockExplorerTxUrl,
+  openInNewTab,
+} from "pec/helpers/getExternalLink";
 import { useSubmitConsolidate } from "pec/hooks/use-consolidation";
 import { useConsolidationStore } from "pec/hooks/use-consolidation-store";
 import { cn } from "pec/lib/utils";
@@ -15,7 +18,9 @@ export interface ITransactionValidatorCard {
   isTarget?: boolean;
 }
 
-const getStatusConfig = (validator: ValidatorDetails): {
+const getStatusConfig = (
+  validator: ValidatorDetails,
+): {
   classname?: string;
   component: React.ReactNode;
 } => {
@@ -23,7 +28,14 @@ const getStatusConfig = (validator: ValidatorDetails): {
     case TransactionStatus.SUBMITTED:
       return {
         component: (
-          <div className="flex items-center gap-1 text-xs hover:cursor-pointer" onClick={() => openInNewTab(getBlockExplorerTxUrl(validator.consolidationTransaction?.hash))}>
+          <div
+            className="flex items-center gap-1 text-xs hover:cursor-pointer"
+            onClick={() =>
+              openInNewTab(
+                getBlockExplorerTxUrl(validator.consolidationTransaction?.hash),
+              )
+            }
+          >
             <span className="text-sm text-indigo-500">
               {validator.consolidationTransaction?.hash.slice(0, 6)}...
               {validator.consolidationTransaction?.hash.slice(-4)}
@@ -40,7 +52,9 @@ const getStatusConfig = (validator: ValidatorDetails): {
         component: (
           <div className="flex items-center gap-x-2 text-xs">
             <PectraSpinner />
-            <span className="text-black dark:text-white">Signing transaction</span>
+            <span className="text-black dark:text-white">
+              Signing transaction
+            </span>
           </div>
         ),
       };
@@ -56,7 +70,9 @@ const getStatusConfig = (validator: ValidatorDetails): {
   }
 };
 
-export const TransactionValidatorCard: FC<ITransactionValidatorCard> = (props) => {
+export const TransactionValidatorCard: FC<ITransactionValidatorCard> = (
+  props,
+) => {
   const { validator, isTarget } = props;
   const { currentPubKey } = useConsolidationStore();
   const {
@@ -65,13 +81,15 @@ export const TransactionValidatorCard: FC<ITransactionValidatorCard> = (props) =
   } = useSubmitConsolidate();
 
   const statusConfig = getStatusConfig(validator);
-  const showConsolidateButton = !isTarget && !isSubmittingConsolidateTransactions && !currentPubKey;
-  const isUpcoming = validator.consolidationTransaction?.status === TransactionStatus.UPCOMING;
+  const showConsolidateButton =
+    !isTarget && !isSubmittingConsolidateTransactions && !currentPubKey;
+  const isUpcoming =
+    validator.consolidationTransaction?.status === TransactionStatus.UPCOMING;
 
   return (
     <div
       className={cn(
-        "flex items-center justify-between gap-x-4 rounded-xl border p-4 dark:border-gray-800 dark:bg-black max-w-[90vw]",
+        "flex items-center justify-between gap-x-4 rounded-xl border p-4 dark:border-gray-800 dark:bg-black",
         statusConfig?.classname,
       )}
     >
@@ -103,7 +121,10 @@ export const TransactionValidatorCard: FC<ITransactionValidatorCard> = (props) =
               try {
                 await submitConsolidationTx();
               } catch (error) {
-                console.error("Failed to submit consolidation transaction:", error);
+                console.error(
+                  "Failed to submit consolidation transaction:",
+                  error,
+                );
               }
             }}
           >
