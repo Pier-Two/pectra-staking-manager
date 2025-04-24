@@ -14,10 +14,9 @@ import { DetectedValidators } from "pec/components/validators/DetectedValidators
 import { useConsolidationStore } from "pec/hooks/use-consolidation-store";
 import { useValidators } from "pec/hooks/useValidators";
 import { EIconPosition } from "pec/types/components";
-import type { ValidatorDetails } from "pec/types/validator";
+import { ValidatorStatus, type ValidatorDetails } from "pec/types/validator";
 import { useEffect, useMemo, useState } from "react";
 import { ValidatorList } from "./ValidatorList";
-import { validatorIsActive } from "pec/lib/utils/validators/status";
 import { displayedEthAmount } from "pec/lib/utils/validators/balance";
 
 export const SelectSourceValidators = () => {
@@ -32,11 +31,9 @@ export const SelectSourceValidators = () => {
 
   const [activeTab, setActiveTab] = useState<string>("maxConsolidate");
 
-  const { data: validators } = useValidators();
+  const { groupedValidators } = useValidators();
 
-  const availableSourceValidators = useMemo(() => {
-    return validators?.filter((validator) => validatorIsActive(validator));
-  }, [validators]);
+  const availableSourceValidators = groupedValidators[ValidatorStatus.ACTIVE];
 
   useEffect(() => {
     if (
@@ -56,11 +53,11 @@ export const SelectSourceValidators = () => {
 
   const handleResetConsolidationTarget = () => {
     setConsolidationTarget(undefined);
-    setProgress(1);
+    setProgress("destination");
   };
 
   const handleConsolidationProgression = () => {
-    if (validatorsToConsolidate?.length > 0) setProgress(3);
+    if (validatorsToConsolidate?.length > 0) setProgress("summary");
   };
 
   const handleSourceValidatorSelection = (validator: ValidatorDetails) => {
@@ -76,7 +73,7 @@ export const SelectSourceValidators = () => {
   }, [validatorsToConsolidate, consolidationTarget]);
 
   return (
-    <div className="space-y-6">
+    <div className="w-full space-y-6">
       <div className="space-y-2">
         <div className="text-2xl font-medium">Source Validator(s)</div>
         <div className="text-sm text-gray-700 dark:text-gray-300">

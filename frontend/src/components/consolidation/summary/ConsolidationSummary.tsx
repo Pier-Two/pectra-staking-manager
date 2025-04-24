@@ -26,19 +26,19 @@ export const ConsolidationSummary = () => {
 
   const handleResetDestinationValidator = () => {
     reset();
-    setProgress(1);
+    setProgress("destination");
   };
 
   const { mutateAsync: submitConsolidationTx } = useSubmitConsolidate();
 
   const handleGenerateTransactions = async () => {
-    setProgress(4);
+    setProgress("submit");
     await submitConsolidationTx();
   };
 
   const handleResetSourceValidators = () => {
     bulkSetConsolidationTargets([]);
-    setProgress(2);
+    setProgress("source");
   };
 
   const getTransactionsRequired = () => {

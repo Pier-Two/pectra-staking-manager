@@ -2,23 +2,20 @@
 
 import { ValidatorCard } from "pec/components/validators/cards/ValidatorCard";
 import { useConsolidationStore } from "pec/hooks/use-consolidation-store";
-import type { ValidatorDetails } from "pec/types/validator";
+import { ValidatorStatus, type ValidatorDetails } from "pec/types/validator";
 import LoadingSkeletons from "./LoadingSkeletons";
 import { useValidators } from "pec/hooks/useValidators";
-import { validatorIsActive } from "pec/lib/utils/validators/status";
 
 export const ValidatorList = () => {
   const { setConsolidationTarget, setProgress } = useConsolidationStore();
 
-  const { data: validators, isLoading } = useValidators();
+  const { isLoading, groupedValidators } = useValidators();
 
-  const activeValidators = validators?.filter((validator) =>
-    validatorIsActive(validator),
-  );
+  const activeValidators = groupedValidators[ValidatorStatus.ACTIVE];
 
   const handleValidatorClick = (validator: ValidatorDetails) => {
     setConsolidationTarget(validator);
-    setProgress(2);
+    setProgress("source");
   };
 
   return (

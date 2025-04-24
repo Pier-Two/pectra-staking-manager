@@ -67,6 +67,7 @@ export const DetectedValidators: FC<IDetectedValidators> = (props) => {
               hasHover={false}
               shrink={true}
               validator={validator}
+              className="!bg-transparent"
             />
           ))}
         </div>

@@ -1,24 +1,8 @@
-import type { DepositType } from "pec/lib/api/schemas/deposit";
-import type { FieldErrors } from "react-hook-form";
-import type { ValidatorDetails } from "./validator";
+export type ConsolidationStep = "destination" | "source" | "summary" | "submit";
 
-export interface IProgressBar {
-  progress: number;
-  setProgress?: (step: number) => void;
-}
-
-export interface ISourceValidatorList {
-  sourceValidators: ValidatorDetails[];
-  setSourceValidators: (validator: ValidatorDetails) => void;
-  validators: ValidatorDetails[];
-}
-
-export interface IConsolidationEmail {
-  cardText: string;
-  cardTitle: string;
-  summaryEmail: string;
-  setSummaryEmail: (email: string) => void;
-  errors?: FieldErrors<DepositType>;
-  showEmail: boolean;
-  setShowEmail: (showEmail: boolean) => void;
-}
+export const CONSOLIDATION_STEPS: Record<ConsolidationStep, number> = {
+  destination: 1,
+  source: 2,
+  summary: 3,
+  submit: 4,
+} as const;

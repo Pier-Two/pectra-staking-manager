@@ -18,6 +18,7 @@ import { Skeleton } from "pec/components/ui/skeleton";
 import { useActiveChainWithDefault } from "pec/hooks/useChain";
 import { api } from "pec/trpc/react";
 import { displayedEthAmount } from "pec/lib/utils/validators/balance";
+import { PrimaryButton } from "pec/components/ui/custom/PrimaryButton";
 
 export const ManuallyEnterValidator = () => {
   const { setConsolidationTarget, setProgress } = useConsolidationStore();
@@ -78,7 +79,7 @@ export const ManuallyEnterValidator = () => {
   const handleConfirmValidator = () => {
     if (!validator || typeof validator === "string") return;
     setConsolidationTarget(validator);
-    setProgress(2);
+    setProgress("source");
   };
 
   const [copied, setCopied] = useState(false);
@@ -90,15 +91,15 @@ export const ManuallyEnterValidator = () => {
   };
 
   return (
-    <div className="mx-auto max-w-2xl space-y-6">
-      <form onSubmit={handleSubmit} className="flex gap-2">
+    <div className="mx-auto space-y-6">
+      <form onSubmit={handleSubmit} className="flex gap-4">
         <Input
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder="Enter validator index or public key (0x...)"
           className="flex-1"
         />
-        <Button type="submit">Search</Button>
+        <PrimaryButton type="submit" label="Search" className="!px-8" />
       </form>
 
       {searchTerm && (
@@ -166,14 +167,13 @@ export const ManuallyEnterValidator = () => {
           <CardFooter>
             {validator && typeof validator !== "string" && (
               <div className="flex w-full flex-col gap-2">
-                <Button
+                <PrimaryButton
                   onClick={handleConfirmValidator}
                   disabled={
                     validator && !validator.withdrawalAddress.startsWith("0x02")
                   }
-                >
-                  Use {validator.validatorIndex} as Destination Validator
-                </Button>
+                  label={`Use ${validator.validatorIndex} as Destination Validator`}
+                />
 
                 {!validator.withdrawalAddress.startsWith("0x02") && (
                   <p className="w-full text-center text-xs">

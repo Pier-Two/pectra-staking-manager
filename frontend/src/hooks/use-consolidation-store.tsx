@@ -1,5 +1,6 @@
 "use client";
 
+import { ConsolidationStep } from "pec/types/consolidation";
 import type {
   Transaction,
   TransactionStatus,
@@ -32,8 +33,8 @@ const deserialiseValidator = (validator: SerializedValidator) => {
 };
 
 type ConsolidationStore = {
-  progress: number;
-  setProgress: (step: number) => void;
+  progress: ConsolidationStep;
+  setProgress: (step: ConsolidationStep) => void;
 
   // the current pub key being consolidated
   currentPubKey: string | undefined;
@@ -59,6 +60,9 @@ type ConsolidationStore = {
   // Reset method
   reset: () => void;
 
+  // Go back
+  back: () => void;
+
   // Getter methods to deserialize data
   getConsolidationTarget: () => ValidatorDetails | undefined;
   getValidatorsToConsolidate: () => ValidatorDetails[];
@@ -71,12 +75,31 @@ type ConsolidationStore = {
 
 export const consolidationStore = createStore<ConsolidationStore>()(
   (set, get) => ({
-    progress: 1,
-    setProgress: (progress: number) => set({ progress }),
+    // Weird I need to cast this here
+    progress: "destination" as ConsolidationStep,
+    setProgress: (progress: ConsolidationStep) => set({ progress }),
 
     currentPubKey: undefined,
     setCurrentPubKey: (pubKey: string | undefined) =>
       set({ currentPubKey: pubKey }),
+
+    back: () => {
+      const progress = get().progress;
+
+      if (progress === "destination") {
+        return;
+      }
+
+      if (progress === "source") {
+        set({ progress: "destination", validatorsToConsolidate: [] });
+
+        return;
+      }
+
+      if (progress === "summary") {
+        set({ progress: "destination" });
+      }
+    },
 
     consolidationTarget: undefined,
     setConsolidationTarget: (validator: ValidatorDetails | undefined) =>
@@ -133,7 +156,7 @@ export const consolidationStore = createStore<ConsolidationStore>()(
     // Reset method implementation
     reset: () =>
       set({
-        progress: 1,
+        progress: "destination",
         currentPubKey: undefined,
         consolidationTarget: undefined,
         validatorsToConsolidate: [],

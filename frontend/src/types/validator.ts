@@ -29,15 +29,6 @@ export interface IGenericValidators {
   validators: ValidatorDetails[];
 }
 
-export interface IValidatorCard {
-  hasHover: boolean;
-  shrink: boolean;
-  validator: ValidatorDetails;
-  onClick?: () => void;
-  info?: string;
-  tooltip?: string;
-}
-
 export interface ISourceValidatorCard {
   checked: boolean;
   onClick: () => void;

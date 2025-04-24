@@ -10,52 +10,55 @@ import { useValidators } from "pec/hooks/useValidators";
 import { useWalletAddress } from "pec/hooks/useWallet";
 import ConsolidationLoading from "../consolidate/loading";
 import { useEffect } from "react";
+import { Button } from "pec/components/ui/button";
+import { useRouter } from "next/navigation";
 
 const ConsolidationWorkflow = () => {
   const walletAddress = useWalletAddress();
+  const router = useRouter();
 
   const { data, isFetched } = useValidators();
 
-  const {
-    validatorsToConsolidate,
-    consolidationTarget,
-    progress,
-    setProgress,
-    reset,
-  } = useConsolidationStore();
+  const { progress, reset, back } = useConsolidationStore();
+
+  const backHandler = () => {
+    if (progress === "destination") {
+      router.push("/consolidate");
+
+      return;
+    }
+
+    back();
+  };
 
   useEffect(() => {
+    // Reset the store when someone leaves the page
     return () => reset();
   }, [reset]);
 
   if (!walletAddress || !data || !isFetched) {
     return (
       <div className="flex flex-col gap-4">
-        <ProgressBar progress={progress} setProgress={setProgress} />
+        <ProgressBar progress={progress} />
         <ConsolidationLoading />
       </div>
     );
   }
 
   return (
-    <div className="flex w-[90vw] flex-col gap-4 md:w-[42vw]">
-      <ProgressBar progress={progress} setProgress={setProgress} />
+    <div className="flex w-full flex-col gap-4">
+      <Button variant="outline" className="w-[50px]" onClick={backHandler}>
+        Back
+      </Button>
+      <ProgressBar progress={progress} />
 
-      {progress === 1 && <SelectDestinationValidator />}
+      {progress === "destination" && <SelectDestinationValidator />}
 
-      {consolidationTarget && (
-        <>
-          {progress === 2 && <SelectSourceValidators />}
+      {progress === "source" && <SelectSourceValidators />}
 
-          {validatorsToConsolidate.length > 0 && progress === 3 && (
-            <ConsolidationSummary />
-          )}
+      {progress === "summary" && <ConsolidationSummary />}
 
-          {validatorsToConsolidate.length > 0 && progress === 4 && (
-            <SubmitConsolidationRequests />
-          )}
-        </>
-      )}
+      {progress === "submit" && <SubmitConsolidationRequests />}
     </div>
   );
 };

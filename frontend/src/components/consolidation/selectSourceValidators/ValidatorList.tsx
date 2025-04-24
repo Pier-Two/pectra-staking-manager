@@ -1,11 +1,16 @@
 "use client";
 
 import { useConsolidationStore } from "pec/hooks/use-consolidation-store";
-import type { ISourceValidatorList } from "pec/types/consolidation";
 import type { ValidatorDetails } from "pec/types/validator";
 import { type FC } from "react";
 import { ValidatorCard } from "./ValidatorCard";
 import { validatorIsActive } from "pec/lib/utils/validators/status";
+
+export interface ISourceValidatorList {
+  sourceValidators: ValidatorDetails[];
+  setSourceValidators: (validator: ValidatorDetails) => void;
+  validators: ValidatorDetails[];
+}
 
 export const ValidatorList: FC<ISourceValidatorList> = (props) => {
   const { validators } = props;

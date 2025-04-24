@@ -3,19 +3,31 @@ import { BadgeMinus } from "lucide-react";
 import Image from "next/image";
 import { formatValidatorIndex } from "pec/helpers/formatValidatorIndex";
 import { displayedEthAmount } from "pec/lib/utils/validators/balance";
-import type { IValidatorCard } from "pec/types/validator";
+import { ValidatorDetails } from "pec/types/validator";
 import type { FC } from "react";
 
+export interface IValidatorCard {
+  hasHover: boolean;
+  shrink: boolean;
+  validator: ValidatorDetails;
+  onClick?: () => void;
+  info?: string;
+  tooltip?: string;
+  className?: string;
+}
+
 export const ValidatorCard: FC<IValidatorCard> = (props) => {
-  const { hasHover, shrink, validator, onClick, info } = props;
+  const { hasHover, shrink, validator, onClick, info, className } = props;
   const withdrawalAddressPrefix = validator.withdrawalAddress.slice(0, 4);
 
   return (
     <div
       className={clsx(
-        "flex-col-3 flex h-16 items-center justify-between gap-x-4 rounded-2xl border border-border px-4 py-2 dark:border-gray-800",
+        "flex-col-3 flex h-16 items-center justify-between gap-x-4 rounded-2xl border border-border bg-white px-4 py-2 dark:border-gray-800 dark:bg-black",
         shrink ? "w-[95%]" : "w-full",
         hasHover && "hover:border-indigo-500 dark:hover:border-gray-600",
+        { "cursor-pointer": onClick },
+        className,
       )}
       onClick={onClick}
     >
