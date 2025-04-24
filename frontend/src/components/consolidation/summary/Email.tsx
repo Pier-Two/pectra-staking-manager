@@ -28,7 +28,6 @@ export const Email: FC<IConsolidationEmail> = (props) => {
           checked={showEmail}
           onCheckedChange={() => {
             setShowEmail(!showEmail);
-            setSummaryEmail("");
           }}
           className="relative items-center rounded-full transition-colors before:absolute before:h-5 before:w-5 before:rounded-full before:bg-white before:transition-transform before:duration-300 data-[state=checked]:bg-indigo-500 data-[state=unchecked]:bg-indigo-200 data-[state=unchecked]:dark:bg-gray-600 data-[state=checked]:before:translate-x-5 data-[state=unchecked]:before:translate-x-0"
         />
@@ -42,9 +41,9 @@ export const Email: FC<IConsolidationEmail> = (props) => {
           onChange={(e) => setSummaryEmail(e.target.value)}
         />
       )}
-
+      
       <div className="mt-1 text-xs text-red-500">
-        {errors?.email && "Please enter a valid email address"}
+        {errors?.email && "Invalid email address"}
       </div>
     </div>
   );
