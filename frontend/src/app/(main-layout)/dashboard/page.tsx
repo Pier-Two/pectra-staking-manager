@@ -60,7 +60,7 @@ const Dashboard: FC = () => {
         </div>
       </div>
 
-      <div className="relative flex h-full w-screen justify-center bg-white pt-12">
+      <div className="relative flex h-full w-screen justify-center bg-white">
         <div className={cn(MAX_WIDTH_STYLE)}>
           <div className="w-full space-y-8 px-2 py-8 md:px-8">
             <h2 className="text-[26px] font-570 leading-[26px] text-primary-dark dark:text-indigo-200">
