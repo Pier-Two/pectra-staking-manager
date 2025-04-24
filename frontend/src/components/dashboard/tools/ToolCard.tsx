@@ -28,7 +28,7 @@ export const cardPresets = {
   BatchDeposit: {
     title: "Batch Deposit",
     description:
-      "Deposit multiple active validators at once, via PierTwo's batch deposit contract.",
+      "Deposit multiple active validators at once, via Pier Two's batch deposit contract.",
     url: "/batch-deposit",
     buttonLabel: "Deposit now",
     icon: <ArrowDownToDot size={24} />,
