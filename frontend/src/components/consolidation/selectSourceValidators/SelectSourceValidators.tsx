@@ -1,6 +1,6 @@
 "use client";
 
-import { AlignLeft, Pencil, Zap } from "lucide-react";
+import { Pencil, Zap } from "lucide-react";
 import { PrimaryButton } from "pec/components/ui/custom/PrimaryButton";
 import { SecondaryButton } from "pec/components/ui/custom/SecondaryButton";
 import {
@@ -13,9 +13,8 @@ import { ValidatorCard } from "pec/components/validators/cards/ValidatorCard";
 import { DetectedValidators } from "pec/components/validators/DetectedValidators";
 import { useConsolidationStore } from "pec/hooks/use-consolidation-store";
 import { useValidators } from "pec/hooks/useValidators";
-import { DECIMAL_PLACES } from "pec/lib/constants";
 import { EIconPosition } from "pec/types/components";
-import { ValidatorStatus, type ValidatorDetails } from "pec/types/validator";
+import type { ValidatorDetails } from "pec/types/validator";
 import { useEffect, useMemo, useState } from "react";
 import { formatEther } from "viem";
 import { ValidatorList } from "./ValidatorList";

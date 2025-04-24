@@ -1,4 +1,3 @@
-import { AlignLeft } from "lucide-react";
 import { Input } from "pec/components/ui/input";
 import type { DepositType } from "pec/lib/api/schemas/deposit";
 import type { FieldErrors, UseFormRegister } from "react-hook-form";

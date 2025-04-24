@@ -1,4 +1,4 @@
-import { AlignLeft, CircleCheck, CircleMinus, CirclePlus } from "lucide-react";
+import { CircleCheck, CircleMinus, CirclePlus } from "lucide-react";
 import Image from "next/image";
 import { Input } from "pec/components/ui/input";
 import type { WithdrawalFormType } from "pec/lib/api/schemas/withdrawal";

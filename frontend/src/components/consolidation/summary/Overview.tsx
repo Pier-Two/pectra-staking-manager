@@ -1,6 +1,6 @@
 "use client";
 
-import { AlignLeft, Info } from "lucide-react";
+import { Info } from "lucide-react";
 import { PectraSpinner } from "pec/components/ui/custom/pectraSpinner";
 import { Separator } from "pec/components/ui/separator";
 import {

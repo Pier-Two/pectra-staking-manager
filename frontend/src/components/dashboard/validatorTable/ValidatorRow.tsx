@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  AlignLeft,
   ArrowDownToDot,
   ArrowUpFromDot,
   CircleCheck,
@@ -20,12 +19,10 @@ import {
   DropdownMenuTrigger,
 } from "pec/components/ui/dropdown-menu";
 import { Separator } from "pec/components/ui/separator";
-import { DECIMAL_PLACES } from "pec/lib/constants";
 import { ValidatorStatus } from "pec/types/validator";
 import type { IValidatorRowProps } from "pec/types/validatorTable";
 import type { FC } from "react";
 import { formatEther } from "viem";
-
 import clsx from "clsx";
 import { getGridTemplateColumns } from "./TableHeader";
 import { displayedEthAmount } from "pec/lib/utils/validators/balance";
