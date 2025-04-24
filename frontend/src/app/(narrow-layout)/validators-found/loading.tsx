@@ -8,8 +8,8 @@ const ValidatorsFoundLoading = () => {
   const walletAddress = useWalletAddress();
 
   return (
-    <div className="flex w-full flex-col items-center justify-center">
-      <div className="flex w-[80vw] md:w-[55vw] flex-col items-center gap-4">
+    <div className="flex w-full flex-col items-center">
+      <div className="flex w-[80vw] flex-col items-center gap-4 md:w-[55vw]">
         <div className="text-2xl font-medium">Searching for validators</div>
         <div className="text-sm">
           Matching your connected withdrawal address

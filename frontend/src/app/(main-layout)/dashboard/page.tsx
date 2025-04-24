@@ -12,7 +12,7 @@ import DashboardLoading from "./loading";
 import { useValidators } from "pec/hooks/useValidators";
 import { useValidatorPerformance } from "pec/hooks/useValidatorPerformance";
 import { useEthPrice } from "pec/hooks/useEthPrice";
-import { MAX_WIDTH_STYLE } from "pec/constants/styles";
+import { FULL_WIDTH_STYLE } from "pec/constants/styles";
 import { cn } from "pec/lib/utils";
 
 const Dashboard: FC = () => {
@@ -60,8 +60,8 @@ const Dashboard: FC = () => {
         </div>
       </div>
 
-      <div className="relative flex h-full w-screen justify-center bg-white pt-12">
-        <div className={cn(MAX_WIDTH_STYLE)}>
+      <div className="relative flex h-full w-screen justify-center bg-white">
+        <div className={"max-w-[80rem]"}>
           <div className="w-full space-y-8 px-2 py-8 md:px-8">
             <h2 className="text-[26px] font-570 leading-[26px] text-primary-dark dark:text-indigo-200">
               My Validators
