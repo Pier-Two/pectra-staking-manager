@@ -1,3 +1,5 @@
+import type { DepositType } from "pec/lib/api/schemas/deposit";
+import type { FieldErrors } from "react-hook-form";
 import type { ValidatorDetails } from "./validator";
 
 export interface IProgressBar {
@@ -16,4 +18,7 @@ export interface IConsolidationEmail {
   cardTitle: string;
   summaryEmail: string;
   setSummaryEmail: (email: string) => void;
+  errors?: FieldErrors<DepositType>;
+  showEmail: boolean;
+  setShowEmail: (showEmail: boolean) => void;
 }

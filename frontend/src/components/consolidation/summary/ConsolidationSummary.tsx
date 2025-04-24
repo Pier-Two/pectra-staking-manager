@@ -8,6 +8,7 @@ import { DetectedValidators } from "pec/components/validators/DetectedValidators
 import { useSubmitConsolidate } from "pec/hooks/use-consolidation";
 import { useConsolidationStore } from "pec/hooks/use-consolidation-store";
 import { EIconPosition } from "pec/types/components";
+import { useState } from "react";
 import { Email } from "./Email";
 import { Overview } from "./Overview";
 
@@ -21,6 +22,7 @@ export const ConsolidationSummary = () => {
     consolidationTarget,
     setProgress,
   } = useConsolidationStore();
+  const [showEmail, setShowEmail] = useState(false);
 
   const handleResetDestinationValidator = () => {
     reset();
@@ -115,6 +117,8 @@ export const ConsolidationSummary = () => {
         <Overview />
 
         <Email
+          showEmail={showEmail}
+          setShowEmail={setShowEmail}
           cardText="Add your email to receive an email when your consolidation is complete."
           cardTitle="Notify me when complete"
           summaryEmail={summaryEmail}

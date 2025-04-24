@@ -28,7 +28,7 @@ import { validatorIsActive } from "pec/lib/utils/validators/status";
 
 const Withdrawal: FC = () => {
   const walletAddress = useWalletAddress();
-
+  const [showEmail, setShowEmail] = useState(false);
   const { data: rawValidatorData } = useValidators();
 
   const availableValidators = useMemo(() => {
@@ -62,6 +62,7 @@ const Withdrawal: FC = () => {
   const watchedEmail = watch("email");
   const email = watchedEmail ?? "";
   const withdrawalTotal = sumBy(withdrawals, (withdrawal) => withdrawal.amount);
+  const disabled = isValid && withdrawalTotal > 0 && (showEmail ? email.length > 0 : true)
   const signSubmitFinaliseInProgress = stage?.type === "sign-submit-finalise";
   const columnHeaders = signSubmitFinaliseInProgress
     ? WITHDRAWAL_COLUMN_HEADERS.filter((column) => column.label === "Validator")
@@ -173,7 +174,7 @@ const Withdrawal: FC = () => {
         <WithdrawalInformation
           buttonText="Withdraw"
           handleMaxAllocation={handleMaxAllocation}
-          isValid={isValid && withdrawalTotal > 0}
+          disabled={disabled}
           onSubmit={handleSubmit(onSubmit)}
           resetWithdrawal={handleResetWithdrawal}
           stage={stage}
@@ -185,7 +186,12 @@ const Withdrawal: FC = () => {
           cardText="Add your email to receive an email when your withdrawals are complete."
           cardTitle="Notify me when complete"
           summaryEmail={email}
-          setSummaryEmail={(email) => setValue("email", email)}
+          setSummaryEmail={(email) => setValue("email", email, {
+            shouldValidate: true,
+          })}
+          errors={errors}
+          showEmail={showEmail}
+          setShowEmail={setShowEmail}
         />
 
         <ValidatorHeader
