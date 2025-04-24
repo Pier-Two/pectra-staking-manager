@@ -1,5 +1,6 @@
 import { EDistributionMethod } from "pec/types/batch-deposits";
 import { z } from "zod";
+import { EmailSchema } from "./email";
 import { ValidatorDataSchema } from "./validator";
 
 export const DepositDataSchema = z.object({
@@ -14,7 +15,7 @@ export const DepositSchema = (maxTotalToDistribute: number) =>
     deposits: z.array(DepositDataSchema),
     totalToDistribute: z.number().min(0).max(maxTotalToDistribute),
     distributionMethod: z.nativeEnum(EDistributionMethod),
-    email: z.string().email().optional().or(z.literal("")),
+    email: EmailSchema,
   });
 
 export type DepositType = z.infer<ReturnType<typeof DepositSchema>>;

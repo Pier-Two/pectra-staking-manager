@@ -1,5 +1,6 @@
 import { DatabaseDocumentStatuses } from "pec/types/app";
 import { z } from "zod";
+import { EmailSchema } from "../email";
 
 export const DatabaseWithdrawalSchema = z.object({
   status: z.enum(DatabaseDocumentStatuses),
@@ -7,7 +8,7 @@ export const DatabaseWithdrawalSchema = z.object({
   withdrawalIndex: z.number().nullable(),
   amount: z.number(),
   txHash: z.string(),
-  email: z.string().email().optional().or(z.literal("")),
+  email: EmailSchema,
 });
 
 export type DatabaseWithdrawalType = z.infer<typeof DatabaseWithdrawalSchema>;
