@@ -1,27 +1,16 @@
-import { AlignLeft, BadgeMinus, Info } from "lucide-react";
+import { AlignLeft, BadgeMinus } from "lucide-react";
 import Image from "next/image";
 import { Checkbox } from "pec/components/ui/checkbox";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "pec/components/ui/tooltip";
 import { DECIMAL_PLACES } from "pec/lib/constants";
-import {
-  ValidatorStatus,
-  type ISourceValidatorCard,
-} from "pec/types/validator";
+import type { ISourceValidatorCard } from "pec/types/validator";
 import type { FC } from "react";
 import { formatEther } from "viem";
 
 export const ValidatorCard: FC<
-  ISourceValidatorCard & { disabled?: boolean; tooltip?: string }
+  ISourceValidatorCard & { disabled?: boolean }
 > = (props) => {
-  const { checked, onClick, validator, disabled = false, tooltip } = props;
+  const { checked, onClick, validator, disabled = false } = props;
   const withdrawalAddressPrefix = validator.withdrawalAddress.slice(0, 4);
-  const isExited = validator.status === ValidatorStatus.EXITED;
-  const isPendingDeposit = validator.hasPendingDeposit;
 
   return (
     <div
@@ -57,44 +46,17 @@ export const ValidatorCard: FC<
         </div>
       </div>
 
-      {!isExited && (
-        <>
-          <div className="flex items-center gap-x-2">
-            <BadgeMinus className="h-4 w-4 text-gray-800 dark:text-white" />
-            <div className="text-sm">{withdrawalAddressPrefix}</div>
-          </div>
+      <div className="flex items-center gap-x-2">
+        <BadgeMinus className="h-4 w-4 text-gray-800 dark:text-white" />
+        <div className="text-sm">{withdrawalAddressPrefix}</div>
+      </div>
 
-          <div className="flex items-center gap-1">
-            <AlignLeft className="h-3 w-3 text-gray-500" />
-            <div className="text-sm">
-              {Number(formatEther(validator.balance)).toFixed(DECIMAL_PLACES)}
-            </div>
-          </div>
-        </>
-      )}
-
-      {isExited ||
-        (isPendingDeposit && (
-          <div className="flex grow basis-0 items-center justify-end gap-x-1">
-            {isExited && (
-              <div className="text-[14px] font-570 leading-[14px] text-red-600">
-                Exited
-              </div>
-            )}
-
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger>
-                  <Info className="h-4 w-4 text-red-600" />
-                </TooltipTrigger>
-
-                <TooltipContent>
-                  <p>{tooltip}</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          </div>
-        ))}
+      <div className="flex items-center gap-1">
+        <AlignLeft className="h-3 w-3 text-gray-500" />
+        <div className="text-sm">
+          {Number(formatEther(validator.balance)).toFixed(DECIMAL_PLACES)}
+        </div>
+      </div>
     </div>
   );
 };
