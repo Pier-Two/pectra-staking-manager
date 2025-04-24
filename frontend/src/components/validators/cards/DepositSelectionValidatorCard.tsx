@@ -7,7 +7,6 @@ import { displayedEthAmount } from "pec/lib/utils/validators/balance";
 import { EDistributionMethod } from "pec/types/batch-deposits";
 import type { ValidatorDetails } from "pec/types/validator";
 import type { FieldErrors, UseFormRegister } from "react-hook-form";
-import { formatEther } from "viem";
 
 export interface IDepositSelectionValidatorCard {
   distributionMethod: EDistributionMethod;
@@ -30,7 +29,6 @@ export const DepositSelectionValidatorCard = ({
   depositIndex,
   register,
   selected,
-  totalAllocated,
   totalToDistribute,
   validator,
 }: IDepositSelectionValidatorCard) => {
@@ -92,7 +90,7 @@ export const DepositSelectionValidatorCard = ({
         onClick={handleSelect}
       >
         <div className="font-semibold">
-          Ξ {displayedEthAmount(Number(formatEther(validator.balance)))}
+          Ξ {displayedEthAmount(validator.balance)}
         </div>
       </div>
 

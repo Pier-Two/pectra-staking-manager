@@ -45,7 +45,7 @@ export const Overview = () => {
 
         <div className="flex items-center gap-1">
           <div className="font-semibold">
-            Ξ {displayedEthAmount(Number(formatEther(newTotalBalance)))}
+            Ξ {displayedEthAmount(newTotalBalance)}
           </div>
 
           <TooltipProvider>

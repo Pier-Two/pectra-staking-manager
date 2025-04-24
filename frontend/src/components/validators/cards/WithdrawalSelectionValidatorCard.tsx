@@ -3,12 +3,12 @@ import Image from "next/image";
 import { Input } from "pec/components/ui/input";
 import type { WithdrawalFormType } from "pec/lib/api/schemas/withdrawal";
 import { cn } from "pec/lib/utils";
-import { parseEtherToFixedDecimals } from "pec/lib/utils/parseAmounts";
 import { type ValidatorDetails } from "pec/types/validator";
 import type { WithdrawWorkflowStages } from "pec/types/withdraw";
 import { type FieldErrors, type UseFormRegister } from "react-hook-form";
 import { formatEther } from "viem";
 import { ValidatorLoadingCard } from "./ValidatorLoadingCard";
+import { displayedEthAmount } from "pec/lib/utils/validators/balance";
 interface ExtendedProps {
   availableAmount: bigint;
   handleSelect: () => void;
@@ -110,12 +110,12 @@ export const WithdrawalSelectionValidatorCard = ({
 
       <div className="flex flex-1 flex-col" onClick={onClickHandler}>
         <div className="flex items-center gap-1">
-          Ξ <div className="text-sm">{parseEtherToFixedDecimals(balance)}</div>
+          <div className="text-sm">Ξ {displayedEthAmount(balance)}</div>
         </div>
 
         <div className="flex items-center gap-1 py-1 text-gray-700 dark:text-gray-300">
           <div className="text-sm">
-            Ξ {parseEtherToFixedDecimals(validator.balance)} available
+            Ξ {displayedEthAmount(validator.balance)} available
           </div>
         </div>
       </div>

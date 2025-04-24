@@ -4,7 +4,6 @@ import { Checkbox } from "pec/components/ui/checkbox";
 import { displayedEthAmount } from "pec/lib/utils/validators/balance";
 import type { ISourceValidatorCard } from "pec/types/validator";
 import type { FC } from "react";
-import { formatEther } from "viem";
 
 export const ValidatorCard: FC<
   ISourceValidatorCard & { disabled?: boolean }
@@ -52,7 +51,7 @@ export const ValidatorCard: FC<
       </div>
 
       <div className="font-semibold">
-        Ξ {displayedEthAmount(Number(formatEther(validator.balance)))}
+        Ξ {displayedEthAmount(validator.balance)}
       </div>
     </div>
   );

@@ -12,8 +12,7 @@ export const WalletBalance = ({ balance }: IWalletBalance) => {
       </div>
 
       <div className="flex items-center gap-1 p-2">
-        <div className="text-xs">Ξ</div>
-        <div className="text-xs">{displayedEthAmount(balance)}</div>
+        <div className="text-xs">Ξ {displayedEthAmount(balance)}</div>
       </div>
     </div>
   );

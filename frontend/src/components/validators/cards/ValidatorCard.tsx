@@ -2,10 +2,9 @@ import clsx from "clsx";
 import { BadgeMinus } from "lucide-react";
 import Image from "next/image";
 import { formatValidatorIndex } from "pec/helpers/formatValidatorIndex";
-import { DECIMAL_PLACES } from "pec/lib/constants";
+import { displayedEthAmount } from "pec/lib/utils/validators/balance";
 import type { IValidatorCard } from "pec/types/validator";
 import type { FC } from "react";
-import { formatEther } from "viem";
 
 export const ValidatorCard: FC<IValidatorCard> = (props) => {
   const { hasHover, shrink, validator, onClick, info } = props;
@@ -47,7 +46,7 @@ export const ValidatorCard: FC<IValidatorCard> = (props) => {
       </div>
 
       <p className="grow basis-0 items-end text-right text-[14px] font-570">
-        Ξ{Number(formatEther(validator.balance)).toFixed(DECIMAL_PLACES)}
+        Ξ {displayedEthAmount(validator.balance)}
       </p>
     </div>
   );

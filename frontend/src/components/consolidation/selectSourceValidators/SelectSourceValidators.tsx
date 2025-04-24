@@ -16,7 +16,6 @@ import { useValidators } from "pec/hooks/useValidators";
 import { EIconPosition } from "pec/types/components";
 import type { ValidatorDetails } from "pec/types/validator";
 import { useEffect, useMemo, useState } from "react";
-import { formatEther } from "viem";
 import { ValidatorList } from "./ValidatorList";
 import { validatorIsActive } from "pec/lib/utils/validators/status";
 import { displayedEthAmount } from "pec/lib/utils/validators/balance";
@@ -161,7 +160,7 @@ export const SelectSourceValidators = () => {
         <div>New destination balance:</div>
 
         <div className="font-semibold">
-          Ξ {displayedEthAmount(Number(formatEther(newDestinationBalance)))}
+          Ξ {displayedEthAmount(newDestinationBalance)}
         </div>
 
         <div className="flex items-center gap-1">
