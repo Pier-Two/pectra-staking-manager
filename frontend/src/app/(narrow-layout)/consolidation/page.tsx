@@ -9,6 +9,7 @@ import { useConsolidationStore } from "pec/hooks/use-consolidation-store";
 import { useValidators } from "pec/hooks/useValidators";
 import { useWalletAddress } from "pec/hooks/useWallet";
 import ConsolidationLoading from "../consolidate/loading";
+import { useEffect } from "react";
 
 const ConsolidationWorkflow = () => {
   const walletAddress = useWalletAddress();
@@ -20,7 +21,12 @@ const ConsolidationWorkflow = () => {
     consolidationTarget,
     progress,
     setProgress,
+    reset,
   } = useConsolidationStore();
+
+  useEffect(() => {
+    return () => reset();
+  }, [reset]);
 
   if (!walletAddress || !data || !isFetched) {
     return (

@@ -2,22 +2,22 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowDownToDot } from "lucide-react";
+import { useBatchDeposit } from "pec/hooks/useBatchDeposit";
 import {
   type DepositData,
   DepositSchema,
   type DepositType,
 } from "pec/lib/api/schemas/deposit";
+import { DECIMAL_PLACES } from "pec/lib/constants";
 import { EDistributionMethod } from "pec/types/batch-deposits";
 import type { ValidatorDetails } from "pec/types/validator";
+import { useEffect } from "react";
 import { useForm, useWatch } from "react-hook-form";
+import { Email } from "../consolidation/summary/Email";
 import { DistributionMethod } from "./distribution/DistributionMethod";
 import { SignatureDetails } from "./SignatureDetails";
 import { DepositList } from "./validators/DepositList";
 import { SelectValidators } from "./validators/SelectValidators";
-import { useEffect } from "react";
-import { DECIMAL_PLACES } from "pec/lib/constants";
-import { useBatchDeposit } from "pec/hooks/useBatchDeposit";
-import { Email } from "../consolidation/summary/Email";
 
 export interface IDepositWorkflowProps {
   validators: ValidatorDetails[];
@@ -43,7 +43,7 @@ export const DepositWorkflow = ({
     handleSubmit,
     setValue,
     reset,
-    formState: { isValid, errors },
+    formState: { errors },
   } = useForm<DepositType>({
     resolver: zodResolver(DepositSchema(balance)),
     defaultValues: initialValues,
@@ -72,9 +72,8 @@ export const DepositWorkflow = ({
   );
 
   const shouldBeDisabled =
-    !isValid ||
     totalAllocated !== totalToDistribute ||
-    totalToDistribute === 0 ||
+    totalToDistribute <= 0 ||
     totalAllocated > balance;
 
   const email = watchEmail ?? "";

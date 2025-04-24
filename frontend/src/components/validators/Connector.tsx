@@ -16,12 +16,12 @@ export const Connector: FC<IConnector> = ({
   return (
     <div className="flex w-full flex-col gap-y-9">
       <div className="flex flex-col gap-y-4">
-        <div className="text-center text-[26px] font-570 leading-[26px]">
-          {title}
+        <div className="font-570 text-center text-[26px] leading-[26px]">
+          {!!title && title}
         </div>
 
         {!!description && (
-          <p className="w-[45vw] text-gray-700">{description}</p>
+          <p className="w-full text-gray-700 text-center">{description}</p>
         )}
 
         <p

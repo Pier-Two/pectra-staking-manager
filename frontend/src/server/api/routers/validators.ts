@@ -136,7 +136,7 @@ export const validatorRouter = createTRPCRouter({
       }
     }),
 
-  getValidatorsPerformanceInGwei: publicProcedure
+    getValidatorsPerformanceInWei: publicProcedure
     .input(
       z.object({
         address: z.string(),
@@ -172,37 +172,37 @@ export const validatorRouter = createTRPCRouter({
 
         if (!validatorPerformances.data) return 0;
 
-        let totalInGwei = 0;
+        let totalInWei = 0;
 
         for (const validatorPerformance of validatorPerformances.data.data) {
           switch (filter) {
             case "daily":
-              totalInGwei += validatorPerformance.performance1d ?? 0;
+              totalInWei += validatorPerformance.performance1d ?? 0;
               break;
 
             case "weekly":
-              totalInGwei += validatorPerformance.performance7d ?? 0;
+              totalInWei += validatorPerformance.performance7d ?? 0;
               break;
 
             case "monthly":
-              totalInGwei += validatorPerformance.performance31d ?? 0;
+              totalInWei += validatorPerformance.performance31d ?? 0;
               break;
 
             case "yearly":
-              totalInGwei += validatorPerformance.performance365d ?? 0;
+              totalInWei += validatorPerformance.performance365d ?? 0;
               break;
 
             case "overall":
-              totalInGwei += validatorPerformance.performanceTotal ?? 0;
+              totalInWei += validatorPerformance.performanceTotal ?? 0;
               break;
 
             default:
-              totalInGwei += validatorPerformance.performance1d ?? 0;
+              totalInWei += validatorPerformance.performance1d ?? 0;
               break;
           }
         }
 
-        return totalInGwei;
+        return totalInWei;
       } catch (error) {
         console.error("Error fetching validators performance:", error);
         return 0;

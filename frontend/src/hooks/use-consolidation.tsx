@@ -1,19 +1,19 @@
 "use client";
 
 import { useMutation, useQuery } from "@tanstack/react-query";
+import { toast } from "pec/components/ui/Toast";
 import { client } from "pec/lib/wallet/client";
 import { api } from "pec/trpc/react";
 import { TransactionStatus } from "pec/types/validator";
-import { toast } from "sonner";
 import { eth_call, waitForReceipt } from "thirdweb";
+import type { ChainOptions } from "thirdweb/chains";
 import { useActiveAccount } from "thirdweb/react";
+import { type Account } from "thirdweb/wallets";
 import { fromHex } from "viem";
 import { useConsolidationStore } from "./use-consolidation-store";
+import { useActiveChainWithDefault } from "./useChain";
 import { useContracts } from "./useContracts";
 import { useRpcClient } from "./useRpcClient";
-import { type Account } from "thirdweb/wallets";
-import type { ChainOptions } from "thirdweb/chains";
-import { useActiveChainWithDefault } from "./useChain";
 
 // helper function that is called within the useSubmitConsolidate() hook
 const consolidateValidator = async (
@@ -106,8 +106,10 @@ export const useSubmitConsolidate = () => {
       !rpcClient ||
       !account
     ) {
-      toast.error("There was an error consolidating", {
+      toast({
+        title: "Error consolidating",
         description: "Please try again or double check input fields.",
+        variant: "error",
       });
       return;
     }
@@ -145,22 +147,20 @@ export const useSubmitConsolidate = () => {
           email: summaryEmail,
         });
 
-        toast.success(
-          `Validator ${consolidationTarget.validatorIndex} Upgraded`,
-          {
-            description:
-              "The transaction to update the validator version been submitted",
-          },
-        );
+        toast({
+          title: `Validator ${consolidationTarget.validatorIndex} Upgraded`,
+          description:
+            "The transaction to update the validator version been submitted",
+          variant: "success",
+        });
       } catch (err) {
         console.error(`Error upgrading validator`, err);
 
-        toast.error(
-          `Error Upgrading Validator ${consolidationTarget.validatorIndex}`,
-          {
-            description: "Please try again.",
-          },
-        );
+        toast({
+          title: `Error Upgrading Validator ${consolidationTarget.validatorIndex}`,
+          description: "Please try again.",
+          variant: "error",
+        });
         return;
       }
     }
@@ -245,12 +245,11 @@ export const useSubmitConsolidate = () => {
         // break out of the loop if it errors
         setCurrentPubKey("");
 
-        toast.error(
-          `Error Consolidating Validator ${validator.validatorIndex}`,
-          {
-            description: "Please try again.",
-          },
-        );
+        toast({
+          title: `Error Consolidating Validator ${validator.validatorIndex}`,
+          description: "Please try again.",
+          variant: "error",
+        });
         break;
       }
 
