@@ -2,28 +2,18 @@
 
 import { ValidatorCard } from "pec/components/validators/cards/ValidatorCard";
 import { useConsolidationStore } from "pec/hooks/use-consolidation-store";
-import { useWalletAddress } from "pec/hooks/useWallet";
-import { api } from "pec/trpc/react";
-import { ValidatorStatus, type ValidatorDetails } from "pec/types/validator";
+import type { ValidatorDetails } from "pec/types/validator";
 import LoadingSkeletons from "./LoadingSkeletons";
 import { useValidators } from "pec/hooks/useValidators";
+import { validatorIsActive } from "pec/lib/utils/validators/status";
 
 export const ValidatorList = () => {
   const { setConsolidationTarget, setProgress } = useConsolidationStore();
-  const walletAddress = useWalletAddress();
 
   const { data: validators, isLoading } = useValidators();
 
-  const activeValidators = validators?.filter(
-    (validator) =>
-      validator?.status === ValidatorStatus.ACTIVE &&
-      validator?.consolidationTransaction?.isConsolidatedValidator !== false,
-  );
-
-  const inactiveValidators = validators?.filter(
-    (validator) =>
-      validator?.status === ValidatorStatus.INACTIVE ||
-      validator?.consolidationTransaction?.isConsolidatedValidator === false,
+  const activeValidators = validators?.filter((validator) =>
+    validatorIsActive(validator),
   );
 
   const handleValidatorClick = (validator: ValidatorDetails) => {
@@ -66,23 +56,6 @@ export const ValidatorList = () => {
       ) : (
         <div className="py-8 text-center text-gray-500 dark:text-gray-400">
           No active validators found
-        </div>
-      )}
-
-      {inactiveValidators && inactiveValidators.length > 0 && (
-        <div className="mt-2 flex w-full flex-col gap-2">
-          <div className="text-md font-medium">
-            Previously Consolidated Validators
-          </div>
-          {inactiveValidators.map((validator, index) => (
-            <ValidatorCard
-              key={`validator-${validator.validatorIndex}-${index}`}
-              hasHover={false}
-              onClick={() => handleValidatorClick(validator)}
-              shrink={false}
-              validator={validator}
-            />
-          ))}
         </div>
       )}
     </div>

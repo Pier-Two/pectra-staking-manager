@@ -40,11 +40,7 @@ const Dashboard: FC = () => {
       validator?.consolidationTransaction?.isConsolidatedValidator !== false,
   );
 
-  const inactiveValidators = validators?.filter(
-    (validator) =>
-      validator?.status === ValidatorStatus.INACTIVE ||
-      validator?.consolidationTransaction?.isConsolidatedValidator === false,
-  );
+  const inactiveValidators = validators.length - activeValidators.length;
 
   return (
     <div className="flex w-full flex-col items-center dark:text-white">
@@ -74,7 +70,7 @@ const Dashboard: FC = () => {
           <div className="grid grid-cols-1 gap-8 text-sm md:grid-cols-2 lg:grid-cols-3">
             <ActiveValidators
               activeValidators={activeValidators.length}
-              inactiveValidators={inactiveValidators.length}
+              inactiveValidators={inactiveValidators}
             />
 
             <TotalStake validators={validators} />

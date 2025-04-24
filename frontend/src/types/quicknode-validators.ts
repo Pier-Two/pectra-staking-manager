@@ -1,13 +1,4 @@
-type ValidatorStatus =
-  | "pending_initialized"
-  | "pending_queued"
-  | "active_ongoing"
-  | "active_exiting"
-  | "active_slashed"
-  | "exited_unslashed"
-  | "exited_slashed"
-  | "withdrawal_possible"
-  | "withdrawal_done";
+import type { ValidatorLifecycleStatus } from "./validator";
 
 type Validator = {
   pubkey: string; // 48-bytes, hex encoded with 0x prefix
@@ -23,7 +14,7 @@ type Validator = {
 type Data = {
   index: string; // the index of validator in the validator registry
   balance: string; // current validator balance in gwei
-  status: ValidatorStatus; // validator status
+  status: ValidatorLifecycleStatus; // validator status
   validator: Validator;
 };
 

@@ -2,13 +2,14 @@ import { keyBy, orderBy } from "lodash";
 import { DEPOSIT_COLUMN_HEADERS } from "pec/constants/columnHeaders";
 import type { DepositData, DepositType } from "pec/lib/api/schemas/deposit";
 import type { EDistributionMethod } from "pec/types/batch-deposits";
-import type { ValidatorDetails } from "pec/types/validator";
-import { useState } from "react";
+import { ValidatorStatus, type ValidatorDetails } from "pec/types/validator";
+import { useMemo, useState } from "react";
 import type { FieldErrors, UseFormRegister } from "react-hook-form";
 import { DepositSelectionValidatorCard } from "../../validators/cards/DepositSelectionValidatorCard";
 import { type SortDirection } from "./ColumnHeader";
 import { ValidatorHeader } from "./ValidatorHeader";
 import { ValidatorListHeaders } from "./ValidatorListHeaders";
+import { validatorIsActive } from "pec/lib/utils/validators/status";
 
 export interface ISelectValidatorsProps {
   clearSelectedValidators: () => void;
@@ -33,6 +34,10 @@ export const SelectValidators = ({
   totalToDistribute,
   validators,
 }: ISelectValidatorsProps) => {
+  const availableValidators = useMemo(() => {
+    return validators.filter((validator) => validatorIsActive(validator));
+  }, [validators]);
+
   const [sortColumn, setSortColumn] = useState<string | null>(null);
   const [sortDirection, setSortDirection] = useState<SortDirection>(null);
 
@@ -58,15 +63,21 @@ export const SelectValidators = ({
   };
 
   const sortedValidators = (() => {
-    if (!sortColumn || !sortDirection || !validators) return validators;
-    return orderBy(validators, ["validatorIndex", "balance"], [sortDirection]);
+    if (!sortColumn || !sortDirection || !availableValidators)
+      return availableValidators;
+
+    return orderBy(
+      availableValidators,
+      ["validatorIndex", "balance"],
+      [sortDirection],
+    );
   })();
 
   return (
     <>
       <ValidatorHeader
         selectedCount={deposits.length}
-        totalCount={validators?.length ?? 0}
+        totalCount={availableValidators?.length ?? 0}
         onClear={handleClearValidators}
       />
 

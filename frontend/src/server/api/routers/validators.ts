@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { getValidatorActiveInfo } from "pec/lib/utils/validatorActivity";
+import { getValidatorActiveInfo } from "pec/lib/utils/validators/activity";
 import { createTRPCRouter, publicProcedure } from "pec/server/api/trpc";
 import type {
   BeaconChainAllValidatorsResponse,
@@ -7,11 +7,7 @@ import type {
   BeaconChainValidatorDetailsResponse,
   BeaconChainValidatorPerformanceResponse,
 } from "pec/types/api";
-import {
-  TransactionStatus,
-  type ValidatorDetails,
-  ValidatorStatus,
-} from "pec/types/validator";
+import { TransactionStatus, type ValidatorDetails } from "pec/types/validator";
 import {
   ConsolidationModel,
   DepositModel,
@@ -21,6 +17,7 @@ import { ACTIVE_STATUS } from "pec/types/app";
 import { SupportedChainIdSchema } from "pec/lib/api/schemas/network";
 import { getBeaconChainAxios } from "pec/lib/server/axios";
 import { createContact } from "pec/lib/services/emailService";
+import { getValidatorStatus } from "pec/lib/utils/validators/status";
 
 export const validatorRouter = createTRPCRouter({
   getValidators: publicProcedure
@@ -66,9 +63,7 @@ export const validatorRouter = createTRPCRouter({
               balance: BigInt(validator.balance) * BigInt(10 ** 9),
               effectiveBalance:
                 BigInt(validator.effectivebalance) * BigInt(10 ** 9),
-              status: validator.status.toLowerCase().includes("active")
-                ? ValidatorStatus.ACTIVE
-                : ValidatorStatus.INACTIVE,
+              status: getValidatorStatus(validator.status),
               numberOfWithdrawals: validator.total_withdrawals,
               activeSince,
               activeDuration,
@@ -76,6 +71,7 @@ export const validatorRouter = createTRPCRouter({
               consolidationTransaction: undefined,
               depositTransaction: undefined,
               upgradeSubmitted: false,
+              hasPendingDeposit: false,
             };
           },
         );
@@ -85,13 +81,16 @@ export const validatorRouter = createTRPCRouter({
             await Promise.all([
               await WithdrawalModel.find({
                 validatorIndex: validator.validatorIndex,
+                status: ACTIVE_STATUS,
               }),
               await ConsolidationModel.findOne({
                 targetValidatorIndex: validator.validatorIndex,
                 sourceTargetValidatorIndex: validator.validatorIndex,
+                status: ACTIVE_STATUS,
               }),
               // TODO make this exclusive OR?
               await ConsolidationModel.findOne({
+                status: ACTIVE_STATUS,
                 $or: [
                   { targetValidatorIndex: Number(validator.validatorIndex) },
                   {
@@ -103,16 +102,13 @@ export const validatorRouter = createTRPCRouter({
               }),
               await DepositModel.findOne({
                 validatorIndex: validator.validatorIndex,
+                status: ACTIVE_STATUS,
               }),
             ]);
 
-          if (withdrawTx) {
-            validator.withdrawalTransactions = withdrawTx;
-          }
+          if (withdrawTx) validator.withdrawalTransactions = withdrawTx;
 
-          if (upgradeTx) {
-            validator.upgradeSubmitted = true;
-          }
+          if (upgradeTx) validator.upgradeSubmitted = true;
 
           if (consolidationTx) {
             validator.consolidationTransaction = {
@@ -129,6 +125,7 @@ export const validatorRouter = createTRPCRouter({
               hash: depositTx.txHash,
               status: TransactionStatus.SUBMITTED,
             };
+            validator.hasPendingDeposit = true;
           }
         }
 
@@ -226,9 +223,7 @@ export const validatorRouter = createTRPCRouter({
 
         const validator = data.data;
 
-        if (!validator.validatorindex) {
-          return "NOT_FOUND";
-        }
+        if (!validator.validatorindex) return "NOT_FOUND";
 
         const { activeSince, activeDuration } = getValidatorActiveInfo(
           validator.activationepoch,
@@ -241,24 +236,29 @@ export const validatorRouter = createTRPCRouter({
           balance: BigInt(validator.balance) * BigInt(10 ** 9),
           effectiveBalance:
             BigInt(validator.effectivebalance) * BigInt(10 ** 9),
-          status: validator.status.toLowerCase().includes("active")
-            ? ValidatorStatus.ACTIVE
-            : ValidatorStatus.INACTIVE,
+          status: getValidatorStatus(validator.status),
           numberOfWithdrawals: validator.total_withdrawals,
           activeSince,
           activeDuration,
           upgradeSubmitted: false,
           withdrawalTransactions: [],
+          hasPendingDeposit: false,
         };
 
         const upgradeTx = await ConsolidationModel.findOne({
           targetValidatorIndex: formattedValidator.validatorIndex,
           sourceTargetValidatorIndex: formattedValidator.validatorIndex,
+          status: ACTIVE_STATUS,
         });
 
-        if (upgradeTx) {
-          formattedValidator.upgradeSubmitted = true;
-        }
+        const depositTx = await DepositModel.findOne({
+          validatorIndex: formattedValidator.validatorIndex,
+          status: ACTIVE_STATUS,
+        });
+
+        if (upgradeTx) formattedValidator.upgradeSubmitted = true;
+
+        if (depositTx) formattedValidator.hasPendingDeposit = true;
 
         return formattedValidator;
       } catch (error) {
