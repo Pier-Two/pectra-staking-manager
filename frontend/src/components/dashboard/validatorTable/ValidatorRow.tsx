@@ -25,6 +25,7 @@ import clsx from "clsx";
 import { getGridTemplateColumns } from "../../ui/table/TableHeader";
 import { displayedEthAmount } from "pec/lib/utils/validators/balance";
 import { IHeaderConfig } from "pec/types/validatorTable";
+import { ValidatorCardWrapper } from "pec/components/ui/custom/validator-card-wrapper";
 
 export interface IValidatorRowProps {
   validator: ValidatorDetails;
@@ -61,9 +62,10 @@ export const ValidatorRow: FC<IValidatorRowProps> = (props) => {
   };
 
   const displayBalance = displayedEthAmount(validator.balance);
+  // <div className="w-full rounded-xl border bg-indigo-50 p-4 text-sm hover:border-indigo-300 dark:bg-black dark:hover:bg-gray-900">
 
   return (
-    <div className="w-full rounded-xl border bg-indigo-50 p-4 text-sm hover:border-indigo-300 dark:bg-black dark:hover:bg-gray-900">
+    <ValidatorCardWrapper withBackground>
       {/* Desktop View */}
       <div
         className={clsx(
@@ -276,6 +278,6 @@ export const ValidatorRow: FC<IValidatorRowProps> = (props) => {
           )}
         </div>
       </div>
-    </div>
+    </ValidatorCardWrapper>
   );
 };

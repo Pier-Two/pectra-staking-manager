@@ -1,11 +1,13 @@
 "use client";
 
-import { useValidatorTable } from "pec/hooks/useValidatorTable";
+import { useDashboardValidatorTable } from "pec/hooks/useValidatorTable";
 import type { IGenericValidators } from "pec/types/validator";
 import type { FC } from "react";
-import { TableContent } from "./TableContent";
 import { TableFilters } from "./TableFilters";
 import { TablePagination } from "../../ui/table/TablePagination";
+import { TableHeader } from "pec/components/ui/table/TableHeader";
+import { ValidatorRow } from "./ValidatorRow";
+import { TableNoResults } from "./TableNoResults";
 
 export const ValidatorTable: FC<IGenericValidators> = (props) => {
   const { validators } = props;
@@ -24,7 +26,7 @@ export const ValidatorTable: FC<IGenericValidators> = (props) => {
     handlePageChange,
     handleFilterTableOptionsChange,
     getValidatorCount,
-  } = useValidatorTable(validators);
+  } = useDashboardValidatorTable(validators);
 
   const itemsPerPage = 10;
 
@@ -40,12 +42,24 @@ export const ValidatorTable: FC<IGenericValidators> = (props) => {
         getValidatorCount={getValidatorCount}
       />
 
-      <TableContent
-        paginatedData={paginatedData}
+      <TableHeader
         sortConfig={sortConfig}
         onSort={handleSort}
         filterTableOptions={filterTableOptions}
       />
+      <div className="flex flex-col gap-2">
+        {paginatedData.length > 0 ? (
+          paginatedData.map((validator) => (
+            <ValidatorRow
+              key={validator.publicKey}
+              validator={validator}
+              filterTableOptions={filterTableOptions}
+            />
+          ))
+        ) : (
+          <TableNoResults />
+        )}
+      </div>
 
       <TablePagination
         currentPage={currentPage}

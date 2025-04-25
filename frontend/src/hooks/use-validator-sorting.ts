@@ -3,13 +3,14 @@ import { ValidatorDetails } from "pec/types/validator";
 import { ESortDirection, SortConfig } from "pec/types/validatorTable";
 import { useMemo, useState } from "react";
 
-export interface UseValidatorSorting {
-  validators: ValidatorDetails[];
+export interface UseValidatorSorting<Data> {
+  validators: Data[];
 }
 
-export const useValidatorSorting = ({ validators }: UseValidatorSorting) => {
-  const [sortConfig, setSortConfig] =
-    useState<SortConfig<ValidatorDetails> | null>(null);
+export const useValidatorSorting = <Data = ValidatorDetails>({
+  validators,
+}: UseValidatorSorting<Data>) => {
+  const [sortConfig, setSortConfig] = useState<SortConfig<Data> | null>(null);
 
   const sortedValidators = useMemo(() => {
     if (!sortConfig) return validators;
@@ -32,7 +33,7 @@ export const useValidatorSorting = ({ validators }: UseValidatorSorting) => {
     );
   }, [validators, sortConfig]);
 
-  const handleSort = (key: keyof ValidatorDetails) => {
+  const handleSort = (key: keyof Data) => {
     if (sortConfig && sortConfig.key === key) {
       setSortConfig({
         ...sortConfig,

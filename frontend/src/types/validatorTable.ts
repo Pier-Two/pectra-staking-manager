@@ -1,3 +1,5 @@
+import { ValidatorDetails } from "./validator";
+
 export enum ESortDirection {
   ASC = "asc",
   DESC = "desc",
@@ -10,5 +12,5 @@ export interface SortConfig<T> {
 
 export interface IHeaderConfig {
   label: string;
-  sortKey: string;
+  sortKey: keyof ValidatorDetails;
 }

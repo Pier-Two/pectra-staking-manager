@@ -6,6 +6,7 @@ interface ValidatorCardWrapperProps {
   children: React.ReactNode;
   className?: string;
   shrink?: boolean;
+  withBackground?: boolean;
 }
 
 export const ValidatorCardWrapper = ({
@@ -13,16 +14,20 @@ export const ValidatorCardWrapper = ({
   children,
   className,
   shrink,
+  withBackground,
 }: ValidatorCardWrapperProps) => {
   return (
     <div
       className={cn(
-        "flex-col-3 flex h-16 items-center justify-between gap-x-4 rounded-2xl border border-border bg-white px-4 py-2 dark:border-gray-800 dark:bg-black",
+        "flex h-16 items-center justify-between gap-x-4 rounded-2xl bg-white px-4 py-2 text-sm",
         {
           "cursor-pointer hover:border-indigo-500 dark:hover:border-gray-600":
-            onClick,
+            onClick && !withBackground,
+          "hover:border-indigo-300 dark:hover:bg-gray-900":
+            onClick && withBackground,
           "w-[95%]": shrink,
           "w-full": !shrink,
+          "bg-indigo-50 dark:bg-indigo-950": withBackground,
         },
         className,
       )}

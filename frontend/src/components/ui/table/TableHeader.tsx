@@ -1,6 +1,7 @@
 import { clsx } from "clsx";
 import { ChevronDown, ChevronsLeftRight, ChevronUp } from "lucide-react";
 import { DASHBOARD_VALIDATOR_COLUMN_HEADERS } from "pec/constants/columnHeaders";
+import { ValidatorDetails } from "pec/types/validator";
 import {
   ESortDirection,
   IHeaderConfig,
@@ -20,8 +21,8 @@ export const getGridTemplateColumns = (filterLength: number) => {
 };
 
 export interface ITableHeadersRowProps {
-  sortConfig: SortConfig | null;
-  onSort: (key: string) => void;
+  sortConfig: SortConfig<ValidatorDetails> | null;
+  onSort: (key: keyof ValidatorDetails) => void;
   filterTableOptions: IHeaderConfig["label"][];
 }
 
@@ -36,8 +37,11 @@ export const TableHeader: FC<ITableHeadersRowProps> = ({
   );
 
   // Get Validator and Credentials headers for mobile view
-  const validatorHeader = { label: "Validator", sortKey: "validatorIndex" };
-  const credentialsHeader = {
+  const validatorHeader: IHeaderConfig = {
+    label: "Validator",
+    sortKey: "validatorIndex",
+  };
+  const credentialsHeader: IHeaderConfig = {
     label: "Credentials",
     sortKey: "withdrawalAddress",
   };

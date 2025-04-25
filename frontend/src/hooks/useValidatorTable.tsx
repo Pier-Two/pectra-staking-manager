@@ -1,11 +1,10 @@
 import type { ValidatorDetails, ValidatorStatus } from "pec/types/validator";
 import type { IHeaderConfig } from "pec/types/validatorTable";
-import { ESortDirection } from "pec/types/validatorTable";
 import { useMemo, useState } from "react";
 import { usePagination } from "./use-pagination";
 import { useValidatorSorting } from "./use-validator-sorting";
 
-export function useValidatorTable(data: ValidatorDetails[]) {
+export function useDashboardValidatorTable(data: ValidatorDetails[]) {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<string[]>([]);
   const [filterTableOptions, setFilterTableOptions] = useState<
