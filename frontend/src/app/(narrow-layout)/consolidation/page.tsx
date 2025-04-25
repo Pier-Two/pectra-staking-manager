@@ -22,6 +22,7 @@ const ConsolidationWorkflow = () => {
     goToSummary,
     goToSelectSourceValidators,
     getAvailableSourceValidators,
+    reset,
   } = useNewConsolidate({
     activeValidators: groupedValidators[ValidatorStatus.ACTIVE] ?? [],
   });
@@ -59,7 +60,15 @@ const ConsolidationWorkflow = () => {
         />
       )}
 
-      {stage.stage === "summary" && <ConsolidationSummary />}
+      {stage.stage === "summary" && (
+        <ConsolidationSummary
+          destinationValidator={stage.destination}
+          sourceValidators={stage.source}
+          goToSubmit={goToSubmit}
+          goBack={goBack}
+          reset={reset}
+        />
+      )}
       {/**/}
       {/* {stage.stage === "submit" && <SubmitConsolidationRequests />} */}
     </div>
