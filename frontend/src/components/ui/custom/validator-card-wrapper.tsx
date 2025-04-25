@@ -42,7 +42,7 @@ export const ValidatorCardWrapper = <
   ...props
 }: ValidatorCardWrapperProps<T>) => {
   return createElement(
-    as || "div",
+    as ?? "div",
     {
       className: cn(
         "flex h-16 items-center justify-between gap-x-4 rounded-2xl px-4 py-2 text-sm",

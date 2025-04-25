@@ -32,7 +32,7 @@ export function useDashboardValidatorTable({
   }, [data, filteredData, statusFilter]);
 
   const getValidatorCount = (status: ValidatorStatus) => {
-    return groupedValidators[status]?.length || 0;
+    return groupedValidators[status]?.length ?? 0;
   };
 
   const handleStatusFilterChange = (status: string) => {

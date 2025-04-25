@@ -57,7 +57,7 @@ export const ValidatorTable = <T extends ValidatorDetails>({
       {!disableSearch && (
         <SearchFilter searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
       )}
-      {children && children({ setCurrentPage })}
+      {children?.({ setCurrentPage })}
       <table className="table w-full table-auto border-separate border-spacing-y-2">
         {/* Render the pagination controls from the parent */}
 
