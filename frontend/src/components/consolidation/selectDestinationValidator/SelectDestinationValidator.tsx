@@ -2,15 +2,29 @@
 
 import { useConsolidationStore } from "pec/hooks/use-consolidation-store";
 import { ManuallyEnterValidator } from "./ManuallyEnterValidator";
-import { ValidatorList } from "./ValidatorList";
 import { SecondaryButton } from "pec/components/ui/custom/SecondaryButton";
+import { ValidatorTable } from "pec/components/ui/table/ValidatorTable";
+import { ValidatorDetails } from "pec/types/validator";
+import { CONSOLIDATION_TABLE_HEADERS } from "pec/constants/consolildation";
 
-export const SelectDestinationValidator = () => {
+interface SelectDestinationValidatorProps {
+  validators: ValidatorDetails[];
+}
+
+export const SelectDestinationValidator = ({
+  validators,
+}: SelectDestinationValidatorProps) => {
   const {
     manuallySettingValidator,
     setManuallySettingValidator,
     setConsolidationTarget,
+    setProgress,
   } = useConsolidationStore();
+
+  const handleValidatorClick = (validator: ValidatorDetails) => {
+    setConsolidationTarget(validator);
+    setProgress("source");
+  };
 
   return (
     <div className="space-y-4">
@@ -42,14 +56,19 @@ export const SelectDestinationValidator = () => {
           }
         />
       </div>
-
-      <div className="w-full">
-        {manuallySettingValidator ? (
-          <ManuallyEnterValidator />
-        ) : (
-          <ValidatorList />
-        )}
-      </div>
+      {manuallySettingValidator ? (
+        <ManuallyEnterValidator />
+      ) : (
+        <ValidatorTable
+          data={validators}
+          headers={CONSOLIDATION_TABLE_HEADERS}
+          selectableRows={{
+            onClick: (row) => handleValidatorClick(row),
+            isSelected: () => false,
+            showCheckIcons: false,
+          }}
+        />
+      )}
     </div>
   );
 };

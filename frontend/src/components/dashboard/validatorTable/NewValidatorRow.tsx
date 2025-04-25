@@ -5,17 +5,27 @@ import {
   OctagonMinus,
 } from "lucide-react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 import { ValidatorDetails, ValidatorStatus } from "pec/types/validator";
-import type { FC } from "react";
 import { displayedEthAmount } from "pec/lib/utils/validators/balance";
 import { IHeaderConfig } from "pec/types/validatorTable";
-import { ValidatorCardWrapper } from "pec/components/ui/custom/validator-card-wrapper";
+import {
+  ValidatorCardBorderStyles,
+  ValidatorCardWrapper,
+  ValidatorCardWrapperProps,
+} from "pec/components/ui/custom/validator-card-wrapper";
+import { cn } from "pec/lib/utils";
+import { useState } from "react";
 
 export interface IValidatorRowProps<T extends ValidatorDetails> {
-  validator: ValidatorDetails;
-  headers: IHeaderConfig[];
-  endContent?: React.ReactNode;
+  wrapperProps?: Omit<ValidatorCardWrapperProps, "onClick">;
+  validator: T;
+  headers: IHeaderConfig<T>[];
+  endContent?: (data: T) => JSX.Element;
+  selectableRows?: {
+    onClick: (validator: T) => void;
+    isSelected: boolean;
+    showCheckIcons: boolean;
+  };
 }
 
 /**
@@ -26,15 +36,18 @@ export interface IValidatorRowProps<T extends ValidatorDetails> {
  * @param_filterTableOptions - The current filter Options for the table
  *   - Expected Functionality if an item is in the FilterTablesOptions array, ** IT SHOULD NOT BE RENDERED **
  */
-export const NewValidatorRow: FC<IValidatorRowProps> = ({
+export const NewValidatorRow = <T extends ValidatorDetails>({
   validator,
   headers,
   endContent,
-}) => {
+  selectableRows,
+  wrapperProps,
+}: IValidatorRowProps<T>) => {
+  const [isHovering, setIsHovering] = useState(false);
   const displayBalance = displayedEthAmount(validator.balance);
 
   // Render cell content based on field key
-  const renderCellContent = (key: keyof ValidatorDetails) => {
+  const renderCellContent = (key: keyof T) => {
     switch (key) {
       case "validatorIndex":
         return (
@@ -46,7 +59,7 @@ export const NewValidatorRow: FC<IValidatorRowProps> = ({
               height={24}
             />
             <div className="flex flex-col">
-              <div className="font-medium">{validator.validatorIndex}</div>
+              <div>{validator.validatorIndex}</div>
               <div className="text-xs text-gray-500">
                 {validator.publicKey.slice(0, 7)}...
                 {validator.publicKey.slice(-5)}
@@ -73,9 +86,7 @@ export const NewValidatorRow: FC<IValidatorRowProps> = ({
             ) : (
               <OctagonMinus className="h-4 w-4 text-gray-500 dark:text-white" />
             )}
-            <div className="font-semibold">
-              {validator.withdrawalAddress.slice(0, 4)}
-            </div>
+            <div>{validator.withdrawalAddress.slice(0, 4)}</div>
           </div>
         );
 
@@ -92,7 +103,7 @@ export const NewValidatorRow: FC<IValidatorRowProps> = ({
         );
 
       case "balance":
-        return <div className="font-semibold">Ξ {displayBalance} ETH</div>;
+        return <div className="text-sm">Ξ {displayBalance} ETH</div>;
 
       default:
         // Fallback for any other fields
@@ -100,25 +111,63 @@ export const NewValidatorRow: FC<IValidatorRowProps> = ({
     }
   };
 
+  const onClick = () => {
+    if (!selectableRows?.onClick) return undefined;
+
+    // We create another function here so we can pass the validator to the onClick function
+    return () => selectableRows.onClick(validator);
+  };
+
   return (
     <ValidatorCardWrapper
-      withBackground
-      className="rounded-xl text-left md:table-row"
+      {...wrapperProps}
+      // We execute the onClick here to build the onClick function, this ensures undefined is still passed correctly if there is no onClick method which then ensures the styles work as expected
+      onClick={onClick()}
+      className="!mb-4 table-row text-left"
       as="tr"
+      onMouseEnter={() => setIsHovering(true)}
+      onMouseLeave={() => setIsHovering(false)}
     >
       {/* Desktop View - Table Row */}
-      {headers.map((header) => {
+      {headers.map((header, index) => {
         const key = header.sortKey;
+        // Apply rounded corners only to first and last cells
+        const isFirst = index === 0;
+        const isLast = index === headers.length - 1 && !endContent;
 
         return (
-          <th key={key} className="px-4 py-2">
-            {renderCellContent(key)}
+          <th
+            key={key as string}
+            className={cn(
+              "bg-inherit px-4 py-2 font-normal",
+              {
+                border: isHovering,
+                "border-l-0": !isFirst,
+                "border-r-0": !isLast,
+                "rounded-l-2xl": isFirst,
+                "rounded-r-2xl": isLast,
+              },
+              wrapperProps && ValidatorCardBorderStyles(wrapperProps),
+            )}
+          >
+            <div className="flex items-center gap-x-2">
+              {index === 0 && selectableRows?.showCheckIcons && (
+                <div className="flex items-center justify-center">
+                  {selectableRows.isSelected ? (
+                    <CircleCheck className="h-4 w-4 fill-green-500 text-white dark:text-black" />
+                  ) : (
+                    <CircleMinus className="h-4 w-4 text-gray-500 dark:text-white" />
+                  )}
+                </div>
+              )}
+              {renderCellContent(key)}
+            </div>
           </th>
         );
       })}
       {endContent && (
-        <th className="px-4 py-2">
-          <div className="flex justify-end">{endContent}</div>
+        <th className={cn("rounded-r-xl bg-inherit px-4 py-2")}>
+          <div className="flex justify-end">{endContent(validator)}</div>
         </th>
       )}
     </ValidatorCardWrapper>

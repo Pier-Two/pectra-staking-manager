@@ -18,6 +18,8 @@ import { ValidatorStatus, type ValidatorDetails } from "pec/types/validator";
 import { useEffect, useMemo, useState } from "react";
 import { ValidatorList } from "./ValidatorList";
 import { displayedEthAmount } from "pec/lib/utils/validators/balance";
+import { ValidatorTable } from "pec/components/ui/table/ValidatorTable";
+import { CONSOLIDATION_TABLE_HEADERS } from "pec/constants/consolildation";
 
 export const SelectSourceValidators = () => {
   const {
@@ -26,14 +28,15 @@ export const SelectSourceValidators = () => {
     setProgress,
     bulkSetConsolidationTargets,
     validatorsToConsolidate,
-    addValidatorToConsolidate,
+    handleValidatorToConsolidateSelect,
   } = useConsolidationStore();
 
   const [activeTab, setActiveTab] = useState<string>("maxConsolidate");
 
   const { groupedValidators } = useValidators();
 
-  const availableSourceValidators = groupedValidators[ValidatorStatus.ACTIVE];
+  const availableSourceValidators =
+    groupedValidators[ValidatorStatus.ACTIVE] ?? [];
 
   useEffect(() => {
     if (
@@ -60,8 +63,10 @@ export const SelectSourceValidators = () => {
     if (validatorsToConsolidate?.length > 0) setProgress("summary");
   };
 
-  const handleSourceValidatorSelection = (validator: ValidatorDetails) => {
-    addValidatorToConsolidate(validator);
+  const isValidatorSelected = (validator: ValidatorDetails) => {
+    return validatorsToConsolidate.some(
+      (v) => v.publicKey === validator.publicKey,
+    );
   };
 
   const newDestinationBalance = useMemo(() => {
@@ -138,13 +143,15 @@ export const SelectSourceValidators = () => {
         </TabsContent>
 
         <TabsContent value="manuallySelect">
-          {availableSourceValidators && (
-            <ValidatorList
-              sourceValidators={validatorsToConsolidate}
-              setSourceValidators={handleSourceValidatorSelection}
-              validators={availableSourceValidators}
-            />
-          )}
+          <ValidatorTable
+            data={availableSourceValidators}
+            headers={CONSOLIDATION_TABLE_HEADERS}
+            selectableRows={{
+              onClick: handleValidatorToConsolidateSelect,
+              isSelected: isValidatorSelected,
+              showCheckIcons: true,
+            }}
+          />
         </TabsContent>
       </Tabs>
 

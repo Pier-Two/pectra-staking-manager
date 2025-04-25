@@ -45,7 +45,7 @@ type ConsolidationStore = {
 
   validatorsToConsolidate: SerializedValidator[];
   bulkSetConsolidationTargets: (validators: ValidatorDetails[]) => void;
-  addValidatorToConsolidate: (validator: ValidatorDetails) => void;
+  handleValidatorToConsolidateSelect: (validator: ValidatorDetails) => void;
   removeValidatorToConsolidate: (validator: ValidatorDetails) => void;
   updateConsolidatedValidator: (
     validator: ValidatorDetails,
@@ -115,13 +115,26 @@ export const consolidationStore = createStore<ConsolidationStore>()(
         validatorsToConsolidate: validators.map(serializeValidator),
       })),
 
-    addValidatorToConsolidate: (validator: ValidatorDetails) =>
-      set(() => ({
-        validatorsToConsolidate: [
-          ...get().validatorsToConsolidate,
-          serializeValidator(validator),
-        ],
-      })),
+    handleValidatorToConsolidateSelect: (validator: ValidatorDetails) => {
+      const isSelected = get().validatorsToConsolidate.some(
+        (v) => v.publicKey === validator.publicKey,
+      );
+
+      if (!isSelected) {
+        set((state) => ({
+          validatorsToConsolidate: [
+            ...state.validatorsToConsolidate,
+            serializeValidator(validator),
+          ],
+        }));
+      } else {
+        set((state) => ({
+          validatorsToConsolidate: state.validatorsToConsolidate.filter(
+            (v) => v.publicKey !== validator.publicKey,
+          ),
+        }));
+      }
+    },
 
     removeValidatorToConsolidate: (validator: ValidatorDetails) =>
       set((state) => ({

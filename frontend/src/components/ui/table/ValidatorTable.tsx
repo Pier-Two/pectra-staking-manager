@@ -7,17 +7,28 @@ import { NewValidatorRow } from "pec/components/dashboard/validatorTable/NewVali
 import { usePagination } from "pec/hooks/use-pagination";
 import { ReactNode } from "react";
 import { TablePagination } from "./TablePagination";
+import { ValidatorCardWrapperProps } from "../custom/validator-card-wrapper";
 
 interface ValidatorTableProps<T extends ValidatorDetails> {
   data: T[];
   headers: IHeaderConfig<T>[];
+  wrapperProps?: Omit<ValidatorCardWrapperProps, "onClick">;
+  selectableRows?: {
+    onClick: (validator: T) => void;
+    isSelected: (validator: T) => boolean;
+    showCheckIcons: boolean;
+  };
+  endContent?: (data: T) => JSX.Element;
   children?: (params: { setCurrentPage: (page: number) => void }) => ReactNode;
 }
 
 export const ValidatorTable = <T extends ValidatorDetails>({
   data,
   headers,
+  endContent,
   children,
+  selectableRows,
+  wrapperProps,
 }: ValidatorTableProps<T>) => {
   const { sortedValidators, sortConfig, setSortConfig } = useValidatorSorting({
     validators: data,
@@ -36,7 +47,7 @@ export const ValidatorTable = <T extends ValidatorDetails>({
   return (
     <div className="flex flex-col gap-4">
       {children && children({ setCurrentPage })}
-      <table className="table w-full table-auto">
+      <table className="table w-full table-auto border-separate border-spacing-y-2">
         {/* Render the pagination controls from the parent */}
 
         <TableHeader
@@ -44,13 +55,24 @@ export const ValidatorTable = <T extends ValidatorDetails>({
           onSort={setSortConfig}
           headers={headers}
         />
-        <tbody>
+        <tbody className="">
           {sortedValidators.length > 0 ? (
             paginatedData.map((validator) => (
               <NewValidatorRow
                 headers={headers}
                 key={validator.publicKey}
                 validator={validator}
+                endContent={endContent}
+                wrapperProps={wrapperProps}
+                selectableRows={
+                  selectableRows
+                    ? {
+                        ...selectableRows,
+                        isSelected:
+                          selectableRows.isSelected(validator) || false,
+                      }
+                    : undefined
+                }
               />
             ))
           ) : (

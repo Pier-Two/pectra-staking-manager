@@ -6,6 +6,7 @@ import type { FC } from "react";
 import { TableFilters } from "./TableFilters";
 import { DASHBOARD_VALIDATOR_COLUMN_HEADERS } from "pec/constants/columnHeaders";
 import { ValidatorTable } from "pec/components/ui/table/ValidatorTable";
+import { ValidatorRowEndContent } from "./TableComponents";
 
 export const DashboardValidatorTable: FC<IGenericValidators> = (props) => {
   const { validators } = props;
@@ -24,6 +25,9 @@ export const DashboardValidatorTable: FC<IGenericValidators> = (props) => {
     <ValidatorTable
       data={filteredData}
       headers={DASHBOARD_VALIDATOR_COLUMN_HEADERS}
+      endContent={(validator) => (
+        <ValidatorRowEndContent validator={validator} />
+      )}
     >
       {({ setCurrentPage }) => (
         <TableFilters

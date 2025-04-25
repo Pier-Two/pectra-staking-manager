@@ -11,12 +11,13 @@ import { useWalletAddress } from "pec/hooks/useWallet";
 import ConsolidationLoading from "../consolidate/loading";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { ValidatorStatus } from "pec/types/validator";
 
 const ConsolidationWorkflow = () => {
   const walletAddress = useWalletAddress();
   const router = useRouter();
 
-  const { data, isFetched } = useValidators();
+  const { groupedValidators, isFetched } = useValidators();
 
   const { progress, reset, back } = useConsolidationStore();
 
@@ -35,7 +36,7 @@ const ConsolidationWorkflow = () => {
     return () => reset();
   }, [reset]);
 
-  if (!walletAddress || !data || !isFetched) {
+  if (!walletAddress || !groupedValidators || !isFetched) {
     return (
       <div className="flex flex-col gap-4">
         <ProgressBar progress={progress} backHandler={backHandler} />
@@ -44,11 +45,15 @@ const ConsolidationWorkflow = () => {
     );
   }
 
+  const activeValidators = groupedValidators[ValidatorStatus.ACTIVE] ?? [];
+
   return (
     <div className="flex w-full flex-col gap-4">
       <ProgressBar progress={progress} backHandler={backHandler} />
 
-      {progress === "destination" && <SelectDestinationValidator />}
+      {progress === "destination" && (
+        <SelectDestinationValidator validators={activeValidators} />
+      )}
 
       {progress === "source" && <SelectSourceValidators />}
 

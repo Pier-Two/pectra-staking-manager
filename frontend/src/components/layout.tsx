@@ -19,7 +19,7 @@ export const SharedLayout: FC<LayoutProps> = (props) => {
         <TopBar type="profile" />
         <div
           className={cn(
-            "flex w-full flex-1 justify-center px-2 py-8 md:px-8 xl:px-0",
+            "flex w-full flex-1 justify-center px-2 py-8 md:px-8 xl:px-2",
             {
               "max-w-[80rem]": type === "full",
               "max-w-[30rem]": type === "narrow",

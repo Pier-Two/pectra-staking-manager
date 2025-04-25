@@ -60,7 +60,7 @@ const Dashboard: FC = () => {
 
       <div className="relative flex h-full w-screen justify-center bg-white">
         <div className={"w-full max-w-[80rem]"}>
-          <div className="w-full space-y-8 px-2 py-8 md:px-8 xl:px-0">
+          <div className="w-full space-y-8 px-2 py-8 md:px-8 xl:px-2">
             <h2 className="text-[26px] font-570 leading-[26px] text-primary-dark dark:text-indigo-200">
               My Validators
             </h2>
