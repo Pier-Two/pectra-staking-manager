@@ -1,5 +1,3 @@
-"use client";
-
 import {
   ArrowDownToDot,
   ArrowUpFromDot,
@@ -22,7 +20,6 @@ import { Separator } from "pec/components/ui/separator";
 import { ValidatorDetails, ValidatorStatus } from "pec/types/validator";
 import type { FC } from "react";
 import clsx from "clsx";
-import { getGridTemplateColumns } from "../../ui/table/TableHeader";
 import { displayedEthAmount } from "pec/lib/utils/validators/balance";
 import { IHeaderConfig } from "pec/types/validatorTable";
 import { ValidatorCardWrapper } from "pec/components/ui/custom/validator-card-wrapper";
@@ -67,12 +64,7 @@ export const ValidatorRow: FC<IValidatorRowProps> = (props) => {
   return (
     <ValidatorCardWrapper withBackground>
       {/* Desktop View */}
-      <div
-        className={clsx(
-          "hidden md:grid md:items-center md:gap-4",
-          getGridTemplateColumns(filterTableOptions.length),
-        )}
-      >
+      <div className={clsx("hidden md:grid md:items-center md:gap-4")}>
         <div>
           <div className="flex flex-row gap-2">
             <Image

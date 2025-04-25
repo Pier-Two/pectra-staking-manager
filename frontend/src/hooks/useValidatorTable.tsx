@@ -1,8 +1,6 @@
 import type { ValidatorDetails, ValidatorStatus } from "pec/types/validator";
 import type { IHeaderConfig } from "pec/types/validatorTable";
 import { useMemo, useState } from "react";
-import { usePagination } from "./use-pagination";
-import { useValidatorSorting } from "./use-validator-sorting";
 
 export function useDashboardValidatorTable(data: ValidatorDetails[]) {
   const [searchTerm, setSearchTerm] = useState("");
@@ -31,15 +29,6 @@ export function useDashboardValidatorTable(data: ValidatorDetails[]) {
     return filteredData;
   }, [data, searchTerm, statusFilter]);
 
-  const { sortedValidators, setSortConfig, sortConfig } = useValidatorSorting({
-    validators: filteredData,
-  });
-
-  const { currentPage, setCurrentPage, paginatedData, totalPages } =
-    usePagination({
-      data: sortedValidators,
-    });
-
   const getValidatorCount = (status: ValidatorStatus) => {
     return data.filter((validator) => validator.status === status).length;
   };
@@ -48,12 +37,10 @@ export function useDashboardValidatorTable(data: ValidatorDetails[]) {
     if (statusFilter.includes(status))
       setStatusFilter(statusFilter.filter((s) => s !== status));
     else setStatusFilter([...statusFilter, status]);
-    setCurrentPage(1);
   };
 
   const handleSearchChange = (term: string) => {
     setSearchTerm(term);
-    setCurrentPage(1);
   };
 
   const handleFilterTableOptionsChange = (option: IHeaderConfig["label"]) => {
@@ -67,17 +54,11 @@ export function useDashboardValidatorTable(data: ValidatorDetails[]) {
     filterTableOptions,
     searchTerm,
     statusFilter,
-    currentPage,
-    sortConfig,
     filteredData,
-    paginatedData,
-    totalPages,
 
     // Handlers
-    handleSort: setSortConfig,
     handleStatusFilterChange,
     handleSearchChange,
-    handlePageChange: setCurrentPage,
     getValidatorCount,
     handleFilterTableOptionsChange,
   };

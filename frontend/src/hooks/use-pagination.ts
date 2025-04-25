@@ -30,5 +30,6 @@ export const usePagination = <T>({
     currentPage,
     setCurrentPage: handlePageChange,
     totalPages,
+    itemsPerPage,
   };
 };

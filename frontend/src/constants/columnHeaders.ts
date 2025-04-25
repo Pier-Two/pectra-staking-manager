@@ -19,11 +19,11 @@ export const SIGN_WITHDRAWAL_COLUMN_HEADERS = [
 ] as const;
 
 export const DASHBOARD_VALIDATOR_COLUMN_HEADERS: IHeaderConfig[] = [
-  { label: "Validator", sortKey: "validatorIndex" },
+  { label: "Validator", sortKey: "validatorIndex", mobile: true },
   { label: "Active since", sortKey: "activeSince" },
-  { label: "Credentials", sortKey: "withdrawalAddress" },
+  { label: "Credentials", sortKey: "withdrawalAddress", mobile: true },
   { label: "Status", sortKey: "status" },
-  { label: "Balance", sortKey: "balance" },
+  { label: "Balance", sortKey: "balance", mobile: true },
 ];
 
 export const SIGN_DEPOSIT_COLUMN_HEADERS = [

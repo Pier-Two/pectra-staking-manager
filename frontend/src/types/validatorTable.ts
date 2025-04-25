@@ -10,7 +10,8 @@ export interface SortConfig<T> {
   direction: ESortDirection;
 }
 
-export interface IHeaderConfig {
+export interface IHeaderConfig<T = ValidatorDetails> {
   label: string;
-  sortKey: keyof ValidatorDetails;
+  sortKey: keyof T;
+  mobile?: boolean;
 }

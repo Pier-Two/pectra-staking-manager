@@ -4,7 +4,7 @@ import { ToolCard } from "pec/components/dashboard/tools/ToolCard";
 import { ActiveValidators } from "pec/components/dashboard/validators/ActiveValidators";
 import { TotalDailyIncome } from "pec/components/dashboard/validators/TotalDailyIncome";
 import { TotalStake } from "pec/components/dashboard/validators/TotalStake";
-import { ValidatorTable } from "pec/components/dashboard/validatorTable/ValidatorTable";
+import { DashboardValidatorTable } from "pec/components/dashboard/validatorTable/ValidatorTable";
 import { useWalletAddress } from "pec/hooks/useWallet";
 import type { FC } from "react";
 import DashboardLoading from "./loading";
@@ -80,7 +80,7 @@ const Dashboard: FC = () => {
             </div>
 
             <div className="pt-8">
-              <ValidatorTable validators={validators} />
+              <DashboardValidatorTable validators={validators} />
             </div>
           </div>
         </div>
