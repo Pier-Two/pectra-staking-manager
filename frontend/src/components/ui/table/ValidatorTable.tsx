@@ -12,7 +12,7 @@ import { ValidatorCardWrapperProps } from "../custom/validator-card-wrapper";
 interface ValidatorTableProps<T extends ValidatorDetails> {
   data: T[];
   headers: IHeaderConfig<T>[];
-  wrapperProps?: Omit<ValidatorCardWrapperProps, "onClick">;
+  wrapperProps?: Omit<ValidatorCardWrapperProps, "onClick" | "children">;
   selectableRows?: {
     onClick: (validator: T) => void;
     isSelected: (validator: T) => boolean;

@@ -28,6 +28,9 @@ export const DashboardValidatorTable: FC<IGenericValidators> = (props) => {
       endContent={(validator) => (
         <ValidatorRowEndContent validator={validator} />
       )}
+      wrapperProps={{
+        withBackground: true,
+      }}
     >
       {({ setCurrentPage }) => (
         <TableFilters

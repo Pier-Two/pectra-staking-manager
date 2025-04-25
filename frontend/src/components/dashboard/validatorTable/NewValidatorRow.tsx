@@ -17,7 +17,7 @@ import { cn } from "pec/lib/utils";
 import { useState } from "react";
 
 export interface IValidatorRowProps<T extends ValidatorDetails> {
-  wrapperProps?: Omit<ValidatorCardWrapperProps, "onClick">;
+  wrapperProps?: Omit<ValidatorCardWrapperProps, "onClick" | "children">;
   validator: T;
   headers: IHeaderConfig<T>[];
   endContent?: (data: T) => JSX.Element;
@@ -141,7 +141,7 @@ export const NewValidatorRow = <T extends ValidatorDetails>({
             className={cn(
               "bg-inherit px-4 py-2 font-normal",
               {
-                border: isHovering,
+                border: isHovering && onClick(),
                 "border-l-0": !isFirst,
                 "border-r-0": !isLast,
                 "rounded-l-2xl": isFirst,
