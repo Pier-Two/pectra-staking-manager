@@ -118,12 +118,22 @@ export const NewValidatorRow = <T extends ValidatorDetails>({
     return () => selectableRows.onClick(validator);
   };
 
+  {
+    /*   "cursor-pointer hover:!border-indigo-500 dark:hover:!border-gray-600": */
+  }
+  {
+    /*   onClick && !withBackground, */
+  }
+  {
+    /* "hover:!border-indigo-300 dark:hover:!bg-gray-900": onClick && withBackground, */
+  }
+
   return (
     <ValidatorCardWrapper
       {...wrapperProps}
       // We execute the onClick here to build the onClick function, this ensures undefined is still passed correctly if there is no onClick method which then ensures the styles work as expected
       onClick={onClick()}
-      className="!mb-4 table-row text-left"
+      className={cn("!mb-4 table-row text-left")}
       as="tr"
       onMouseEnter={() => setIsHovering(true)}
       onMouseLeave={() => setIsHovering(false)}
@@ -142,12 +152,16 @@ export const NewValidatorRow = <T extends ValidatorDetails>({
               "bg-inherit px-4 py-2 font-normal",
               {
                 border: isHovering && onClick(),
-                "border-l-0": !isFirst,
-                "border-r-0": !isLast,
+                "!border-l-0": !isFirst,
+                "!border-r-0": !isLast,
                 "rounded-l-2xl": isFirst,
                 "rounded-r-2xl": isLast,
               },
-              wrapperProps && ValidatorCardBorderStyles(wrapperProps),
+              ValidatorCardBorderStyles({
+                clearBackground: wrapperProps?.clearBackground,
+                isSelected: selectableRows?.isSelected,
+                onClick: onClick(),
+              }),
             )}
           >
             <div className="flex items-center gap-x-2">

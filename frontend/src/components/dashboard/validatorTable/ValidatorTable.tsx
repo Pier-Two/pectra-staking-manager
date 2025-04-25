@@ -33,7 +33,7 @@ export const DashboardValidatorTable: FC<IGenericValidators> = (props) => {
         <ValidatorRowEndContent validator={validator} />
       )}
       wrapperProps={{
-        withBackground: true,
+        clearBackground: true,
       }}
       // We disable search here because we have a custom search component here
       disableSearch

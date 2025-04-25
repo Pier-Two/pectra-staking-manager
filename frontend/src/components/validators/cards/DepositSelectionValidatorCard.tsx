@@ -44,9 +44,7 @@ export const DepositSelectionValidatorCard = ({
 
   return (
     <ValidatorCardWrapper
-      className={cn({
-        "border-indigo-500 dark:border-2 dark:border-indigo-900": selected,
-      })}
+      isSelected={selected}
       onClick={(e) => {
         e.stopPropagation();
         handleSelect();

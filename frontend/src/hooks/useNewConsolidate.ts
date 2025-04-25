@@ -6,6 +6,7 @@ import {
 } from "pec/types/consolidation";
 import { ValidatorDetails } from "pec/types/validator";
 import { useImmer } from "use-immer";
+import { useSubmitConsolidate } from "./use-consolidation";
 
 interface UseConsolidate {
   activeValidators: ValidatorDetails[];
@@ -13,6 +14,8 @@ interface UseConsolidate {
 
 export const useNewConsolidate = ({ activeValidators }: UseConsolidate) => {
   const router = useRouter();
+
+  const consolidate = useSubmitConsolidate();
 
   const [stage, setStage] = useImmer<ConsolidationWorkflowStages>({
     stage: "destination",
@@ -78,15 +81,20 @@ export const useNewConsolidate = ({ activeValidators }: UseConsolidate) => {
   };
 
   const goToSummary = () => {
-    setStage((state) => {
-      if (stage.stage !== "source") {
-        console.error("Invalid state", stage);
+    if (stage.stage !== "source") {
+      console.error("Invalid state", stage);
 
-        return;
-      }
+      return;
+    }
 
-      state.stage = "summary";
-    });
+    const updatedStage: ConsolidationWorkflowStages = {
+      stage: "summary",
+      destination: stage.destination,
+      source: stage.source,
+    };
+    setStage(updatedStage);
+
+    consolidate(stage.destination, stage.source);
   };
 
   const goToSubmit = () => {

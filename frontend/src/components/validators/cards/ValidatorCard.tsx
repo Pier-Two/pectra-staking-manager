@@ -24,6 +24,7 @@ export const ValidatorCard: FC<IValidatorCard> = (props) => {
       onClick={onClick}
       shrink={shrink}
       className={className}
+      clearBackground
     >
       <div className="flex grow basis-0 items-center gap-x-4">
         <Image

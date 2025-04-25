@@ -62,7 +62,7 @@ export const ValidatorRow: FC<IValidatorRowProps> = (props) => {
   // <div className="w-full rounded-xl border bg-indigo-50 p-4 text-sm hover:border-indigo-300 dark:bg-black dark:hover:bg-gray-900">
 
   return (
-    <ValidatorCardWrapper withBackground>
+    <ValidatorCardWrapper clearBackground>
       {/* Desktop View */}
       <div className={clsx("hidden md:grid md:items-center md:gap-4")}>
         <div>

@@ -9,11 +9,14 @@ import ConsolidationLoading from "../consolidate/loading";
 import { ValidatorStatus } from "pec/types/validator";
 import { useNewConsolidate } from "pec/hooks/useNewConsolidate";
 import { ConsolidationSummary } from "pec/components/consolidation/summary/ConsolidationSummary";
+import { SubmitConsolidationRequests } from "pec/components/consolidation/submitRequests/SubmitConsolidationRequests";
 
 const ConsolidationWorkflow = () => {
   const walletAddress = useWalletAddress();
 
   const { groupedValidators, isFetched } = useValidators();
+  const activeValidators = groupedValidators[ValidatorStatus.ACTIVE] ?? [];
+
   const {
     stage,
     goBack,
@@ -24,7 +27,7 @@ const ConsolidationWorkflow = () => {
     getAvailableSourceValidators,
     reset,
   } = useNewConsolidate({
-    activeValidators: groupedValidators[ValidatorStatus.ACTIVE] ?? [],
+    activeValidators,
   });
 
   if (!walletAddress || !groupedValidators || !isFetched) {
@@ -35,8 +38,6 @@ const ConsolidationWorkflow = () => {
       </div>
     );
   }
-
-  const activeValidators = groupedValidators[ValidatorStatus.ACTIVE] ?? [];
 
   return (
     <div className="flex w-full flex-col gap-4">
@@ -69,8 +70,14 @@ const ConsolidationWorkflow = () => {
           reset={reset}
         />
       )}
-      {/**/}
-      {/* {stage.stage === "submit" && <SubmitConsolidationRequests />} */}
+
+      {stage.stage === "submit" && (
+        <SubmitConsolidationRequests
+          destination={stage.destination}
+          source={stage.source}
+          reset={reset}
+        />
+      )}
     </div>
   );
 };

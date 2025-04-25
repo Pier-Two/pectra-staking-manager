@@ -3,7 +3,6 @@ import { PrimaryButton } from "pec/components/ui/custom/PrimaryButton";
 import { SecondaryButton } from "pec/components/ui/custom/SecondaryButton";
 import { ValidatorCard } from "pec/components/validators/cards/ValidatorCard";
 import { DetectedValidators } from "pec/components/validators/DetectedValidators";
-import { useSubmitConsolidate } from "pec/hooks/use-consolidation";
 import { useConsolidationStore } from "pec/hooks/use-consolidation-store";
 import { EIconPosition } from "pec/types/components";
 import { useState } from "react";
@@ -31,12 +30,6 @@ export const ConsolidationSummary = ({
 
   const handleResetDestinationValidator = () => {
     reset();
-  };
-
-  const { mutateAsync: submitConsolidationTx } = useSubmitConsolidate();
-
-  const handleGenerateTransactions = async () => {
-    goToSubmit();
   };
 
   const transactionsRequired = (() => {
@@ -125,7 +118,7 @@ export const ConsolidationSummary = ({
         <PrimaryButton
           className="w-full"
           label="Generate transactions"
-          onClick={() => handleGenerateTransactions()}
+          onClick={goToSubmit}
           disabled={false}
         />
 
