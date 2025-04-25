@@ -1,5 +1,3 @@
-"use client";
-
 import {
   CONSOLIDATION_STEPS,
   ConsolidationStep,
