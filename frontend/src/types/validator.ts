@@ -17,10 +17,6 @@ export interface IDetectedValidators {
   validators: ValidatorDetails[];
 }
 
-export interface IGenericValidators {
-  validators: ValidatorDetails[];
-}
-
 export interface ISourceValidatorCard {
   checked: boolean;
   onClick: () => void;

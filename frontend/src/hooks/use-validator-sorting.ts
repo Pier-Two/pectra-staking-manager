@@ -7,6 +7,9 @@ export interface UseValidatorSorting<Data> {
   validators: Data[];
 }
 
+const START_DIRECTION = ESortDirection.DESC;
+const END_DIRECTION = ESortDirection.ASC;
+
 export const useValidatorSorting = <Data = ValidatorDetails>({
   validators,
 }: UseValidatorSorting<Data>) => {
@@ -35,17 +38,19 @@ export const useValidatorSorting = <Data = ValidatorDetails>({
 
   const handleSort = (key: keyof Data) => {
     if (sortConfig && sortConfig.key === key) {
+      if (sortConfig.direction === END_DIRECTION) {
+        setSortConfig(null);
+        return;
+      }
+
       setSortConfig({
         ...sortConfig,
-        direction:
-          sortConfig.direction === ESortDirection.ASC
-            ? ESortDirection.DESC
-            : ESortDirection.ASC,
+        direction: END_DIRECTION,
       });
     } else {
       setSortConfig({
         key,
-        direction: ESortDirection.DESC,
+        direction: START_DIRECTION,
       });
     }
   };

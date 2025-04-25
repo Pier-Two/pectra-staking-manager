@@ -80,7 +80,10 @@ const Dashboard: FC = () => {
             </div>
 
             <div className="pt-8">
-              <DashboardValidatorTable validators={validators} />
+              <DashboardValidatorTable
+                data={validators}
+                groupedValidators={groupedValidators}
+              />
             </div>
           </div>
         </div>

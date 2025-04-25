@@ -8,6 +8,8 @@ import { usePagination } from "pec/hooks/use-pagination";
 import { ReactNode } from "react";
 import { TablePagination } from "./TablePagination";
 import { ValidatorCardWrapperProps } from "../custom/validator-card-wrapper";
+import { useSearch } from "pec/hooks/useSearch";
+import { SearchFilter } from "./SearchFilter";
 
 interface ValidatorTableProps<T extends ValidatorDetails> {
   data: T[];
@@ -20,6 +22,7 @@ interface ValidatorTableProps<T extends ValidatorDetails> {
   };
   endContent?: (data: T) => JSX.Element;
   children?: (params: { setCurrentPage: (page: number) => void }) => ReactNode;
+  disableSearch?: boolean;
 }
 
 export const ValidatorTable = <T extends ValidatorDetails>({
@@ -29,9 +32,14 @@ export const ValidatorTable = <T extends ValidatorDetails>({
   children,
   selectableRows,
   wrapperProps,
+  disableSearch,
 }: ValidatorTableProps<T>) => {
+  const { filteredData, searchTerm, setSearchTerm } = useSearch({
+    data,
+    disabled: disableSearch,
+  });
   const { sortedValidators, sortConfig, setSortConfig } = useValidatorSorting({
-    validators: data,
+    validators: filteredData,
   });
 
   const {
@@ -46,6 +54,9 @@ export const ValidatorTable = <T extends ValidatorDetails>({
 
   return (
     <div className="flex flex-col gap-4">
+      {!disableSearch && (
+        <SearchFilter searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+      )}
       {children && children({ setCurrentPage })}
       <table className="table w-full table-auto border-separate border-spacing-y-2">
         {/* Render the pagination controls from the parent */}

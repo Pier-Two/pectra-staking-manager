@@ -1,46 +1,44 @@
 import type { ValidatorDetails, ValidatorStatus } from "pec/types/validator";
 import type { IHeaderConfig } from "pec/types/validatorTable";
 import { useMemo, useState } from "react";
+import { useSearch } from "./useSearch";
 
-export function useDashboardValidatorTable(data: ValidatorDetails[]) {
-  const [searchTerm, setSearchTerm] = useState("");
+interface UseDashboardValidatorTable {
+  data: ValidatorDetails[];
+  groupedValidators: Partial<Record<ValidatorStatus, ValidatorDetails[]>>;
+}
+
+export function useDashboardValidatorTable({
+  data,
+  groupedValidators,
+}: UseDashboardValidatorTable) {
+  const { filteredData, searchTerm, setSearchTerm } = useSearch({
+    data,
+  });
+
   const [statusFilter, setStatusFilter] = useState<string[]>([]);
   const [filterTableOptions, setFilterTableOptions] = useState<
     IHeaderConfig["label"][]
   >([]);
 
-  const filteredData = useMemo(() => {
-    const filteredData =
+  const statusFilteredData = useMemo(() => {
+    if (statusFilter.length === 0) return filteredData;
+
+    return (
       data?.filter((validator) => {
-        const matchesSearch =
-          searchTerm === "" ||
-          validator.validatorIndex
-            .toString()
-            .toLowerCase()
-            .includes(searchTerm.toLowerCase()) ||
-          validator.publicKey.toLowerCase().includes(searchTerm.toLowerCase());
-
-        const matchesStatus =
-          statusFilter.length === 0 || statusFilter.includes(validator.status);
-
-        return matchesSearch && matchesStatus;
-      }) || [];
-
-    return filteredData;
-  }, [data, searchTerm, statusFilter]);
+        return statusFilter.includes(validator.status);
+      }) || []
+    );
+  }, [data, filteredData, statusFilter]);
 
   const getValidatorCount = (status: ValidatorStatus) => {
-    return data.filter((validator) => validator.status === status).length;
+    return groupedValidators[status]?.length || 0;
   };
 
   const handleStatusFilterChange = (status: string) => {
     if (statusFilter.includes(status))
       setStatusFilter(statusFilter.filter((s) => s !== status));
     else setStatusFilter([...statusFilter, status]);
-  };
-
-  const handleSearchChange = (term: string) => {
-    setSearchTerm(term);
   };
 
   const handleFilterTableOptionsChange = (option: IHeaderConfig["label"]) => {
@@ -54,11 +52,11 @@ export function useDashboardValidatorTable(data: ValidatorDetails[]) {
     filterTableOptions,
     searchTerm,
     statusFilter,
-    filteredData,
+    filteredData: statusFilteredData,
 
     // Handlers
     handleStatusFilterChange,
-    handleSearchChange,
+    handleSearchChange: setSearchTerm,
     getValidatorCount,
     handleFilterTableOptionsChange,
   };

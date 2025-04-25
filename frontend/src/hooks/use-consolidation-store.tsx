@@ -46,7 +46,6 @@ type ConsolidationStore = {
   validatorsToConsolidate: SerializedValidator[];
   bulkSetConsolidationTargets: (validators: ValidatorDetails[]) => void;
   handleValidatorToConsolidateSelect: (validator: ValidatorDetails) => void;
-  removeValidatorToConsolidate: (validator: ValidatorDetails) => void;
   updateConsolidatedValidator: (
     validator: ValidatorDetails,
     txHash: string | undefined,
@@ -135,13 +134,6 @@ export const consolidationStore = createStore<ConsolidationStore>()(
         }));
       }
     },
-
-    removeValidatorToConsolidate: (validator: ValidatorDetails) =>
-      set((state) => ({
-        validatorsToConsolidate: state.validatorsToConsolidate.filter(
-          (v) => v.publicKey !== validator.publicKey,
-        ),
-      })),
 
     updateConsolidatedValidator: (
       validator: ValidatorDetails,
