@@ -1,9 +1,12 @@
 import { validatorIsActive } from "pec/lib/utils/validators/status";
-import type { IGenericValidators } from "pec/types/validator";
-import type { FC } from "react";
+import type { ValidatorDetails } from "pec/types/validator";
 import { HiBolt } from "react-icons/hi2";
 
-export const ValidatorInformation: FC<IGenericValidators> = (props) => {
+interface ValidatorInformationProps {
+  validators: ValidatorDetails[];
+}
+
+export const ValidatorInformation = (props: ValidatorInformationProps) => {
   const { validators } = props;
 
   const numberOfOldValidators = validators.filter(
@@ -17,7 +20,6 @@ export const ValidatorInformation: FC<IGenericValidators> = (props) => {
       <div className="flex items-center gap-x-4">
         <HiBolt className="min-h-4 min-w-4 text-primary" />
 
-        {/* TODO: set font to inter once fonts pr is in */}
         {numberOfOldValidators > 0 && (
           <div className="flex flex-col gap-y-2">
             <p className="text-sm font-semibold text-primary dark:text-indigo-500">
@@ -28,7 +30,6 @@ export const ValidatorInformation: FC<IGenericValidators> = (props) => {
           </div>
         )}
 
-        {/* TODO: set font to inter once fonts pr is in */}
         {numberOfOldValidators === 0 && (
           <div className="font-inter text-sm font-semibold text-primary dark:text-indigo-500">
             All of your validators are using the new credentials (0x02)!

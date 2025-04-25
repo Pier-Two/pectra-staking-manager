@@ -2,9 +2,9 @@ import { useRouter } from "next/navigation";
 import {
   CONSOLIDATION_STEP_NUMBER_TO_NAME,
   CONSOLIDATION_STEPS,
-  ConsolidationWorkflowStages,
+  type ConsolidationWorkflowStages,
 } from "pec/types/consolidation";
-import { ValidatorDetails } from "pec/types/validator";
+import { type ValidatorDetails } from "pec/types/validator";
 import { useImmer } from "use-immer";
 import { useSubmitConsolidate } from "./use-consolidation";
 
@@ -94,6 +94,7 @@ export const useNewConsolidate = ({ activeValidators }: UseConsolidate) => {
     };
     setStage(updatedStage);
 
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises -- todo will fix
     consolidate(stage.destination, stage.source);
   };
 

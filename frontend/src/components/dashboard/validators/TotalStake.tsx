@@ -1,9 +1,12 @@
-import type { IGenericValidators } from "pec/types/validator";
-import type { FC } from "react";
 import { MyValidatorsCard } from "./MyValidatorsCard";
 import { displayedEthAmount } from "pec/lib/utils/validators/balance";
+import { ValidatorDetails } from "pec/types/validator";
 
-export const TotalStake: FC<IGenericValidators> = (props) => {
+interface TotalStakeProps {
+  validators: ValidatorDetails[];
+}
+
+export const TotalStake = (props: TotalStakeProps) => {
   const { validators } = props;
   const totalStake = validators.reduce(
     (acc, validator) => acc + BigInt(validator.balance),
