@@ -1,3 +1,5 @@
+"use client";
+
 import type { FC } from "react";
 import { ProgressBar } from "pec/components/consolidation/ProgressBar";
 import { Skeleton } from "pec/components/ui/skeleton";
