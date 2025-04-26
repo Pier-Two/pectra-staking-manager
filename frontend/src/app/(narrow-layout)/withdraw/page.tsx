@@ -116,7 +116,7 @@ const Withdrawal: FC = () => {
       validators.map(
         (validator) => ({
           validator,
-          amount: Number(formatEther(validator.balance)),
+          amount: validator.balance,
         }),
         {
           // These options are critical to ensure proper updates

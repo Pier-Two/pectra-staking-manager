@@ -9,11 +9,11 @@ interface TotalStakeProps {
 export const TotalStake = (props: TotalStakeProps) => {
   const { validators } = props;
   const totalStake = validators.reduce(
-    (acc, validator) => acc + BigInt(validator.balance),
-    0n,
+    (acc, validator) => acc + validator.balance,
+    0,
   );
   const averageStake =
-    validators.length > 0 ? totalStake / BigInt(validators.length) : 0n;
+    validators.length > 0 ? totalStake / validators.length : 0n;
 
   return (
     <MyValidatorsCard
