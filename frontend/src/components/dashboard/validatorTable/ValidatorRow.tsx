@@ -1,5 +1,3 @@
-"use client";
-
 import {
   ArrowDownToDot,
   ArrowUpFromDot,
@@ -19,12 +17,18 @@ import {
   DropdownMenuTrigger,
 } from "pec/components/ui/dropdown-menu";
 import { Separator } from "pec/components/ui/separator";
-import { ValidatorStatus } from "pec/types/validator";
-import type { IValidatorRowProps } from "pec/types/validatorTable";
+import { ValidatorDetails, ValidatorStatus } from "pec/types/validator";
 import type { FC } from "react";
 import clsx from "clsx";
-import { getGridTemplateColumns } from "./TableHeader";
 import { displayedEthAmount } from "pec/lib/utils/validators/balance";
+import { IHeaderConfig } from "pec/types/validatorTable";
+import { ValidatorCardWrapper } from "pec/components/ui/custom/validator-card-wrapper";
+
+export interface IValidatorRowProps {
+  validator: ValidatorDetails;
+  filterTableOptions: IHeaderConfig["label"][];
+}
+
 /**
  * @Description This is a component that renders a row of a validator in the validator table.
  *
@@ -55,16 +59,12 @@ export const ValidatorRow: FC<IValidatorRowProps> = (props) => {
   };
 
   const displayBalance = displayedEthAmount(validator.balance);
+  // <div className="w-full rounded-xl border bg-indigo-50 p-4 text-sm hover:border-indigo-300 dark:bg-black dark:hover:bg-gray-900">
 
   return (
-    <div className="w-full rounded-xl border bg-indigo-50 p-4 text-sm hover:border-indigo-300 dark:bg-black dark:hover:bg-gray-900">
+    <ValidatorCardWrapper clearBackground>
       {/* Desktop View */}
-      <div
-        className={clsx(
-          "hidden md:grid md:items-center md:gap-4",
-          getGridTemplateColumns(filterTableOptions.length),
-        )}
-      >
+      <div className={clsx("hidden md:grid md:items-center md:gap-4")}>
         <div>
           <div className="flex flex-row gap-2">
             <Image
@@ -270,6 +270,6 @@ export const ValidatorRow: FC<IValidatorRowProps> = (props) => {
           )}
         </div>
       </div>
-    </div>
+    </ValidatorCardWrapper>
   );
 };

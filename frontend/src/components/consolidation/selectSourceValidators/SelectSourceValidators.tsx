@@ -1,5 +1,3 @@
-"use client";
-
 import { Pencil, Zap } from "lucide-react";
 import { PrimaryButton } from "pec/components/ui/custom/PrimaryButton";
 import { SecondaryButton } from "pec/components/ui/custom/SecondaryButton";
@@ -11,72 +9,46 @@ import {
 } from "pec/components/ui/tabs";
 import { ValidatorCard } from "pec/components/validators/cards/ValidatorCard";
 import { DetectedValidators } from "pec/components/validators/DetectedValidators";
-import { useConsolidationStore } from "pec/hooks/use-consolidation-store";
-import { useValidators } from "pec/hooks/useValidators";
 import { EIconPosition } from "pec/types/components";
-import type { ValidatorDetails } from "pec/types/validator";
-import { useEffect, useMemo, useState } from "react";
-import { ValidatorList } from "./ValidatorList";
-import { validatorIsActive } from "pec/lib/utils/validators/status";
+import { type ValidatorDetails } from "pec/types/validator";
+import { useMemo } from "react";
 import { displayedEthAmount } from "pec/lib/utils/validators/balance";
+import { ValidatorTable } from "pec/components/ui/table/ValidatorTable";
+import { CONSOLIDATION_TABLE_HEADERS } from "pec/constants/consolildation";
 
-export const SelectSourceValidators = () => {
-  const {
-    consolidationTarget,
-    setConsolidationTarget,
-    setProgress,
-    bulkSetConsolidationTargets,
-    validatorsToConsolidate,
-    addValidatorToConsolidate,
-  } = useConsolidationStore();
+interface SelectSourceValidatorsProps {
+  availableSourceValidators: ValidatorDetails[];
+  sourceValidators: ValidatorDetails[];
+  destinationValidator: ValidatorDetails;
+  setSourceValidators: (
+    validators: ValidatorDetails | ValidatorDetails[],
+  ) => void;
+  goToSummary: () => void;
+  goBack: () => void;
+}
 
-  const [activeTab, setActiveTab] = useState<string>("maxConsolidate");
-
-  const { data: validators } = useValidators();
-
-  const availableSourceValidators = useMemo(() => {
-    return validators?.filter((validator) => validatorIsActive(validator));
-  }, [validators]);
-
-  useEffect(() => {
-    if (
-      activeTab === "maxConsolidate" &&
-      validatorsToConsolidate?.length === 0
-    ) {
-      if (availableSourceValidators) {
-        bulkSetConsolidationTargets(availableSourceValidators);
-      }
-    }
-  }, [
-    activeTab,
-    availableSourceValidators,
-    bulkSetConsolidationTargets,
-    validatorsToConsolidate?.length,
-  ]);
-
-  const handleResetConsolidationTarget = () => {
-    setConsolidationTarget(undefined);
-    setProgress(1);
-  };
-
-  const handleConsolidationProgression = () => {
-    if (validatorsToConsolidate?.length > 0) setProgress(3);
-  };
-
-  const handleSourceValidatorSelection = (validator: ValidatorDetails) => {
-    addValidatorToConsolidate(validator);
+export const SelectSourceValidators = ({
+  sourceValidators,
+  destinationValidator,
+  setSourceValidators,
+  availableSourceValidators,
+  goToSummary,
+  goBack,
+}: SelectSourceValidatorsProps) => {
+  const isValidatorSelected = (validator: ValidatorDetails) => {
+    return sourceValidators.some((v) => v.publicKey === validator.publicKey);
   };
 
   const newDestinationBalance = useMemo(() => {
     return (
-      validatorsToConsolidate.reduce((acc, validator) => {
+      sourceValidators.reduce((acc, validator) => {
         return acc + validator.balance;
-      }, 0n) + (consolidationTarget?.balance ?? 0n)
+      }, 0n) + (destinationValidator.balance ?? 0n)
     );
-  }, [validatorsToConsolidate, consolidationTarget]);
+  }, [sourceValidators, destinationValidator]);
 
   return (
-    <div className="space-y-6">
+    <div className="w-full space-y-6">
       <div className="space-y-2">
         <div className="text-2xl font-medium">Source Validator(s)</div>
         <div className="text-sm text-gray-700 dark:text-gray-300">
@@ -90,20 +62,14 @@ export const SelectSourceValidators = () => {
           <div className="text-md font-medium">Destination validator</div>
 
           <div className="flex flex-col items-center justify-center gap-4">
-            {consolidationTarget && (
-              <ValidatorCard
-                hasHover={false}
-                shrink={false}
-                validator={consolidationTarget}
-              />
-            )}
+            <ValidatorCard shrink={false} validator={destinationValidator} />
 
             <SecondaryButton
               className="w-full"
               label="Change destination"
               icon={<Pencil className="h-4 w-4" />}
               iconPosition={EIconPosition.LEFT}
-              onClick={() => handleResetConsolidationTarget()}
+              onClick={goBack}
               disabled={false}
             />
           </div>
@@ -112,18 +78,12 @@ export const SelectSourceValidators = () => {
 
       <div className="text-md font-medium">Select source validator(s)</div>
 
-      <Tabs
-        defaultValue="maxConsolidate"
-        className="w-full space-y-8"
-        onValueChange={setActiveTab}
-      >
+      <Tabs defaultValue="maxConsolidate" className="w-full space-y-8">
         <TabsList className="grid w-full grid-cols-2 rounded-xl bg-gray-200 dark:bg-gray-900">
           <TabsTrigger
             className="rounded-xl text-gray-800 data-[state=active]:bg-white data-[state=active]:text-indigo-800 dark:text-gray-200 dark:data-[state=active]:text-black"
             value="maxConsolidate"
-            onClick={() =>
-              bulkSetConsolidationTargets(availableSourceValidators ?? [])
-            }
+            onClick={() => setSourceValidators(availableSourceValidators)}
           >
             Max consolidate
           </TabsTrigger>
@@ -131,7 +91,7 @@ export const SelectSourceValidators = () => {
           <TabsTrigger
             className="rounded-xl text-gray-800 data-[state=active]:bg-white data-[state=active]:text-indigo-800 dark:text-gray-200 dark:data-[state=active]:text-black"
             value="manuallySelect"
-            onClick={() => bulkSetConsolidationTargets([])}
+            onClick={() => setSourceValidators([])}
           >
             Manually select
           </TabsTrigger>
@@ -140,18 +100,20 @@ export const SelectSourceValidators = () => {
         <TabsContent value="maxConsolidate">
           <DetectedValidators
             cardTitle="selected"
-            validators={validatorsToConsolidate}
+            validators={sourceValidators}
           />
         </TabsContent>
 
         <TabsContent value="manuallySelect">
-          {availableSourceValidators && (
-            <ValidatorList
-              sourceValidators={validatorsToConsolidate}
-              setSourceValidators={handleSourceValidatorSelection}
-              validators={availableSourceValidators}
-            />
-          )}
+          <ValidatorTable
+            data={availableSourceValidators}
+            headers={CONSOLIDATION_TABLE_HEADERS}
+            selectableRows={{
+              onClick: setSourceValidators,
+              isSelected: isValidatorSelected,
+              showCheckIcons: true,
+            }}
+          />
         </TabsContent>
       </Tabs>
 
@@ -171,8 +133,8 @@ export const SelectSourceValidators = () => {
       <PrimaryButton
         className="w-full"
         label="Next"
-        onClick={() => handleConsolidationProgression()}
-        disabled={validatorsToConsolidate.length === 0}
+        onClick={goToSummary}
+        disabled={sourceValidators.length === 0}
       />
     </div>
   );

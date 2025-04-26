@@ -1,23 +1,30 @@
-import clsx from "clsx";
 import { BadgeMinus } from "lucide-react";
 import Image from "next/image";
+import { ValidatorCardWrapper } from "pec/components/ui/custom/validator-card-wrapper";
 import { formatValidatorIndex } from "pec/helpers/formatValidatorIndex";
 import { displayedEthAmount } from "pec/lib/utils/validators/balance";
-import type { IValidatorCard } from "pec/types/validator";
+import { ValidatorDetails } from "pec/types/validator";
 import type { FC } from "react";
 
+export interface IValidatorCard {
+  shrink: boolean;
+  validator: ValidatorDetails;
+  onClick?: () => void;
+  info?: string;
+  tooltip?: string;
+  className?: string;
+}
+
 export const ValidatorCard: FC<IValidatorCard> = (props) => {
-  const { hasHover, shrink, validator, onClick, info } = props;
+  const { shrink, validator, onClick, info, className } = props;
   const withdrawalAddressPrefix = validator.withdrawalAddress.slice(0, 4);
 
   return (
-    <div
-      className={clsx(
-        "flex-col-3 flex h-16 items-center justify-between gap-x-4 rounded-2xl border border-border px-4 py-2 dark:border-gray-800",
-        shrink ? "w-[95%]" : "w-full",
-        hasHover && "hover:border-indigo-500 dark:hover:border-gray-600",
-      )}
+    <ValidatorCardWrapper
       onClick={onClick}
+      shrink={shrink}
+      className={className}
+      clearBackground
     >
       <div className="flex grow basis-0 items-center gap-x-4">
         <Image
@@ -48,6 +55,6 @@ export const ValidatorCard: FC<IValidatorCard> = (props) => {
       <p className="grow basis-0 items-end text-right text-[14px] font-570">
         Ξ {displayedEthAmount(validator.balance)}
       </p>
-    </div>
+    </ValidatorCardWrapper>
   );
 };

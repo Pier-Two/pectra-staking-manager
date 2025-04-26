@@ -25,6 +25,5 @@ export const Primary: Story = {
     title: "Validators found!",
     connectedAddress: "0x1234567890123456789012345678901234567890",
     validators: MOCK_VALIDATORS,
-    textAlignment: "left",
   },
 };

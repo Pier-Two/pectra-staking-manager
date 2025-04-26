@@ -15,11 +15,11 @@ export const SharedLayout: FC<LayoutProps> = (props) => {
 
   return (
     <ThemeProvider>
-      <div className="flex min-h-screen w-screen flex-col items-center bg-indigo-50 dark:bg-gray-950 dark:text-white">
+      <div className="flex min-h-screen w-screen flex-col items-center bg-indigo-50 dark:bg-gray-950">
         <TopBar type="profile" />
         <div
           className={cn(
-            "flex w-full flex-1 justify-center px-2 py-8 md:px-8 lg:px-0",
+            "flex w-full flex-1 justify-center px-2 py-8 md:px-8 xl:px-2",
             {
               "max-w-[80rem]": type === "full",
               "max-w-[30rem]": type === "narrow",

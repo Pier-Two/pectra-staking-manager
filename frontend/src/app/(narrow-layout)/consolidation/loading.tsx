@@ -5,7 +5,7 @@ import { Skeleton } from "pec/components/ui/skeleton";
 const ConsolidationWorkflowLoading: FC = () => {
   return (
     <div className="flex w-full flex-col gap-4">
-      <ProgressBar progress={1} />
+      <ProgressBar progress={"source"} backHandler={() => {}} />
 
       <div className="space-y-8">
         <div className="space-y-4">

@@ -41,12 +41,21 @@
   }
 }
 
+:root {
+  --color-text: theme('colors.zinc.950'); /* Light mode default */
+}
+
+.dark {
+  --color-text: theme('colors.zinc.50'); /* Dark mode default */
+}
+
 @layer base {
   * {
     @apply border-border;
   }
   body {
     @apply bg-background text-foreground;
+    color: var(--color-text);
   }
 }
 
@@ -56,3 +65,5 @@ input::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
+
+

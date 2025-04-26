@@ -5,7 +5,6 @@ import {
   getBlockExplorerTxUrl,
   openInNewTab,
 } from "pec/helpers/getExternalLink";
-import { useSubmitConsolidate } from "pec/hooks/use-consolidation";
 import { useConsolidationStore } from "pec/hooks/use-consolidation-store";
 import { cn } from "pec/lib/utils";
 import type { ValidatorDetails } from "pec/types/validator";
@@ -75,10 +74,8 @@ export const TransactionValidatorCard: FC<ITransactionValidatorCard> = (
 ) => {
   const { validator, isTarget } = props;
   const { currentPubKey } = useConsolidationStore();
-  const {
-    mutateAsync: submitConsolidationTx,
-    isPending: isSubmittingConsolidateTransactions,
-  } = useSubmitConsolidate();
+
+  const isSubmittingConsolidateTransactions = true;
 
   const statusConfig = getStatusConfig(validator);
   const showConsolidateButton =
@@ -119,7 +116,7 @@ export const TransactionValidatorCard: FC<ITransactionValidatorCard> = (
             size="sm"
             onClick={async () => {
               try {
-                await submitConsolidationTx();
+                throw new Error("Not implemented");
               } catch (error) {
                 console.error(
                   "Failed to submit consolidation transaction:",

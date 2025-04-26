@@ -19,23 +19,18 @@ import {
   type WithdrawalFormType,
 } from "pec/lib/api/schemas/withdrawal";
 import { formatAddressToShortenedString } from "pec/lib/utils/address";
-import type { ValidatorDetails } from "pec/types/validator";
+import { ValidatorStatus, type ValidatorDetails } from "pec/types/validator";
 import { type FC, useMemo, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { formatEther } from "viem";
 import WithdrawalLoading from "./loading";
-import { validatorIsActive } from "pec/lib/utils/validators/status";
 
 const Withdrawal: FC = () => {
   const walletAddress = useWalletAddress();
   const [showEmail, setShowEmail] = useState(false);
-  const { data: rawValidatorData } = useValidators();
+  const { groupedValidators } = useValidators();
 
-  const availableValidators = useMemo(() => {
-    return rawValidatorData?.filter((validator) =>
-      validatorIsActive(validator),
-    );
-  }, [rawValidatorData]);
+  const availableValidators = groupedValidators[ValidatorStatus.ACTIVE];
 
   const { submitWithdrawals, stage, setStage } = useSubmitWithdraw();
 
@@ -62,7 +57,8 @@ const Withdrawal: FC = () => {
   const watchedEmail = watch("email");
   const email = watchedEmail ?? "";
   const withdrawalTotal = sumBy(withdrawals, (withdrawal) => withdrawal.amount);
-  const disabled = isValid && withdrawalTotal > 0 && (showEmail ? email.length > 0 : true)
+  const disabled =
+    isValid && withdrawalTotal > 0 && (showEmail ? email.length > 0 : true);
   const signSubmitFinaliseInProgress = stage?.type === "sign-submit-finalise";
   const columnHeaders = signSubmitFinaliseInProgress
     ? WITHDRAWAL_COLUMN_HEADERS.filter((column) => column.label === "Validator")
@@ -186,9 +182,11 @@ const Withdrawal: FC = () => {
           cardText="Add your email to receive an email when your withdrawals are complete."
           cardTitle="Notify me when complete"
           summaryEmail={email}
-          setSummaryEmail={(email) => setValue("email", email, {
-            shouldValidate: true,
-          })}
+          setSummaryEmail={(email) =>
+            setValue("email", email, {
+              shouldValidate: true,
+            })
+          }
           errors={errors}
           showEmail={showEmail}
           setShowEmail={setShowEmail}

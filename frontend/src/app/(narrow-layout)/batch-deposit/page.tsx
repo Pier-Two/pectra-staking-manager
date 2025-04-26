@@ -9,6 +9,7 @@ import { client } from "pec/lib/wallet/client";
 import { DepositWorkflow } from "pec/components/batch-deposits/DepositWorkflow";
 import { useValidators } from "pec/hooks/useValidators";
 import { formatEther } from "viem";
+import { ValidatorStatus } from "pec/types/validator";
 
 const BatchDeposit: FC = () => {
   const walletAddress = useWalletAddress();
@@ -23,13 +24,13 @@ const BatchDeposit: FC = () => {
     client,
   });
 
-  const { data, isFetched } = useValidators();
+  const { isFetched, groupedValidators } = useValidators();
 
   const componentLoading =
     !walletAddress ||
     !chain ||
     !balance ||
-    !data ||
+    !groupedValidators ||
     !isFetched ||
     isLoading ||
     isError;
@@ -38,7 +39,7 @@ const BatchDeposit: FC = () => {
 
   return (
     <DepositWorkflow
-      validators={data}
+      validators={groupedValidators[ValidatorStatus.ACTIVE] ?? []}
       balance={Number(formatEther(balance.value)) ?? 0}
     />
   );

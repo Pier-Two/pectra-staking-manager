@@ -5,12 +5,12 @@ import { Skeleton } from "pec/components/ui/skeleton";
 const ConsolidationLoading: FC = () => {
   return (
     <div className="flex w-full flex-col gap-4">
-      <div className="flex flex-col items-center gap-4">
+      <div className="flex flex-col gap-4">
         <div className="flex items-center gap-x-4">
           <Merge className="h-10 w-10 rotate-90 text-yellow-500" />
           <div className="text-3xl">Consolidate</div>
         </div>
-        <div className="w-full text-center text-gray-700">
+        <div className="text-Zinc-50 text-sm">
           Combine multiple validator balances into a single large-balance
           validator, as per Pectra EIP-7251.
         </div>
