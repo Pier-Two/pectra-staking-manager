@@ -6,9 +6,9 @@ import {
   OctagonMinus,
 } from "lucide-react";
 import Image from "next/image";
-import { ValidatorDetails, ValidatorStatus } from "pec/types/validator";
+import { ValidatorStatus } from "pec/types/validator";
 import { displayedEthAmount } from "pec/lib/utils/validators/balance";
-import { IHeaderConfig } from "pec/types/validatorTable";
+import { IHeaderConfig, TableValidatorDetails } from "pec/types/validatorTable";
 import {
   ValidatorCardBorderStyles,
   ValidatorCardWrapper,
@@ -16,8 +16,9 @@ import {
 } from "pec/components/ui/custom/validator-card-wrapper";
 import { cn } from "pec/lib/utils";
 import { useState } from "react";
+import { SubmittingTransactionTableComponent } from "./TableComponents";
 
-export interface IValidatorRowProps<T extends ValidatorDetails> {
+export interface IValidatorRowProps<T extends TableValidatorDetails> {
   wrapperProps?: Omit<ValidatorCardWrapperProps, "onClick" | "children">;
   validator: T;
   headers: IHeaderConfig<T>[];
@@ -30,7 +31,7 @@ export interface IValidatorRowProps<T extends ValidatorDetails> {
   renderOverrides?: Partial<Record<keyof T, (data: T) => JSX.Element>>;
 }
 
-export const ValidatorRow = <T extends ValidatorDetails>({
+export const ValidatorRow = <T extends TableValidatorDetails>({
   validator,
   headers,
   endContent,
@@ -45,7 +46,7 @@ export const ValidatorRow = <T extends ValidatorDetails>({
   const renderCellContent = (header: IHeaderConfig<T>) => {
     if (renderOverrides?.[header.sortKey]) {
       // Bit of coercian here, but we know the element type is this
-      return renderOverrides![header.sortKey]!(validator);
+      return renderOverrides[header.sortKey]!(validator);
     }
 
     switch (header.sortKey) {
@@ -105,6 +106,13 @@ export const ValidatorRow = <T extends ValidatorDetails>({
       case "balance":
         return <div className="text-sm">Ξ {displayBalance} ETH</div>;
 
+      case "transactionStatus":
+        return (
+          <SubmittingTransactionTableComponent
+            transactionStatus={validator.transactionStatus}
+          />
+        );
+
       default:
         // Fallback for any other fields
         return <div>{String(validator[header.sortKey])}</div>;
@@ -145,6 +153,7 @@ export const ValidatorRow = <T extends ValidatorDetails>({
                 "!border-r-0": !isLast,
                 "rounded-l-2xl": isFirst,
                 "rounded-r-2xl": isLast,
+                "hidden md:table-cell": !header.mobile,
               },
               ValidatorCardBorderStyles({
                 clearBackground: wrapperProps?.clearBackground,
@@ -194,30 +203,3 @@ export const ValidatorRow = <T extends ValidatorDetails>({
     </ValidatorCardWrapper>
   );
 };
-
-// <div className="md:hidden">
-//   <div className="mb-4 grid grid-cols-3 gap-4">
-//     <div>{renderCellContent("validatorIndex")}</div>
-//     <div>{renderCellContent("withdrawalAddress")}</div>
-//     <div className="flex justify-end">
-//       <ActionsDropdown />
-//     </div>
-//   </div>
-//
-//   {/* Mobile Details Section */}
-//   <div className="mt-4 space-y-2 border-t pt-4 dark:border-gray-800">
-//     {headers.map((header) => {
-//       if (!header.mobile) return;
-//
-//       const key = header.sortKey;
-//       const label = header.label;
-//
-//       return (
-//         <div key={key} className="flex items-center justify-between">
-//           <span className="text-gray-500">{label}</span>
-//           <div>{renderCellContent(key)}</div>
-//         </div>
-//       );
-//     })}
-//   </div>
-// </div>;

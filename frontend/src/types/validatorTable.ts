@@ -1,4 +1,5 @@
 import { ValidatorDetails } from "./validator";
+import { TransactionStatus } from "./withdraw";
 
 export enum ESortDirection {
   ASC = "asc",
@@ -10,7 +11,11 @@ export interface SortConfig<T> {
   direction: ESortDirection;
 }
 
-export interface IHeaderConfig<T = ValidatorDetails, SortKey = keyof T> {
+export type TableValidatorDetails = ValidatorDetails & {
+  transactionStatus?: TransactionStatus;
+};
+
+export interface IHeaderConfig<T = TableValidatorDetails, SortKey = keyof T> {
   label: string;
   sortKey: SortKey;
   mobile?: boolean;

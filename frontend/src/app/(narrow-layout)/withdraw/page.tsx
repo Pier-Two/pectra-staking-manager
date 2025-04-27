@@ -20,7 +20,11 @@ import { type FC, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import WithdrawalLoading from "./loading";
 import { WithdrawalValidatorTable } from "pec/components/withdrawal/WithdrawalValidatorTable";
-import { SubmittingTransactionsTable } from "pec/components/ui/table/SubmittingTransactionsTable";
+import { ValidatorTable } from "pec/components/ui/table/ValidatorTable";
+import {
+  SUBMITTING_WITHDRAWAL_COLUMN_HEADERS,
+  WithdrawalTableValidatorDetails,
+} from "pec/constants/columnHeaders";
 
 const Withdrawal: FC = () => {
   const walletAddress = useWalletAddress();
@@ -158,9 +162,16 @@ const Withdrawal: FC = () => {
           </>
         )}
         {stage.type === "sign-submit-finalise" && (
-          <SubmittingTransactionsTable
-            validators={withdrawals.map((w) => w.validator)}
-            txHashRecord={stage.txHashes}
+          <ValidatorTable
+            headers={SUBMITTING_WITHDRAWAL_COLUMN_HEADERS}
+            data={withdrawals.map(
+              (w): WithdrawalTableValidatorDetails => ({
+                ...w.validator,
+                transactionStatus: stage.txHashes[w.validator.validatorIndex],
+                withdrawalAmount: w.amount,
+              }),
+            )}
+            disableSort
           />
         )}
       </div>
