@@ -48,6 +48,10 @@ export const WithdrawalInformation = ({
   stage.type === "sign-submit-finalise" &&
   Object.values(stage.txHashes).some((tx) => tx.status === "failed" || tx.status === "failedToSubmit");
 
+  const isPending =
+  stage.type === "sign-submit-finalise" &&
+  Object.values(stage.txHashes).some((tx) => tx.status === "pending");
+
   const isSigning =
   stage.type === "sign-submit-finalise" &&
   Object.values(stage.txHashes).some((tx) => tx.status === "signing");
@@ -64,7 +68,7 @@ export const WithdrawalInformation = ({
     Object.values(stage.txHashes).every((tx) => tx.status === "finalised" || tx.status === "failed");
 
   return (
-    <div className="flex flex-col justify-center w-full gap-4 rounded-2xl min-h-[90px] border bg-white pl-6 dark:border dark:border-gray-800 dark:bg-black">
+    <div className="flex flex-col justify-center w-full gap-4 p-4 rounded-2xl min-h-[90px] border bg-white pl-6 dark:border dark:border-gray-800 dark:bg-black">
       <div className="flex flex-col md:flex-row w-full items-center justify-between gap-4">
         <div className="flex flex-wrap items-center gap-2">
           {distributionStats.map((stat, index) => (
@@ -100,9 +104,15 @@ export const WithdrawalInformation = ({
         </div>
 
         <div className="px-6">
-          {(isSigning || isSubmitting) && !allTransactionsFinalised && (
+          {(isSigning || isSubmitting || isPending) && !allTransactionsFinalised && (
             <div className="flex flex-row items-center gap-2">
               <PectraSpinner />
+              {isPending && (
+                <div className="text-sm">Awaiting Signatures...</div>
+              )}
+              {isSubmitting && (
+                <div className="text-sm">Submitting Transactions...</div>
+              )}
             </div>
           )}
             
@@ -170,7 +180,7 @@ export const WithdrawalInformation = ({
 
       {isSubmitting && (
         <>
-          <div className="rounded-xl bg-gray-100 p-2 text-sm text-gray-500 dark:bg-black">
+          <div className="rounded-xl bg-green-100 p-2 text-sm text-green-500 dark:bg-black">
             Your transactions have been submitted successfully and will be
             processed shortly. You can leave this page and check the status of
             your withdrawals in your dashboard.

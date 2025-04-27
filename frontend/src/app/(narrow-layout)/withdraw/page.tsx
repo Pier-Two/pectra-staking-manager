@@ -196,12 +196,13 @@ const Withdrawal: FC = () => {
           showEmail={showEmail}
           setShowEmail={setShowEmail}
         />
-
+        {!signSubmitFinaliseInProgress && (
         <ValidatorHeader
           selectedCount={withdrawals.length}
-          totalCount={validators.length}
-          onClear={handleResetWithdrawal}
-        />
+            totalCount={validators.length}
+            onClear={handleResetWithdrawal}
+          />
+        )}
 
         <div className="flex flex-col items-center gap-4">
           <ValidatorListHeaders
