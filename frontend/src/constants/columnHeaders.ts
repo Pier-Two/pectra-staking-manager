@@ -9,7 +9,6 @@ export const WITHDRAWAL_COLUMN_HEADERS = [
 
 export type WithdrawalTableValidatorDetails = ValidatorDetails & {
   withdrawalAmount: number;
-  withdrawalAmountRowRender: () => JSX.Element;
 };
 
 export const NEW_WITHDRAWAL_COLUMN_HEADERS: IHeaderConfig<WithdrawalTableValidatorDetails>[] =
@@ -19,7 +18,6 @@ export const NEW_WITHDRAWAL_COLUMN_HEADERS: IHeaderConfig<WithdrawalTableValidat
     {
       label: "Withdrawal",
       sortKey: "withdrawalAmount",
-      customRenderKey: "withdrawalAmountRowRender",
       mobile: true,
     },
   ];

@@ -7,7 +7,7 @@ import { WithdrawalFormType } from "pec/lib/api/schemas/withdrawal";
 import { ValidatorDetails } from "pec/types/validator";
 import { Input } from "../ui/input";
 import { FieldErrors, UseFormRegister } from "react-hook-form";
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 
 interface WithdrawalValidatorTable {
   validators: ValidatorDetails[];
@@ -60,46 +60,55 @@ export const WithdrawalValidatorTable = ({
     return numValue;
   };
 
+  const withdrawalAmountRowRender = useCallback(
+    (validator: ValidatorDetails) => {
+      const withdrawalIndex =
+        selectedValidatorIndexes[validator.validatorIndex] ?? -1;
+      const locked = validator.balance === 0 || withdrawalIndex === -1;
+
+      return (
+        <div className="flex w-full flex-col">
+          <div className="flex flex-row items-center gap-2">
+            <span className="text-sm">ETH</span>
+            <Input
+              className={`w-full rounded-xl border border-indigo-300 bg-white p-2 text-sm text-gray-700 dark:border-gray-800 dark:bg-black dark:text-gray-300 ${locked ? "opacity-50" : ""}`}
+              type="number"
+              step="any"
+              {...register(`withdrawals.${withdrawalIndex}.amount`, {
+                setValueAs: (value: string) =>
+                  setValueHandler(value, validator.balance),
+              })}
+              onClick={(e) => {
+                if (withdrawalIndex === -1) {
+                  handleValidatorSelect(validator);
+                }
+
+                e.stopPropagation();
+              }}
+            />
+          </div>
+
+          {errors.withdrawals?.[withdrawalIndex]?.amount && (
+            <div className="mt-1 text-xs text-red-500">
+              Please enter an amount less than or equal to your available
+              balance.
+            </div>
+          )}
+        </div>
+      );
+    },
+    [register, errors, selectedValidatorIndexes],
+  );
+
   const validatorDetailsRow: WithdrawalTableValidatorDetails[] = useMemo(
     () =>
       validators.map((validator) => {
         const withdrawalIndex =
           selectedValidatorIndexes[validator.validatorIndex] ?? -1;
-        const locked = validator.balance === 0 || withdrawalIndex === -1;
 
         return {
           ...validator,
           withdrawalAmount: withdrawals[withdrawalIndex]?.amount ?? 0,
-          withdrawalAmountRowRender: () => (
-            <div className="flex w-full flex-col">
-              <div className="flex flex-row items-center gap-2">
-                <span className="text-sm">ETH</span>
-                <Input
-                  className={`w-full rounded-xl border border-indigo-300 bg-white p-2 text-sm text-gray-700 dark:border-gray-800 dark:bg-black dark:text-gray-300 ${locked ? "opacity-50" : ""}`}
-                  disabled={locked}
-                  type="number"
-                  step="any"
-                  {...register(`withdrawals.${withdrawalIndex}.amount`, {
-                    // valueAsNumber: true,
-                    // required: true,
-                    // min: 0,
-                    setValueAs: (value: string) =>
-                      setValueHandler(value, validator.balance),
-                  })}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                  }}
-                />
-              </div>
-
-              {errors.withdrawals?.[withdrawalIndex]?.amount && (
-                <div className="mt-1 text-xs text-red-500">
-                  Please enter an amount less than or equal to your available
-                  balance.
-                </div>
-              )}
-            </div>
-          ),
         };
       }),
     [validators, withdrawals, selectedValidatorIndexes],
@@ -114,6 +123,9 @@ export const WithdrawalValidatorTable = ({
         showCheckIcons: true,
         isSelected: (row) =>
           selectedValidatorIndexes[row.validatorIndex] !== undefined,
+      }}
+      renderOverrides={{
+        withdrawalAmount: withdrawalAmountRowRender,
       }}
     />
   );

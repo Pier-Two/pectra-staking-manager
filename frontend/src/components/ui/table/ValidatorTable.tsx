@@ -10,6 +10,8 @@ import { TablePagination } from "./TablePagination";
 import { ValidatorCardWrapperProps } from "../custom/validator-card-wrapper";
 import { useSearch } from "pec/hooks/useSearch";
 import { SearchFilter } from "./SearchFilter";
+import { Button } from "../button";
+import { SecondaryButton } from "../custom/SecondaryButton";
 
 interface ValidatorTableProps<T extends ValidatorDetails> {
   data: T[];
@@ -23,6 +25,8 @@ interface ValidatorTableProps<T extends ValidatorDetails> {
   endContent?: (data: T) => JSX.Element;
   children?: (params: { setCurrentPage: (page: number) => void }) => ReactNode;
   disableSearch?: boolean;
+  // TODO: build this method in the table above as a HOF that takes in register, etc. then have it callable again with the validator data
+  renderOverrides: Partial<Record<keyof T, (data: T) => JSX.Element>>;
 }
 
 export const ValidatorTable = <T extends ValidatorDetails>({
@@ -33,6 +37,7 @@ export const ValidatorTable = <T extends ValidatorDetails>({
   selectableRows,
   wrapperProps,
   disableSearch,
+  renderOverrides,
 }: ValidatorTableProps<T>) => {
   const { filteredData, searchTerm, setSearchTerm } = useSearch({
     data,
@@ -84,6 +89,7 @@ export const ValidatorTable = <T extends ValidatorDetails>({
                       }
                     : undefined
                 }
+                renderOverrides={renderOverrides}
               />
             ))
           ) : (

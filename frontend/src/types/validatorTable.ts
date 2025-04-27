@@ -10,13 +10,8 @@ export interface SortConfig<T> {
   direction: ESortDirection;
 }
 
-export interface IHeaderConfig<
-  T = ValidatorDetails,
-  SortKey = keyof T,
-  CustomRenderKey = keyof T,
-> {
+export interface IHeaderConfig<T = ValidatorDetails, SortKey = keyof T> {
   label: string;
   sortKey: SortKey;
-  customRenderKey?: CustomRenderKey;
   mobile?: boolean;
 }

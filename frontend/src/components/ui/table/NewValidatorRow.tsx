@@ -27,6 +27,7 @@ export interface IValidatorRowProps<T extends ValidatorDetails> {
     isSelected: boolean;
     showCheckIcons: boolean;
   };
+  renderOverrides?: Partial<Record<keyof T, (data: T) => JSX.Element>>;
 }
 
 export const ValidatorRow = <T extends ValidatorDetails>({
@@ -35,15 +36,16 @@ export const ValidatorRow = <T extends ValidatorDetails>({
   endContent,
   selectableRows,
   wrapperProps,
+  renderOverrides,
 }: IValidatorRowProps<T>) => {
   const [isHovering, setIsHovering] = useState(false);
   const displayBalance = displayedEthAmount(validator.balance);
 
   // Render cell content based on field key
   const renderCellContent = (header: IHeaderConfig<T>) => {
-    if (header.customRenderKey) {
+    if (renderOverrides?.[header.sortKey]) {
       // Bit of coercian here, but we know the element type is this
-      return (validator[header.customRenderKey] as () => JSX.Element)();
+      return renderOverrides![header.sortKey]!(validator);
     }
 
     switch (header.sortKey) {
