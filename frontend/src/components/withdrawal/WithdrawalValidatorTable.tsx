@@ -83,7 +83,7 @@ export const WithdrawalValidatorTable = ({
                     // valueAsNumber: true,
                     // required: true,
                     // min: 0,
-                    setValueAs: (value) =>
+                    setValueAs: (value: string) =>
                       setValueHandler(value, validator.balance),
                   })}
                   onClick={(e) => {
