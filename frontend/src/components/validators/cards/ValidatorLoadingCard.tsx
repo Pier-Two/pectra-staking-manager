@@ -2,11 +2,13 @@ import { ExternalLink } from "lucide-react";
 import Image from "next/image";
 import { Button } from "pec/components/ui/button";
 import { PectraSpinner } from "pec/components/ui/custom/pectraSpinner";
+import { ValidatorCardWrapper } from "pec/components/ui/custom/validator-card-wrapper";
 import {
   getBlockExplorerTxUrl,
   openInNewTab,
 } from "pec/helpers/getExternalLink";
 import { cn } from "pec/lib/utils";
+import { formatAddressToShortenedString } from "pec/lib/utils/address";
 import { type ValidatorDetails } from "pec/types/validator";
 import type { TransactionStatus } from "pec/types/withdraw";
 
@@ -84,14 +86,7 @@ export const ValidatorLoadingCard = ({
     statusConfig.text === "Submitting Transaction";
 
   return (
-    <div
-      className={cn(
-        "flex items-center justify-between",
-        "rounded-xl border bg-white px-6 py-4",
-        "dark:border-gray-800 dark:bg-black",
-        "transition-all duration-200",
-      )}
-    >
+    <ValidatorCardWrapper>
       <div className="flex items-center gap-x-4">
         {/* Validator */}
         <Image
@@ -103,7 +98,7 @@ export const ValidatorLoadingCard = ({
         <div className="flex flex-col">
           <div className="text-sm font-medium">{validatorIndex}</div>
           <div className="text-xs text-gray-600 dark:text-gray-400">
-            {publicKey.slice(0, 5)}...{publicKey.slice(-4)}
+            {formatAddressToShortenedString(publicKey)}
           </div>
         </div>
       </div>
@@ -133,7 +128,7 @@ export const ValidatorLoadingCard = ({
           </Button>
         )}
       </div>
-    </div>
+    </ValidatorCardWrapper>
   );
 };
 
