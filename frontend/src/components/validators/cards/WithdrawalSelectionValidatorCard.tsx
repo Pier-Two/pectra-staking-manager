@@ -6,7 +6,6 @@ import { cn } from "pec/lib/utils";
 import { type ValidatorDetails } from "pec/types/validator";
 import type { WithdrawWorkflowStages } from "pec/types/withdraw";
 import { type FieldErrors, type UseFormRegister } from "react-hook-form";
-import { formatEther } from "viem";
 import { ValidatorLoadingCard } from "./ValidatorLoadingCard";
 import { displayedEthAmount } from "pec/lib/utils/validators/balance";
 interface ExtendedProps {

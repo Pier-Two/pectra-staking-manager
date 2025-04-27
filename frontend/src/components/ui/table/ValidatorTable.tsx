@@ -3,7 +3,7 @@ import { TableHeader } from "./TableHeader";
 import { ValidatorDetails } from "pec/types/validator";
 import { useValidatorSorting } from "pec/hooks/use-validator-sorting";
 import { TableNoResults } from "pec/components/dashboard/validatorTable/TableNoResults";
-import { NewValidatorRow } from "pec/components/dashboard/validatorTable/NewValidatorRow";
+import { ValidatorRow } from "pec/components/ui/table/NewValidatorRow";
 import { usePagination } from "pec/hooks/use-pagination";
 import { ReactNode } from "react";
 import { TablePagination } from "./TablePagination";
@@ -69,7 +69,7 @@ export const ValidatorTable = <T extends ValidatorDetails>({
         <tbody className="">
           {sortedValidators.length > 0 ? (
             paginatedData.map((validator) => (
-              <NewValidatorRow
+              <ValidatorRow
                 headers={headers}
                 key={validator.publicKey}
                 validator={validator}

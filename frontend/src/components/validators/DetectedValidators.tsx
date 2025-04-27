@@ -23,7 +23,7 @@ export const DetectedValidators: FC<IDetectedValidators> = (props) => {
 
   const totalBalance = validators.reduce(
     (acc, validator) => acc + validator.balance,
-    0n,
+    0,
   );
 
   return (

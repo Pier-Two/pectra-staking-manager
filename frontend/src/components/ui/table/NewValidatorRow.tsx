@@ -2,6 +2,7 @@ import {
   CircleCheck,
   CircleMinus,
   CirclePlay,
+  CirclePlus,
   OctagonMinus,
 } from "lucide-react";
 import Image from "next/image";
@@ -28,15 +29,7 @@ export interface IValidatorRowProps<T extends ValidatorDetails> {
   };
 }
 
-/**
- * @Description This is a component that renders a row of a validator in the validator table.
- *
- * @param_validator - The validator object to render
- * @param_headers - The headers configuration for the table
- * @param_filterTableOptions - The current filter Options for the table
- *   - Expected Functionality if an item is in the FilterTablesOptions array, ** IT SHOULD NOT BE RENDERED **
- */
-export const NewValidatorRow = <T extends ValidatorDetails>({
+export const ValidatorRow = <T extends ValidatorDetails>({
   validator,
   headers,
   endContent,
@@ -47,8 +40,13 @@ export const NewValidatorRow = <T extends ValidatorDetails>({
   const displayBalance = displayedEthAmount(validator.balance);
 
   // Render cell content based on field key
-  const renderCellContent = (key: keyof T) => {
-    switch (key) {
+  const renderCellContent = (header: IHeaderConfig<T>) => {
+    if (header.customRenderKey) {
+      // Bit of coercian here, but we know the element type is this
+      return (validator[header.customRenderKey] as () => JSX.Element)();
+    }
+
+    switch (header.sortKey) {
       case "validatorIndex":
         return (
           <div className="flex flex-row gap-2">
@@ -107,7 +105,7 @@ export const NewValidatorRow = <T extends ValidatorDetails>({
 
       default:
         // Fallback for any other fields
-        return <div>{String(validator[key])}</div>;
+        return <div>{String(validator[header.sortKey])}</div>;
     }
   };
 
@@ -117,16 +115,6 @@ export const NewValidatorRow = <T extends ValidatorDetails>({
     // We create another function here so we can pass the validator to the onClick function
     return () => selectableRows.onClick(validator);
   };
-
-  {
-    /*   "cursor-pointer hover:!border-indigo-500 dark:hover:!border-gray-600": */
-  }
-  {
-    /*   onClick && !withBackground, */
-  }
-  {
-    /* "hover:!border-indigo-300 dark:hover:!bg-gray-900": onClick && withBackground, */
-  }
 
   return (
     <ValidatorCardWrapper
@@ -140,14 +128,13 @@ export const NewValidatorRow = <T extends ValidatorDetails>({
     >
       {/* Desktop View - Table Row */}
       {headers.map((header, index) => {
-        const key = header.sortKey;
         // Apply rounded corners only to first and last cells
         const isFirst = index === 0;
         const isLast = index === headers.length - 1 && !endContent;
 
         return (
           <th
-            key={key as string}
+            key={header.sortKey as string}
             className={cn(
               "bg-inherit px-4 py-2 font-normal",
               {
@@ -161,6 +148,7 @@ export const NewValidatorRow = <T extends ValidatorDetails>({
                 clearBackground: wrapperProps?.clearBackground,
                 isSelected: selectableRows?.isSelected,
                 onClick: onClick(),
+                isHoveringOverride: isHovering,
               }),
             )}
           >
@@ -168,13 +156,30 @@ export const NewValidatorRow = <T extends ValidatorDetails>({
               {index === 0 && selectableRows?.showCheckIcons && (
                 <div className="flex items-center justify-center">
                   {selectableRows.isSelected ? (
-                    <CircleCheck className="h-4 w-4 fill-green-500 text-white dark:text-black" />
+                    <>
+                      <CircleCheck
+                        className={cn(
+                          "h-4 min-h-4 w-4 min-w-4 text-green-500",
+                          { hidden: isHovering },
+                        )}
+                      />
+                      <CircleMinus
+                        className={cn(
+                          "hidden h-4 min-h-4 w-4 min-w-4 text-red-500",
+                          { block: isHovering },
+                        )}
+                      />
+                    </>
                   ) : (
-                    <CircleMinus className="h-4 w-4 text-gray-500 dark:text-white" />
+                    <CirclePlus
+                      className={cn("h-4 min-h-4 w-4 min-w-4 text-indigo-500", {
+                        "fill-indigo-500 text-white": isHovering,
+                      })}
+                    />
                   )}
                 </div>
               )}
-              {renderCellContent(key)}
+              {renderCellContent(header)}
             </div>
           </th>
         );
