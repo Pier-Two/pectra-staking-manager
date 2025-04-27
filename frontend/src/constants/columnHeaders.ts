@@ -1,3 +1,4 @@
+import { ValidatorDetails } from "pec/types/validator";
 import type {
   IHeaderConfig,
   TableValidatorDetails,
@@ -46,13 +47,14 @@ export const SIGN_WITHDRAWAL_COLUMN_HEADERS = [
   { label: "Status", showSort: false },
 ] as const;
 
-export const DASHBOARD_VALIDATOR_COLUMN_HEADERS: IHeaderConfig[] = [
-  { label: "Validator", sortKey: "validatorIndex", mobile: true },
-  { label: "Active since", sortKey: "activeSince" },
-  { label: "Credentials", sortKey: "withdrawalAddress", mobile: true },
-  { label: "Status", sortKey: "status" },
-  { label: "Balance", sortKey: "balance", mobile: true },
-];
+export const DASHBOARD_VALIDATOR_COLUMN_HEADERS: IHeaderConfig<ValidatorDetails>[] =
+  [
+    { label: "Validator", sortKey: "validatorIndex", mobile: true },
+    { label: "Active since", sortKey: "activeSince" },
+    { label: "Credentials", sortKey: "withdrawalAddress", mobile: true },
+    { label: "Status", sortKey: "status" },
+    { label: "Balance", sortKey: "balance", mobile: true },
+  ];
 
 export const SIGN_DEPOSIT_COLUMN_HEADERS = [
   {
