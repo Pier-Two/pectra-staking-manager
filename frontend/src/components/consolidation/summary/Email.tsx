@@ -32,20 +32,25 @@ export const Email: FC<IConsolidationEmail> = (props) => {
         />
       </div>
 
-      {showEmail && (
-        <div className="flex flex-col gap-y-2 pt-4">
+      <div
+        className={`transition-all duration-500 ease-in-out overflow-hidden ${
+          showEmail ? "max-h-20 opacity-100" : "max-h-0 opacity-0"
+        }`}
+      >
+        <div className="flex flex-col gap-y-4 pt-4">
           <Input
             className="w-full rounded-xl border border-indigo-200 bg-white p-4 dark:border-gray-800 dark:bg-black"
             placeholder="Email"
             value={summaryEmail}
             onChange={(e) => setSummaryEmail(e.target.value)}
+            autoFocusOn={showEmail}
           />
 
           <div className="mt-1 text-xs text-red-500">
             {errors?.email && "Invalid email address"}
           </div>
         </div>
-      )}
+      </div>
     </div>
   );
 };
