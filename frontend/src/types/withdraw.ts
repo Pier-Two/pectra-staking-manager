@@ -1,11 +1,11 @@
 // A transaction is pending if its awaiting signing
-type TransactionStatus =
+export type TransactionStatus =
   | { status: "pending" }
   | { status: "signing" }
   | { status: "submitted"; txHash: `0x${string}` }
   | { status: "finalised"; txHash: `0x${string}` }
-  | { status: "failed", txHash: `0x${string}` }
-  | { status: "failedToSubmit", error: string };
+  | { status: "failed"; txHash: `0x${string}` }
+  | { status: "failedToSubmit"; error: string };
 
 export type TxHashRecord = Record<number, TransactionStatus>;
 

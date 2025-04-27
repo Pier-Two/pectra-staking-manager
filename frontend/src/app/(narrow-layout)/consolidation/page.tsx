@@ -3,58 +3,80 @@
 import { ProgressBar } from "pec/components/consolidation/ProgressBar";
 import { SelectDestinationValidator } from "pec/components/consolidation/selectDestinationValidator/SelectDestinationValidator";
 import { SelectSourceValidators } from "pec/components/consolidation/selectSourceValidators/SelectSourceValidators";
-import { SubmitConsolidationRequests } from "pec/components/consolidation/submitRequests/SubmitConsolidationRequests";
-import { ConsolidationSummary } from "pec/components/consolidation/summary/ConsolidationSummary";
-import { useConsolidationStore } from "pec/hooks/use-consolidation-store";
 import { useValidators } from "pec/hooks/useValidators";
 import { useWalletAddress } from "pec/hooks/useWallet";
 import ConsolidationLoading from "../consolidate/loading";
-import { useEffect } from "react";
+import { ValidatorStatus } from "pec/types/validator";
+import { useNewConsolidate } from "pec/hooks/useNewConsolidate";
+import { ConsolidationSummary } from "pec/components/consolidation/summary/ConsolidationSummary";
+import { SubmitConsolidationRequests } from "pec/components/consolidation/submitRequests/SubmitConsolidationRequests";
 
 const ConsolidationWorkflow = () => {
   const walletAddress = useWalletAddress();
 
-  const { data, isFetched } = useValidators();
+  const { groupedValidators, isFetched } = useValidators();
+  const activeValidators = groupedValidators[ValidatorStatus.ACTIVE] ?? [];
 
   const {
-    validatorsToConsolidate,
-    consolidationTarget,
-    progress,
-    setProgress,
+    stage,
+    goBack,
+    setSourceValidator,
+    goToSubmit,
+    goToSummary,
+    goToSelectSourceValidators,
+    getAvailableSourceValidators,
     reset,
-  } = useConsolidationStore();
+  } = useNewConsolidate({
+    activeValidators,
+  });
 
-  useEffect(() => {
-    return () => reset();
-  }, [reset]);
-
-  if (!walletAddress || !data || !isFetched) {
+  if (!walletAddress || !groupedValidators || !isFetched) {
     return (
       <div className="flex flex-col gap-4">
-        <ProgressBar progress={progress} setProgress={setProgress} />
+        <ProgressBar progress={stage.stage} backHandler={goBack} />
         <ConsolidationLoading />
       </div>
     );
   }
 
   return (
-    <div className="flex w-[90vw] flex-col gap-4 md:w-[42vw]">
-      <ProgressBar progress={progress} setProgress={setProgress} />
+    <div className="flex w-full flex-col gap-4">
+      <ProgressBar progress={stage.stage} backHandler={goBack} />
 
-      {progress === 1 && <SelectDestinationValidator />}
+      {stage.stage === "destination" && (
+        <SelectDestinationValidator
+          validators={activeValidators}
+          goToSelectSourceValidators={goToSelectSourceValidators}
+        />
+      )}
 
-      {consolidationTarget && (
-        <>
-          {progress === 2 && <SelectSourceValidators />}
+      {stage.stage === "source" && (
+        <SelectSourceValidators
+          sourceValidators={stage.source}
+          destinationValidator={stage.destination}
+          goToSummary={goToSummary}
+          setSourceValidators={setSourceValidator}
+          availableSourceValidators={getAvailableSourceValidators()}
+          goBack={goBack}
+        />
+      )}
 
-          {validatorsToConsolidate.length > 0 && progress === 3 && (
-            <ConsolidationSummary />
-          )}
+      {stage.stage === "summary" && (
+        <ConsolidationSummary
+          destinationValidator={stage.destination}
+          sourceValidators={stage.source}
+          goToSubmit={goToSubmit}
+          goBack={goBack}
+          reset={reset}
+        />
+      )}
 
-          {validatorsToConsolidate.length > 0 && progress === 4 && (
-            <SubmitConsolidationRequests />
-          )}
-        </>
+      {stage.stage === "submit" && (
+        <SubmitConsolidationRequests
+          destination={stage.destination}
+          source={stage.source}
+          reset={reset}
+        />
       )}
     </div>
   );

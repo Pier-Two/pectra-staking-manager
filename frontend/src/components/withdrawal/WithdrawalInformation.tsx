@@ -1,7 +1,6 @@
-import { AlignLeft, Check } from "lucide-react";
+import { Check } from "lucide-react";
 import Image from "next/image";
-import { DECIMAL_PLACES } from "pec/lib/constants";
-import { cn } from "pec/lib/utils";
+import { displayedEthAmount } from "pec/lib/utils/validators/balance";
 import type { WithdrawWorkflowStages } from "pec/types/withdraw";
 import { PectraSpinner } from "../ui/custom/pectraSpinner";
 import { PrimaryButton } from "../ui/custom/PrimaryButton";
@@ -38,39 +37,43 @@ export const WithdrawalInformation = ({
       label: "Validators selected",
     },
     {
-      icon: <AlignLeft className="h-4 w-4 text-670" />,
-      value: withdrawalTotal.toFixed(DECIMAL_PLACES),
+      icon: "Ξ",
+      value: displayedEthAmount(withdrawalTotal),
       label: "Withdrawal total",
     },
   ];
-  
+
   const someTransactionsFailed =
-  stage.type === "sign-submit-finalise" &&
-  Object.values(stage.txHashes).some((tx) => tx.status === "failed" || tx.status === "failedToSubmit");
+    stage.type === "sign-submit-finalise" &&
+    Object.values(stage.txHashes).some(
+      (tx) => tx.status === "failed" || tx.status === "failedToSubmit",
+    );
 
   const isPending =
   stage.type === "sign-submit-finalise" &&
   Object.values(stage.txHashes).some((tx) => tx.status === "pending");
 
   const isSigning =
-  stage.type === "sign-submit-finalise" &&
-  Object.values(stage.txHashes).some((tx) => tx.status === "signing");
+    stage.type === "sign-submit-finalise" &&
+    Object.values(stage.txHashes).some((tx) => tx.status === "signing");
 
   const isSubmitting =
-  stage.type === "sign-submit-finalise" &&
-  !isSigning &&
-  Object.values(stage.txHashes).every(
-    (tx) => tx.status === "submitted" || tx.status === "finalised",
-  );
+    stage.type === "sign-submit-finalise" &&
+    !isSigning &&
+    Object.values(stage.txHashes).every(
+      (tx) => tx.status === "submitted" || tx.status === "finalised",
+    );
 
   const allTransactionsFinalised =
     stage.type === "sign-submit-finalise" &&
-    Object.values(stage.txHashes).every((tx) => tx.status === "finalised" || tx.status === "failed");
+    Object.values(stage.txHashes).every(
+      (tx) => tx.status === "finalised" || tx.status === "failed",
+    );
 
   return (
-    <div className="flex flex-col justify-center w-full gap-4 p-4 rounded-2xl min-h-[90px] border bg-white pl-6 dark:border dark:border-gray-800 dark:bg-black">
-      <div className="flex flex-col md:flex-row w-full items-center justify-between gap-4">
-        <div className="flex flex-wrap items-center gap-2">
+    <div className="flex w-full flex-col gap-4 rounded-xl border border-indigo-400 bg-white p-4 dark:border dark:border-gray-800 dark:bg-black">
+      <div className="flex w-full flex-col items-center justify-between gap-4 md:flex-row">
+        <div className="flex flex-wrap items-center gap-10">
           {distributionStats.map((stat, index) => (
             <div key={stat.label} className="flex items-center">
               {index > 0 && (
@@ -115,20 +118,16 @@ export const WithdrawalInformation = ({
               )}
             </div>
           )}
-            
-
 
           {allTransactionsFinalised && (
             <>
-            <div className="flex flex-row items-center gap-2">
-              {!someTransactionsFailed && (
-                <Check className="h-4 w-4 text-green-500" />  
-              )}
-              <div className="text-sm">Done</div>
-              
-            </div>
-            
-          </>
+              <div className="flex flex-row items-center gap-2">
+                {!someTransactionsFailed && (
+                  <Check className="h-4 w-4 text-green-500" />
+                )}
+                <div className="text-sm">Done</div>
+              </div>
+            </>
           )}
           {stage.type === "data-capture" && (
             <div className="flex flex-row gap-4 items-center relative">
@@ -165,17 +164,18 @@ export const WithdrawalInformation = ({
       </div>
 
       {someTransactionsFailed && (
-          <>
-            <div className="rounded-xl bg-gray-100 p-2 text-sm text-gray-500 dark:bg-black">
-              Some transactions failed. Please check your validator statuses and try again.
-            </div>
+        <>
+          <div className="rounded-xl bg-gray-100 p-2 text-sm text-gray-500 dark:bg-black">
+            Some transactions failed. Please check your validator statuses and
+            try again.
+          </div>
 
-            <PrimaryButton
-              label="Make another withdrawal"
-              onClick={resetWithdrawal}
-              disabled={false}
-            />
-          </>
+          <PrimaryButton
+            label="Make another withdrawal"
+            onClick={resetWithdrawal}
+            disabled={false}
+          />
+        </>
       )}
 
       {isSubmitting && (

@@ -1,39 +1,43 @@
-import clsx from "clsx";
-import type { IConnector } from "pec/types/validator";
 import type { FC } from "react";
 import { ConnectedAddress } from "./ConnectedAddress";
 import { DetectedValidators } from "./DetectedValidators";
 import { ValidatorHelp } from "./ValidatorHelp";
 import { ValidatorInformation } from "./ValidatorInformation";
+import { ValidatorDetails } from "pec/types/validator";
+import { cn } from "pec/lib/utils";
+
+export interface IConnector {
+  title?: JSX.Element | string;
+  description?: string;
+  connectedAddress: string;
+  validators: ValidatorDetails[];
+  className?: string;
+  titleClassName?: string;
+}
 
 export const Connector: FC<IConnector> = ({
   title,
   description,
   connectedAddress,
   validators,
-  textAlignment,
+  className,
+  titleClassName,
 }) => {
   return (
-    <div className="flex w-full flex-col gap-y-9">
-      <div className="flex flex-col gap-y-4">
-        <div className="font-570 text-center text-[26px] leading-[26px]">
-          {!!title && title}
-        </div>
-
-        {!!description && (
-          <p className="w-full text-gray-700 text-center">{description}</p>
-        )}
-
-        <p
-          className={clsx(
-            "w-full px-[2%] text-[15px] font-380 leading-[15px] text-zinc-950 dark:text-zinc-50",
-            textAlignment === "center" ? "text-center" : "text-left",
-          )}
+    <>
+      {title && (
+        <div
+          className={cn("text-2xl font-570 leading-relaxed", titleClassName)}
         >
-          You have {validators.length} total validators using this withdrawal
-          address, consolidate them to Pectra standard now to get the most out
-          of Ethereum staking.
-        </p>
+          {title}
+        </div>
+      )}
+
+      {!!description && <p className="w-full text-sm">{description}</p>}
+      <div className={cn("text-left text-sm", className)}>
+        You have {validators.length} total validators using this withdrawal
+        address, consolidate them to Pectra standard now to get the most out of
+        Ethereum staking.
       </div>
 
       <ConnectedAddress address={connectedAddress} />
@@ -43,6 +47,6 @@ export const Connector: FC<IConnector> = ({
       />
       <ValidatorInformation validators={validators} />
       <ValidatorHelp />
-    </div>
+    </>
   );
 };

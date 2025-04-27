@@ -30,7 +30,7 @@ export const DepositWorkflow = ({
 }: IDepositWorkflowProps) => {
   const { submitBatchDeposit, stage, resetStage } = useBatchDeposit();
   const [showEmail, setShowEmail] = useState(false);
-  
+
   const initialValues: DepositType = {
     deposits: [],
     totalToDistribute: 0,
@@ -80,8 +80,6 @@ export const DepositWorkflow = ({
     totalToDistribute <= 0 ||
     totalAllocated > balance ||
     (showEmail && email.length === 0);
-
-  
 
   const handleDistributionMethodChange = (method: EDistributionMethod) => {
     setValue("distributionMethod", method);
@@ -196,9 +194,11 @@ export const DepositWorkflow = ({
                   cardTitle="Notify me when complete"
                   summaryEmail={email}
                   errors={errors}
-                  setSummaryEmail={(email) => setValue("email", email, {
-                    shouldValidate: true,
-                  })}
+                  setSummaryEmail={(email) =>
+                    setValue("email", email, {
+                      shouldValidate: true,
+                    })
+                  }
                 />
 
                 {totalToDistribute > 0 && (

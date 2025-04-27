@@ -1,27 +1,30 @@
-"use client";
-
 import { useRouter } from "next/navigation";
 import { TransactionValidatorCard } from "pec/components/validators/cards/TransactionValidatorCard";
-import { TransactionStatus } from "pec/types/validator";
+import { ValidatorDetails } from "pec/types/validator";
 import { ArrowRightIcon } from "lucide-react";
 import { PrimaryButton } from "pec/components/ui/custom/PrimaryButton";
 import { EIconPosition } from "pec/types/components";
-import { useConsolidationStore } from "pec/hooks/use-consolidation-store";
 
-export const SubmitConsolidationRequests = () => {
-  const {
-    consolidationTarget,
-    validatorsToConsolidate,
-    reset,
-  } = useConsolidationStore();
+interface SubmitConsolidationRequestsProps {
+  destination: ValidatorDetails;
+  source: ValidatorDetails[];
+  reset: () => void;
+}
 
+export const SubmitConsolidationRequests = ({
+  destination,
+  source,
+  reset,
+}: SubmitConsolidationRequestsProps) => {
   const router = useRouter();
 
-  const everyTransactionSubmitted = validatorsToConsolidate.every(
-    (validator) =>
-      validator.consolidationTransaction?.status ===
-      TransactionStatus.SUBMITTED,
-  );
+  const everyTransactionSubmitted = false;
+
+  // const everyTransactionSubmitted = validatorsToConsolidate.every(
+  //   (validator) =>
+  //     validator.consolidationTransaction?.status ===
+  //     TransactionStatus.SUBMITTED,
+  // );
 
   const handleDashboardNavigation = () => {
     reset();
@@ -56,16 +59,13 @@ export const SubmitConsolidationRequests = () => {
 
         <div className="flex flex-col gap-2">
           <div className="text-d font-medium">Destination validator</div>
-          <TransactionValidatorCard
-            validator={consolidationTarget!}
-            isTarget={true}
-          />
+          <TransactionValidatorCard validator={destination} isTarget={true} />
         </div>
 
         <div className="flex flex-col gap-2">
           <div className="text-md font-medium">Source validators</div>
 
-          {validatorsToConsolidate.map((validator) => (
+          {source.map((validator) => (
             <TransactionValidatorCard
               key={validator.validatorIndex}
               validator={validator}

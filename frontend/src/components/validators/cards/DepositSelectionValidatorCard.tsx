@@ -1,13 +1,13 @@
-import { AlignLeft, CircleCheck, CircleMinus, CirclePlus } from "lucide-react";
+import { CircleCheck, CircleMinus, CirclePlus } from "lucide-react";
 import Image from "next/image";
+import { ValidatorCardWrapper } from "pec/components/ui/custom/validator-card-wrapper";
 import { Input } from "pec/components/ui/input";
 import type { DepositType } from "pec/lib/api/schemas/deposit";
-import { DECIMAL_PLACES } from "pec/lib/constants";
 import { cn } from "pec/lib/utils";
+import { displayedEthAmount } from "pec/lib/utils/validators/balance";
 import { EDistributionMethod } from "pec/types/batch-deposits";
 import type { ValidatorDetails } from "pec/types/validator";
 import type { FieldErrors, UseFormRegister } from "react-hook-form";
-import { formatEther } from "viem";
 
 export interface IDepositSelectionValidatorCard {
   distributionMethod: EDistributionMethod;
@@ -30,17 +30,9 @@ export const DepositSelectionValidatorCard = ({
   depositIndex,
   register,
   selected,
-  totalAllocated,
   totalToDistribute,
   validator,
 }: IDepositSelectionValidatorCard) => {
-  // TODO: Check handling
-  // if (isNaN(numValue)) return 0;
-  // if (numValue === 0) return 0;
-  // if (numValue > totalToDistribute) return undefined;
-  // if (totalAllocated > totalToDistribute) return undefined;
-  // if (BigInt(numValue) + totalAllocated > totalToDistribute) return undefined;
-
   const setValueHandler = (value: string) => {
     const numValue = parseFloat(value);
     if (isNaN(numValue)) return 0;
@@ -51,24 +43,24 @@ export const DepositSelectionValidatorCard = ({
   };
 
   return (
-    <div
-      className={cn(
-        "group flex w-full items-center justify-between cursor-pointer gap-x-4 rounded-xl border bg-white p-4 hover:border-indigo-500 dark:border-gray-800 dark:bg-black dark:hover:border-gray-600",
-        {
-          "border-indigo-500 dark:border-2 dark:border-indigo-900": selected,
-        },
-      )}
+    <ValidatorCardWrapper
+      isSelected={selected}
+      onClick={(e) => {
+        e.stopPropagation();
+        handleSelect();
+      }}
     >
-      <div className="flex flex-[1.2] items-center gap-x-4" onClick={handleSelect}>
-      {selected ? (
+      <div
+        className="flex flex-[1.2] items-center gap-x-4"
+        onClick={handleSelect}
+      >
+        {selected ? (
           <>
-            <CircleCheck className="min-h-4 min-w-4 w-4 h-4 text-green-500 group-hover:hidden" />
-            <CircleMinus className="hidden min-h-4 w-4 h-4 min-w-4 text-red-500 group-hover:block" />
+            <CircleCheck className="h-4 min-h-4 w-4 min-w-4 text-green-500 group-hover:hidden" />
+            <CircleMinus className="hidden h-4 min-h-4 w-4 min-w-4 text-red-500 group-hover:block" />
           </>
         ) : (
-          <CirclePlus
-            className="min-h-4 min-w-4 w-4 h-4 text-indigo-500 group-hover:fill-indigo-500 group-hover:text-white"
-          />
+          <CirclePlus className="h-4 min-h-4 w-4 min-w-4 text-indigo-500 group-hover:fill-indigo-500 group-hover:text-white" />
         )}
 
         <Image
@@ -86,10 +78,12 @@ export const DepositSelectionValidatorCard = ({
         </div>
       </div>
 
-      <div className="flex flex-1 items-center gap-1 p-2" onClick={handleSelect}>
-        <AlignLeft className="h-4 w-4" />
-        <div className="text-sm">
-          {Number(formatEther(validator.balance)).toFixed(DECIMAL_PLACES)}
+      <div
+        className="flex flex-1 items-center gap-1 p-2"
+        onClick={handleSelect}
+      >
+        <div className="font-semibold">
+          Ξ {displayedEthAmount(validator.balance)}
         </div>
       </div>
 
@@ -97,8 +91,7 @@ export const DepositSelectionValidatorCard = ({
         <div
           className={`flex w-full items-center ${selected && distributionMethod === EDistributionMethod.MANUAL ? "gap-2" : "gap-1"}`}
         >
-          <AlignLeft className="h-4 w-4" />
-
+          Ξ{" "}
           <Input
             className={`w-full rounded-xl border border-indigo-800 p-1 dark:border-gray-600 ${
               !selected ? "border-none bg-white dark:bg-black" : ""
@@ -108,6 +101,9 @@ export const DepositSelectionValidatorCard = ({
             }
             type="number"
             step="any"
+            onClick={(e) => {
+              e.stopPropagation();
+            }}
             value={depositAmount.toString()}
             // Registers the deposit amount input field with React Hook Form
             // - Converts empty input to 0
@@ -128,6 +124,6 @@ export const DepositSelectionValidatorCard = ({
           </div>
         )}
       </div>
-    </div>
+    </ValidatorCardWrapper>
   );
 };

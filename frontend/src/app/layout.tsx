@@ -10,13 +10,13 @@ import { TRPCReactProvider } from "pec/trpc/react";
 import { Inter } from "next/font/google";
 import localFont from "next/font/local";
 
-export const saans = localFont({
+const sans = localFont({
   src: "../fonts/Saans-TRIAL-VF.woff2",
-  variable: "--font-saans",
+  variable: "--font-sans",
   display: "swap",
 });
 
-export const inter = Inter({
+const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
   display: "swap",
@@ -32,7 +32,7 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={cn(saans.variable, inter.variable)}>
+    <html lang="en" className={cn(sans.variable, inter.variable)}>
       <NetworkContextProvider>
         <TRPCReactProvider>
           <ThemeProvider>

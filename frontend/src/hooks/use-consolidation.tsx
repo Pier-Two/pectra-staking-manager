@@ -1,10 +1,10 @@
 "use client";
 
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { toast } from "pec/components/ui/Toast";
 import { client } from "pec/lib/wallet/client";
 import { api } from "pec/trpc/react";
-import { TransactionStatus } from "pec/types/validator";
+import { TransactionStatus, ValidatorDetails } from "pec/types/validator";
 import { eth_call, waitForReceipt } from "thirdweb";
 import type { ChainOptions } from "thirdweb/chains";
 import { useActiveAccount } from "thirdweb/react";
@@ -86,8 +86,6 @@ export const useSubmitConsolidate = () => {
   const chain = useActiveChainWithDefault();
 
   const {
-    consolidationTarget,
-    validatorsToConsolidate,
     updateConsolidatedValidator,
     setCurrentPubKey,
     manuallySettingValidator,
@@ -97,15 +95,11 @@ export const useSubmitConsolidate = () => {
   const { mutateAsync: saveConsolidationToDatabase } =
     api.validators.updateConsolidationRecord.useMutation();
 
-  const consolidate = async () => {
-    if (
-      !consolidationTarget ||
-      !validatorsToConsolidate ||
-      !feeData ||
-      !contracts ||
-      !rpcClient ||
-      !account
-    ) {
+  const consolidate = async (
+    destination: ValidatorDetails,
+    source: ValidatorDetails[],
+  ) => {
+    if (!feeData || !contracts || !rpcClient || !account) {
       toast({
         title: "Error consolidating",
         description: "Please try again or double check input fields.",
@@ -116,39 +110,33 @@ export const useSubmitConsolidate = () => {
 
     const results = [];
 
-    const filteredValidatorsForConsolidation = validatorsToConsolidate.filter(
-      (validator) =>
-        validator.consolidationTransaction === undefined &&
-        !validator.hasPendingDeposit,
-    );
-
     // if the user is consolidating to one of their own validators, and that validator is version
     // 0x01, it must be updated to 0x02 first
     if (
       !manuallySettingValidator &&
-      consolidationTarget.withdrawalAddress.startsWith("0x01") &&
-      !consolidationTarget.upgradeSubmitted // if they have already submitted an upgrade tx but API returns 0x01, we use our DB flag
+      destination.withdrawalAddress.startsWith("0x01") &&
+      !destination.upgradeSubmitted // if they have already submitted an upgrade tx but API returns 0x01, we use our DB flag
     ) {
       try {
         const upgradeTx = await consolidateValidator(
           contracts.consolidation.address,
           account,
-          consolidationTarget.publicKey,
-          consolidationTarget.publicKey,
+          destination.publicKey,
+          destination.publicKey,
           feeData,
           chain,
         );
 
         // save upgrade tx to db
         await saveConsolidationToDatabase({
-          targetValidatorIndex: consolidationTarget.validatorIndex,
-          sourceTargetValidatorIndex: consolidationTarget.validatorIndex,
+          targetValidatorIndex: destination.validatorIndex,
+          sourceTargetValidatorIndex: destination.validatorIndex,
           txHash: upgradeTx.transactionHash,
           email: summaryEmail,
         });
 
         toast({
-          title: `Validator ${consolidationTarget.validatorIndex} Upgraded`,
+          title: `Validator ${destination.validatorIndex} Upgraded`,
           description:
             "The transaction to update the validator version been submitted",
           variant: "success",
@@ -157,7 +145,7 @@ export const useSubmitConsolidate = () => {
         console.error(`Error upgrading validator`, err);
 
         toast({
-          title: `Error Upgrading Validator ${consolidationTarget.validatorIndex}`,
+          title: `Error Upgrading Validator ${destination.validatorIndex}`,
           description: "Please try again.",
           variant: "error",
         });
@@ -167,7 +155,7 @@ export const useSubmitConsolidate = () => {
 
     // this is the actual consolidation flow. First, it checks that the source validator is version 0x02. If it isn't,
     // it submits an upgrade transaction first, before submitting the consolidation transaction
-    for (const validator of filteredValidatorsForConsolidation) {
+    for (const validator of source) {
       try {
         setCurrentPubKey(validator.publicKey);
 
@@ -207,7 +195,7 @@ export const useSubmitConsolidate = () => {
           contracts.consolidation.address,
           account,
           validator.publicKey,
-          consolidationTarget.publicKey,
+          destination.publicKey,
           feeData,
           chain,
         );
@@ -219,7 +207,7 @@ export const useSubmitConsolidate = () => {
         );
 
         await saveConsolidationToDatabase({
-          targetValidatorIndex: consolidationTarget.validatorIndex,
+          targetValidatorIndex: destination.validatorIndex,
           sourceTargetValidatorIndex: validator.validatorIndex,
           txHash: consolidationTx.transactionHash,
           email: summaryEmail,
@@ -259,10 +247,5 @@ export const useSubmitConsolidate = () => {
     return results;
   };
 
-  const mutationFn = useMutation({
-    mutationFn: consolidate,
-    mutationKey: ["consolidate-function", consolidationTarget?.publicKey],
-  });
-
-  return mutationFn;
+  return consolidate;
 };

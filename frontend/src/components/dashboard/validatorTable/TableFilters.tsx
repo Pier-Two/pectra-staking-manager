@@ -1,17 +1,27 @@
 import clsx from "clsx";
 import { CirclePlus, SlidersHorizontal } from "lucide-react";
 import { Button } from "pec/components/ui/button";
-import { Input } from "pec/components/ui/input";
 import { Separator } from "pec/components/ui/separator";
 import { ValidatorStatus } from "pec/types/validator";
-import type { ITableFiltersProps } from "pec/types/validatorTable";
+import type { IHeaderConfig } from "pec/types/validatorTable";
 import type { FC } from "react";
 import { TableFilterDropdown } from "./TableFilterDropdown";
+import { SearchFilter } from "pec/components/ui/table/SearchFilter";
 interface ViewItem {
   label: string;
   value: string;
   isSelected: boolean;
   onClick: () => void;
+}
+
+export interface ITableFiltersProps {
+  searchTerm: string;
+  onSearchChange: (term: string) => void;
+  statusFilter: string[];
+  onStatusFilterChange: (status: string) => void;
+  filterTableOptions: IHeaderConfig["label"][];
+  onFilterTableOptionsChange: (option: IHeaderConfig["label"]) => void;
+  getValidatorCount: (status: ValidatorStatus) => number;
 }
 
 // Default Options That Can Be Filtered in the view dropdown
@@ -49,12 +59,7 @@ export const TableFilters: FC<ITableFiltersProps> = (props) => {
     <div className="flex w-full flex-col items-center justify-between gap-4 md:flex-row">
       {/* Search Input */}
       <div className="w-full flex-grow">
-        <Input
-          placeholder="Search validators..."
-          className="w-full rounded-full border-indigo-200 bg-white text-gray-500 dark:border-gray-800 dark:bg-black dark:text-white"
-          value={searchTerm}
-          onChange={(e) => onSearchChange(e.target.value)}
-        />
+        <SearchFilter searchTerm={searchTerm} setSearchTerm={onSearchChange} />
       </div>
 
       {/* Status Filter Dropdown */}

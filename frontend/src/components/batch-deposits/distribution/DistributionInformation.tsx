@@ -1,11 +1,11 @@
-import { AlignLeft, Check, ExternalLink } from "lucide-react";
+import { Check, ExternalLink } from "lucide-react";
 import Image from "next/image";
 import { SecondaryButton } from "pec/components/ui/custom/SecondaryButton";
-import { DECIMAL_PLACES } from "pec/lib/constants";
 import { type DepositWorkflowStage } from "pec/types/batch-deposits";
 import { EIconPosition } from "pec/types/components";
 import { PrimaryButton } from "../../ui/custom/PrimaryButton";
 import { Separator } from "../../ui/separator";
+import { displayedEthAmount } from "pec/lib/utils/validators/balance";
 
 export interface IDistributionInformation {
   onSubmit?: () => void;
@@ -28,8 +28,8 @@ export const DistributionInformation = ({
 }: IDistributionInformation) => {
   const distributionStats = [
     {
-      icon: <AlignLeft className="h-4 w-4" />,
-      value: totalToDistribute?.toFixed(DECIMAL_PLACES) ?? 0,
+      icon: "Ξ",
+      value: displayedEthAmount(totalToDistribute),
       label: "Total to distribute",
     },
     {
@@ -38,7 +38,7 @@ export const DistributionInformation = ({
       label: "Selected",
     },
     {
-      icon: <AlignLeft className="h-4 w-4" />,
+      icon: "Ξ",
       value: totalAllocated,
       label: "Allocated",
     },

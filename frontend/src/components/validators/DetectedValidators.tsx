@@ -3,12 +3,11 @@
 import clsx from "clsx";
 import { ChevronsLeftRight } from "lucide-react";
 import Image from "next/image";
-import { DECIMAL_PLACES } from "pec/lib/constants";
 import { type IDetectedValidators } from "pec/types/validator";
 import { useState, type FC } from "react";
-import { formatEther } from "viem";
 import { ValidatorCard } from "./cards/ValidatorCard";
 import { validatorIsActive } from "pec/lib/utils/validators/status";
+import { displayedEthAmount } from "pec/lib/utils/validators/balance";
 
 export const DetectedValidators: FC<IDetectedValidators> = (props) => {
   const { cardTitle, validators } = props;
@@ -24,7 +23,7 @@ export const DetectedValidators: FC<IDetectedValidators> = (props) => {
 
   const totalBalance = validators.reduce(
     (acc, validator) => acc + validator.balance,
-    0n,
+    0,
   );
 
   return (
@@ -46,14 +45,14 @@ export const DetectedValidators: FC<IDetectedValidators> = (props) => {
           <p className="text-[14px] font-570 leading-[14px] text-zinc-950 dark:text-zinc-50">
             {validators.length} {cardTitle}{" "}
             {numberOfInactiveValidators > 0 &&
-              `(${numberOfInactiveValidators} of which are inactive/exiting)`}
+              `(${numberOfInactiveValidators} inactive or exiting)`}
           </p>
         </div>
 
         <div className="flex items-center gap-x-4">
           <div className="flex items-center gap-1">
             <p className="text-[14px] font-570 leading-[14px] text-zinc-950 dark:text-zinc-50">
-              Ξ {Number(formatEther(totalBalance)).toFixed(DECIMAL_PLACES)}
+              Ξ {displayedEthAmount(totalBalance)}
             </p>
           </div>
           <ChevronsLeftRight className="h-4 w-4 rotate-90 text-gray-800 dark:text-white" />
@@ -65,9 +64,9 @@ export const DetectedValidators: FC<IDetectedValidators> = (props) => {
           {activeValidators.map((validator, index) => (
             <ValidatorCard
               key={index + validator.validatorIndex}
-              hasHover={false}
               shrink={true}
               validator={validator}
+              className="!bg-transparent"
             />
           ))}
         </div>

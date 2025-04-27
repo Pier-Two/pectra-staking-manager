@@ -1,51 +1,22 @@
-import type { ValidatorDetails, ValidatorStatus } from "./validator";
+import { ValidatorDetails } from "./validator";
+import { TransactionStatus } from "./withdraw";
 
 export enum ESortDirection {
   ASC = "asc",
   DESC = "desc",
 }
 
-export interface ITableFiltersProps {
-  searchTerm: string;
-  onSearchChange: (term: string) => void;
-  statusFilter: string[];
-  onStatusFilterChange: (status: string) => void;
-  filterTableOptions: IHeaderConfig['label'][];
-  onFilterTableOptionsChange: (option: IHeaderConfig['label']) => void;
-  getValidatorCount: (status: ValidatorStatus) => number;
-}
-
-export interface IValidatorRowProps {
-  validator: ValidatorDetails;
-  filterTableOptions: IHeaderConfig['label'][];
-}
-
-export interface ITablePaginationProps {
-  currentPage: number;
-  totalPages: number;
-  totalItems: number;
-  itemsPerPage: number;
-  onPageChange: (page: number) => void;
-}
-
-export interface SortConfig {
-  key: string;
+export interface SortConfig<T> {
+  key: keyof T;
   direction: ESortDirection;
 }
 
-export interface ITableHeadersRowProps {
-  sortConfig: SortConfig | null;
-  onSort: (key: string) => void;
-  filterTableOptions: IHeaderConfig['label'][];
-}
+export type TableValidatorDetails = ValidatorDetails & {
+  transactionStatus?: TransactionStatus;
+};
 
-export interface IHeaderConfig {
+export interface IHeaderConfig<T = TableValidatorDetails, SortKey = keyof T> {
   label: string;
-  sortKey: string;
-}
-export interface IValidatorTableContentProps {
-  paginatedData: ValidatorDetails[];
-  sortConfig: SortConfig | null;
-  onSort: (key: string) => void;
-  filterTableOptions: IHeaderConfig['label'][];
+  sortKey: SortKey;
+  mobile?: boolean;
 }

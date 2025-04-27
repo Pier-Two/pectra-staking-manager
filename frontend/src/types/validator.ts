@@ -8,14 +8,6 @@ export type ValidatorDetails = z.infer<typeof ValidatorDataSchema>;
 
 export type Transaction = z.infer<typeof TransactionSchema>;
 
-export interface IConnector {
-  title?: string;
-  description?: string;
-  connectedAddress: string;
-  textAlignment: "left" | "center";
-  validators: ValidatorDetails[];
-}
-
 export interface IConnectedAddress {
   address: string;
 }
@@ -23,19 +15,6 @@ export interface IConnectedAddress {
 export interface IDetectedValidators {
   cardTitle: string;
   validators: ValidatorDetails[];
-}
-
-export interface IGenericValidators {
-  validators: ValidatorDetails[];
-}
-
-export interface IValidatorCard {
-  hasHover: boolean;
-  shrink: boolean;
-  validator: ValidatorDetails;
-  onClick?: () => void;
-  info?: string;
-  tooltip?: string;
 }
 
 export interface ISourceValidatorCard {

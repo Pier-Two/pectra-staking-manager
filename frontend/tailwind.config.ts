@@ -7,13 +7,16 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: ["var(--font-saans)", ...fontFamily.sans],
+        sans: ["var(--font-sans)", ...fontFamily.sans],
         inter: ["var(--font-inter)", ...fontFamily.sans],
       },
       fontWeight: {
         380: "300",
         570: "500",
         670: "570",
+      },
+      textColor: {
+        default: "var(--color-text)",
       },
       colors: {
         background: "hsl(var(--background))",
