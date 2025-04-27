@@ -31,9 +31,10 @@ export const useSearch = <T extends ValidatorDetails>({
     setSearchTerm(search);
   };
 
-  const filteredData = !disabled
-    ? data.filter((validator) => filterValidator(validator, searchTerm))
-    : data;
+  const filteredData =
+    !disabled && searchTerm
+      ? data.filter((validator) => filterValidator(validator, searchTerm))
+      : data;
 
   return {
     searchTerm,

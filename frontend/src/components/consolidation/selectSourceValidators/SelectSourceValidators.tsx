@@ -43,7 +43,7 @@ export const SelectSourceValidators = ({
     return (
       sourceValidators.reduce((acc, validator) => {
         return acc + validator.balance;
-      }, 0n) + (destinationValidator.balance ?? 0n)
+      }, 0) + (destinationValidator.balance ?? 0)
     );
   }, [sourceValidators, destinationValidator]);
 

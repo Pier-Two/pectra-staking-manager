@@ -6,11 +6,10 @@ import { cn } from "pec/lib/utils";
 import { type ValidatorDetails } from "pec/types/validator";
 import type { WithdrawWorkflowStages } from "pec/types/withdraw";
 import { type FieldErrors, type UseFormRegister } from "react-hook-form";
-import { formatEther } from "viem";
 import { ValidatorLoadingCard } from "./ValidatorLoadingCard";
 import { displayedEthAmount } from "pec/lib/utils/validators/balance";
 interface ExtendedProps {
-  availableAmount: bigint;
+  availableAmount: number;
   handleSelect: () => void;
   withdrawalIndex: number;
   selected: boolean;
@@ -29,7 +28,7 @@ export const WithdrawalSelectionValidatorCard = ({
   validator,
   stage,
 }: ExtendedProps) => {
-  const locked = validator.balance === 0n;
+  const locked = validator.balance === 0;
   const { validatorIndex, publicKey, balance } = validator;
   const signSubmitFinaliseInProgress = stage.type === "sign-submit-finalise";
   const transactionStatus = signSubmitFinaliseInProgress
@@ -61,8 +60,7 @@ export const WithdrawalSelectionValidatorCard = ({
     const numValue = parseFloat(value);
     if (isNaN(numValue)) return 0;
 
-    if (numValue > Number(formatEther(validator.balance)))
-      return Number(formatEther(validator.balance));
+    if (numValue > validator.balance) return validator.balance;
 
     return numValue;
   };

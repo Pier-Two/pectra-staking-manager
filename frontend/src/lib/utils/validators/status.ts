@@ -4,6 +4,13 @@ import {
   ValidatorStatus,
 } from "pec/types/validator";
 
+type ValidatorState =
+  | { type: "pending" }
+  | { type: "consolidation-source" }
+  | { type: "active" }
+  | { type: "inactive" }
+  | { type: "exited" };
+
 export const getValidatorStatus = (
   status: ValidatorLifecycleStatus,
 ): ValidatorStatus => {

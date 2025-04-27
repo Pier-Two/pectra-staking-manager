@@ -24,10 +24,10 @@ export const Overview = () => {
   const totalSourceValidators = validatorsToConsolidate?.length;
 
   const newTotalBalance =
-    (consolidationTarget?.balance ?? 0n) +
+    (consolidationTarget?.balance ?? 0) +
     validatorsToConsolidate.reduce(
       (acc, validator) => acc + validator.balance,
-      0n,
+      0,
     );
 
   const estimatedGasFee = consolidationFee

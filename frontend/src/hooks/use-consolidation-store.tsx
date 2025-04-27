@@ -14,8 +14,6 @@ import { createStore } from "zustand/vanilla";
 const serializeValidator = (validator: ValidatorDetails) => {
   const formatted = {
     ...validator,
-    balance: validator.balance.toString(),
-    effectiveBalance: validator.effectiveBalance.toString(),
   };
 
   return formatted;
@@ -27,8 +25,6 @@ type SerializedValidator = ReturnType<typeof serializeValidator>;
 const deserialiseValidator = (validator: SerializedValidator) => {
   return {
     ...validator,
-    balance: BigInt(validator.balance),
-    effectiveBalance: BigInt(validator.effectiveBalance),
   };
 };
 

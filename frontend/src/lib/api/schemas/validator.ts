@@ -29,10 +29,10 @@ export const TransactionSchema = z.discriminatedUnion("status", [
 export const ValidatorDataSchema = z.object({
   activeDuration: z.string(),
   activeSince: z.string(),
-  balance: z.bigint(),
+  balance: z.number(),
   consolidationTransaction: TransactionSchema.optional(),
   depositTransaction: TransactionSchema.optional(),
-  effectiveBalance: z.bigint(),
+  effectiveBalance: z.number(),
   hasPendingDeposit: z.boolean().default(false),
   numberOfWithdrawals: z.number(),
   publicKey: z.string(),
