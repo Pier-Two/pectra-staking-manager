@@ -102,7 +102,16 @@ export const validatorRouter = createTRPCRouter({
 
         for (const validatorPerformance of validatorPerformances.data.data) {
           const key = VALIDATOR_PERFORMANCE_FILTER_TO_BEACONCHAIN[filter];
-          totalInWei += validatorPerformance[key] ?? 0;
+          const value = validatorPerformance[key];
+
+          if (value === undefined) {
+            console.error(
+              `Key ${key} not found in validator performance data for validator ${validatorPerformance.validatorindex}`,
+            );
+            continue;
+          }
+
+          totalInWei += value;
         }
 
         return totalInWei;
