@@ -1,4 +1,5 @@
 import { ChevronDown, ChevronsLeftRight, ChevronUp } from "lucide-react";
+import { cn } from "pec/lib/utils";
 import { ValidatorDetails } from "pec/types/validator";
 import {
   ESortDirection,
@@ -10,14 +11,18 @@ export interface ITableHeadersRowProps<T = ValidatorDetails> {
   sortConfig: SortConfig<T> | null;
   onSort: (key: keyof T) => void;
   headers: IHeaderConfig<T>[];
+  disableSort?: boolean;
 }
 
 export const TableHeader = <T = ValidatorDetails,>({
   sortConfig,
   onSort,
   headers,
+  disableSort,
 }: ITableHeadersRowProps<T>) => {
   const renderSortIcon = (headerKey: keyof T) => {
+    if (disableSort) return null;
+
     if (sortConfig?.key === headerKey) {
       return sortConfig.direction === ESortDirection.ASC ? (
         <ChevronUp className="h-3 w-3 dark:text-white" />
@@ -36,7 +41,10 @@ export const TableHeader = <T = ValidatorDetails,>({
           {headers.map((header) => (
             <th
               key={header.sortKey as string}
-              className="cursor-pointer px-4 py-2 text-left font-inter text-sm font-medium text-gray-600"
+              className={cn(
+                "px-4 py-2 text-left font-inter text-sm font-medium text-gray-600",
+                { "cursor-pointer": !disableSort },
+              )}
               onClick={() => onSort(header.sortKey)}
             >
               <div className="flex items-center gap-1">
@@ -58,7 +66,10 @@ export const TableHeader = <T = ValidatorDetails,>({
             return (
               <th
                 key={header.sortKey as string}
-                className="cursor-pointer px-4 py-2 text-left font-inter text-sm font-medium text-gray-600"
+                className={cn(
+                  "px-4 py-2 text-left font-inter text-sm font-medium text-gray-600",
+                  { "cursor-pointer": !disableSort },
+                )}
                 onClick={() => onSort(header.sortKey)}
               >
                 <div className="flex items-center gap-1">

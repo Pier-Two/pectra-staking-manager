@@ -1,9 +1,8 @@
-import { IHeaderConfig } from "pec/types/validatorTable";
+import { IHeaderConfig, TableValidatorDetails } from "pec/types/validatorTable";
 import { TableHeader } from "./TableHeader";
-import { ValidatorDetails } from "pec/types/validator";
 import { useValidatorSorting } from "pec/hooks/use-validator-sorting";
 import { TableNoResults } from "pec/components/dashboard/validatorTable/TableNoResults";
-import { ValidatorRow } from "pec/components/ui/table/NewValidatorRow";
+import { ValidatorRow } from "pec/components/ui/table/ValidatorRow";
 import { usePagination } from "pec/hooks/use-pagination";
 import { ReactNode } from "react";
 import { TablePagination } from "./TablePagination";
@@ -11,7 +10,7 @@ import { ValidatorCardWrapperProps } from "../custom/validator-card-wrapper";
 import { useSearch } from "pec/hooks/useSearch";
 import { SearchFilter } from "./SearchFilter";
 
-interface ValidatorTableProps<T extends ValidatorDetails> {
+interface ValidatorTableProps<T extends TableValidatorDetails> {
   data: T[];
   headers: IHeaderConfig<T>[];
   wrapperProps?: Omit<ValidatorCardWrapperProps, "onClick" | "children">;
@@ -23,9 +22,11 @@ interface ValidatorTableProps<T extends ValidatorDetails> {
   endContent?: (data: T) => JSX.Element;
   children?: (params: { setCurrentPage: (page: number) => void }) => ReactNode;
   disableSearch?: boolean;
+  disableSort?: boolean;
+  renderOverrides?: Partial<Record<keyof T, (data: T) => JSX.Element>>;
 }
 
-export const ValidatorTable = <T extends ValidatorDetails>({
+export const ValidatorTable = <T extends TableValidatorDetails>({
   data,
   headers,
   endContent,
@@ -33,6 +34,8 @@ export const ValidatorTable = <T extends ValidatorDetails>({
   selectableRows,
   wrapperProps,
   disableSearch,
+  disableSort,
+  renderOverrides,
 }: ValidatorTableProps<T>) => {
   const { filteredData, searchTerm, setSearchTerm } = useSearch({
     data,
@@ -65,6 +68,7 @@ export const ValidatorTable = <T extends ValidatorDetails>({
           sortConfig={sortConfig}
           onSort={setSortConfig}
           headers={headers}
+          disableSort={disableSort}
         />
         <tbody className="">
           {sortedValidators.length > 0 ? (
@@ -84,6 +88,7 @@ export const ValidatorTable = <T extends ValidatorDetails>({
                       }
                     : undefined
                 }
+                renderOverrides={renderOverrides}
               />
             ))
           ) : (

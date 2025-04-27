@@ -1,16 +1,12 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { cloneDeep, orderBy, sumBy } from "lodash";
+import { sumBy } from "lodash";
 import { ArrowUpFromDot } from "lucide-react";
 import Image from "next/image";
-import type { SortDirection } from "pec/components/batch-deposits/validators/ColumnHeader";
 import { ValidatorHeader } from "pec/components/batch-deposits/validators/ValidatorHeader";
-import { ValidatorListHeaders } from "pec/components/batch-deposits/validators/ValidatorListHeaders";
 import { Email } from "pec/components/consolidation/summary/Email";
-import { WithdrawalSelectionValidatorCard } from "pec/components/validators/cards/WithdrawalSelectionValidatorCard";
 import { WithdrawalInformation } from "pec/components/withdrawal/WithdrawalInformation";
-import { WITHDRAWAL_COLUMN_HEADERS } from "pec/constants/columnHeaders";
 import { useValidators } from "pec/hooks/useValidators";
 import { useWalletAddress } from "pec/hooks/useWallet";
 import { useSubmitWithdraw } from "pec/hooks/useWithdraw";
@@ -19,18 +15,23 @@ import {
   type WithdrawalFormType,
 } from "pec/lib/api/schemas/withdrawal";
 import { formatAddressToShortenedString } from "pec/lib/utils/address";
-import { ValidatorStatus, type ValidatorDetails } from "pec/types/validator";
-import { type FC, useMemo, useState } from "react";
+import { ValidatorStatus } from "pec/types/validator";
+import { type FC, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
-import { formatEther } from "viem";
 import WithdrawalLoading from "./loading";
+import { WithdrawalValidatorTable } from "pec/components/withdrawal/WithdrawalValidatorTable";
+import { ValidatorTable } from "pec/components/ui/table/ValidatorTable";
+import {
+  SUBMITTING_WITHDRAWAL_COLUMN_HEADERS,
+  WithdrawalTableValidatorDetails,
+} from "pec/constants/columnHeaders";
 
 const Withdrawal: FC = () => {
   const walletAddress = useWalletAddress();
   const [showEmail, setShowEmail] = useState(false);
-  const { groupedValidators } = useValidators();
+  const { groupedValidators, isLoading } = useValidators();
 
-  const availableValidators = groupedValidators[ValidatorStatus.ACTIVE];
+  const availableValidators = groupedValidators[ValidatorStatus.ACTIVE] ?? [];
 
   const { submitWithdrawals, stage, setStage } = useSubmitWithdraw();
 
@@ -53,67 +54,18 @@ const Withdrawal: FC = () => {
     name: "withdrawals",
   });
 
-  const withdrawals = watch("withdrawals");
-  const watchedEmail = watch("email");
+  const [withdrawals, watchedEmail] = watch(["withdrawals", "email"]);
   const email = watchedEmail ?? "";
   const withdrawalTotal = sumBy(withdrawals, (withdrawal) => withdrawal.amount);
   const disabled =
     isValid && withdrawalTotal > 0 && (showEmail ? email.length > 0 : true);
-  const signSubmitFinaliseInProgress = stage?.type === "sign-submit-finalise";
-  const columnHeaders = signSubmitFinaliseInProgress
-    ? WITHDRAWAL_COLUMN_HEADERS.filter((column) => column.label === "Validator")
-    : WITHDRAWAL_COLUMN_HEADERS;
 
-  const [sortColumn, setSortColumn] = useState<string | null>("validator");
-  const [sortDirection, setSortDirection] = useState<SortDirection>(null);
-
-  const handleSort = (column: string) => {
-    if (sortColumn === column) {
-      setSortDirection((prev) => {
-        if (prev === null) return "asc";
-        if (prev === "asc") return "desc";
-        return "asc";
-      });
-    } else {
-      setSortColumn(column);
-      setSortDirection("asc");
-    }
-  };
-
-  const validators = useMemo(() => {
-    if (!sortColumn || !sortDirection) return availableValidators;
-
-    return orderBy(
-      availableValidators,
-      [sortColumn as keyof ValidatorDetails],
-      [sortDirection],
-    );
-  }, [availableValidators, sortColumn, sortDirection]);
-
-  if (!validators) return <WithdrawalLoading />;
-
-  const handleValidatorSelect = (validator: ValidatorDetails) => {
-    // Find if this validator is already in the array
-    const existingIndex = withdrawals.findIndex(
-      (field) => field.validator.validatorIndex === validator.validatorIndex,
-    );
-
-    if (existingIndex === -1) {
-      // Add if not found
-      append({
-        validator: cloneDeep(validator),
-        amount: 0,
-      });
-    } else {
-      // Remove if found
-      remove(existingIndex);
-    }
-  };
+  if (isLoading) return <WithdrawalLoading />;
 
   const handleMaxAllocation = () => {
     setValue(
       "withdrawals",
-      validators.map(
+      availableValidators.map(
         (validator) => ({
           validator,
           amount: validator.balance,
@@ -178,56 +130,50 @@ const Withdrawal: FC = () => {
           withdrawalTotal={withdrawalTotal}
         />
 
-        <Email
-          cardText="Add your email to receive an email when your withdrawals are complete."
-          cardTitle="Notify me when complete"
-          summaryEmail={email}
-          setSummaryEmail={(email) =>
-            setValue("email", email, {
-              shouldValidate: true,
-            })
-          }
-          errors={errors}
-          showEmail={showEmail}
-          setShowEmail={setShowEmail}
-        />
+        {stage.type !== "sign-submit-finalise" && (
+          <>
+            <Email
+              cardText="Add your email to receive an email when your withdrawals are complete."
+              cardTitle="Notify me when complete"
+              summaryEmail={email}
+              setSummaryEmail={(email) =>
+                setValue("email", email, {
+                  shouldValidate: true,
+                })
+              }
+              errors={errors}
+              showEmail={showEmail}
+              setShowEmail={setShowEmail}
+            />
+            <ValidatorHeader
+              selectedCount={withdrawals.length}
+              totalCount={availableValidators.length}
+              onClear={handleResetWithdrawal}
+            />
 
-        <ValidatorHeader
-          selectedCount={withdrawals.length}
-          totalCount={validators.length}
-          onClear={handleResetWithdrawal}
-        />
-
-        <div className="flex flex-col items-center gap-4">
-          <ValidatorListHeaders
-            columnHeaders={columnHeaders}
-            onSort={handleSort}
-            sortColumn={sortColumn}
-            sortDirection={sortDirection}
+            <WithdrawalValidatorTable
+              validators={availableValidators}
+              withdrawals={withdrawals}
+              addWithdrawal={append}
+              removeWithdrawal={remove}
+              register={register}
+              errors={errors}
+            />
+          </>
+        )}
+        {stage.type === "sign-submit-finalise" && (
+          <ValidatorTable
+            headers={SUBMITTING_WITHDRAWAL_COLUMN_HEADERS}
+            data={withdrawals.map(
+              (w): WithdrawalTableValidatorDetails => ({
+                ...w.validator,
+                transactionStatus: stage.txHashes[w.validator.validatorIndex],
+                withdrawalAmount: w.amount,
+              }),
+            )}
+            disableSort
           />
-
-          <div className="flex w-full flex-col gap-y-2">
-            {validators?.map((validator: ValidatorDetails, index: number) => {
-              const withdrawalIndex = withdrawals.findIndex(
-                (field) =>
-                  field.validator.validatorIndex === validator.validatorIndex,
-              );
-              return (
-                <WithdrawalSelectionValidatorCard
-                  key={`${index}-${validator.validatorIndex}`}
-                  availableAmount={validator.balance}
-                  errors={errors}
-                  handleSelect={() => handleValidatorSelect(validator)}
-                  stage={stage}
-                  withdrawalIndex={withdrawalIndex}
-                  register={register}
-                  selected={withdrawalIndex !== -1}
-                  validator={validator}
-                />
-              );
-            })}
-          </div>
-        </div>
+        )}
       </div>
     </div>
   );
