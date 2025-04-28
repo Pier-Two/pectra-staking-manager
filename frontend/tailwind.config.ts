@@ -21,6 +21,12 @@ export default {
       colors: {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
+        piertwo: {
+          text: "var(--piertwo-text)",
+        },
+        piertwoDark: {
+          text: "var(--piertwoDark-text)",
+        },
         card: {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",

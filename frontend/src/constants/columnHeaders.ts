@@ -4,17 +4,11 @@ import type {
   TableValidatorDetails,
 } from "pec/types/validatorTable";
 
-export const WITHDRAWAL_COLUMN_HEADERS = [
-  { label: "Validator", showSort: true },
-  { label: "Balance", showSort: true },
-  { label: "Withdrawal", showSort: false },
-] as const;
-
 export type WithdrawalTableValidatorDetails = TableValidatorDetails & {
   withdrawalAmount: number;
 };
 
-export const NEW_WITHDRAWAL_COLUMN_HEADERS: IHeaderConfig<WithdrawalTableValidatorDetails>[] =
+export const WITHDRAWAL_COLUMN_HEADERS: IHeaderConfig<WithdrawalTableValidatorDetails>[] =
   [
     { label: "Validator", sortKey: "validatorIndex", mobile: true },
     { label: "Balance", sortKey: "balance", mobile: true },
@@ -35,6 +29,7 @@ export const SUBMITTING_WITHDRAWAL_COLUMN_HEADERS: IHeaderConfig<WithdrawalTable
       mobile: true,
     },
   ];
+
 export const DEPOSIT_COLUMN_HEADERS = [
   { label: "Validator", showSort: true },
   { label: "Balance", showSort: true },
@@ -69,4 +64,10 @@ export const SIGN_DEPOSIT_COLUMN_HEADERS = [
     label: "Status",
     showSort: false,
   },
+];
+
+export const CONSOLIDATION_TABLE_HEADERS: IHeaderConfig<ValidatorDetails>[] = [
+  { label: "Validator", sortKey: "validatorIndex", mobile: true },
+  { label: "Credentials", sortKey: "withdrawalAddress", mobile: true },
+  { label: "Balance", sortKey: "balance", mobile: true },
 ];

@@ -1,5 +1,5 @@
 import {
-  NEW_WITHDRAWAL_COLUMN_HEADERS,
+  WITHDRAWAL_COLUMN_HEADERS,
   WithdrawalTableValidatorDetails,
 } from "pec/constants/columnHeaders";
 import { ValidatorTable } from "../ui/table/ValidatorTable";
@@ -117,7 +117,7 @@ export const WithdrawalValidatorTable = ({
   return (
     <ValidatorTable
       data={validatorDetailsRow}
-      headers={NEW_WITHDRAWAL_COLUMN_HEADERS}
+      headers={WITHDRAWAL_COLUMN_HEADERS}
       selectableRows={{
         onClick: handleValidatorSelect,
         showCheckIcons: true,

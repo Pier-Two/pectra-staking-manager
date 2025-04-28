@@ -4,6 +4,7 @@ import {
 } from "pec/types/consolidation";
 import type { FC } from "react";
 import { Button } from "../ui/button";
+import { SecondaryButton } from "../ui/custom/SecondaryButton";
 
 export interface IProgressBar {
   progress: ConsolidationStep;
@@ -17,9 +18,7 @@ export const ProgressBar: FC<IProgressBar> = (props) => {
 
   return (
     <div className="flex w-full items-center gap-2">
-      <Button variant="outline" className="w-[20px]" onClick={backHandler}>
-        {"<"}
-      </Button>
+      <SecondaryButton label="<" onClick={backHandler} />
 
       {[1, 2, 3, 4].map((step) => (
         <div

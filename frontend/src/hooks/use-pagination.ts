@@ -6,7 +6,7 @@ interface UsePaginationProps<T> {
 }
 
 export const usePagination = <T>({
-  itemsPerPage = 10,
+  itemsPerPage = 5,
   data,
 }: UsePaginationProps<T>) => {
   const [currentPage, setCurrentPage] = useState(1);

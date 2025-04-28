@@ -14,7 +14,7 @@ import { type ValidatorDetails } from "pec/types/validator";
 import { useMemo } from "react";
 import { displayedEthAmount } from "pec/lib/utils/validators/balance";
 import { ValidatorTable } from "pec/components/ui/table/ValidatorTable";
-import { CONSOLIDATION_TABLE_HEADERS } from "pec/constants/consolildation";
+import { CONSOLIDATION_TABLE_HEADERS } from "pec/constants/columnHeaders";
 
 interface SelectSourceValidatorsProps {
   availableSourceValidators: ValidatorDetails[];
@@ -62,7 +62,7 @@ export const SelectSourceValidators = ({
           <div className="text-md font-medium">Destination validator</div>
 
           <div className="flex flex-col items-center justify-center gap-4">
-            <ValidatorCard shrink={false} validator={destinationValidator} />
+            <ValidatorCard validator={destinationValidator} />
 
             <SecondaryButton
               className="w-full"

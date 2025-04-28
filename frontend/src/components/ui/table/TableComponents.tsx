@@ -1,12 +1,15 @@
-import { ExternalLink } from "lucide-react";
+import { CircleCheck, ExternalLink, OctagonMinus } from "lucide-react";
 import { Button } from "pec/components/ui/button";
 import { PectraSpinner } from "pec/components/ui/custom/pectraSpinner";
+import Image from "next/image";
 import {
   getBlockExplorerTxUrl,
   openInNewTab,
 } from "pec/helpers/getExternalLink";
 import { cn } from "pec/lib/utils";
+import { ValidatorDetails } from "pec/types/validator";
 import type { TransactionStatus } from "pec/types/withdraw";
+import { displayedEthAmount } from "pec/lib/utils/validators/balance";
 
 interface StatusConfig {
   text: string;
@@ -93,4 +96,49 @@ export const SubmittingTransactionTableComponent = ({
       )}
     </div>
   );
+};
+
+interface TableComponentProps {
+  validator: ValidatorDetails;
+}
+
+export const ValidatorIndex = ({ validator }: TableComponentProps) => {
+  return (
+    <div className="flex flex-row gap-2">
+      <Image
+        src="/icons/EthValidator.svg"
+        alt="Wallet"
+        width={24}
+        height={24}
+      />
+      <div className="flex flex-col">
+        <div>{validator.validatorIndex}</div>
+        <div className="text-xs text-gray-500">
+          {validator.publicKey.slice(0, 7)}...
+          {validator.publicKey.slice(-5)}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export const WithdrawalAddress = ({ validator }: TableComponentProps) => {
+  return (
+    <div className="flex items-center gap-1">
+      {validator.withdrawalAddress.includes("0x02") ? (
+        <CircleCheck className="h-4 w-4 fill-green-500 text-white dark:text-black" />
+      ) : (
+        <OctagonMinus className="h-4 w-4 text-gray-500 dark:text-white" />
+      )}
+      <div>{validator.withdrawalAddress.slice(0, 4)}</div>
+    </div>
+  );
+};
+
+interface DisplayAmountProps {
+  amount: number;
+}
+
+export const DisplayAmount = ({ amount }: DisplayAmountProps) => {
+  return <div className="text-sm">Ξ {displayedEthAmount(amount)} ETH</div>;
 };
