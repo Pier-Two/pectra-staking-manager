@@ -14,22 +14,24 @@ export const ColumnHeader = (props: IValidatorHeaderProps) => {
 
   return (
     <div
-      className={`flex items-center gap-2 ${
+      className={`flex w-full items-center gap-2 ${
         showSort ? "cursor-pointer" : "cursor-default"
       }`}
       onClick={showSort ? onSort : undefined}
     >
-      <div className="text-sm text-gray-700 dark:text-gray-300">{label}</div>
+      <div className="font-inter text-sm font-medium text-[#4C4C4C] dark:text-gray-300">
+        {label}
+      </div>
       {showSort && sortDirection === "asc" && (
-        <ChevronUp className="h-4 w-4 text-gray-700 dark:text-gray-300" />
+        <ChevronUp className="h-4 w-4 text-[#4C4C4C] dark:text-gray-300" />
       )}
 
       {showSort && sortDirection === "desc" && (
-        <ChevronDown className="h-4 w-4 text-gray-700 dark:text-gray-300" />
+        <ChevronDown className="h-4 w-4 text-[#4C4C4C] dark:text-gray-300" />
       )}
 
       {showSort && sortDirection === null && (
-        <ChevronsUpDown className="h-4 w-4 text-gray-700 dark:text-gray-300" />
+        <ChevronsUpDown className="h-4 w-4 text-[#4C4C4C] dark:text-gray-300" />
       )}
     </div>
   );

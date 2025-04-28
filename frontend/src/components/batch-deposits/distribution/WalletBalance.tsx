@@ -7,12 +7,12 @@ interface IWalletBalance {
 export const WalletBalance = ({ balance }: IWalletBalance) => {
   return (
     <div className="flex flex-row items-center gap-1">
-      <div className="text-xs text-gray-500 dark:text-gray-500">
+      <div className="font-inter text-xs text-[#52525B] dark:text-gray-500">
         Available balance:
       </div>
 
-      <div className="flex items-center gap-1 p-2">
-        <div className="text-xs">Ξ {displayedEthAmount(balance)}</div>
+      <div className="font-inter text-xs font-semibold dark:text-white">
+        Ξ {displayedEthAmount(balance)}
       </div>
     </div>
   );

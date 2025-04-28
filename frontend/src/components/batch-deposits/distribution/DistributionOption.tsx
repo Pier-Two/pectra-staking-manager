@@ -1,4 +1,3 @@
-import { Circle, CircleDot } from "lucide-react";
 import type { IDistributionOptionProps } from "pec/types/batch-deposits";
 import type { FC } from "react";
 
@@ -9,24 +8,24 @@ export const DistributionOption: FC<IDistributionOptionProps> = ({
 }) => {
   return (
     <div
-      className={`flex w-full flex-row items-start gap-4 rounded-xl bg-white p-4 dark:bg-black ${
-        isSelected
-          ? "border border-indigo-500 dark:border-indigo-500"
-          : "cursor-pointer"
+      className={`flex w-full flex-row items-start gap-4 rounded-2xl border border-transparent bg-white px-4 py-3 transition-colors duration-200 hover:border-border dark:bg-black dark:hover:border-gray-800 ${
+        isSelected ? "!border-primary dark:!border-primary" : "cursor-pointer"
       }`}
       onClick={onClick}
     >
-      <div className="flex-shrink-0">
-        {isSelected ? (
-          <CircleDot className="h-4 w-4 fill-indigo-500 text-white" />
-        ) : (
-          <Circle className="h-4 w-4 text-indigo-500" />
-        )}
-      </div>
-      <div className="flex min-w-0 flex-1 flex-col gap-2">
-        <div className="text-sm font-medium">{option.title}</div>
-        <div className="text-xs text-gray-700 dark:text-gray-300">
-          {option.description}
+      <div className="flex w-full flex-row items-start gap-2">
+        <div className="mt-1 flex-shrink-0">
+          <div className="flex h-4 w-4 items-center justify-center rounded-full border-2 border-primary bg-transparent">
+            <div
+              className={`h-2.5 w-2.5 rounded-full ${isSelected ? "bg-primary" : "bg-transparent"}`}
+            />
+          </div>
+        </div>
+        <div className="flex min-w-0 flex-1 flex-col gap-2">
+          <div className="text-base font-medium">{option.title}</div>
+          <div className="text-sm text-[#4C4C4C] dark:text-gray-300">
+            {option.description}
+          </div>
         </div>
       </div>
     </div>

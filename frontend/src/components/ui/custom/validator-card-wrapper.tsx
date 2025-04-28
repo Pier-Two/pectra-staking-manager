@@ -1,5 +1,9 @@
 import { cn } from "pec/lib/utils";
-import { createElement, DetailedHTMLProps, HTMLAttributes } from "react";
+import {
+  createElement,
+  type DetailedHTMLProps,
+  type HTMLAttributes,
+} from "react";
 
 export interface ValidatorCardWrapperProps<
   T extends keyof JSX.IntrinsicElements = "div",
@@ -22,14 +26,13 @@ export const ValidatorCardBorderStyles = ({
   "clearBackground" | "onClick" | "isSelected"
 > & { isHoveringOverride?: boolean }) => ({
   "border border-transparent hover:border cursor-pointer": onClick,
-  "hover:!border-indigo-500 dark:hover:!border-indigo-900":
+  "hover:!border-primary dark:hover:!border-indigo-900":
     onClick && !clearBackground,
-  "hover:!border-indigo-300 dark:hover:!bg-gray-900":
-    onClick && clearBackground,
-  "border border-indigo-500 dark:border-indigo-900":
+  "hover:!border-primary dark:hover:!bg-gray-900": onClick && clearBackground,
+  "border border-primary dark:border-indigo-900":
     isSelected && !clearBackground,
   // This is only used by the Validator Table row which doesn't support the tailwind hover:
-  "border-indigo-500 dark:border-indigo-900":
+  "border-primary dark:border-indigo-900":
     isHoveringOverride && !clearBackground,
 });
 
@@ -49,7 +52,7 @@ export const ValidatorCardWrapper = <
     as ?? "div",
     {
       className: cn(
-        "flex h-16 items-center justify-between gap-x-4 rounded-2xl px-4 py-2 text-sm",
+        "flex h-16 items-center justify-between gap-x-4 rounded-2xl px-4 py-2 text-sm group transition-colors duration-200",
         {
           "w-[95%]": shrink,
           "w-full": !shrink,

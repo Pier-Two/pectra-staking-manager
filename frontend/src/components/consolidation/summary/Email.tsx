@@ -1,11 +1,12 @@
 "use client";
 
-import { Mail } from "lucide-react";
-import { Input } from "pec/components/ui/input";
+import { HiMail } from "react-icons/hi";
 import { Switch } from "pec/components/ui/switch";
-import { DepositType } from "pec/lib/api/schemas/deposit";
+import { Input } from "pec/components/ui/input";
+
+import { type DepositType } from "pec/lib/api/schemas/deposit";
 import { type FC } from "react";
-import { FieldErrors } from "react-hook-form";
+import { type FieldErrors } from "react-hook-form";
 
 export interface IConsolidationEmail {
   cardText: string;
@@ -29,14 +30,14 @@ export const Email: FC<IConsolidationEmail> = (props) => {
   } = props;
 
   return (
-    <div className="flex w-full flex-col justify-between rounded-xl border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-black">
-      <div className="flex-col-2 flex w-full items-center justify-between py-1">
+    <div className="flex w-full flex-col items-center justify-between gap-x-4 space-y-4 rounded-2xl bg-white p-4 dark:border-gray-800 dark:bg-black">
+      <div className="flex-col-2 flex w-full items-center justify-between gap-x-4">
         <div className="flex items-center gap-x-4">
-          <Mail className="h-5 w-5 fill-indigo-500 text-gray-200 dark:text-black" />
+          <HiMail className="h-5 w-5 fill-primary text-white dark:text-black" />
           <div className="flex-col items-center">
-            <div className="text-md">{cardTitle}</div>
+            <div className="text-md font-570">{cardTitle}</div>
 
-            <div className="text-sm text-gray-700 dark:text-gray-300">
+            <div className="text-sm text-[#4C4C4C] dark:text-gray-300">
               {cardText}
             </div>
           </div>
@@ -44,15 +45,13 @@ export const Email: FC<IConsolidationEmail> = (props) => {
 
         <Switch
           checked={showEmail}
-          onCheckedChange={() => {
-            setShowEmail(!showEmail);
-          }}
-          className="relative items-center rounded-full transition-colors before:absolute before:h-5 before:w-5 before:rounded-full before:bg-white before:transition-transform before:duration-300 data-[state=checked]:bg-indigo-500 data-[state=unchecked]:bg-indigo-200 data-[state=checked]:before:translate-x-5 data-[state=unchecked]:before:translate-x-0 data-[state=unchecked]:dark:bg-gray-600"
+          onCheckedChange={() => setShowEmail(!showEmail)}
+          className="relative items-center rounded-full transition-colors before:absolute before:h-5 before:w-5 before:rounded-full before:bg-white before:transition-transform before:duration-300 data-[state=checked]:bg-indigo-500 data-[state=unchecked]:bg-border data-[state=checked]:before:translate-x-5 data-[state=unchecked]:before:translate-x-0 data-[state=unchecked]:dark:bg-gray-600"
         />
       </div>
 
       {showEmail && (
-        <div className="flex flex-col gap-y-2 pt-4">
+        <div className="flex w-full flex-col gap-y-2 pt-4">
           <Input
             className="w-full rounded-xl border border-indigo-200 bg-white p-4 dark:border-gray-800 dark:bg-black"
             placeholder="Email"

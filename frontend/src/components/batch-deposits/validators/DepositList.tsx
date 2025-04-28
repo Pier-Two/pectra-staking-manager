@@ -30,7 +30,7 @@ export const DepositList = ({
         numDeposits={deposits.length}
       />
 
-      <div className="text-md font-medium">Deposits</div>
+      <div className="text-md font-670">Deposits</div>
 
       <div className="flex flex-col gap-3">
         <ValidatorListHeaders
