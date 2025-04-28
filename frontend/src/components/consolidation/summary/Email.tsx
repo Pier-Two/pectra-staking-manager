@@ -70,7 +70,7 @@ export const Email: FC<IConsolidationEmail> = (props) => {
               <Input
                 className="w-full rounded-xl border border-indigo-200 bg-white p-4 dark:border-gray-800 dark:bg-black"
                 placeholder="Email"
-                value={summaryEmail}
+                value={summaryEmail || ""}
                 onChange={(e) => setSummaryEmail(e.target.value)}
                 autoFocusOn={showEmail}
               />
