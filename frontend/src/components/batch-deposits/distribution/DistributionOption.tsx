@@ -1,3 +1,4 @@
+import { cn } from "pec/lib/utils";
 import type { IDistributionOptionProps } from "pec/types/batch-deposits";
 import type { FC } from "react";
 
@@ -8,9 +9,13 @@ export const DistributionOption: FC<IDistributionOptionProps> = ({
 }) => {
   return (
     <div
-      className={`flex w-full flex-row items-start gap-4 rounded-2xl border border-transparent bg-white px-4 py-3 transition-colors duration-200 hover:border-border dark:bg-black dark:hover:border-gray-800 ${
-        isSelected ? "!border-primary dark:!border-primary" : "cursor-pointer"
-      }`}
+      className={cn(
+        "flex w-full flex-row items-start gap-4 rounded-2xl border border-transparent bg-white px-4 py-3 transition-colors duration-200 hover:border-border dark:bg-black dark:hover:border-gray-800",
+        {
+          "!border-primary dark:!border-primary": isSelected,
+          "cursor-pointer": !isSelected,
+        },
+      )}
       onClick={onClick}
     >
       <div className="flex w-full flex-row items-start gap-2">

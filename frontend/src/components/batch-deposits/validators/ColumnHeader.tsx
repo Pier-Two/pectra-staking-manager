@@ -1,4 +1,5 @@
 import { ChevronDown, ChevronUp, ChevronsUpDown } from "lucide-react";
+import { cn } from "pec/lib/utils";
 
 export type SortDirection = "asc" | "desc" | null;
 
@@ -14,9 +15,10 @@ export const ColumnHeader = (props: IValidatorHeaderProps) => {
 
   return (
     <div
-      className={`flex w-full items-center gap-2 ${
-        showSort ? "cursor-pointer" : "cursor-default"
-      }`}
+      className={cn("flex w-full items-center gap-2", {
+        "cursor-pointer": showSort,
+        "cursor-default": !showSort,
+      })}
       onClick={showSort ? onSort : undefined}
     >
       <div className="font-inter text-sm font-medium text-[#4C4C4C] dark:text-gray-300">
