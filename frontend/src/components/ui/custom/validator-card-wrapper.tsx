@@ -7,7 +7,6 @@ export interface ValidatorCardWrapperProps<
   as?: T;
   children: React.ReactNode;
   className?: string;
-  shrink?: boolean;
   clearBackground?: boolean;
   isSelected?: boolean;
 }
@@ -21,7 +20,7 @@ export const ValidatorCardBorderStyles = ({
   ValidatorCardWrapperProps,
   "clearBackground" | "onClick" | "isSelected"
 > & { isHoveringOverride?: boolean }) => ({
-  "border border-transparent hover:border cursor-pointer": onClick,
+  "border border-transparent cursor-pointer": onClick,
   "hover:!border-indigo-500 dark:hover:!border-indigo-900":
     onClick && !clearBackground,
   "hover:!border-indigo-300 dark:hover:!bg-gray-900":
@@ -40,7 +39,6 @@ export const ValidatorCardWrapper = <
   onClick,
   children,
   className,
-  shrink,
   clearBackground,
   isSelected,
   ...props
@@ -49,12 +47,11 @@ export const ValidatorCardWrapper = <
     as ?? "div",
     {
       className: cn(
-        "flex h-16 items-center justify-between gap-x-4 rounded-2xl px-4 py-2 text-sm",
+        "flex w-full h-16 items-center justify-between gap-x-4 rounded-2xl px-4 py-2 text-sm",
         {
-          "w-[95%]": shrink,
-          "w-full": !shrink,
-          "border bg-indigo-50 dark:bg-indigo-950": clearBackground,
-          "bg-white dark:bg-black": !clearBackground,
+          "border bg-transparent border-indigo-200 dark:border-indigo-900":
+            clearBackground,
+          "bg-white dark:bg-gray-900": !clearBackground,
           ...ValidatorCardBorderStyles({
             clearBackground,
             onClick,

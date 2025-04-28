@@ -1,13 +1,5 @@
-import {
-  CircleCheck,
-  CircleMinus,
-  CirclePlay,
-  CirclePlus,
-  OctagonMinus,
-} from "lucide-react";
-import Image from "next/image";
+import { CircleCheck, CircleMinus, CirclePlay, CirclePlus } from "lucide-react";
 import { ValidatorStatus } from "pec/types/validator";
-import { displayedEthAmount } from "pec/lib/utils/validators/balance";
 import { IHeaderConfig, TableValidatorDetails } from "pec/types/validatorTable";
 import {
   ValidatorCardBorderStyles,
@@ -16,7 +8,12 @@ import {
 } from "pec/components/ui/custom/validator-card-wrapper";
 import { cn } from "pec/lib/utils";
 import { useState } from "react";
-import { SubmittingTransactionTableComponent } from "./TableComponents";
+import {
+  DisplayAmount,
+  SubmittingTransactionTableComponent,
+  ValidatorIndex,
+  WithdrawalAddress,
+} from "./TableComponents";
 
 export interface IValidatorRowProps<T extends TableValidatorDetails> {
   wrapperProps?: Omit<ValidatorCardWrapperProps, "onClick" | "children">;
@@ -40,7 +37,6 @@ export const ValidatorRow = <T extends TableValidatorDetails>({
   renderOverrides,
 }: IValidatorRowProps<T>) => {
   const [isHovering, setIsHovering] = useState(false);
-  const displayBalance = displayedEthAmount(validator.balance);
 
   // Render cell content based on field key
   const renderCellContent = (header: IHeaderConfig<T>) => {
@@ -51,23 +47,7 @@ export const ValidatorRow = <T extends TableValidatorDetails>({
 
     switch (header.sortKey) {
       case "validatorIndex":
-        return (
-          <div className="flex flex-row gap-2">
-            <Image
-              src="/icons/EthValidator.svg"
-              alt="Wallet"
-              width={24}
-              height={24}
-            />
-            <div className="flex flex-col">
-              <div>{validator.validatorIndex}</div>
-              <div className="text-xs text-gray-500">
-                {validator.publicKey.slice(0, 7)}...
-                {validator.publicKey.slice(-5)}
-              </div>
-            </div>
-          </div>
-        );
+        return <ValidatorIndex validator={validator} />;
 
       case "activeSince":
         return (
@@ -80,16 +60,7 @@ export const ValidatorRow = <T extends TableValidatorDetails>({
         );
 
       case "withdrawalAddress":
-        return (
-          <div className="flex items-center gap-1">
-            {validator.withdrawalAddress.includes("0x02") ? (
-              <CircleCheck className="h-4 w-4 fill-green-500 text-white dark:text-black" />
-            ) : (
-              <OctagonMinus className="h-4 w-4 text-gray-500 dark:text-white" />
-            )}
-            <div>{validator.withdrawalAddress.slice(0, 4)}</div>
-          </div>
-        );
+        return <WithdrawalAddress validator={validator} />;
 
       case "status":
         return (
@@ -104,7 +75,7 @@ export const ValidatorRow = <T extends TableValidatorDetails>({
         );
 
       case "balance":
-        return <div className="text-sm">Ξ {displayBalance} ETH</div>;
+        return <DisplayAmount amount={validator.balance} />;
 
       case "transactionStatus":
         return (

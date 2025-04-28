@@ -17,6 +17,7 @@ import {
   VALIDATOR_PERFORMANCE_FILTER_TO_BEACONCHAIN,
 } from "pec/lib/constants/validators/performance";
 import { populateBeaconchainValidatorDetails } from "pec/server/helpers/validators";
+import { IResponse } from "pec/types/response";
 
 export const validatorRouter = createTRPCRouter({
   getValidators: publicProcedure
@@ -153,7 +154,7 @@ export const validatorRouter = createTRPCRouter({
         email: z.string().email().optional(),
       }),
     )
-    .mutation(async ({ input }) => {
+    .mutation(async ({ input }): Promise<IResponse<null>> => {
       const {
         targetValidatorIndex,
         sourceTargetValidatorIndex,
@@ -179,7 +180,7 @@ export const validatorRouter = createTRPCRouter({
           `Consolidation record already exists for validators ${targetValidatorIndex} and ${sourceTargetValidatorIndex}`,
         );
 
-      const newRecord = await ConsolidationModel.create({
+      await ConsolidationModel.create({
         targetValidatorIndex,
         sourceTargetValidatorIndex,
         status: ACTIVE_STATUS,
@@ -199,7 +200,7 @@ export const validatorRouter = createTRPCRouter({
 
       return {
         success: true,
-        record: newRecord,
+        data: null,
       };
     }),
 });

@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { MOCK_VALIDATORS } from "pec/server/__mocks__/validators";
 import { SubmitConsolidationRequests } from "./SubmitConsolidationRequests";
 import { noop } from "lodash";
+import { SubmittingConsolidationValidatorDetails } from "pec/constants/columnHeaders";
 
 // More on how to set up stories at: https://storybook.js.org/docs/writing-stories#default-export
 const meta = {
@@ -24,7 +25,13 @@ type Story = StoryObj<typeof meta>;
 export const Primary: Story = {
   args: {
     reset: noop,
-    source: MOCK_VALIDATORS,
     destination: MOCK_VALIDATORS[0]!,
+    transactions: MOCK_VALIDATORS.map(
+      (validator): SubmittingConsolidationValidatorDetails => ({
+        ...validator,
+        consolidationType: "consolidate",
+        transactionStatus: { status: "pending" },
+      }),
+    ),
   },
 };

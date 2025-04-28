@@ -9,43 +9,55 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "pec/components/ui/tooltip";
-import { useConsolidationStore } from "pec/hooks/use-consolidation-store";
 import { useConsolidationFee } from "pec/hooks/use-consolidation";
 import { formatEther, parseEther } from "viem";
 import { displayedEthAmount } from "pec/lib/utils/validators/balance";
+import { ValidatorDetails } from "pec/types/validator";
+import { sumBy } from "lodash";
 
-export const Overview = () => {
+interface OverviewProps {
+  sourceValidators: ValidatorDetails[];
+  destinationValidator: ValidatorDetails;
+  upgradeTransactions: number;
+  consolidationTransactions: number;
+}
+
+export const Overview = ({
+  sourceValidators,
+  destinationValidator,
+  upgradeTransactions,
+  consolidationTransactions,
+}: OverviewProps) => {
   const { data: consolidationFee, isLoading: isLoadingConsolidationFee } =
     useConsolidationFee();
 
-  const { consolidationTarget, validatorsToConsolidate } =
-    useConsolidationStore();
-
-  const totalSourceValidators = validatorsToConsolidate?.length;
+  const totalSourceValidators = sourceValidators.length;
 
   const newTotalBalance =
-    (consolidationTarget?.balance ?? 0) +
-    validatorsToConsolidate.reduce(
-      (acc, validator) => acc + validator.balance,
-      0,
-    );
+    destinationValidator.balance + sumBy(sourceValidators, (v) => v.balance);
+
+  const totalTransactions = upgradeTransactions + consolidationTransactions;
 
   const estimatedGasFee = consolidationFee
-    ? consolidationFee * BigInt(totalSourceValidators)
+    ? consolidationFee * BigInt(totalTransactions)
     : BigInt(0);
 
   return (
     <div className="flex min-h-[10vh] w-full flex-col justify-between gap-x-4 space-y-4 rounded-xl border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-black">
-      <div className="flex items-end gap-x-2 text-sm text-black dark:text-white">
+      <div className="flex items-end gap-x-2 text-sm">
         <span>
-          Consolidate {totalSourceValidators + 1} validator
-          {totalSourceValidators <= 1 ? "" : "s"} into validator with a new
-          total balance of
+          Consolidate{" "}
+          <span className="font-bold">
+            {totalSourceValidators + 1} validator
+            {totalSourceValidators <= 1 ? "" : "s"}
+          </span>{" "}
+          into <span className="font-bold">one</span> with a new total balance
+          of
         </span>
 
         <div className="flex items-center gap-1">
           <div className="font-semibold">
-            Ξ {displayedEthAmount(newTotalBalance)}
+            Ξ {displayedEthAmount(newTotalBalance, 2)}
           </div>
 
           <TooltipProvider>
@@ -69,8 +81,8 @@ export const Overview = () => {
 
       <div className="flex w-full flex-col space-y-2">
         <div className="flex flex-row justify-between">
-          <div className="text-sm text-gray-700 dark:text-gray-300">
-            Estimated gas fee ({totalSourceValidators}x consolidations)
+          <div className="text-sm text-zinc-700 dark:text-zinc-300">
+            Estimated gas fee ({totalTransactions}x consolidations)
           </div>
 
           <div className="flex items-center gap-1">
@@ -91,10 +103,10 @@ export const Overview = () => {
         </div>
 
         <div className="flex flex-row justify-between">
-          <div className="text-sm text-gray-700 dark:text-gray-300">
+          <div className="text-sm text-zinc-700 dark:text-zinc-300">
             Estimated completion time
           </div>
-
+          {/*TODO: Populate with real estimate*/}
           <div className="text-sm font-medium">12-24 hours</div>
         </div>
       </div>

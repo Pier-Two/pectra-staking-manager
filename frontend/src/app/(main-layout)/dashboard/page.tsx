@@ -43,8 +43,8 @@ const Dashboard: FC = () => {
   const inactiveValidators = validators.length - activeValidators.length;
 
   return (
-    <div className="flex w-full flex-col items-center dark:text-white">
-      <div className="flex w-full items-center justify-center bg-indigo-50 pb-12 dark:bg-gray-900">
+    <div className="flex w-full flex-col items-center">
+      <div className="relative flex max-w-[80rem] items-center justify-center pb-12">
         <div className="space-y-6">
           <div className="text-2xl font-medium text-indigo-800 dark:text-indigo-200">
             Tools
@@ -58,7 +58,7 @@ const Dashboard: FC = () => {
         </div>
       </div>
 
-      <div className="relative flex h-full w-screen justify-center bg-white">
+      <div className="relative flex h-full w-screen justify-center bg-white dark:bg-gray-900">
         <div className={"w-full max-w-[80rem]"}>
           <div className="w-full space-y-8 px-2 py-8 md:px-8 xl:px-2">
             <h2 className="text-[26px] font-570 leading-[26px] text-primary-dark dark:text-indigo-200">

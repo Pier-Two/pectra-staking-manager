@@ -1,8 +1,8 @@
 import { ManuallyEnterValidator } from "./ManuallyEnterValidator";
 import { SecondaryButton } from "pec/components/ui/custom/SecondaryButton";
 import { ValidatorTable } from "pec/components/ui/table/ValidatorTable";
+import { CONSOLIDATION_TABLE_HEADERS } from "pec/constants/columnHeaders";
 import { ValidatorDetails } from "pec/types/validator";
-import { CONSOLIDATION_TABLE_HEADERS } from "pec/constants/consolildation";
 import { useState } from "react";
 
 interface SelectDestinationValidatorProps {
@@ -18,18 +18,16 @@ export const SelectDestinationValidator = ({
     useState(false);
 
   return (
-    <div className="space-y-4">
-      <div className="space-y-4">
-        <div className="text-2xl font-medium">Destination Validator</div>
-        <div className="text-sm text-gray-700 dark:text-gray-300">
-          Your destination validator will receive all staked ETH from source
-          validators and be updated to the new Pectra standard (0x02).
-        </div>
+    <div className="space-y-6">
+      <div className="text-2xl font-medium">Destination Validator</div>
+      <div className="text-base">
+        Your destination validator will receive all staked ETH from source
+        validators and be updated to the new Pectra standard (0x02).
+      </div>
 
-        <div className="text-sm text-gray-700 dark:text-gray-300">
-          To consolidate a single validator, select it as both the destination
-          and the source validator.
-        </div>
+      <div className="text-base">
+        To consolidate a single validator, select it as both the destination and
+        the source validator.
       </div>
 
       <div className="flex flex-col items-center justify-between gap-4 md:flex-row">

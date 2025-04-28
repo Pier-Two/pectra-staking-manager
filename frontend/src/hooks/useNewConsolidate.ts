@@ -7,13 +7,15 @@ import {
 import { type ValidatorDetails } from "pec/types/validator";
 import { useImmer } from "use-immer";
 import { useSubmitConsolidate } from "./use-consolidation";
+import { TxHashRecord } from "pec/types/withdraw";
+import { getRequiredConsolidationTransactions } from "pec/lib/utils/validators/consolidate";
 
 interface UseConsolidate {
   activeValidators: ValidatorDetails[];
 }
 
 export const useNewConsolidate = ({ activeValidators }: UseConsolidate) => {
-  const router = useRouter();
+  // const router = useRouter();
 
   const consolidate = useSubmitConsolidate();
 
@@ -28,7 +30,7 @@ export const useNewConsolidate = ({ activeValidators }: UseConsolidate) => {
   const getAvailableSourceValidators = () => {
     if (stage.stage !== "destination") {
       return activeValidators.filter(
-        (v) => v.validatorIndex !== stage.destination.validatorIndex,
+        (v) => v.validatorIndex !== stage.destinationValidator.validatorIndex,
       );
     }
 
@@ -47,8 +49,8 @@ export const useNewConsolidate = ({ activeValidators }: UseConsolidate) => {
 
     setStage({
       stage: "source",
-      destination: validator,
-      source: sourceValidators,
+      destinationValidator: validator,
+      sourceValidator: sourceValidators,
     });
   };
 
@@ -64,18 +66,18 @@ export const useNewConsolidate = ({ activeValidators }: UseConsolidate) => {
       }
 
       if (Array.isArray(validator)) {
-        state.source = validator;
+        state.sourceValidator = validator;
         return;
       }
 
-      const index = state.source.findIndex(
+      const index = state.sourceValidator.findIndex(
         (v) => v.validatorIndex === validator.validatorIndex,
       );
 
       if (index === -1) {
-        state.source.push(validator);
+        state.sourceValidator.push(validator);
       } else {
-        state.source.splice(index, 1);
+        state.sourceValidator.splice(index, 1);
       }
     });
   };
@@ -89,29 +91,42 @@ export const useNewConsolidate = ({ activeValidators }: UseConsolidate) => {
 
     const updatedStage: ConsolidationWorkflowStages = {
       stage: "summary",
-      destination: stage.destination,
-      source: stage.source,
+      destinationValidator: stage.destinationValidator,
+      sourceValidator: stage.sourceValidator,
+      transactions: getRequiredConsolidationTransactions(
+        stage.destinationValidator,
+        stage.sourceValidator,
+      ),
     };
-    setStage(updatedStage);
 
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises -- todo will fix
-    consolidate(stage.destination, stage.source);
+    setStage(updatedStage);
   };
 
   const goToSubmit = () => {
-    setStage((state) => {
-      if (stage.stage !== "summary") {
-        console.error("Invalid state", stage);
+    if (stage.stage !== "summary") {
+      console.error("Invalid state", stage);
 
-        return;
-      }
+      return;
+    }
 
-      state.stage = "submit";
+    setStage((stage) => {
+      stage.stage = "submit";
     });
+
+    // Add void to ignore the promise
+    // TODO: EMAIL
+    void consolidate(stage.transactions.transactions, "");
   };
 
   const goBack = () => {
     const currentStep = CONSOLIDATION_STEPS[stage.stage];
+
+    if (currentStep === 1) {
+      // Log the error because this is misuse
+      console.error("Already at the first step", stage);
+      return;
+    }
+
     if (currentStep === 2) {
       reset();
     } else {

@@ -11,7 +11,7 @@ export const ValidatorHelp: FC = () => {
   const [openNewFeatures, setOpenNewFeatures] = useState(false);
 
   return (
-    <div className="flex w-full flex-col rounded-lg border border-border bg-white px-4 text-left text-sm dark:border-gray-800 dark:bg-black">
+    <div className="flex w-full flex-col rounded-xl border border-zinc-200 bg-white px-4 text-left text-sm dark:border-gray-800 dark:bg-black">
       <div
         className="flex h-[52px] items-center justify-between hover:cursor-pointer"
         onClick={() => setOpenWhatIs(!openWhatIs)}

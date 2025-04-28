@@ -3,7 +3,7 @@ import {
   ConsolidationStep,
 } from "pec/types/consolidation";
 import type { FC } from "react";
-import { Button } from "../ui/button";
+import { SecondaryButton } from "../ui/custom/SecondaryButton";
 
 export interface IProgressBar {
   progress: ConsolidationStep;
@@ -12,14 +12,17 @@ export interface IProgressBar {
 
 export const ProgressBar: FC<IProgressBar> = (props) => {
   const { progress, backHandler } = props;
+
   const activeStyle = "bg-black dark:bg-white";
   const inactiveStyle = "bg-gray-200 dark:bg-gray-800";
 
   return (
-    <div className="flex w-full items-center gap-2">
-      <Button variant="outline" className="w-[20px]" onClick={backHandler}>
-        {"<"}
-      </Button>
+    <div className="flex w-full items-center gap-2 pb-3">
+      <SecondaryButton
+        label="<"
+        onClick={backHandler}
+        disabled={CONSOLIDATION_STEPS[progress] === 1}
+      />
 
       {[1, 2, 3, 4].map((step) => (
         <div
