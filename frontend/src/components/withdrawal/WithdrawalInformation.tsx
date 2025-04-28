@@ -132,7 +132,7 @@ export const WithdrawalInformation = ({
             </>
           )}
           {stage.type === "data-capture" && (
-            <div className="flex flex-row gap-4 items-center relative">
+            <div className="flex flex-row gap-2 md:gap-4 items-center relative">
               <div
                 className={cn(
                   "transition-all duration-500 ease-in-out",
@@ -154,7 +154,7 @@ export const WithdrawalInformation = ({
               <PrimaryButton
                 className={cn(
                   "w-60 transition-all duration-500 ease-in-out",
-                  validatorsSelected === availableValidators && "mr-4 w-64"
+                  validatorsSelected === availableValidators && "mr-16 md:mr-4 w-64"
                 )}
                 label={buttonText}
                 disabled={!disabled}

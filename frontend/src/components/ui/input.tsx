@@ -12,11 +12,19 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
     // Compose forwarded ref with local ref
     React.useImperativeHandle(ref, () => inputRef.current!)
 
+    // Focus the input when the component is mounted
     React.useEffect(() => {
       if (autoFocusOn && inputRef.current) {
         inputRef.current.focus()
       }
     }, [autoFocusOn])
+
+    // Prevent the wheel event / trackpad from changing the value of the input
+    const handleWheel = (e: React.WheelEvent<HTMLInputElement>) => {
+      if (type === 'number') {
+        e.currentTarget.blur()
+      }
+    }
 
     return (
       <input
@@ -26,6 +34,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           className
         )}
         ref={inputRef}
+        onWheel={handleWheel}
         {...props}
       />
     )

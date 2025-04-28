@@ -13,10 +13,10 @@ export const ValidatorHeader = ({
   onClear,
 }: IValidatorHeader) => {
   return (
-    <div className="relative flex flex-row justify-between">
+    <div className="relative flex flex-row justify-between items-center md:py-2">
       <div className="text-md font-medium">Select Validators</div>
       {selectedCount > 0 && (
-        <div className="flex flex-row items-center gap-12 absolute right-0">
+        <div className="flex flex-col md:flex-row items-center md:gap-12 gap-2 absolute right-0">
           <div className="font-inter text-md font-570">
             {selectedCount} / {totalCount} selected
           </div>
