@@ -1,35 +1,45 @@
-import clsx from "clsx";
-import type { IConnector } from "pec/types/validator";
+import { cn } from "pec/lib/utils";
+import type { ValidatorDetails } from "pec/types/validator";
 import type { FC } from "react";
 import { ConnectedAddress } from "./ConnectedAddress";
 import { DetectedValidators } from "./DetectedValidators";
 import { ValidatorHelp } from "./ValidatorHelp";
 import { ValidatorInformation } from "./ValidatorInformation";
 
-export const Connector: FC<IConnector> = (props) => {
-  const { title, description, connectedAddress, validators, textAlignment } =
-    props;
-  return (
-    <div className="flex w-full flex-col gap-y-9">
-      <div className="flex flex-col gap-y-4">
-        <div className="font-570 text-center text-[26px] leading-[26px]">
-          {!!title && title}
-        </div>
+export interface IConnector {
+  title?: JSX.Element | string;
+  description?: string;
+  connectedAddress: string;
+  validators: ValidatorDetails[];
+  className?: string;
+  titleClassName?: string;
+}
 
-        {!!description && (
-          <p className="w-full text-gray-700 text-center">{description}</p>
+export const Connector: FC<IConnector> = ({
+  title,
+  description,
+  connectedAddress,
+  validators,
+  className,
+  titleClassName,
+}) => {
+  return (
+    <>
+      <div className="flex flex-col gap-3">
+        {title && (
+          <div
+            className={cn("text-2xl font-570 leading-relaxed", titleClassName)}
+          >
+            {title}
+          </div>
         )}
 
-        <p
-          className={clsx(
-            "font-380 w-full px-[2%] text-[15px] leading-[15px] text-zinc-950 dark:text-zinc-50",
-            textAlignment === "center" ? "text-center" : "text-left",
-          )}
-        >
+        {!!description && <p className="w-full text-base">{description}</p>}
+        <div className={cn("text-left text-base", className)}>
           You have {validators.length} total validators using this withdrawal
           address, consolidate them to Pectra standard now to get the most out
           of Ethereum staking.
-        </p>
+        </div>
       </div>
 
       <ConnectedAddress address={connectedAddress} />
@@ -39,6 +49,6 @@ export const Connector: FC<IConnector> = (props) => {
       />
       <ValidatorInformation validators={validators} />
       <ValidatorHelp />
-    </div>
+    </>
   );
 };

@@ -11,7 +11,7 @@ import {
 import { DECIMAL_PLACES } from "pec/lib/constants";
 import { EDistributionMethod } from "pec/types/batch-deposits";
 import type { ValidatorDetails } from "pec/types/validator";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { Email } from "../consolidation/summary/Email";
 import { DistributionMethod } from "./distribution/DistributionMethod";
@@ -29,6 +29,7 @@ export const DepositWorkflow = ({
   balance,
 }: IDepositWorkflowProps) => {
   const { submitBatchDeposit, stage, resetStage } = useBatchDeposit();
+  const [showEmail, setShowEmail] = useState(false);
 
   const initialValues: DepositType = {
     deposits: [],
@@ -43,7 +44,7 @@ export const DepositWorkflow = ({
     handleSubmit,
     setValue,
     reset,
-    formState: { errors },
+    formState: { isValid, errors },
   } = useForm<DepositType>({
     resolver: zodResolver(DepositSchema(balance)),
     defaultValues: initialValues,
@@ -60,10 +61,14 @@ export const DepositWorkflow = ({
     name: ["deposits", "distributionMethod", "totalToDistribute", "email"],
   });
 
+  const email = watchEmail ?? "";
   // Stupid RHF doesn't handle an empty input and returns a string, even when you specify its a number
-  const totalToDistribute = isNaN(watchTotalToDistribute)
-    ? 0
-    : watchTotalToDistribute;
+  const totalToDistribute =
+    watchedDistributionMethod === EDistributionMethod.MANUAL
+      ? watchedDeposits.reduce((acc, curr) => acc + (curr.amount ?? 0), 0)
+      : isNaN(watchTotalToDistribute)
+        ? 0
+        : watchTotalToDistribute;
 
   const totalAllocated = Number(
     watchedDeposits
@@ -72,11 +77,11 @@ export const DepositWorkflow = ({
   );
 
   const shouldBeDisabled =
+    !isValid ||
     totalAllocated !== totalToDistribute ||
     totalToDistribute <= 0 ||
-    totalAllocated > balance;
-
-  const email = watchEmail ?? "";
+    totalAllocated > balance ||
+    (showEmail && email.length === 0);
 
   const handleDistributionMethodChange = (method: EDistributionMethod) => {
     setValue("distributionMethod", method);
@@ -142,15 +147,15 @@ export const DepositWorkflow = ({
   };
 
   return (
-    <div className="flex flex-col gap-y-4">
+    <div className="flex w-full flex-col gap-y-4">
       <div className="space-y-8">
         <div className="flex flex-col gap-4">
-          <div className="flex gap-x-4 text-indigo-800 dark:text-indigo-300">
-            <ArrowDownToDot className="h-8 w-8" />
+          <div className="flex gap-x-4 text-primary-dark dark:text-indigo-200">
+            <ArrowDownToDot className="h-8 w-8 self-center" />
             <div className="text-2xl font-medium">Batch Deposit</div>
           </div>
 
-          <div className="text-sm text-gray-700 dark:text-gray-300">
+          <div className="font-inter text-xs text-piertwo-text">
             Top up your existing validators in one transaction.
           </div>
         </div>
@@ -164,11 +169,6 @@ export const DepositWorkflow = ({
               />
             ) : (
               <>
-                <SignatureDetails
-                  title="Validators signatures required to submit deposits"
-                  text="To submit deposits, you'll need to generate and provide signatures with your validator key pairs (not withdrawal address). You will be prompted to create these signatures once deposit data is generated."
-                />
-
                 <DistributionMethod
                   submitButtonDisabled={shouldBeDisabled}
                   errors={errors}
@@ -185,13 +185,22 @@ export const DepositWorkflow = ({
                 />
 
                 <Email
+                  showEmail={showEmail}
+                  setShowEmail={setShowEmail}
                   cardText="Add your email to receive an email when your deposits are complete."
                   cardTitle="Notify me when complete"
                   summaryEmail={email}
-                  setSummaryEmail={(email) => setValue("email", email)}
+                  errors={errors}
+                  setSummaryEmail={(email) =>
+                    setValue("email", email, {
+                      shouldValidate: true,
+                    })
+                  }
                 />
 
-                {totalToDistribute > 0 && (
+                {(watchedDistributionMethod === EDistributionMethod.MANUAL ||
+                  (watchedDistributionMethod === EDistributionMethod.SPLIT &&
+                    totalToDistribute > 0)) && (
                   <SelectValidators
                     errors={errors}
                     register={register}
@@ -211,11 +220,6 @@ export const DepositWorkflow = ({
 
         {stage.type !== "data-capture" && (
           <>
-            <SignatureDetails
-              title="Sign deposit data"
-              text="For each deposit, copy the generated deposit data, sign it with your validator key and add the signed data. Once provided, the system will verify the deposit data before requesting ETH."
-            />
-
             <DepositList
               stage={stage}
               deposits={watchedDeposits}

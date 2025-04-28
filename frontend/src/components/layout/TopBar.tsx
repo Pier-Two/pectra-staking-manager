@@ -11,6 +11,7 @@ import { SidebarTrigger } from "../ui/sidebar";
 import { Tools } from "./Tools";
 import { useValidators } from "pec/hooks/useValidators";
 import { PectraSpinner } from "../ui/custom/pectraSpinner";
+import { ValidatorStatus } from "pec/types/validator";
 
 export interface ITopBar {
   type?: "profile" | "wallet_connect";
@@ -20,7 +21,7 @@ export const TopBar: FC<ITopBar> = (props) => {
   const { type } = props;
   const router = useRouter();
   const pathname = usePathname();
-  const { data: validators, isLoading: validatorsLoading } = useValidators();
+  const { groupedValidators, isLoading: validatorsLoading } = useValidators();
 
   const handleWelcomeNavigation = () => {
     router.push("/welcome");
@@ -91,7 +92,7 @@ export const TopBar: FC<ITopBar> = (props) => {
               >
                 <div className="absolute inset-[1px] rounded-[3px] bg-white dark:bg-gray-950" />
                 <p className="relative text-sm font-medium">
-                  {validators?.length}
+                  {groupedValidators[ValidatorStatus.ACTIVE]?.length}
                 </p>
               </div>
             )}

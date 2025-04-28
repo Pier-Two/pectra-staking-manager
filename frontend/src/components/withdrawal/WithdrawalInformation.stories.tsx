@@ -23,9 +23,10 @@ export const Primary: Story = {
   args: {
     buttonText: "Withdraw",
     handleMaxAllocation: () => {},
-    isValid: true,
+    disabled: false,
     onSubmit: () => {},
     resetWithdrawal: () => {},
+    availableValidators: 10,
     validatorsSelected: 8,
     withdrawalTotal: 100,
     stage: { type: "data-capture" },

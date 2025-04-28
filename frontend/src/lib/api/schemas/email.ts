@@ -9,3 +9,5 @@ export const SendEmailNotificationSchema = z.object({
 export type SendEmailNotificationType = z.infer<
   typeof SendEmailNotificationSchema
 >;
+
+export const EmailSchema = z.string().email().optional().or(z.literal(""));

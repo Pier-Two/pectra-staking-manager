@@ -12,6 +12,7 @@ import { useActiveAccount } from "thirdweb/react";
 import { parseEther } from "viem";
 import { useActiveChainWithDefault } from "./useChain";
 import { useContracts } from "./useContracts";
+import { ValidatorStatus } from "pec/types/validator";
 
 interface BatchDepositRequest {
   pubKey: `0x${string}`;
@@ -50,10 +51,23 @@ export const useBatchDeposit = () => {
       return;
     }
 
+    const availableDeposits = deposits.filter(
+      (deposit) => deposit.validator.status !== ValidatorStatus.EXITED,
+    );
+
+    if (availableDeposits.length !== deposits.length) {
+      toast({
+        title: "Deposits Removed from contract call",
+        description:
+          "Some validators are currently exiting so they have been removed from this deposit call.",
+        variant: "error",
+      });
+    }
+
     setStage({ type: "sign-data" });
 
     try {
-      const formattedDeposits: BatchDepositRequest[] = deposits.map(
+      const formattedDeposits: BatchDepositRequest[] = availableDeposits.map(
         (deposit) => ({
           pubKey: deposit.validator.publicKey as `0x${string}`,
           amount: parseEther(deposit.amount.toString()),
@@ -73,7 +87,7 @@ export const useBatchDeposit = () => {
         }),
       });
 
-      const saveDepositDetails = deposits.map((deposit) => ({
+      const saveDepositDetails = availableDeposits.map((deposit) => ({
         validatorIndex: deposit.validator.validatorIndex,
         txHash: receipt.transactionHash,
         email: email,

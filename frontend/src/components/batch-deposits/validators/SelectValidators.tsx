@@ -2,7 +2,7 @@ import { keyBy, orderBy } from "lodash";
 import { DEPOSIT_COLUMN_HEADERS } from "pec/constants/columnHeaders";
 import type { DepositData, DepositType } from "pec/lib/api/schemas/deposit";
 import type { EDistributionMethod } from "pec/types/batch-deposits";
-import type { ValidatorDetails } from "pec/types/validator";
+import { type ValidatorDetails } from "pec/types/validator";
 import { useState } from "react";
 import type { FieldErrors, UseFormRegister } from "react-hook-form";
 import { DepositSelectionValidatorCard } from "../../validators/cards/DepositSelectionValidatorCard";
@@ -59,6 +59,7 @@ export const SelectValidators = ({
 
   const sortedValidators = (() => {
     if (!sortColumn || !sortDirection || !validators) return validators;
+
     return orderBy(validators, ["validatorIndex", "balance"], [sortDirection]);
   })();
 

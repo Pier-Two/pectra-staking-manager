@@ -1,6 +1,4 @@
-"use client";
-
-import { AlignLeft, Pencil, Zap } from "lucide-react";
+import { Pencil, Zap } from "lucide-react";
 import { PrimaryButton } from "pec/components/ui/custom/PrimaryButton";
 import { SecondaryButton } from "pec/components/ui/custom/SecondaryButton";
 import {
@@ -11,179 +9,153 @@ import {
 } from "pec/components/ui/tabs";
 import { ValidatorCard } from "pec/components/validators/cards/ValidatorCard";
 import { DetectedValidators } from "pec/components/validators/DetectedValidators";
-import { useConsolidationStore } from "pec/hooks/use-consolidation-store";
-import { useValidators } from "pec/hooks/useValidators";
-import { DECIMAL_PLACES } from "pec/lib/constants";
 import { EIconPosition } from "pec/types/components";
-import type { ValidatorDetails } from "pec/types/validator";
-import { useEffect, useMemo, useState } from "react";
-import { formatEther } from "viem";
-import { ValidatorList } from "./ValidatorList";
+import { type ValidatorDetails } from "pec/types/validator";
+import { useMemo } from "react";
+import { ValidatorTable } from "pec/components/ui/table/ValidatorTable";
+import { CONSOLIDATION_TABLE_HEADERS } from "pec/constants/columnHeaders";
+import { DisplayAmount } from "pec/components/ui/table/TableComponents";
+import { keyBy, sumBy } from "lodash";
 
-export const SelectSourceValidators = () => {
-  const {
-    consolidationTarget,
-    setConsolidationTarget,
-    setProgress,
-    bulkSetConsolidationTargets,
-    validatorsToConsolidate,
-    addValidatorToConsolidate,
-  } = useConsolidationStore();
+interface SelectSourceValidatorsProps {
+  availableSourceValidators: ValidatorDetails[];
+  sourceValidators: ValidatorDetails[];
+  destinationValidator: ValidatorDetails;
+  setSourceValidators: (
+    validators: ValidatorDetails | ValidatorDetails[],
+  ) => void;
+  goToSummary: () => void;
+  goBack: () => void;
+}
 
-  const [activeTab, setActiveTab] = useState<string>("maxConsolidate");
+export const SelectSourceValidators = ({
+  sourceValidators,
+  destinationValidator,
+  setSourceValidators,
+  availableSourceValidators,
+  goToSummary,
+  goBack,
+}: SelectSourceValidatorsProps) => {
+  const validatorSelectedRecord = keyBy(sourceValidators, (v) => v.publicKey);
 
-  const { data: validators } = useValidators();
-
-  const availableSourceValidators = useMemo(() => {
-    return validators?.filter(
-      (validator) =>
-        validator.validatorIndex !== consolidationTarget?.validatorIndex &&
-        validator.consolidationTransaction?.isConsolidatedValidator !== false,
-    );
-  }, [validators, consolidationTarget]);
-
-  useEffect(() => {
-    if (
-      activeTab === "maxConsolidate" &&
-      validatorsToConsolidate?.length === 0
-    ) {
-      if (availableSourceValidators) {
-        bulkSetConsolidationTargets(availableSourceValidators);
-      }
-    }
-  }, [
-    activeTab,
-    availableSourceValidators,
-    bulkSetConsolidationTargets,
-    validatorsToConsolidate?.length,
-  ]);
-
-  const handleResetConsolidationTarget = () => {
-    setConsolidationTarget(undefined);
-    setProgress(1);
-  };
-
-  const handleConsolidationProgression = () => {
-    if (validatorsToConsolidate?.length > 0) setProgress(3);
-  };
-
-  const handleSourceValidatorSelection = (validator: ValidatorDetails) => {
-    addValidatorToConsolidate(validator);
+  const isValidatorSelected = (validator: ValidatorDetails) => {
+    return !!validatorSelectedRecord[validator.publicKey];
   };
 
   const newDestinationBalance = useMemo(() => {
-    return (
-      validatorsToConsolidate.reduce((acc, validator) => {
-        return acc + validator.balance;
-      }, 0n) + (consolidationTarget?.balance ?? 0n)
-    );
-  }, [validatorsToConsolidate, consolidationTarget]);
+    const sourceValidatorsSum = sumBy(sourceValidators, (v) => v.balance);
+    return sourceValidatorsSum + destinationValidator.balance;
+  }, [sourceValidators, destinationValidator]);
 
   return (
-    <div className="space-y-6">
-      <div className="space-y-2">
+    <div className="w-full space-y-6">
+      <div className="space-y-6">
         <div className="text-2xl font-medium">Source Validator(s)</div>
-        <div className="text-sm text-gray-700 dark:text-gray-300">
+        <div className="text-base">
           All source validator balances will be consolidated into the elected
           destination validator.
         </div>
       </div>
 
-      <div className="space-y-8">
-        <div className="flex flex-col gap-2">
-          <div className="text-md font-medium">Destination validator</div>
+      <div className="flex flex-col gap-2">
+        <div className="text-md font-medium">Destination validator</div>
 
-          <div className="flex flex-col items-center justify-center gap-4">
-            {consolidationTarget && (
-              <ValidatorCard
-                hasHover={false}
-                shrink={false}
-                validator={consolidationTarget}
-              />
-            )}
+        <div className="flex flex-col items-center justify-center gap-4">
+          <ValidatorCard validator={destinationValidator} />
 
-            <SecondaryButton
-              className="w-full"
-              label="Change destination"
-              icon={<Pencil className="h-4 w-4" />}
-              iconPosition={EIconPosition.LEFT}
-              onClick={() => handleResetConsolidationTarget()}
-              disabled={false}
-            />
-          </div>
+          <SecondaryButton
+            className="w-full"
+            label="Change destination"
+            icon={<Pencil className="h-4 w-4" />}
+            iconPosition={EIconPosition.LEFT}
+            onClick={goBack}
+            disabled={false}
+          />
         </div>
       </div>
 
-      <div className="text-md font-medium">Select source validator(s)</div>
+      <div className="text-base font-medium">Select source validator(s)</div>
 
       <Tabs
-        defaultValue="maxConsolidate"
+        defaultValue={
+          sourceValidators.length === 0 ||
+          sourceValidators.length === availableSourceValidators.length
+            ? "maxConsolidate"
+            : "manuallySelect"
+        }
         className="w-full space-y-8"
-        onValueChange={setActiveTab}
+        onValueChange={(e) => {
+          if (e === "maxConsolidate") {
+            setSourceValidators(availableSourceValidators);
+          } else {
+            setSourceValidators([]);
+          }
+        }}
       >
-        <TabsList className="grid w-full grid-cols-2 rounded-xl bg-gray-200 dark:bg-gray-900">
-          <TabsTrigger
-            className="rounded-xl text-gray-800 dark:text-gray-200 data-[state=active]:bg-white data-[state=active]:text-indigo-800 dark:data-[state=active]:text-black"
-            value="maxConsolidate"
-            onClick={() =>
-              bulkSetConsolidationTargets(availableSourceValidators ?? [])
-            }
-          >
-            Max consolidate
-          </TabsTrigger>
+        <TabsList className="text-piertwoDark-text grid w-full grid-cols-2 rounded-md bg-indigo-800 bg-opacity-10 dark:bg-gray-800">
+          <TabsListItem value="maxConsolidate">Max consolidate</TabsListItem>
 
-          <TabsTrigger
-            className="rounded-xl text-gray-800 dark:text-gray-200 data-[state=active]:bg-white data-[state=active]:text-indigo-800 dark:data-[state=active]:text-black"
-            value="manuallySelect"
-            onClick={() => bulkSetConsolidationTargets([])}
-          >
-            Manually select
-          </TabsTrigger>
+          <TabsListItem value="manuallySelect">Manually select</TabsListItem>
         </TabsList>
 
         <TabsContent value="maxConsolidate">
           <DetectedValidators
             cardTitle="selected"
-            validators={validatorsToConsolidate}
+            validators={sourceValidators}
           />
         </TabsContent>
 
         <TabsContent value="manuallySelect">
-          {availableSourceValidators && (
-            <ValidatorList
-              sourceValidators={validatorsToConsolidate}
-              setSourceValidators={handleSourceValidatorSelection}
-              validators={availableSourceValidators}
-            />
-          )}
+          <ValidatorTable
+            data={availableSourceValidators}
+            headers={CONSOLIDATION_TABLE_HEADERS}
+            selectableRows={{
+              onClick: setSourceValidators,
+              isSelected: isValidatorSelected,
+              showCheckIcons: true,
+            }}
+          />
         </TabsContent>
       </Tabs>
 
       <div className="flex flex-row items-center justify-center gap-2 text-sm text-gray-600 dark:text-gray-400">
         <Zap className="h-4 w-4 fill-indigo-500 text-indigo-500" />
-        <div>New destination balance:</div>
-
-        <div className="flex items-center gap-1 text-black dark:text-white">
-          <AlignLeft className="h-3 w-3" />
-          <span>
-            {Number(formatEther(newDestinationBalance)).toFixed(
-              DECIMAL_PLACES,
-            )}{" "}
-          </span>
-        </div>
-
-        <div className="flex items-center gap-1">
-          <AlignLeft className="h-3 w-3 text-gray-500" />
-          <span>2,048 max</span>
-        </div>
+        <div className="text-sm">New destination balance:</div>
+        <DisplayAmount
+          amount={newDestinationBalance}
+          opts={{ decimals: 2, hidePostfixSymbol: true }}
+        />
+        {"/"}
+        <DisplayAmount
+          amount={2048}
+          opts={{ decimals: 0, hidePostfixSymbol: true }}
+          className="font-normal"
+        />
+        max
       </div>
 
       <PrimaryButton
         className="w-full"
         label="Next"
-        onClick={() => handleConsolidationProgression()}
-        disabled={validatorsToConsolidate.length === 0}
+        onClick={goToSummary}
+        disabled={sourceValidators.length === 0}
       />
     </div>
+  );
+};
+
+interface TabsListItemProps {
+  value: string;
+  children: React.ReactNode;
+}
+
+const TabsListItem = ({ value, children }: TabsListItemProps) => {
+  return (
+    <TabsTrigger
+      className="text-piertwo-text data-[state=active]:text-piertwoDark-text rounded-md font-semibold data-[state=active]:bg-white data-[state=active]:dark:bg-black"
+      value={value}
+    >
+      {children}
+    </TabsTrigger>
   );
 };

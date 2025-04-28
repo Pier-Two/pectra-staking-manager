@@ -1,22 +1,25 @@
-import { DECIMAL_PLACES } from "pec/lib/constants";
-import type { IGenericValidators } from "pec/types/validator";
-import type { FC } from "react";
-import { formatEther } from "viem";
 import { MyValidatorsCard } from "./MyValidatorsCard";
+import { displayedEthAmount } from "pec/lib/utils/validators/balance";
+import { ValidatorDetails } from "pec/types/validator";
 
-export const TotalStake: FC<IGenericValidators> = (props) => {
+interface TotalStakeProps {
+  validators: ValidatorDetails[];
+}
+
+export const TotalStake = (props: TotalStakeProps) => {
   const { validators } = props;
   const totalStake = validators.reduce(
-    (acc, validator) => acc + BigInt(validator.balance),
-    0n,
+    (acc, validator) => acc + validator.balance,
+    0,
   );
-  const averageStake = validators.length > 0 ? totalStake / BigInt(validators.length) : 0n;
+  const averageStake =
+    validators.length > 0 ? totalStake / validators.length : 0n;
 
   return (
     <MyValidatorsCard
       title="Total ETH Staked"
-      body={<p>Ξ {Number(formatEther(totalStake)).toFixed(DECIMAL_PLACES)}</p>}
-      subtext={`Average ${Number(formatEther(averageStake)).toFixed(DECIMAL_PLACES)} per validator`}
+      body={<p>Ξ {displayedEthAmount(totalStake)}</p>}
+      subtext={`Average ${displayedEthAmount(averageStake)} per validator`}
     />
   );
 };

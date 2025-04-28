@@ -1,5 +1,6 @@
 "use client";
 
+import { ConsolidationStep } from "pec/types/consolidation";
 import type {
   Transaction,
   TransactionStatus,
@@ -13,8 +14,6 @@ import { createStore } from "zustand/vanilla";
 const serializeValidator = (validator: ValidatorDetails) => {
   const formatted = {
     ...validator,
-    balance: validator.balance.toString(),
-    effectiveBalance: validator.effectiveBalance.toString(),
   };
 
   return formatted;
@@ -26,14 +25,12 @@ type SerializedValidator = ReturnType<typeof serializeValidator>;
 const deserialiseValidator = (validator: SerializedValidator) => {
   return {
     ...validator,
-    balance: BigInt(validator.balance),
-    effectiveBalance: BigInt(validator.effectiveBalance),
   };
 };
 
 type ConsolidationStore = {
-  progress: number;
-  setProgress: (step: number) => void;
+  progress: ConsolidationStep;
+  setProgress: (step: ConsolidationStep) => void;
 
   // the current pub key being consolidated
   currentPubKey: string | undefined;
@@ -44,8 +41,7 @@ type ConsolidationStore = {
 
   validatorsToConsolidate: SerializedValidator[];
   bulkSetConsolidationTargets: (validators: ValidatorDetails[]) => void;
-  addValidatorToConsolidate: (validator: ValidatorDetails) => void;
-  removeValidatorToConsolidate: (validator: ValidatorDetails) => void;
+  handleValidatorToConsolidateSelect: (validator: ValidatorDetails) => void;
   updateConsolidatedValidator: (
     validator: ValidatorDetails,
     txHash: string | undefined,
@@ -59,6 +55,9 @@ type ConsolidationStore = {
   // Reset method
   reset: () => void;
 
+  // Go back
+  back: () => void;
+
   // Getter methods to deserialize data
   getConsolidationTarget: () => ValidatorDetails | undefined;
   getValidatorsToConsolidate: () => ValidatorDetails[];
@@ -71,12 +70,31 @@ type ConsolidationStore = {
 
 export const consolidationStore = createStore<ConsolidationStore>()(
   (set, get) => ({
-    progress: 1,
-    setProgress: (progress: number) => set({ progress }),
+    // Weird I need to cast this here
+    progress: "destination" as ConsolidationStep,
+    setProgress: (progress: ConsolidationStep) => set({ progress }),
 
     currentPubKey: undefined,
     setCurrentPubKey: (pubKey: string | undefined) =>
       set({ currentPubKey: pubKey }),
+
+    back: () => {
+      const progress = get().progress;
+
+      if (progress === "destination") {
+        return;
+      }
+
+      if (progress === "source") {
+        set({ progress: "destination", validatorsToConsolidate: [] });
+
+        return;
+      }
+
+      if (progress === "summary") {
+        set({ progress: "destination" });
+      }
+    },
 
     consolidationTarget: undefined,
     setConsolidationTarget: (validator: ValidatorDetails | undefined) =>
@@ -92,20 +110,26 @@ export const consolidationStore = createStore<ConsolidationStore>()(
         validatorsToConsolidate: validators.map(serializeValidator),
       })),
 
-    addValidatorToConsolidate: (validator: ValidatorDetails) =>
-      set(() => ({
-        validatorsToConsolidate: [
-          ...get().validatorsToConsolidate,
-          serializeValidator(validator),
-        ],
-      })),
+    handleValidatorToConsolidateSelect: (validator: ValidatorDetails) => {
+      const isSelected = get().validatorsToConsolidate.some(
+        (v) => v.publicKey === validator.publicKey,
+      );
 
-    removeValidatorToConsolidate: (validator: ValidatorDetails) =>
-      set((state) => ({
-        validatorsToConsolidate: state.validatorsToConsolidate.filter(
-          (v) => v.publicKey !== validator.publicKey,
-        ),
-      })),
+      if (!isSelected) {
+        set((state) => ({
+          validatorsToConsolidate: [
+            ...state.validatorsToConsolidate,
+            serializeValidator(validator),
+          ],
+        }));
+      } else {
+        set((state) => ({
+          validatorsToConsolidate: state.validatorsToConsolidate.filter(
+            (v) => v.publicKey !== validator.publicKey,
+          ),
+        }));
+      }
+    },
 
     updateConsolidatedValidator: (
       validator: ValidatorDetails,
@@ -133,7 +157,7 @@ export const consolidationStore = createStore<ConsolidationStore>()(
     // Reset method implementation
     reset: () =>
       set({
-        progress: 1,
+        progress: "destination",
         currentPubKey: undefined,
         consolidationTarget: undefined,
         validatorsToConsolidate: [],

@@ -1,16 +1,18 @@
+"use client";
+
 import type { FC } from "react";
 import { ProgressBar } from "pec/components/consolidation/ProgressBar";
 import { Skeleton } from "pec/components/ui/skeleton";
 
 const ConsolidationWorkflowLoading: FC = () => {
   return (
-    <div className="flex flex-col gap-4">
-      <ProgressBar progress={1} />
+    <div className="flex w-full flex-col gap-4">
+      <ProgressBar progress={"source"} backHandler={() => {}} />
 
       <div className="space-y-8">
         <div className="space-y-4">
           <div className="text-3xl">Loading validators...</div>
-          <div className="text-md text-gray-700 dark:text-gray-300">
+          <div className="text-base text-gray-700 dark:text-gray-300">
             We&apos;re loading your validators...
           </div>
         </div>
