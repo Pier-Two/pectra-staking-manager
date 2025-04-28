@@ -1,4 +1,3 @@
-import { useRouter } from "next/navigation";
 import {
   CONSOLIDATION_STEP_NUMBER_TO_NAME,
   CONSOLIDATION_STEPS,
@@ -7,16 +6,14 @@ import {
 import { type ValidatorDetails } from "pec/types/validator";
 import { useImmer } from "use-immer";
 import { useSubmitConsolidate } from "./use-consolidation";
-import { TxHashRecord } from "pec/types/withdraw";
 import { getRequiredConsolidationTransactions } from "pec/lib/utils/validators/consolidate";
+import { TransactionStatus } from "pec/types/withdraw";
 
 interface UseConsolidate {
   activeValidators: ValidatorDetails[];
 }
 
 export const useNewConsolidate = ({ activeValidators }: UseConsolidate) => {
-  // const router = useRouter();
-
   const consolidate = useSubmitConsolidate();
 
   const [stage, setStage] = useImmer<ConsolidationWorkflowStages>({
@@ -102,6 +99,27 @@ export const useNewConsolidate = ({ activeValidators }: UseConsolidate) => {
     setStage(updatedStage);
   };
 
+  const updateTransactionStatus = (
+    index: number,
+    status: TransactionStatus,
+  ) => {
+    setStage((state) => {
+      if (state.stage !== "submit") {
+        console.error("Invalid state", stage);
+
+        return;
+      }
+
+      if (!state.transactions.transactions[index]) {
+        console.error("Transaction not found", index, state);
+
+        return;
+      }
+
+      state.transactions.transactions[index].transactionStatus = status;
+    });
+  };
+
   const goToSubmit = () => {
     if (stage.stage !== "summary") {
       console.error("Invalid state", stage);
@@ -109,13 +127,30 @@ export const useNewConsolidate = ({ activeValidators }: UseConsolidate) => {
       return;
     }
 
-    setStage((stage) => {
-      stage.stage = "submit";
-    });
+    const updatedStage: ConsolidationWorkflowStages = {
+      stage: "submit",
+      destinationValidator: stage.destinationValidator,
+      sourceValidator: stage.sourceValidator,
+      // Bit messy but just resets the states to pending if they went through the flow previously
+      transactions: {
+        ...stage.transactions,
+        transactions: stage.transactions.transactions.map((tx) => ({
+          ...tx,
+          transactionStatus: { status: "pending" },
+        })),
+      },
+    };
+
+    setStage(updatedStage);
 
     // Add void to ignore the promise
     // TODO: EMAIL
-    void consolidate(stage.transactions.transactions, "");
+    void consolidate(
+      updatedStage.destinationValidator,
+      updatedStage.transactions.transactions,
+      updateTransactionStatus,
+      "",
+    );
   };
 
   const goBack = () => {

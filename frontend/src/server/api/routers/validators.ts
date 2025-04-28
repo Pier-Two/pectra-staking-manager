@@ -18,6 +18,7 @@ import {
 } from "pec/lib/constants/validators/performance";
 import { populateBeaconchainValidatorDetails } from "pec/server/helpers/validators";
 import { IResponse } from "pec/types/response";
+import { EmailSchema } from "pec/lib/api/schemas/email";
 
 export const validatorRouter = createTRPCRouter({
   getValidators: publicProcedure
@@ -151,7 +152,7 @@ export const validatorRouter = createTRPCRouter({
         targetValidatorIndex: z.number(),
         sourceTargetValidatorIndex: z.number(),
         txHash: z.string(),
-        email: z.string().email().optional(),
+        email: EmailSchema,
       }),
     )
     .mutation(async ({ input }): Promise<IResponse<null>> => {

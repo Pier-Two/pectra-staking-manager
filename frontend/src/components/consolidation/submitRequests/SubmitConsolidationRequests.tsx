@@ -1,6 +1,6 @@
 import { useRouter } from "next/navigation";
 import { ValidatorDetails } from "pec/types/validator";
-import { ArrowRightIcon } from "lucide-react";
+import { ArrowRightIcon, CircleCheck, OctagonMinus } from "lucide-react";
 import { PrimaryButton } from "pec/components/ui/custom/PrimaryButton";
 import { EIconPosition } from "pec/types/components";
 import { ValidatorTable } from "pec/components/ui/table/ValidatorTable";
@@ -17,25 +17,25 @@ interface SubmitConsolidationRequestsProps {
   destination: ValidatorDetails;
   reset: () => void;
   transactions: SubmittingConsolidationValidatorDetails[];
+  upgradeTransactions: number;
+  consolidationTransactions: number;
 }
 
 export const SubmitConsolidationRequests = ({
   destination,
-  reset,
   transactions,
+  upgradeTransactions,
+  consolidationTransactions,
 }: SubmitConsolidationRequestsProps) => {
   const router = useRouter();
 
-  const everyTransactionSubmitted = false;
-
-  // const everyTransactionSubmitted = validatorsToConsolidate.every(
-  //   (validator) =>
-  //     validator.consolidationTransaction?.status ===
-  //     TransactionStatus.SUBMITTED,
-  // );
+  const everyTransactionSubmitted = transactions.every(
+    (validator) =>
+      validator.transactionStatus.status !== "pending" &&
+      validator.transactionStatus.status !== "signing",
+  );
 
   const handleDashboardNavigation = () => {
-    reset();
     router.push("/dashboard");
   };
 
@@ -66,18 +66,49 @@ export const SubmitConsolidationRequests = ({
         )}
 
         <ValidatorCardWrapper isSelected>
-          <ValidatorIndex validator={destination} />
-          <Separator
-            className="mx-5 h-12 bg-gray-200 dark:bg-gray-800"
-            orientation="vertical"
-          />
-          <PectraSpinner />
+          <div className="flex items-center gap-1">
+            <ValidatorIndex validator={destination} />
+            <Separator
+              className="mx-5 h-12 w-[2px] bg-gray-200 dark:bg-gray-800"
+              orientation="vertical"
+            />
+            <div className="flex flex-col gap-1">
+              {upgradeTransactions > 0 && (
+                <span>
+                  <b>{upgradeTransactions}</b> Upgrade(s)
+                </span>
+              )}
+              <span>
+                <b>{consolidationTransactions}</b> Consolidation(s)
+              </span>
+            </div>
+          </div>
+          {!everyTransactionSubmitted && <PectraSpinner />}
         </ValidatorCardWrapper>
 
         <ValidatorTable
           headers={SUBMITTING_CONSOLIDATION_TABLE_HEADERS}
           data={transactions}
           disableSort
+          renderOverrides={{
+            consolidationType: (data) => {
+              if (data.consolidationType === "upgrade") {
+                return (
+                  <div className="flex items-center gap-1 text-xs">
+                    <OctagonMinus className="h-4 w-4" />
+                    Upgrade
+                  </div>
+                );
+              }
+
+              return (
+                <div className="flex items-center gap-1 text-xs">
+                  <CircleCheck className="h-4 w-4 fill-green-500 text-white dark:text-black" />
+                  Consolidation
+                </div>
+              );
+            },
+          }}
         />
       </div>
     </div>

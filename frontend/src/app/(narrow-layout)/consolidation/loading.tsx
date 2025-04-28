@@ -12,7 +12,7 @@ const ConsolidationWorkflowLoading: FC = () => {
       <div className="space-y-8">
         <div className="space-y-4">
           <div className="text-3xl">Loading validators...</div>
-          <div className="text-md text-gray-700 dark:text-gray-300">
+          <div className="text-base text-gray-700 dark:text-gray-300">
             We&apos;re loading your validators...
           </div>
         </div>

@@ -78,8 +78,11 @@ const ConsolidationWorkflow = () => {
       {stage.stage === "submit" && (
         <SubmitConsolidationRequests
           destination={stage.destinationValidator}
-          reset={reset}
           transactions={stage.transactions.transactions}
+          upgradeTransactions={stage.transactions.upgradeTransactions}
+          consolidationTransactions={
+            stage.transactions.consolidationTransactions
+          }
         />
       )}
     </div>

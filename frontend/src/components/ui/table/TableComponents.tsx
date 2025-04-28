@@ -26,7 +26,7 @@ const getStatusConfig = (data: TransactionStatus | undefined): StatusConfig => {
       };
     case "signing":
       return {
-        text: "Signing withdrawal...",
+        text: "Signing transaction...",
         className: "text-indigo-600 dark:text-indigo-400",
       };
     case "submitted":
@@ -37,13 +37,13 @@ const getStatusConfig = (data: TransactionStatus | undefined): StatusConfig => {
       };
     case "finalised":
       return {
-        text: "Withdrawal successful",
+        text: "Transaction successful",
         txHash: data?.txHash,
         className: "text-green-600 dark:text-green-400",
       };
     case "failed":
       return {
-        text: "Withdrawal failed",
+        text: "Transaction failed",
         txHash: data?.txHash,
         className: "text-red-600 dark:text-red-400",
       };
@@ -69,7 +69,7 @@ export const SubmittingTransactionTableComponent = ({
 }: SubmittingTransactionTableComponentProps) => {
   const statusConfig = getStatusConfig(transactionStatus);
   const showLoader =
-    statusConfig.text === "Signing withdrawal..." ||
+    statusConfig.text === "Signing transaction..." ||
     statusConfig.text === "Submitting Transaction";
 
   return (
