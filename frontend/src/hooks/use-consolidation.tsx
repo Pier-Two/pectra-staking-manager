@@ -2,15 +2,13 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { toast } from "pec/components/ui/Toast";
-import { client } from "pec/lib/wallet/client";
 import { api } from "pec/trpc/react";
-import { TransactionStatus, ValidatorDetails } from "pec/types/validator";
-import { eth_call, waitForReceipt } from "thirdweb";
+import { ValidatorDetails } from "pec/types/validator";
+import { eth_call } from "thirdweb";
 import type { ChainOptions } from "thirdweb/chains";
 import { useActiveAccount } from "thirdweb/react";
 import { type Account } from "thirdweb/wallets";
 import { fromHex } from "viem";
-import { useConsolidationStore } from "./use-consolidation-store";
 import { useActiveChainWithDefault } from "./useChain";
 import { useContracts } from "./useContracts";
 import { useRpcClient } from "./useRpcClient";
@@ -78,12 +76,6 @@ export const useSubmitConsolidate = () => {
   const rpcClient = useRpcClient();
   const account = useActiveAccount();
   const chain = useActiveChainWithDefault();
-
-  const {
-    updateConsolidatedValidator,
-    setCurrentPubKey,
-    manuallySettingValidator,
-  } = useConsolidationStore();
 
   const { mutateAsync: saveConsolidationToDatabase } =
     api.validators.updateConsolidationRecord.useMutation();
