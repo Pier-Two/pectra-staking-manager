@@ -93,7 +93,7 @@ const Withdrawal: FC = () => {
     <div className="flex w-full flex-col p-2">
       <div className="space-y-8 px-4">
         <div className="flex flex-col gap-2">
-          <div className="flex items-center gap-x-4 text-primary dark:text-indigo-300">
+          <div className="flex items-center gap-x-4 text-primary-dark dark:text-indigo-300">
             <ArrowUpFromDot className="h-6 w-6" />
             <div className="text-[26px] font-570">Withdrawal</div>
           </div>
