@@ -114,7 +114,8 @@ export const useNewConsolidate = ({ activeValidators }: UseConsolidate) => {
     });
 
     // Add void to ignore the promise
-    void consolidate(stage.destinationValidator, stage.sourceValidator);
+    // TODO: EMAIL
+    void consolidate(stage.transactions.transactions, "");
   };
 
   const goBack = () => {

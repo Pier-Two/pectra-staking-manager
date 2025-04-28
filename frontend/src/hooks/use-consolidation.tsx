@@ -281,7 +281,7 @@ export const useSubmitConsolidate = () => {
     //   setCurrentPubKey("");
     // }
 
-    return results;
+    return [];
   };
 
   return consolidate;
