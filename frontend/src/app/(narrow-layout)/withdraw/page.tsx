@@ -90,15 +90,15 @@ const Withdrawal: FC = () => {
   };
 
   return (
-    <div className="flex w-full flex-col p-2">
-      <div className="space-y-8 px-4">
-        <div className="flex flex-col gap-2">
-          <div className="flex items-center gap-x-4 text-primary-dark dark:text-indigo-300">
-            <ArrowUpFromDot className="h-6 w-6" />
-            <div className="text-[26px] font-570">Withdrawal</div>
+    <div className="flex w-full flex-col gap-y-2">
+      <div className="space-y-8">
+        <div className="flex flex-col gap-4">
+          <div className="flex gap-x-4 text-primary-dark dark:text-indigo-300">
+            <ArrowUpFromDot className="h-8 w-8 self-center" />
+            <div className="text-2xl font-medium">Withdrawal</div>
           </div>
 
-          <div className="text-piertwo-text font-inter text-xs font-380">
+          <div className="text-piertwo-text font-inter text-xs">
             Submit onchain execution layer withdrawal requests against
             validators, as per Pectra EIP-7002.
           </div>
