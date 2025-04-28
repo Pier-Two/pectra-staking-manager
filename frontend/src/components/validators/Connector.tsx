@@ -1,10 +1,10 @@
+import { cn } from "pec/lib/utils";
+import type { ValidatorDetails } from "pec/types/validator";
 import type { FC } from "react";
 import { ConnectedAddress } from "./ConnectedAddress";
 import { DetectedValidators } from "./DetectedValidators";
 import { ValidatorHelp } from "./ValidatorHelp";
 import { ValidatorInformation } from "./ValidatorInformation";
-import { ValidatorDetails } from "pec/types/validator";
-import { cn } from "pec/lib/utils";
 
 export interface IConnector {
   title?: JSX.Element | string;
