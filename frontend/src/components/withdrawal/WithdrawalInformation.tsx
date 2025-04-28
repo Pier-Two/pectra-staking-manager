@@ -1,11 +1,13 @@
+import { AnimatePresence, motion } from "framer-motion";
 import { Check } from "lucide-react";
 import Image from "next/image";
+import { cn } from "pec/lib/utils";
+import { displayedEthAmount } from "pec/lib/utils/validators/balance";
 import type { WithdrawWorkflowStages } from "pec/types/withdraw";
 import { PectraSpinner } from "../ui/custom/pectraSpinner";
 import { PrimaryButton } from "../ui/custom/PrimaryButton";
 import { SecondaryButton } from "../ui/custom/SecondaryButton";
 import { Separator } from "../ui/separator";
-import { displayedEthAmount } from "pec/lib/utils/validators/balance";
 
 export interface IWithdrawalInformation {
   buttonText: string;
@@ -14,6 +16,7 @@ export interface IWithdrawalInformation {
   onSubmit: () => void;
   resetWithdrawal: () => void;
   stage: WithdrawWorkflowStages;
+  availableValidators: number;
   validatorsSelected: number;
   withdrawalTotal: number;
 }
@@ -25,6 +28,7 @@ export const WithdrawalInformation = ({
   onSubmit,
   resetWithdrawal,
   stage,
+  availableValidators,
   validatorsSelected,
   withdrawalTotal,
 }: IWithdrawalInformation) => {
@@ -46,6 +50,10 @@ export const WithdrawalInformation = ({
     Object.values(stage.txHashes).some(
       (tx) => tx.status === "failed" || tx.status === "failedToSubmit",
     );
+
+  const isPending =
+  stage.type === "sign-submit-finalise" &&
+  Object.values(stage.txHashes).some((tx) => tx.status === "pending");
 
   const isSigning =
     stage.type === "sign-submit-finalise" &&
@@ -84,14 +92,15 @@ export const WithdrawalInformation = ({
                     <Image
                       src={stat.imageUrl}
                       alt="Icon"
-                      width={24}
-                      height={24}
+                      width={16}
+                      height={16}
+                      className=""
                     />
                   )}
-                  <div className="text-sm">{stat.value}</div>
+                  <div className="text-sm font-inter font-670">{stat.value}</div>
                 </div>
 
-                <div className="text-sm text-gray-500 dark:text-gray-500">
+                <div className="text-xs text-gray-500 dark:text-gray-500 font-inter font-380">
                   {stat.label}
                 </div>
               </div>
@@ -100,9 +109,15 @@ export const WithdrawalInformation = ({
         </div>
 
         <div className="px-6">
-          {(isSigning || isSubmitting) && !allTransactionsFinalised && (
+          {(isSigning || isSubmitting || isPending) && !allTransactionsFinalised && (
             <div className="flex flex-row items-center gap-2">
               <PectraSpinner />
+              {isPending && (
+                <div className="text-sm">Awaiting Signatures...</div>
+              )}
+              {isSubmitting && (
+                <div className="text-sm">Submitting Transactions...</div>
+              )}
             </div>
           )}
 
@@ -116,17 +131,31 @@ export const WithdrawalInformation = ({
               </div>
             </>
           )}
-
           {stage.type === "data-capture" && (
-            <div className="flex flex-row gap-4">
-              <SecondaryButton
-                label="Max"
-                disabled={false}
-                onClick={handleMaxAllocation}
-              />
+            <div className="flex flex-row gap-2 md:gap-4 items-center relative">
+              <div
+                className={cn(
+                  "transition-all duration-500 ease-in-out",
+                  validatorsSelected !== availableValidators
+                    ? "opacity-100 translate-x-0"
+                    : "opacity-0 -translate-x-8 pointer-events-none"
+                )}
+              >
+                <SecondaryButton
+                  className="border-gray-200 dark:border-gray-800"
+                  label="Max"
+                  disabled={false}
+                  onClick={() => {
+                    handleMaxAllocation();
+                  }}
+                />
+              </div>
 
               <PrimaryButton
-                className="w-40"
+                className={cn(
+                  "w-60 transition-all duration-500 ease-in-out",
+                  validatorsSelected === availableValidators && "mr-16 md:mr-4 w-64"
+                )}
                 label={buttonText}
                 disabled={!disabled}
                 onClick={onSubmit}
@@ -137,34 +166,63 @@ export const WithdrawalInformation = ({
       </div>
 
       {someTransactionsFailed && (
-        <>
-          <div className="rounded-xl bg-gray-100 p-2 text-sm text-gray-500 dark:bg-black">
+        <AnimatePresence>
+          <motion.div
+            key="failed-transactions"
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.5 }}
+            className="rounded-xl bg-gray-100 p-2 text-sm text-gray-500 dark:bg-black"
+          >
             Some transactions failed. Please check your validator statuses and
             try again.
-          </div>
+          </motion.div>
 
-          <PrimaryButton
-            label="Make another withdrawal"
-            onClick={resetWithdrawal}
-            disabled={false}
-          />
-        </>
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+          >
+            <PrimaryButton
+              label="Make another withdrawal"
+              onClick={resetWithdrawal}
+              disabled={false}
+            />
+          </motion.div>
+        </AnimatePresence>
       )}
 
       {isSubmitting && (
-        <>
-          <div className="rounded-xl bg-gray-100 p-2 text-sm text-gray-500 dark:bg-black">
+        <AnimatePresence>
+          <motion.div
+            key="submitted-transactions"
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.5 }}
+            className="rounded-xl bg-green-100 p-2 text-sm text-green-500 dark:bg-black"
+          >
             Your transactions have been submitted successfully and will be
             processed shortly. You can leave this page and check the status of
             your withdrawals in your dashboard.
-          </div>
+          </motion.div>
 
-          <PrimaryButton
-            label="Make another withdrawal"
-            onClick={resetWithdrawal}
-            disabled={false}
-          />
-        </>
+          <motion.div
+            key="make-another-withdrawal"
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+            className="w-full"
+          >
+            <PrimaryButton
+              className="w-full"
+              label="Make another withdrawal"
+              onClick={resetWithdrawal}
+              disabled={false}
+            />
+          </motion.div>
+        </AnimatePresence>
       )}
     </div>
   );

@@ -26,6 +26,7 @@ export const Primary: Story = {
     disabled: false,
     onSubmit: () => {},
     resetWithdrawal: () => {},
+    availableValidators: 10,
     validatorsSelected: 8,
     withdrawalTotal: 100,
     stage: { type: "data-capture" },

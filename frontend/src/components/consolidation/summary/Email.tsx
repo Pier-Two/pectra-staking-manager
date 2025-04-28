@@ -1,12 +1,12 @@
 "use client";
 
+import { AnimatePresence, motion } from "framer-motion";
 import { HiMail } from "react-icons/hi";
-import { Switch } from "pec/components/ui/switch";
 import { Input } from "pec/components/ui/input";
-
-import { type DepositType } from "pec/lib/api/schemas/deposit";
-import { type FC } from "react";
-import { type FieldErrors } from "react-hook-form";
+import { Switch } from "pec/components/ui/switch";
+import type { DepositType } from "pec/lib/api/schemas/deposit";
+import type { FC } from "react";
+import type { FieldErrors } from "react-hook-form";
 
 export interface IConsolidationEmail {
   cardText: string;
@@ -30,7 +30,12 @@ export const Email: FC<IConsolidationEmail> = (props) => {
   } = props;
 
   return (
-    <div className="flex w-full flex-col items-center justify-between gap-x-4 space-y-4 rounded-2xl bg-white p-4 dark:border-gray-800 dark:bg-black">
+    <motion.div
+      className="flex w-full flex-col items-center justify-between gap-x-4 space-y-4 rounded-2xl bg-white p-4 dark:border-gray-800 dark:bg-black"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3 }}
+    >
       <div className="flex-col-2 flex w-full items-center justify-between gap-x-4">
         <div className="flex items-center gap-x-4">
           <HiMail className="h-5 w-5 fill-primary text-white dark:text-black" />
@@ -50,20 +55,36 @@ export const Email: FC<IConsolidationEmail> = (props) => {
         />
       </div>
 
-      {showEmail && (
-        <div className="flex w-full flex-col gap-y-2 pt-4">
-          <Input
-            className="w-full rounded-xl border border-indigo-200 bg-white p-4 dark:border-gray-800 dark:bg-black"
-            placeholder="Email"
-            value={summaryEmail}
-            onChange={(e) => setSummaryEmail(e.target.value)}
-          />
+      <AnimatePresence>
+        {showEmail && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.3, ease: "easeInOut" }}
+            className="w-full overflow-hidden"
+          >
+            <div className="flex flex-col gap-y-2 pt-4">
+              <Input
+                className="rounded-xl border border-indigo-200 bg-white p-4 dark:border-gray-800 dark:bg-black"
+                placeholder="Email"
+                value={summaryEmail || ""}
+                onChange={(e) => setSummaryEmail(e.target.value)}
+                autoFocusOn={showEmail}
+              />
 
-          <div className="mt-1 text-xs text-red-500">
-            {errors?.email && "Invalid email address"}
-          </div>
-        </div>
-      )}
-    </div>
+              <motion.div
+                className="mt-1 text-xs text-red-500"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: errors?.email ? 1 : 0 }}
+                transition={{ duration: 0.2 }}
+              >
+                {errors?.email && "Invalid email address"}
+              </motion.div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.div>
   );
 };

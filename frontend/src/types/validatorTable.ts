@@ -1,5 +1,5 @@
-import { ValidatorDetails } from "./validator";
-import { TransactionStatus } from "./withdraw";
+import type { ValidatorDetails } from "./validator";
+import type { TransactionStatus } from "./withdraw";
 
 export enum ESortDirection {
   ASC = "asc",
