@@ -15,7 +15,6 @@ import { Separator } from "@radix-ui/react-separator";
 
 interface SubmitConsolidationRequestsProps {
   destination: ValidatorDetails;
-  reset: () => void;
   transactions: SubmittingConsolidationValidatorDetails[];
   upgradeTransactions: number;
   consolidationTransactions: number;
