@@ -6,7 +6,13 @@ import { ArrowUpFromDot } from "lucide-react";
 import Image from "next/image";
 import { ValidatorHeader } from "pec/components/batch-deposits/validators/ValidatorHeader";
 import { Email } from "pec/components/consolidation/summary/Email";
+import { ValidatorTable } from "pec/components/ui/table/ValidatorTable";
 import { WithdrawalInformation } from "pec/components/withdrawal/WithdrawalInformation";
+import { WithdrawalValidatorTable } from "pec/components/withdrawal/WithdrawalValidatorTable";
+import {
+  SUBMITTING_WITHDRAWAL_COLUMN_HEADERS,
+  type WithdrawalTableValidatorDetails,
+} from "pec/constants/columnHeaders";
 import { useValidators } from "pec/hooks/useValidators";
 import { useWalletAddress } from "pec/hooks/useWallet";
 import { useSubmitWithdraw } from "pec/hooks/useWithdraw";
@@ -19,12 +25,6 @@ import { ValidatorStatus } from "pec/types/validator";
 import { type FC, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import WithdrawalLoading from "./loading";
-import { WithdrawalValidatorTable } from "pec/components/withdrawal/WithdrawalValidatorTable";
-import { ValidatorTable } from "pec/components/ui/table/ValidatorTable";
-import {
-  SUBMITTING_WITHDRAWAL_COLUMN_HEADERS,
-  WithdrawalTableValidatorDetails,
-} from "pec/constants/columnHeaders";
 
 const Withdrawal: FC = () => {
   const walletAddress = useWalletAddress();
@@ -90,45 +90,47 @@ const Withdrawal: FC = () => {
   };
 
   return (
-    <div className="flex w-full flex-col gap-y-4">
-      <div className="space-y-8">
-        <div className="flex flex-col gap-4">
-          <div className="flex gap-x-4 text-indigo-800 dark:text-indigo-300">
-            <ArrowUpFromDot className="h-8 w-8" />
-            <div className="text-2xl font-medium">Withdrawal</div>
+    <div className="flex w-full flex-col p-2">
+      <div className="space-y-8 px-4">
+        <div className="flex flex-col gap-2">
+          <div className="flex gap-x-4 items-center text-primary dark:text-indigo-300">
+            <ArrowUpFromDot className="h-6 w-6" />
+            <div className="text-[26px] font-570">Withdrawal</div>
           </div>
 
-          <div className="text-sm text-gray-700 dark:text-gray-300">
+          <div className="text-xs font-380 text-[#4C4C4C] dark:text-gray-300 font-inter">
             Submit onchain execution layer withdrawal requests against
             validators, as per Pectra EIP-7002.
           </div>
         </div>
 
-        <div className="ms-4 flex flex-row items-center gap-3">
-          <Image
-            className="h-4 w-4"
-            src="/icons/Wallet.svg"
-            alt="Withdrawal Wallet"
-            width={16}
-            height={16}
-          />
+        <div className="flex flex-col gap-5 pt-8">
+          <div className="flex flex-row pl-4 gap-3">
+            <Image
+              className="h-4 w-4"
+              src="/icons/Wallet.svg"
+              alt="Withdrawal Wallet"
+              width={16}
+              height={16}
+            />
 
-          <div className="text-sm">Withdrawal address</div>
-          <div className="text-sm text-gray-500 dark:text-gray-300">
-            {formatAddressToShortenedString(walletAddress)}
+            <div className="text-sm font-570">Withdrawal address</div>
+            <div className="text-sm text-[#4C4C4C] dark:text-gray-300">
+              {formatAddressToShortenedString(walletAddress)}
+            </div>
           </div>
-        </div>
-
-        <WithdrawalInformation
+          <WithdrawalInformation
           buttonText="Withdraw"
           handleMaxAllocation={handleMaxAllocation}
           disabled={disabled}
           onSubmit={handleSubmit(onSubmit)}
           resetWithdrawal={handleResetWithdrawal}
           stage={stage}
+          availableValidators={availableValidators.length}
           validatorsSelected={withdrawals.length}
           withdrawalTotal={withdrawalTotal}
-        />
+          />
+        </div>
 
         {stage.type !== "sign-submit-finalise" && (
           <>

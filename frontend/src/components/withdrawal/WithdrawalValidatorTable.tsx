@@ -2,12 +2,13 @@ import {
   WITHDRAWAL_COLUMN_HEADERS,
   WithdrawalTableValidatorDetails,
 } from "pec/constants/columnHeaders";
-import { ValidatorTable } from "../ui/table/ValidatorTable";
-import { WithdrawalFormType } from "pec/lib/api/schemas/withdrawal";
-import { ValidatorDetails } from "pec/types/validator";
-import { Input } from "../ui/input";
-import { FieldErrors, UseFormRegister } from "react-hook-form";
+import type { WithdrawalFormType } from "pec/lib/api/schemas/withdrawal";
+import { cn } from "pec/lib/utils";
+import type { ValidatorDetails } from "pec/types/validator";
 import { useCallback, useMemo } from "react";
+import type { FieldErrors, UseFormRegister } from "react-hook-form";
+import { Input } from "../ui/input";
+import { ValidatorTable } from "../ui/table/ValidatorTable";
 
 interface WithdrawalValidatorTable {
   validators: ValidatorDetails[];
@@ -43,14 +44,13 @@ export const WithdrawalValidatorTable = ({
       // Add if not found
       addWithdrawal({
         validator,
-        amount: 0,
+        amount: validator.balance,
       });
     } else {
       // Remove if found
       removeWithdrawal(existingIndex);
     }
   };
-
   const setValueHandler = (value: string, validatorBalance: number) => {
     const numValue = parseFloat(value);
     if (isNaN(numValue)) return 0;
@@ -66,12 +66,31 @@ export const WithdrawalValidatorTable = ({
         selectedValidatorIndexes[validator.validatorIndex] ?? -1;
       const locked = validator.balance === 0 || withdrawalIndex === -1;
 
+      // IF the validator is not selected, we need to just display an input field with an amount of 0
+      if (withdrawalIndex === -1) {
+        return (
+          <div className="flex w-full flex-col">
+            <div className="flex flex-row items-center gap-2">
+              <span className="text-sm">ETH</span>
+              <Input
+                className="w-full rounded-xl border border-indigo-300 bg-white p-2 text-sm text-gray-700 dark:border-gray-800 dark:bg-black dark:text-gray-300"
+                disabled
+                value={0}
+              />
+            </div>
+          </div>
+        );
+      }
+
       return (
         <div className="flex w-full flex-col">
           <div className="flex flex-row items-center gap-2">
             <span className="text-sm">ETH</span>
             <Input
-              className={`w-full rounded-xl border border-indigo-300 bg-white p-2 text-sm text-gray-700 dark:border-gray-800 dark:bg-black dark:text-gray-300 ${locked ? "opacity-50" : ""}`}
+              className={cn(
+                "w-full rounded-xl border border-border bg-white p-2 text-sm text-gray-700 dark:border-gray-800 dark:bg-black dark:text-gray-300",
+                locked && "opacity-50",
+              )}
               type="number"
               step="any"
               {...register(`withdrawals.${withdrawalIndex}.amount`, {
