@@ -112,6 +112,13 @@ export const useNewConsolidate = ({ activeValidators }: UseConsolidate) => {
 
   const goBack = () => {
     const currentStep = CONSOLIDATION_STEPS[stage.stage];
+
+    if (currentStep === 1) {
+      // Log the error because this is misuse
+      console.error("Already at the first step", stage);
+      return;
+    }
+
     if (currentStep === 2) {
       reset();
     } else {

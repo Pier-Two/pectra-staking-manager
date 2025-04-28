@@ -111,10 +111,10 @@ export const ValidatorIndex = ({ validator }: TableComponentProps) => {
         width={24}
         height={24}
       />
-      <div className="flex flex-col">
-        <div>{validator.validatorIndex}</div>
-        <div className="text-xs text-gray-500">
-          {validator.publicKey.slice(0, 7)}...
+      <div className="text-piertwo-text flex flex-col gap-1 text-sm">
+        <div className="font-semibold">{validator.validatorIndex}</div>
+        <div className="font-light">
+          {validator.publicKey.slice(0, 5)}...
           {validator.publicKey.slice(-5)}
         </div>
       </div>
@@ -130,15 +130,31 @@ export const WithdrawalAddress = ({ validator }: TableComponentProps) => {
       ) : (
         <OctagonMinus className="h-4 w-4 text-gray-500 dark:text-white" />
       )}
-      <div>{validator.withdrawalAddress.slice(0, 4)}</div>
+      <div className="text-sm font-semibold">
+        {validator.withdrawalAddress.slice(0, 4)}
+      </div>
     </div>
   );
 };
 
 interface DisplayAmountProps {
   amount: number;
+  className?: string;
+  opts?: {
+    decimals?: number;
+    hidePostfixSymbol?: boolean;
+  };
 }
 
-export const DisplayAmount = ({ amount }: DisplayAmountProps) => {
-  return <div className="text-sm">Ξ {displayedEthAmount(amount)} ETH</div>;
+export const DisplayAmount = ({
+  amount,
+  className,
+  opts,
+}: DisplayAmountProps) => {
+  return (
+    <div className={cn("text-sm font-semibold", className)}>
+      Ξ {displayedEthAmount(amount, opts?.decimals)}{" "}
+      {!opts?.hidePostfixSymbol && "ETH"}
+    </div>
+  );
 };

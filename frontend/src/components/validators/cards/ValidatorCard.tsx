@@ -10,18 +10,13 @@ import type { FC } from "react";
 export interface IValidatorCard {
   validator: ValidatorDetails;
   onClick?: () => void;
-  className?: string;
 }
 
 export const ValidatorCard: FC<IValidatorCard> = (props) => {
-  const { validator, onClick, className } = props;
+  const { validator, onClick } = props;
 
   return (
-    <ValidatorCardWrapper
-      onClick={onClick}
-      className={className}
-      clearBackground
-    >
+    <ValidatorCardWrapper onClick={onClick} isSelected>
       <ValidatorIndex validator={validator} />
       <WithdrawalAddress validator={validator} />
       <DisplayAmount amount={validator.balance} />

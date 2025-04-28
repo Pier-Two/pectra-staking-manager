@@ -56,12 +56,12 @@ export const ValidatorTable = <T extends TableValidatorDetails>({
   });
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col">
       {!disableSearch && (
         <SearchFilter searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
       )}
       {children?.({ setCurrentPage })}
-      <table className="table w-full table-auto border-separate border-spacing-y-2">
+      <table className="table w-full table-auto border-separate border-spacing-y-2 pb-4">
         {/* Render the pagination controls from the parent */}
 
         <TableHeader

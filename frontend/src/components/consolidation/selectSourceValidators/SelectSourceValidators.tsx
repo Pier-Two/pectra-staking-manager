@@ -15,6 +15,7 @@ import { useMemo } from "react";
 import { displayedEthAmount } from "pec/lib/utils/validators/balance";
 import { ValidatorTable } from "pec/components/ui/table/ValidatorTable";
 import { CONSOLIDATION_TABLE_HEADERS } from "pec/constants/columnHeaders";
+import { DisplayAmount } from "pec/components/ui/table/TableComponents";
 
 interface SelectSourceValidatorsProps {
   availableSourceValidators: ValidatorDetails[];
@@ -51,7 +52,7 @@ export const SelectSourceValidators = ({
     <div className="w-full space-y-6">
       <div className="space-y-2">
         <div className="text-2xl font-medium">Source Validator(s)</div>
-        <div className="text-sm text-gray-700 dark:text-gray-300">
+        <div className="text-base text-gray-700 dark:text-gray-300">
           All source validator balances will be consolidated into the elected
           destination validator.
         </div>
@@ -79,22 +80,20 @@ export const SelectSourceValidators = ({
       <div className="text-md font-medium">Select source validator(s)</div>
 
       <Tabs defaultValue="maxConsolidate" className="w-full space-y-8">
-        <TabsList className="grid w-full grid-cols-2 rounded-xl bg-gray-200 dark:bg-gray-900">
-          <TabsTrigger
-            className="rounded-xl text-gray-800 data-[state=active]:bg-white data-[state=active]:text-indigo-800 dark:text-gray-200 dark:data-[state=active]:text-black"
+        <TabsList className="text-piertwoDark-text grid w-full grid-cols-2 rounded-md bg-indigo-800 bg-opacity-10 dark:bg-gray-800">
+          <TabsListItem
             value="maxConsolidate"
             onClick={() => setSourceValidators(availableSourceValidators)}
           >
             Max consolidate
-          </TabsTrigger>
+          </TabsListItem>
 
-          <TabsTrigger
-            className="rounded-xl text-gray-800 data-[state=active]:bg-white data-[state=active]:text-indigo-800 dark:text-gray-200 dark:data-[state=active]:text-black"
+          <TabsListItem
             value="manuallySelect"
             onClick={() => setSourceValidators([])}
           >
             Manually select
-          </TabsTrigger>
+          </TabsListItem>
         </TabsList>
 
         <TabsContent value="maxConsolidate">
@@ -120,14 +119,17 @@ export const SelectSourceValidators = ({
       <div className="flex flex-row items-center justify-center gap-2 text-sm text-gray-600 dark:text-gray-400">
         <Zap className="h-4 w-4 fill-indigo-500 text-indigo-500" />
         <div>New destination balance:</div>
-
-        <div className="font-semibold">
-          Ξ {displayedEthAmount(newDestinationBalance)}
-        </div>
-
-        <div className="flex items-center gap-1">
-          <span>Ξ 2,048 max</span>
-        </div>
+        <DisplayAmount
+          amount={newDestinationBalance}
+          opts={{ decimals: 2, hidePostfixSymbol: true }}
+        />
+        {"/"}
+        <DisplayAmount
+          amount={2048}
+          opts={{ decimals: 0, hidePostfixSymbol: true }}
+          className="font-normal"
+        />
+        max
       </div>
 
       <PrimaryButton
@@ -137,5 +139,23 @@ export const SelectSourceValidators = ({
         disabled={sourceValidators.length === 0}
       />
     </div>
+  );
+};
+
+interface TabsListItemProps {
+  onClick: () => void;
+  value: string;
+  children: React.ReactNode;
+}
+
+const TabsListItem = ({ onClick, value, children }: TabsListItemProps) => {
+  return (
+    <TabsTrigger
+      className="text-piertwo-text data-[state=active]:text-piertwoDark-text rounded-md font-semibold data-[state=active]:bg-white data-[state=active]:dark:bg-black"
+      value={value}
+      onClick={onClick}
+    >
+      {children}
+    </TabsTrigger>
   );
 };

@@ -18,18 +18,16 @@ export const SelectDestinationValidator = ({
     useState(false);
 
   return (
-    <div className="space-y-4">
-      <div className="space-y-4">
-        <div className="text-2xl font-medium">Destination Validator</div>
-        <div className="text-sm text-gray-700 dark:text-gray-300">
-          Your destination validator will receive all staked ETH from source
-          validators and be updated to the new Pectra standard (0x02).
-        </div>
+    <div className="space-y-6">
+      <div className="text-2xl font-medium">Destination Validator</div>
+      <div className="text-base text-gray-700 dark:text-gray-300">
+        Your destination validator will receive all staked ETH from source
+        validators and be updated to the new Pectra standard (0x02).
+      </div>
 
-        <div className="text-sm text-gray-700 dark:text-gray-300">
-          To consolidate a single validator, select it as both the destination
-          and the source validator.
-        </div>
+      <div className="text-base text-gray-700 dark:text-gray-300">
+        To consolidate a single validator, select it as both the destination and
+        the source validator.
       </div>
 
       <div className="flex flex-col items-center justify-between gap-4 md:flex-row">

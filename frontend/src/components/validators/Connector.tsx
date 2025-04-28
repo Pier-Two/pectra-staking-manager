@@ -25,19 +25,21 @@ export const Connector: FC<IConnector> = ({
 }) => {
   return (
     <>
-      {title && (
-        <div
-          className={cn("text-2xl font-570 leading-relaxed", titleClassName)}
-        >
-          {title}
-        </div>
-      )}
+      <div className="flex flex-col gap-3">
+        {title && (
+          <div
+            className={cn("text-2xl font-570 leading-relaxed", titleClassName)}
+          >
+            {title}
+          </div>
+        )}
 
-      {!!description && <p className="w-full text-sm">{description}</p>}
-      <div className={cn("text-left text-sm", className)}>
-        You have {validators.length} total validators using this withdrawal
-        address, consolidate them to Pectra standard now to get the most out of
-        Ethereum staking.
+        {!!description && <p className="w-full text-base">{description}</p>}
+        <div className={cn("text-left text-base", className)}>
+          You have {validators.length} total validators using this withdrawal
+          address, consolidate them to Pectra standard now to get the most out
+          of Ethereum staking.
+        </div>
       </div>
 
       <ConnectedAddress address={connectedAddress} />

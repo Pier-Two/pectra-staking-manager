@@ -40,7 +40,7 @@ const ConsolidationWorkflow = () => {
   }
 
   return (
-    <div className="flex w-full flex-col gap-4">
+    <div className="-mt-2 flex w-full flex-col gap-6">
       <ProgressBar progress={stage.stage} backHandler={goBack} />
 
       {stage.stage === "destination" && (
