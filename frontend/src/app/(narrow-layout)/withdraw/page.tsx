@@ -25,6 +25,7 @@ import { ValidatorStatus } from "pec/types/validator";
 import { type FC, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import WithdrawalLoading from "./loading";
+import { DisplayAmount } from "pec/components/ui/table/TableComponents";
 
 const Withdrawal: FC = () => {
   const walletAddress = useWalletAddress();
@@ -174,6 +175,14 @@ const Withdrawal: FC = () => {
               }),
             )}
             disableSort
+            renderOverrides={{
+              withdrawalAmount: (value) => (
+                <DisplayAmount
+                  amount={value.withdrawalAmount}
+                  opts={{ decimals: 4 }}
+                />
+              ),
+            }}
           />
         )}
       </div>
