@@ -78,7 +78,9 @@ export const ConnectWalletButton = ({ className }: StyleableComponent) => {
                   className="h-4 w-4 rounded-full"
                 />
               ) : (
-                <div className="h-4 w-4 rounded-full bg-primary" />
+                <div className="flex h-4 w-4 items-center justify-center rounded-full border-2 border-primary bg-white">
+                  <div className="h-2 w-2 rounded-full bg-primary" />
+                </div>
               )}
               {ensName ?? `${address?.slice(0, 6)}...${address?.slice(-4)}`}
               <ChevronDown size={16} />

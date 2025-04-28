@@ -1,9 +1,11 @@
-import { CircleCheck, CircleMinus, CirclePlus } from "lucide-react";
+import { CirclePlus } from "lucide-react";
+import { FaCircleCheck, FaCircleMinus, FaCirclePlus } from "react-icons/fa6";
+
 import Image from "next/image";
 import { ValidatorCardWrapper } from "pec/components/ui/custom/validator-card-wrapper";
 import { Input } from "pec/components/ui/input";
 import type { DepositType } from "pec/lib/api/schemas/deposit";
-import { cn } from "pec/lib/utils";
+import { DECIMAL_PLACES } from "pec/lib/constants";
 import { displayedEthAmount } from "pec/lib/utils/validators/balance";
 import { EDistributionMethod } from "pec/types/batch-deposits";
 import type { ValidatorDetails } from "pec/types/validator";
@@ -21,6 +23,8 @@ export interface IDepositSelectionValidatorCard {
   errors: FieldErrors<DepositType>;
   register: UseFormRegister<DepositType>;
 }
+
+const MAX_VALIDATOR_BALANCE = 2048;
 
 export const DepositSelectionValidatorCard = ({
   distributionMethod,
@@ -50,17 +54,17 @@ export const DepositSelectionValidatorCard = ({
         handleSelect();
       }}
     >
-      <div
-        className="flex flex-[1.2] items-center gap-x-4"
-        onClick={handleSelect}
-      >
+      <div className="flex flex-[1.2] items-center gap-x-4 transition-colors duration-200">
         {selected ? (
           <>
-            <CircleCheck className="h-4 min-h-4 w-4 min-w-4 text-green-500 group-hover:hidden" />
-            <CircleMinus className="hidden h-4 min-h-4 w-4 min-w-4 text-red-500 group-hover:block" />
+            <FaCircleCheck className="h-5 min-h-5 w-5 min-w-5 text-green-500 group-hover:hidden" />
+            <FaCircleMinus className="hidden h-5 min-h-5 w-5 min-w-5 text-red-500 group-hover:block" />
           </>
         ) : (
-          <CirclePlus className="h-4 min-h-4 w-4 min-w-4 text-indigo-500 group-hover:fill-indigo-500 group-hover:text-white" />
+          <>
+            <CirclePlus className="h-5 min-h-5 w-5 min-w-5 text-primary group-hover:hidden" />
+            <FaCirclePlus className="hidden h-5 min-h-5 w-5 min-w-5 text-primary group-hover:block" />
+          </>
         )}
 
         <Image
@@ -71,19 +75,24 @@ export const DepositSelectionValidatorCard = ({
         />
 
         <div className="flex flex-col">
-          <div className="text-md">{validator.validatorIndex}</div>
-          <div className="text-sm text-gray-700 dark:text-gray-300">
+          <div className="text-sm font-570">{validator.validatorIndex}</div>
+          <div className="text-piertwo-text text-sm">
             {validator.publicKey.slice(0, 5)}...{validator.publicKey.slice(-4)}
           </div>
         </div>
       </div>
 
-      <div
-        className="flex flex-1 items-center gap-1 p-2"
-        onClick={handleSelect}
-      >
-        <div className="font-semibold">
+      <div className="flex-1 flex-col items-center">
+        <div className="flex flex-1 items-center font-inter">
           Ξ {displayedEthAmount(validator.balance)}
+        </div>
+        <div className="text-piertwo-text flex flex-1 items-center font-inter text-xs">
+          Ξ
+          {(
+            MAX_VALIDATOR_BALANCE -
+            Number(displayedEthAmount(validator.balance))
+          ).toFixed(DECIMAL_PLACES)}{" "}
+          remaining
         </div>
       </div>
 
@@ -91,31 +100,33 @@ export const DepositSelectionValidatorCard = ({
         <div
           className={`flex w-full items-center ${selected && distributionMethod === EDistributionMethod.MANUAL ? "gap-2" : "gap-1"}`}
         >
-          Ξ{" "}
-          <Input
-            className={`w-full rounded-xl border border-indigo-800 p-1 dark:border-gray-600 ${
-              !selected ? "border-none bg-white dark:bg-black" : ""
-            }`}
-            disabled={
-              !selected || distributionMethod === EDistributionMethod.SPLIT
-            }
-            type="number"
-            step="any"
-            onClick={(e) => {
-              e.stopPropagation();
-            }}
-            value={depositAmount.toString()}
-            // Registers the deposit amount input field with React Hook Form
-            // - Converts empty input to 0
-            // - Ensures valid numeric input
-            // - Blocks deposits that would exceed the total to distribute
-            // - Blocks deposits that would take the total allocated above the total to distribute
-            // - Returns undefined for invalid values, preventing form submission and showing errors
-            {...(depositIndex !== -1 &&
-              register(`deposits.${depositIndex}.amount`, {
-                setValueAs: setValueHandler,
-              }))}
-          />
+          <div className="relative w-full">
+            <div className="text-piertwo-text pointer-events-none absolute left-2 top-1/2 -translate-y-1/2 text-sm">
+              Ξ
+            </div>
+            <Input
+              className={`font-400 h-12 w-full rounded-md border border-border p-1 pl-6 font-inter dark:border-gray-600 ${
+                !selected ? "border-none bg-white dark:bg-black" : ""
+              }`}
+              disabled={
+                !selected || distributionMethod === EDistributionMethod.SPLIT
+              }
+              onClick={(e) => e.stopPropagation()}
+              type="number"
+              step="any"
+              value={depositAmount.toString()}
+              // Registers the deposit amount input field with React Hook Form
+              // - Converts empty input to 0
+              // - Ensures valid numeric input
+              // - Blocks deposits that would exceed the total to distribute
+              // - Blocks deposits that would take the total allocated above the total to distribute
+              // - Returns undefined for invalid values, preventing form submission and showing errors
+              {...(depositIndex !== -1 &&
+                register(`deposits.${depositIndex}.amount`, {
+                  setValueAs: setValueHandler,
+                }))}
+            />
+          </div>
         </div>
 
         {errors.deposits?.[depositIndex]?.amount && (

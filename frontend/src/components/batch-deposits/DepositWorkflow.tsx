@@ -148,12 +148,12 @@ export const DepositWorkflow = ({
     <div className="flex w-full flex-col gap-y-4">
       <div className="space-y-8">
         <div className="flex flex-col gap-4">
-          <div className="flex gap-x-4 text-indigo-800 dark:text-indigo-300">
-            <ArrowDownToDot className="h-8 w-8" />
+          <div className="flex gap-x-4 text-primary-dark dark:text-indigo-200">
+            <ArrowDownToDot className="h-8 w-8 self-center" />
             <div className="text-2xl font-medium">Batch Deposit</div>
           </div>
 
-          <div className="text-sm text-gray-700 dark:text-gray-300">
+          <div className="font-inter text-xs text-piertwo-text">
             Top up your existing validators in one transaction.
           </div>
         </div>
@@ -167,11 +167,6 @@ export const DepositWorkflow = ({
               />
             ) : (
               <>
-                <SignatureDetails
-                  title="Validators signatures required to submit deposits"
-                  text="To submit deposits, you'll need to generate and provide signatures with your validator key pairs (not withdrawal address). You will be prompted to create these signatures once deposit data is generated."
-                />
-
                 <DistributionMethod
                   submitButtonDisabled={shouldBeDisabled}
                   errors={errors}
@@ -221,11 +216,6 @@ export const DepositWorkflow = ({
 
         {stage.type !== "data-capture" && (
           <>
-            <SignatureDetails
-              title="Sign deposit data"
-              text="For each deposit, copy the generated deposit data, sign it with your validator key and add the signed data. Once provided, the system will verify the deposit data before requesting ETH."
-            />
-
             <DepositList
               stage={stage}
               deposits={watchedDeposits}

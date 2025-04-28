@@ -4,7 +4,7 @@ import {
   ValidatorIndex,
   WithdrawalAddress,
 } from "pec/components/ui/table/TableComponents";
-import { ValidatorDetails } from "pec/types/validator";
+import { type ValidatorDetails } from "pec/types/validator";
 import type { FC } from "react";
 
 export interface IValidatorCard {

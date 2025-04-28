@@ -93,19 +93,19 @@ const Withdrawal: FC = () => {
     <div className="flex w-full flex-col p-2">
       <div className="space-y-8 px-4">
         <div className="flex flex-col gap-2">
-          <div className="flex gap-x-4 items-center text-primary dark:text-indigo-300">
+          <div className="flex items-center gap-x-4 text-primary-dark dark:text-indigo-300">
             <ArrowUpFromDot className="h-6 w-6" />
             <div className="text-[26px] font-570">Withdrawal</div>
           </div>
 
-          <div className="text-xs font-380 text-[#4C4C4C] dark:text-gray-300 font-inter">
+          <div className="text-piertwo-text font-inter text-xs font-380">
             Submit onchain execution layer withdrawal requests against
             validators, as per Pectra EIP-7002.
           </div>
         </div>
 
         <div className="flex flex-col gap-5 pt-8">
-          <div className="flex flex-row pl-4 gap-3">
+          <div className="flex flex-row gap-3 pl-4">
             <Image
               className="h-4 w-4"
               src="/icons/Wallet.svg"
@@ -115,20 +115,20 @@ const Withdrawal: FC = () => {
             />
 
             <div className="text-sm font-570">Withdrawal address</div>
-            <div className="text-sm text-[#4C4C4C] dark:text-gray-300">
+            <div className="text-piertwo-text text-sm">
               {formatAddressToShortenedString(walletAddress)}
             </div>
           </div>
           <WithdrawalInformation
-          buttonText="Withdraw"
-          handleMaxAllocation={handleMaxAllocation}
-          disabled={disabled}
-          onSubmit={handleSubmit(onSubmit)}
-          resetWithdrawal={handleResetWithdrawal}
-          stage={stage}
-          availableValidators={availableValidators.length}
-          validatorsSelected={withdrawals.length}
-          withdrawalTotal={withdrawalTotal}
+            buttonText="Withdraw"
+            handleMaxAllocation={handleMaxAllocation}
+            disabled={disabled}
+            onSubmit={handleSubmit(onSubmit)}
+            resetWithdrawal={handleResetWithdrawal}
+            stage={stage}
+            availableValidators={availableValidators.length}
+            validatorsSelected={withdrawals.length}
+            withdrawalTotal={withdrawalTotal}
           />
         </div>
 
