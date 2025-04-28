@@ -50,7 +50,7 @@ export const ValidatorCardWrapper = <
     as ?? "div",
     {
       className: cn(
-        "flex h-16 items-center justify-between gap-x-4 rounded-2xl px-4 py-2 text-sm group transition-colors duration-200",
+        "flex w-full h-16 items-center justify-between gap-x-4 rounded-2xl px-4 py-2 text-sm group transition-colors duration-200",
         {
           "border bg-transparent border-indigo-200 dark:border-indigo-900":
             clearBackground,

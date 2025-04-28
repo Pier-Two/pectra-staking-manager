@@ -155,7 +155,7 @@ export const DepositWorkflow = ({
             <div className="text-2xl font-medium">Batch Deposit</div>
           </div>
 
-          <div className="font-inter text-xs text-piertwo-text">
+          <div className="text-piertwo-text font-inter text-xs">
             Top up your existing validators in one transaction.
           </div>
         </div>

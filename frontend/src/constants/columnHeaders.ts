@@ -31,11 +31,16 @@ export const SUBMITTING_WITHDRAWAL_COLUMN_HEADERS: IHeaderConfig<WithdrawalTable
     },
   ];
 
-export const DEPOSIT_COLUMN_HEADERS = [
-  { label: "Validator", showSort: true },
-  { label: "Balance", showSort: true },
-  { label: "Deposit", showSort: false },
-] as const;
+export type DepositTableValidatorDetails = TableValidatorDetails & {
+  depositAmount: number;
+};
+
+export const DEPOSIT_COLUMN_HEADERS: IHeaderConfig<DepositTableValidatorDetails>[] =
+  [
+    { label: "Validator", sortKey: "validatorIndex", mobile: true },
+    { label: "Balance", sortKey: "balance", mobile: true },
+    { label: "Deposit", sortKey: "depositAmount", mobile: true },
+  ] as const;
 
 export const SIGN_WITHDRAWAL_COLUMN_HEADERS = [
   { label: "Validator", showSort: true },
