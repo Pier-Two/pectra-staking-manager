@@ -31,7 +31,7 @@ export const Email: FC<IConsolidationEmail> = (props) => {
 
   return (
     <motion.div
-      className="flex w-full flex-col items-center justify-between gap-x-4 space-y-4 rounded-2xl bg-white p-4 dark:border-gray-800 dark:bg-black"
+      className="flex w-full flex-col items-center justify-between rounded-2xl bg-white p-4 dark:border-gray-800 dark:bg-black"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
@@ -64,7 +64,7 @@ export const Email: FC<IConsolidationEmail> = (props) => {
           >
             <div className="flex flex-col gap-y-2 pt-4">
               <Input
-                className="rounded-xl border border-indigo-200 bg-white p-4 dark:border-gray-800 dark:bg-black"
+                className="mt-2 rounded-xl border border-indigo-200 bg-white p-4 dark:border-gray-800 dark:bg-black"
                 placeholder="Email"
                 value={summaryEmail || ""}
                 onChange={(e) => setSummaryEmail(e.target.value)}
