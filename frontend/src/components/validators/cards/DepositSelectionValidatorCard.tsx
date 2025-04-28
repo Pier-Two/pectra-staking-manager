@@ -10,6 +10,7 @@ import { displayedEthAmount } from "pec/lib/utils/validators/balance";
 import { EDistributionMethod } from "pec/types/batch-deposits";
 import type { ValidatorDetails } from "pec/types/validator";
 import type { FieldErrors, UseFormRegister } from "react-hook-form";
+import { cn } from "pec/lib/utils";
 
 export interface IDepositSelectionValidatorCard {
   distributionMethod: EDistributionMethod;
@@ -41,7 +42,12 @@ export const DepositSelectionValidatorCard = ({
     const numValue = parseFloat(value);
     if (isNaN(numValue)) return 0;
 
-    if (numValue > totalToDistribute) return totalToDistribute;
+    // only enforce max in SPLIT mode
+    if (
+      distributionMethod === EDistributionMethod.SPLIT &&
+      numValue > totalToDistribute
+    )
+      return totalToDistribute;
 
     return numValue;
   };
@@ -98,16 +104,23 @@ export const DepositSelectionValidatorCard = ({
 
       <div className="flex flex-1 flex-col items-center p-2">
         <div
-          className={`flex w-full items-center ${selected && distributionMethod === EDistributionMethod.MANUAL ? "gap-2" : "gap-1"}`}
+          className={cn("flex w-full items-center", {
+            "gap-2":
+              selected && distributionMethod === EDistributionMethod.MANUAL,
+            "gap-1": !(
+              selected && distributionMethod === EDistributionMethod.MANUAL
+            ),
+          })}
         >
           <div className="relative w-full">
             <div className="text-piertwo-text pointer-events-none absolute left-2 top-1/2 -translate-y-1/2 text-sm">
               Ξ
             </div>
             <Input
-              className={`font-400 h-12 w-full rounded-md border border-border p-1 pl-6 font-inter dark:border-gray-600 ${
-                !selected ? "border-none bg-white dark:bg-black" : ""
-              }`}
+              className={cn(
+                "font-400 h-12 w-full rounded-md border border-border p-1 pl-6 font-inter dark:border-gray-600",
+                !selected && "border-none bg-white dark:bg-black",
+              )}
               disabled={
                 !selected || distributionMethod === EDistributionMethod.SPLIT
               }

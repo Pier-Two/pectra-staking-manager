@@ -62,11 +62,13 @@ export const DepositWorkflow = ({
   });
 
   const email = watchEmail ?? "";
-
   // Stupid RHF doesn't handle an empty input and returns a string, even when you specify its a number
-  const totalToDistribute = isNaN(watchTotalToDistribute)
-    ? 0
-    : watchTotalToDistribute;
+  const totalToDistribute =
+    watchedDistributionMethod === EDistributionMethod.MANUAL
+      ? watchedDeposits.reduce((acc, curr) => acc + (curr.amount ?? 0), 0)
+      : isNaN(watchTotalToDistribute)
+        ? 0
+        : watchTotalToDistribute;
 
   const totalAllocated = Number(
     watchedDeposits
@@ -196,7 +198,9 @@ export const DepositWorkflow = ({
                   }
                 />
 
-                {totalToDistribute > 0 && (
+                {(watchedDistributionMethod === EDistributionMethod.MANUAL ||
+                  (watchedDistributionMethod === EDistributionMethod.SPLIT &&
+                    totalToDistribute > 0)) && (
                   <SelectValidators
                     errors={errors}
                     register={register}

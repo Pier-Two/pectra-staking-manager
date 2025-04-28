@@ -1,7 +1,7 @@
 import { DISTRIBUTION_OPTIONS } from "pec/constants/deposit";
 import type { DepositType } from "pec/lib/api/schemas/deposit";
 import type { DepositWorkflowStage } from "pec/types/batch-deposits";
-import { type EDistributionMethod } from "pec/types/batch-deposits";
+import { EDistributionMethod } from "pec/types/batch-deposits";
 import type { FieldErrors, UseFormRegister } from "react-hook-form";
 import { DistributionInformation } from "./DistributionInformation";
 import { DistributionOption } from "./DistributionOption";
@@ -56,12 +56,14 @@ export const DistributionMethod = ({
         </div>
       </div>
 
-      <TotalAmountInput
-        amount={totalToDistribute}
-        errors={errors}
-        register={register}
-        walletBalance={walletBalance}
-      />
+      {distributionMethod === EDistributionMethod.SPLIT && (
+        <TotalAmountInput
+          amount={totalToDistribute}
+          errors={errors}
+          register={register}
+          walletBalance={walletBalance}
+        />
+      )}
 
       <div className="flex w-full justify-center space-y-2">
         <DistributionInformation
