@@ -4,8 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { toast } from "pec/components/ui/Toast";
 import { api } from "pec/trpc/react";
 import { ValidatorDetails } from "pec/types/validator";
-import { eth_call } from "thirdweb";
-import type { ChainOptions } from "thirdweb/chains";
+import { eth_call, waitForReceipt } from "thirdweb";
 import { useActiveAccount } from "thirdweb/react";
 import { type Account } from "thirdweb/wallets";
 import { fromHex } from "viem";
@@ -13,36 +12,10 @@ import { useActiveChainWithDefault } from "./useChain";
 import { useContracts } from "./useContracts";
 import { useRpcClient } from "./useRpcClient";
 import { SubmittingConsolidationValidatorDetails } from "pec/constants/columnHeaders";
-
-// helper function that is called within the useSubmitConsolidate() hook
-const consolidateValidator = async (
-  consolidationContractAddress: string, // TODO this shouldn't have to be an arg
-  account: Account,
-  srcAddress: string,
-  targetAddress: string,
-  feeData: bigint,
-  chain: Readonly<
-    ChainOptions & {
-      rpc: string;
-    }
-  >,
-) => {
-  const srcAddressWithoutLeading = srcAddress.slice(2);
-  const targetAddressWithoutLeading = targetAddress.slice(2);
-
-  // Concatenate and add the 0x prefix
-  const callData = `0x${srcAddressWithoutLeading}${targetAddressWithoutLeading}`;
-
-  // Call the consolidation contract with the fee
-  const upgradeTransaction = await account.sendTransaction({
-    to: consolidationContractAddress,
-    value: feeData,
-    data: callData as `0x${string}`,
-    chainId: chain.id,
-  });
-
-  return upgradeTransaction;
-};
+import { TransactionStatus } from "pec/types/withdraw";
+import { parseError } from "pec/lib/utils/parseError";
+import { client } from "pec/lib/wallet/client";
+import { cloneDeep } from "lodash";
 
 export const useConsolidationFee = () => {
   const contracts = useContracts();
@@ -73,7 +46,6 @@ export const useConsolidationFee = () => {
 export const useSubmitConsolidate = () => {
   const { data: feeData } = useConsolidationFee();
   const contracts = useContracts();
-  const rpcClient = useRpcClient();
   const account = useActiveAccount();
   const chain = useActiveChainWithDefault();
 
@@ -81,20 +53,32 @@ export const useSubmitConsolidate = () => {
     api.validators.updateConsolidationRecord.useMutation();
 
   const sendConsolidationAndSaveToDatabase = async (
+    updateTransactionStatus: (index: number, status: TransactionStatus) => void,
+    index: number,
     destination: ValidatorDetails,
     source: ValidatorDetails,
     account: Account,
     feeData: bigint,
     email: string,
-  ): Promise<boolean> => {
-    const upgradeTx = await consolidateValidator(
-      contracts.consolidation.address,
-      account,
-      source.publicKey,
-      destination.publicKey,
-      feeData,
-      chain,
-    );
+  ): Promise<void> => {
+    const srcAddressWithoutLeading = source.publicKey.slice(2);
+    const targetAddressWithoutLeading = destination.publicKey.slice(2);
+
+    // Concatenate and add the 0x prefix
+    const callData = `0x${srcAddressWithoutLeading}${targetAddressWithoutLeading}`;
+
+    // Call the consolidation contract with the fee
+    const upgradeTx = await account.sendTransaction({
+      to: contracts.consolidation.address,
+      value: feeData,
+      data: callData as `0x${string}`,
+      chainId: chain.id,
+    });
+
+    updateTransactionStatus(index, {
+      status: "submitted",
+      txHash: upgradeTx.transactionHash,
+    });
 
     // save upgrade tx to db
     const result = await saveConsolidationToDatabase({
@@ -106,22 +90,31 @@ export const useSubmitConsolidate = () => {
 
     if (!result.success) {
       toast({
-        title: "Error consolidating",
+        title: "Failed to save transaction",
         description: result.error,
         variant: "error",
       });
-
-      return false;
     }
-
-    return true;
   };
 
   const consolidate = async (
-    transactions: SubmittingConsolidationValidatorDetails[],
+    destination: ValidatorDetails,
+    rawTransactions: SubmittingConsolidationValidatorDetails[],
+    updateTransactionStatus: (index: number, status: TransactionStatus) => void,
     email: string,
   ) => {
-    if (!feeData || !contracts || !rpcClient || !account) {
+    const transactions = cloneDeep(rawTransactions);
+
+    // This method just ensures the local transactions object stays in sync with the state
+    const updateTransactionStatusWithLocalState = (
+      index: number,
+      status: TransactionStatus,
+    ) => {
+      updateTransactionStatus(index, status);
+      transactions[index]!.transactionStatus = status;
+    };
+
+    if (!feeData || !account) {
       toast({
         title: "Error consolidating",
         description: "Please try again or double check input fields.",
@@ -130,20 +123,70 @@ export const useSubmitConsolidate = () => {
       return;
     }
 
-    for (const validatorConsolidationTx of transactions) {
-      if (validatorConsolidationTx.consolidationType === "upgrade") {
-        const result = await sendConsolidationAndSaveToDatabase(
-          validatorConsolidationTx,
-          validatorConsolidationTx,
-          account,
-          feeData,
-          email,
-        );
+    for (const [index, validatorConsolidationTx] of transactions.entries()) {
+      updateTransactionStatusWithLocalState(index, { status: "signing" });
 
-        if (!result) {
-          // TODO: How to handle this
-          break;
+      try {
+        if (validatorConsolidationTx.consolidationType === "upgrade") {
+          await sendConsolidationAndSaveToDatabase(
+            updateTransactionStatusWithLocalState,
+            index,
+            validatorConsolidationTx,
+            validatorConsolidationTx,
+            account,
+            feeData,
+            email,
+          );
+        } else {
+          await sendConsolidationAndSaveToDatabase(
+            updateTransactionStatusWithLocalState,
+            index,
+            destination,
+            validatorConsolidationTx,
+            account,
+            feeData,
+            email,
+          );
         }
+      } catch (error) {
+        toast({
+          title: "Error consolidating",
+          description: parseError(error),
+          variant: "error",
+        });
+
+        // TODO: What to do here?
+        updateTransactionStatusWithLocalState(index, {
+          status: "failedToSubmit",
+          error: parseError(error),
+        });
+      }
+    }
+
+    for (const [index, validator] of transactions.entries()) {
+      if (validator.transactionStatus.status === "failedToSubmit") continue;
+      if (validator.transactionStatus.status !== "submitted") {
+        console.error("Transaction in invalid state", validator);
+
+        continue;
+      }
+
+      const receipt = await waitForReceipt({
+        transactionHash: validator.transactionStatus.txHash,
+        chain,
+        client,
+      });
+
+      if (receipt.status === "success") {
+        updateTransactionStatusWithLocalState(index, {
+          status: "finalised",
+          txHash: receipt.transactionHash,
+        });
+      } else {
+        updateTransactionStatusWithLocalState(index, {
+          status: "failed",
+          txHash: validator.transactionStatus.txHash,
+        });
       }
     }
 

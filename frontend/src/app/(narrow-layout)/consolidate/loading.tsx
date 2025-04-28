@@ -10,7 +10,7 @@ const ConsolidationLoading: FC = () => {
           <Merge className="h-10 w-10 rotate-90 text-yellow-500" />
           <div className="text-3xl">Consolidate</div>
         </div>
-        <div className="text-Zinc-50 text-sm">
+        <div className="text-Zinc-50 text-base">
           Combine multiple validator balances into a single large-balance
           validator, as per Pectra EIP-7251.
         </div>
