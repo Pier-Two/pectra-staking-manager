@@ -30,7 +30,7 @@ export const ConnectedAddress: FC<IConnectedAddress> = (props) => {
           <div className="text-[14px] font-570 leading-[14px] text-zinc-950 dark:text-zinc-50">
             Connected with
           </div>
-          <div className="text-[14px] font-380 leading-[14px] text-[#4C4C4C] dark:text-gray-300">
+          <div className="text-piertwo-text font-inter text-sm font-380 leading-[14px]">
             {address.slice(0, 7)}...{address.slice(-4)}
           </div>
         </div>

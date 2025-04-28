@@ -3,7 +3,7 @@ import Image from "next/image";
 import { ValidatorCardWrapper } from "pec/components/ui/custom/validator-card-wrapper";
 import { formatValidatorIndex } from "pec/helpers/formatValidatorIndex";
 import { displayedEthAmount } from "pec/lib/utils/validators/balance";
-import { ValidatorDetails } from "pec/types/validator";
+import { type ValidatorDetails } from "pec/types/validator";
 import type { FC } from "react";
 
 export interface IValidatorCard {
@@ -35,10 +35,10 @@ export const ValidatorCard: FC<IValidatorCard> = (props) => {
         />
 
         <div className="flex h-10 flex-col gap-y-3">
-          <div className="text-[14px] font-570 leading-[14px] text-[#4C4C4C] dark:text-zinc-50">
+          <div className="text-piertwo-text text-sm font-570 leading-[14px]">
             {formatValidatorIndex(validator.validatorIndex)} {info && info}
           </div>
-          <div className="text-[14px] font-380 leading-[14px] text-[#4C4C4C] dark:text-gray-300">
+          <div className="text-piertwo-text text-sm font-380 leading-[14px]">
             {validator.publicKey.slice(0, 5)}...
             {validator.publicKey.slice(-5)}
           </div>

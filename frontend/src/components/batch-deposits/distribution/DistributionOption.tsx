@@ -28,7 +28,7 @@ export const DistributionOption: FC<IDistributionOptionProps> = ({
         </div>
         <div className="flex min-w-0 flex-1 flex-col gap-2">
           <div className="text-base font-medium">{option.title}</div>
-          <div className="text-sm text-[#4C4C4C] dark:text-gray-300">
+          <div className="text-sm text-piertwo-text">
             {option.description}
           </div>
         </div>

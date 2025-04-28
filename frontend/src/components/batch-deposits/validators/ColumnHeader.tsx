@@ -21,19 +21,19 @@ export const ColumnHeader = (props: IValidatorHeaderProps) => {
       })}
       onClick={showSort ? onSort : undefined}
     >
-      <div className="font-inter text-sm font-medium text-[#4C4C4C] dark:text-gray-300">
+      <div className="text-piertwo-text font-inter text-sm font-medium">
         {label}
       </div>
       {showSort && sortDirection === "asc" && (
-        <ChevronUp className="h-4 w-4 text-[#4C4C4C] dark:text-gray-300" />
+        <ChevronUp className="text-piertwo-text h-4 w-4" />
       )}
 
       {showSort && sortDirection === "desc" && (
-        <ChevronDown className="h-4 w-4 text-[#4C4C4C] dark:text-gray-300" />
+        <ChevronDown className="text-piertwo-text h-4 w-4" />
       )}
 
       {showSort && sortDirection === null && (
-        <ChevronsUpDown className="h-4 w-4 text-[#4C4C4C] dark:text-gray-300" />
+        <ChevronsUpDown className="text-piertwo-text h-4 w-4" />
       )}
     </div>
   );

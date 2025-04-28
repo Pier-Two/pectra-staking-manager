@@ -28,7 +28,7 @@ export const DepositSignDataCard = ({
 
         <div className="flex flex-col">
           <div className="text-sm font-570">{validator.validatorIndex}</div>
-          <div className="text-sm font-light text-[#4C4C4C] dark:text-gray-300">
+          <div className="text-piertwo-text text-sm font-light">
             {validator.publicKey.slice(0, 5)}...
             {validator.publicKey.slice(-4)}
           </div>

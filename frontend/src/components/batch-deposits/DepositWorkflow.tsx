@@ -145,15 +145,15 @@ export const DepositWorkflow = ({
   };
 
   return (
-    <div className="flex w-full max-w-[800px] flex-col gap-y-4">
+    <div className="flex w-full flex-col gap-y-4">
       <div className="space-y-8">
         <div className="flex flex-col gap-4">
           <div className="flex gap-x-4 text-primary-dark dark:text-indigo-200">
             <ArrowDownToDot className="h-8 w-8 self-center" />
-            <div className="text-[26px] font-medium">Batch Deposit</div>
+            <div className="text-2xl font-medium">Batch Deposit</div>
           </div>
 
-          <div className="font-inter text-xs text-[#4C4C4C] dark:text-gray-300">
+          <div className="font-inter text-xs text-piertwo-text">
             Top up your existing validators in one transaction.
           </div>
         </div>

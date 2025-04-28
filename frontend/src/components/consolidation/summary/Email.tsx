@@ -42,9 +42,7 @@ export const Email: FC<IConsolidationEmail> = (props) => {
           <div className="flex-col items-center">
             <div className="text-md font-570">{cardTitle}</div>
 
-            <div className="text-sm text-[#4C4C4C] dark:text-gray-300">
-              {cardText}
-            </div>
+            <div className="text-piertwo-text text-sm">{cardText}</div>
           </div>
         </div>
 

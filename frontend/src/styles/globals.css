@@ -41,13 +41,17 @@
   }
 }
 
-:root {
-  --color-text: theme('colors.zinc.950'); /* Light mode default */
-}
+:root {  
+  --color-text: theme('colors.zinc.950'); /* Light mode default */  
+  --piertwo-text: theme('colors.gray.600'); /* gray-600 */  
+  --piertwoDark-text: theme('colors.indigo.800'); /* indigo-800 */  
+}  
 
-.dark {
-  --color-text: theme('colors.zinc.50'); /* Dark mode default */
-}
+.dark {  
+  --color-text: theme('colors.zinc.50'); /* Dark mode default */  
+  --piertwo-text: theme('colors.gray.200'); /* gray-200 */  
+  --piertwoDark-text: theme('colors.indigo.300'); /* indigo-800 */  
+}  
 
 @layer base {
   * {

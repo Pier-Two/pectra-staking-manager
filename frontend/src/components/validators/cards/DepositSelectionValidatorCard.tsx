@@ -76,7 +76,7 @@ export const DepositSelectionValidatorCard = ({
 
         <div className="flex flex-col">
           <div className="text-sm font-570">{validator.validatorIndex}</div>
-          <div className="text-sm text-[#4C4C4C] dark:text-gray-300">
+          <div className="text-piertwo-text text-sm">
             {validator.publicKey.slice(0, 5)}...{validator.publicKey.slice(-4)}
           </div>
         </div>
@@ -86,7 +86,7 @@ export const DepositSelectionValidatorCard = ({
         <div className="flex flex-1 items-center font-inter">
           Ξ {displayedEthAmount(validator.balance)}
         </div>
-        <div className="flex flex-1 items-center font-inter text-xs text-[#4C4C4C] dark:text-gray-300">
+        <div className="text-piertwo-text flex flex-1 items-center font-inter text-xs">
           Ξ
           {(
             MAX_VALIDATOR_BALANCE -
@@ -101,7 +101,7 @@ export const DepositSelectionValidatorCard = ({
           className={`flex w-full items-center ${selected && distributionMethod === EDistributionMethod.MANUAL ? "gap-2" : "gap-1"}`}
         >
           <div className="relative w-full">
-            <div className="text-md pointer-events-none absolute left-2 top-1/2 -translate-y-1/2 text-[#4C4C4C] dark:text-gray-300">
+            <div className="text-piertwo-text pointer-events-none absolute left-2 top-1/2 -translate-y-1/2 text-sm">
               Ξ
             </div>
             <Input
