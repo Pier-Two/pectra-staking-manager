@@ -1,7 +1,18 @@
 "use client";
 
+
 import { type FC } from "react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "../ui/accordion";
+
+const CustomAccordionContent = ({ text }: { text: string }) => {
+  return (
+    <AccordionContent>
+      <p className="text-[12px] leading-[14px] text-zinc-950 dark:text-zinc-50">
+        {text}
+      </p>
+    </AccordionContent>
+  );
+};
 
 export const ValidatorHelp: FC = () => {
   return (    
@@ -10,38 +21,19 @@ export const ValidatorHelp: FC = () => {
         <AccordionTrigger className="hover:no-underline">
           What is validator consolidation?
         </AccordionTrigger>
-        <AccordionContent>
-          <p className="pb-4 text-[12px] leading-[14px] text-zinc-950 dark:text-zinc-50">
-            Validator consolidation is the process of combining multiple
-            validators into a single validator.
-          </p>
-        </AccordionContent>
+        <CustomAccordionContent text="Validator consolidation is the process of combining multiple validators into a single validator." />
       </AccordionItem>
       <AccordionItem value="why-should-i-consolidate">
         <AccordionTrigger className="hover:no-underline">
           Why should I consolidate?
         </AccordionTrigger>
-        <AccordionContent>
-          <p className="pb-4 text-[12px] leading-[14px] text-zinc-950 dark:text-zinc-50">
-            Consolidating your validators allows you to take advantage of enhanced
-            staking features.
-          </p>
-        </AccordionContent>
+          <CustomAccordionContent text="Consolidating your validators allows you to take advantage of enhanced staking features." />
       </AccordionItem>
-      <AccordionItem value="what-new-staking-features-does-consolidating-enable">
+      <AccordionItem value="what-new-staking-features-does-consolidating-enable" className="border-none">
         <AccordionTrigger className="hover:no-underline">
           What new staking features does consolidating enable?
         </AccordionTrigger>
-        <AccordionContent>
-          <p className="pb-4 text-[12px] leading-[14px] text-zinc-950 dark:text-zinc-50">
-            Allows Ethereum validators to increase their maximum effective balance
-            from 32 ETH to 2,048 ETH. This enhancement enables validators to
-            combine multiple smaller stakes into a single larger one, simplifying
-            management and reducing operational overhead. Additionally, it
-            facilitates reward compounding, as higher balances accrue staking
-            rewards more efficiently.
-          </p>
-        </AccordionContent>
+        <CustomAccordionContent text="Allows Ethereum validators to increase their maximum effective balance from 32 ETH to 2,048 ETH. This enhancement enables validators to combine multiple smaller stakes into a single larger one, simplifying management and reducing operational overhead. Additionally, it facilitates reward compounding, as higher balances accrue staking rewards more efficiently." />
       </AccordionItem>
     </Accordion>
   );
