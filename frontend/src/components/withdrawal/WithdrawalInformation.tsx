@@ -1,5 +1,7 @@
+import { AnimatePresence, motion } from "framer-motion";
 import { Check } from "lucide-react";
 import Image from "next/image";
+import { cn } from "pec/lib/utils";
 import { displayedEthAmount } from "pec/lib/utils/validators/balance";
 import type { WithdrawWorkflowStages } from "pec/types/withdraw";
 import { PectraSpinner } from "../ui/custom/pectraSpinner";
@@ -14,7 +16,7 @@ export interface IWithdrawalInformation {
   onSubmit: () => void;
   resetWithdrawal: () => void;
   stage: WithdrawWorkflowStages;
-  validatorsTotal: number;
+  availableValidators: number;
   validatorsSelected: number;
   withdrawalTotal: number;
 }
@@ -26,7 +28,7 @@ export const WithdrawalInformation = ({
   onSubmit,
   resetWithdrawal,
   stage,
-  validatorsTotal,
+  availableValidators,
   validatorsSelected,
   withdrawalTotal,
 }: IWithdrawalInformation) => {
@@ -134,7 +136,7 @@ export const WithdrawalInformation = ({
               <div
                 className={cn(
                   "transition-all duration-500 ease-in-out",
-                  validatorsSelected !== validatorsTotal
+                  validatorsSelected !== availableValidators
                     ? "opacity-100 translate-x-0"
                     : "opacity-0 -translate-x-8 pointer-events-none"
                 )}
@@ -152,7 +154,7 @@ export const WithdrawalInformation = ({
               <PrimaryButton
                 className={cn(
                   "w-60 transition-all duration-500 ease-in-out",
-                  validatorsSelected === validatorsTotal && "mr-4 w-64"
+                  validatorsSelected === availableValidators && "mr-4 w-64"
                 )}
                 label={buttonText}
                 disabled={!disabled}
@@ -164,34 +166,63 @@ export const WithdrawalInformation = ({
       </div>
 
       {someTransactionsFailed && (
-        <>
-          <div className="rounded-xl bg-gray-100 p-2 text-sm text-gray-500 dark:bg-black">
+        <AnimatePresence>
+          <motion.div
+            key="failed-transactions"
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.5 }}
+            className="rounded-xl bg-gray-100 p-2 text-sm text-gray-500 dark:bg-black"
+          >
             Some transactions failed. Please check your validator statuses and
             try again.
-          </div>
+          </motion.div>
 
-          <PrimaryButton
-            label="Make another withdrawal"
-            onClick={resetWithdrawal}
-            disabled={false}
-          />
-        </>
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+          >
+            <PrimaryButton
+              label="Make another withdrawal"
+              onClick={resetWithdrawal}
+              disabled={false}
+            />
+          </motion.div>
+        </AnimatePresence>
       )}
 
       {isSubmitting && (
-        <>
-          <div className="rounded-xl bg-green-100 p-2 text-sm text-green-500 dark:bg-black">
+        <AnimatePresence>
+          <motion.div
+            key="submitted-transactions"
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.5 }}
+            className="rounded-xl bg-green-100 p-2 text-sm text-green-500 dark:bg-black"
+          >
             Your transactions have been submitted successfully and will be
             processed shortly. You can leave this page and check the status of
             your withdrawals in your dashboard.
-          </div>
+          </motion.div>
 
-          <PrimaryButton
-            label="Make another withdrawal"
-            onClick={resetWithdrawal}
-            disabled={false}
-          />
-        </>
+          <motion.div
+            key="make-another-withdrawal"
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+            className="w-full"
+          >
+            <PrimaryButton
+              className="w-full"
+              label="Make another withdrawal"
+              onClick={resetWithdrawal}
+              disabled={false}
+            />
+          </motion.div>
+        </AnimatePresence>
       )}
     </div>
   );

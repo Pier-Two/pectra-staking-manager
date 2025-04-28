@@ -11,7 +11,7 @@ import { WithdrawalInformation } from "pec/components/withdrawal/WithdrawalInfor
 import { WithdrawalValidatorTable } from "pec/components/withdrawal/WithdrawalValidatorTable";
 import {
   SUBMITTING_WITHDRAWAL_COLUMN_HEADERS,
-  WithdrawalTableValidatorDetails,
+  type WithdrawalTableValidatorDetails,
 } from "pec/constants/columnHeaders";
 import { useValidators } from "pec/hooks/useValidators";
 import { useWalletAddress } from "pec/hooks/useWallet";
@@ -126,7 +126,7 @@ const Withdrawal: FC = () => {
           onSubmit={handleSubmit(onSubmit)}
           resetWithdrawal={handleResetWithdrawal}
           stage={stage}
-          validatorsTotal={validators.length}
+          availableValidators={availableValidators.length}
           validatorsSelected={withdrawals.length}
           withdrawalTotal={withdrawalTotal}
           />
