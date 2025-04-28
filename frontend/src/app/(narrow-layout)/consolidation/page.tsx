@@ -40,7 +40,7 @@ const ConsolidationWorkflow = () => {
   }
 
   return (
-    <div className="flex w-full flex-col gap-4">
+    <div className="-mt-2 flex w-full flex-col gap-6">
       <ProgressBar progress={stage.stage} backHandler={goBack} />
 
       {stage.stage === "destination" && (
@@ -52,8 +52,8 @@ const ConsolidationWorkflow = () => {
 
       {stage.stage === "source" && (
         <SelectSourceValidators
-          sourceValidators={stage.source}
-          destinationValidator={stage.destination}
+          sourceValidators={stage.sourceValidator}
+          destinationValidator={stage.destinationValidator}
           goToSummary={goToSummary}
           setSourceValidators={setSourceValidator}
           availableSourceValidators={getAvailableSourceValidators()}
@@ -63,8 +63,12 @@ const ConsolidationWorkflow = () => {
 
       {stage.stage === "summary" && (
         <ConsolidationSummary
-          destinationValidator={stage.destination}
-          sourceValidators={stage.source}
+          sourceValidators={stage.sourceValidator}
+          destinationValidator={stage.destinationValidator}
+          upgradeTransactions={stage.transactions.upgradeTransactions}
+          consolidationTransactions={
+            stage.transactions.consolidationTransactions
+          }
           goToSubmit={goToSubmit}
           goBack={goBack}
           reset={reset}
@@ -73,9 +77,9 @@ const ConsolidationWorkflow = () => {
 
       {stage.stage === "submit" && (
         <SubmitConsolidationRequests
-          destination={stage.destination}
-          source={stage.source}
+          destination={stage.destinationValidator}
           reset={reset}
+          transactions={stage.transactions.transactions}
         />
       )}
     </div>

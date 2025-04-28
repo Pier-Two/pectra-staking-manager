@@ -1,12 +1,15 @@
-import { ExternalLink } from "lucide-react";
+import { CircleCheck, ExternalLink, OctagonMinus } from "lucide-react";
 import { Button } from "pec/components/ui/button";
 import { PectraSpinner } from "pec/components/ui/custom/pectraSpinner";
+import Image from "next/image";
 import {
   getBlockExplorerTxUrl,
   openInNewTab,
 } from "pec/helpers/getExternalLink";
 import { cn } from "pec/lib/utils";
+import { ValidatorDetails } from "pec/types/validator";
 import type { TransactionStatus } from "pec/types/withdraw";
+import { displayedEthAmount } from "pec/lib/utils/validators/balance";
 
 interface StatusConfig {
   text: string;
@@ -91,6 +94,67 @@ export const SubmittingTransactionTableComponent = ({
           <ExternalLink className="h-4 w-4" />
         </Button>
       )}
+    </div>
+  );
+};
+
+interface TableComponentProps {
+  validator: ValidatorDetails;
+}
+
+export const ValidatorIndex = ({ validator }: TableComponentProps) => {
+  return (
+    <div className="flex flex-row gap-2">
+      <Image
+        src="/icons/EthValidator.svg"
+        alt="Wallet"
+        width={24}
+        height={24}
+      />
+      <div className="text-piertwo-text flex flex-col gap-1 text-sm">
+        <div className="font-semibold">{validator.validatorIndex}</div>
+        <div className="font-light">
+          {validator.publicKey.slice(0, 5)}...
+          {validator.publicKey.slice(-5)}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export const WithdrawalAddress = ({ validator }: TableComponentProps) => {
+  return (
+    <div className="flex items-center gap-1">
+      {validator.withdrawalAddress.includes("0x02") ? (
+        <CircleCheck className="h-4 w-4 fill-green-500 text-white dark:text-black" />
+      ) : (
+        <OctagonMinus className="h-4 w-4 text-gray-500 dark:text-white" />
+      )}
+      <div className="text-sm font-semibold">
+        {validator.withdrawalAddress.slice(0, 4)}
+      </div>
+    </div>
+  );
+};
+
+interface DisplayAmountProps {
+  amount: number;
+  className?: string;
+  opts?: {
+    decimals?: number;
+    hidePostfixSymbol?: boolean;
+  };
+}
+
+export const DisplayAmount = ({
+  amount,
+  className,
+  opts,
+}: DisplayAmountProps) => {
+  return (
+    <div className={cn("text-sm font-semibold", className)}>
+      Ξ {displayedEthAmount(amount, opts?.decimals)}{" "}
+      {!opts?.hidePostfixSymbol && "ETH"}
     </div>
   );
 };

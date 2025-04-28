@@ -42,7 +42,7 @@ export const TableHeader = <T = ValidatorDetails,>({
             <th
               key={header.sortKey as string}
               className={cn(
-                "px-4 py-2 text-left font-inter text-sm font-medium text-gray-600",
+                "text-piertwo-text px-4 py-2 text-left font-inter text-sm font-medium",
                 { "cursor-pointer": !disableSort },
               )}
               onClick={() => onSort(header.sortKey)}
@@ -53,7 +53,6 @@ export const TableHeader = <T = ValidatorDetails,>({
               </div>
             </th>
           ))}
-          <th className="px-4 py-2"></th> {/* Empty column for actions */}
         </tr>
       </thead>
 
@@ -67,7 +66,7 @@ export const TableHeader = <T = ValidatorDetails,>({
               <th
                 key={header.sortKey as string}
                 className={cn(
-                  "px-4 py-2 text-left font-inter text-sm font-medium text-gray-600",
+                  "text-piertwo-text px-4 py-2 text-left font-inter text-sm font-medium",
                   { "cursor-pointer": !disableSort },
                 )}
                 onClick={() => onSort(header.sortKey)}

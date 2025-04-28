@@ -1,3 +1,4 @@
+import { SubmittingConsolidationValidatorDetails } from "pec/constants/columnHeaders";
 import { ValidatorDetails } from "./validator";
 
 export const CONSOLIDATION_STEPS: Record<ConsolidationStep, number> = {
@@ -17,22 +18,30 @@ export const CONSOLIDATION_STEP_NUMBER_TO_NAME = Object.entries(
   {} as Record<number, ConsolidationStep>,
 );
 
+export interface ConsolidationTransactionDetails {
+  transactions: SubmittingConsolidationValidatorDetails[];
+  upgradeTransactions: number;
+  consolidationTransactions: number;
+}
+
 export type ConsolidationWorkflowStages =
   | { stage: "destination" }
   | {
       stage: "source";
-      destination: ValidatorDetails;
-      source: ValidatorDetails[];
+      destinationValidator: ValidatorDetails;
+      sourceValidator: ValidatorDetails[];
     }
   | {
       stage: "summary";
-      destination: ValidatorDetails;
-      source: ValidatorDetails[];
+      destinationValidator: ValidatorDetails;
+      sourceValidator: ValidatorDetails[];
+      transactions: ConsolidationTransactionDetails;
     }
   | {
       stage: "submit";
-      destination: ValidatorDetails;
-      source: ValidatorDetails[];
+      destinationValidator: ValidatorDetails;
+      sourceValidator: ValidatorDetails[];
+      transactions: ConsolidationTransactionDetails;
     };
 
 export type ConsolidationStep = ConsolidationWorkflowStages["stage"];

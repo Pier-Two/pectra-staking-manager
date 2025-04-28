@@ -41,17 +41,17 @@
   }
 }
 
-:root {  
-  --color-text: theme('colors.zinc.950'); /* Light mode default */  
-  --piertwo-text: theme('colors.gray.600'); /* gray-600 */  
-  --piertwoDark-text: theme('colors.indigo.800'); /* indigo-800 */  
-}  
+:root {
+  --color-text: theme("colors.zinc.950"); /* Light mode default */
+  --piertwo-text: theme("colors.gray.600"); /* gray-600 */
+  --piertwoDark-text: theme("colors.indigo.800"); /* indigo-800 */
+}
 
-.dark {  
-  --color-text: theme('colors.zinc.50'); /* Dark mode default */  
-  --piertwo-text: theme('colors.gray.200'); /* gray-200 */  
-  --piertwoDark-text: theme('colors.indigo.300'); /* indigo-800 */  
-}  
+.dark {
+  --color-text: theme("colors.zinc.50"); /* Dark mode default */
+  --piertwo-text: theme("colors.gray.200"); /* gray-200 */
+  --piertwoDark-text: theme("colors.indigo.300"); /* indigo-800 */
+}
 
 @layer base {
   * {
@@ -63,11 +63,8 @@
   }
 }
 
-
 /* Remove the default arrows for number inputs */
 input::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
-
-

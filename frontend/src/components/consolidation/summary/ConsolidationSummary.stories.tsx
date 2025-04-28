@@ -28,5 +28,7 @@ export const Primary: Story = {
     reset: noop,
     goBack: noop,
     goToSubmit: noop,
+    consolidationTransactions: 5,
+    upgradeTransactions: 3,
   },
 };

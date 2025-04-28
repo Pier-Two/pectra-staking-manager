@@ -12,20 +12,13 @@ export const MyValidatorsCard = ({
   subtext,
 }: MyValidatorsCardProps) => {
   return (
-    <div className="flex h-[125px] flex-col space-y-3 rounded-xl bg-[#F1F3FF] p-6 dark:bg-gray-900 dark:text-white">
-      <p className="text-[14px] font-medium leading-[14px] text-[#4C4C4C]">
-        {title}
-      </p>
+    <div className="flex h-32 flex-col space-y-3 rounded-xl bg-indigo-50 p-6 dark:bg-gray-950 dark:text-white">
+      <p className="text-piertwo-text text-sm font-medium">{title}</p>
 
-      {/*
-         // TODO: Positioning of this is still slightly off
-        */}
       <div className="flex flex-grow flex-col justify-end gap-y-1">
-        <div className="text-[24px] font-bold leading-[29px] text-primary-dark">
-          {body}
-        </div>
+        <div className="text-piertwoDark-text text-2xl font-bold">{body}</div>
         {!!subtext ? (
-          <p className="text-[12px] leading-[12px] text-[#4C4C4C]">{subtext}</p>
+          <p className="text-piertwo-text text-xs">{subtext}</p>
         ) : (
           <div className="h-3" />
         )}

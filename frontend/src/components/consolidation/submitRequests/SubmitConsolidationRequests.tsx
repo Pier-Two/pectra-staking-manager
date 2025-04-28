@@ -1,20 +1,28 @@
 import { useRouter } from "next/navigation";
-import { TransactionValidatorCard } from "pec/components/validators/cards/TransactionValidatorCard";
 import { ValidatorDetails } from "pec/types/validator";
 import { ArrowRightIcon } from "lucide-react";
 import { PrimaryButton } from "pec/components/ui/custom/PrimaryButton";
 import { EIconPosition } from "pec/types/components";
+import { ValidatorTable } from "pec/components/ui/table/ValidatorTable";
+import {
+  SUBMITTING_CONSOLIDATION_TABLE_HEADERS,
+  SubmittingConsolidationValidatorDetails,
+} from "pec/constants/columnHeaders";
+import { ValidatorCardWrapper } from "pec/components/ui/custom/validator-card-wrapper";
+import { ValidatorIndex } from "pec/components/ui/table/TableComponents";
+import { PectraSpinner } from "pec/components/ui/custom/pectraSpinner";
+import { Separator } from "@radix-ui/react-separator";
 
 interface SubmitConsolidationRequestsProps {
   destination: ValidatorDetails;
-  source: ValidatorDetails[];
   reset: () => void;
+  transactions: SubmittingConsolidationValidatorDetails[];
 }
 
 export const SubmitConsolidationRequests = ({
   destination,
-  source,
   reset,
+  transactions,
 }: SubmitConsolidationRequestsProps) => {
   const router = useRouter();
 
@@ -40,7 +48,7 @@ export const SubmitConsolidationRequests = ({
             : "Submit Consolidation Requests"}
         </div>
 
-        <div className="text-sm text-gray-700 dark:text-gray-300">
+        <div className="text-base">
           {everyTransactionSubmitted
             ? "Your requests have all been submitted onchain. Please allow up to 24h for your request to be processed."
             : "Sign each transaction to process your request."}
@@ -57,21 +65,20 @@ export const SubmitConsolidationRequests = ({
           />
         )}
 
-        <div className="flex flex-col gap-2">
-          <div className="text-d font-medium">Destination validator</div>
-          <TransactionValidatorCard validator={destination} isTarget={true} />
-        </div>
+        <ValidatorCardWrapper isSelected>
+          <ValidatorIndex validator={destination} />
+          <Separator
+            className="mx-5 h-12 bg-gray-200 dark:bg-gray-800"
+            orientation="vertical"
+          />
+          <PectraSpinner />
+        </ValidatorCardWrapper>
 
-        <div className="flex flex-col gap-2">
-          <div className="text-md font-medium">Source validators</div>
-
-          {source.map((validator) => (
-            <TransactionValidatorCard
-              key={validator.validatorIndex}
-              validator={validator}
-            />
-          ))}
-        </div>
+        <ValidatorTable
+          headers={SUBMITTING_CONSOLIDATION_TABLE_HEADERS}
+          data={transactions}
+          disableSort
+        />
       </div>
     </div>
   );

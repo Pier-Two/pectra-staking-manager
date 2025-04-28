@@ -11,7 +11,6 @@ export interface ValidatorCardWrapperProps<
   as?: T;
   children: React.ReactNode;
   className?: string;
-  shrink?: boolean;
   clearBackground?: boolean;
   isSelected?: boolean;
 }
@@ -43,7 +42,6 @@ export const ValidatorCardWrapper = <
   onClick,
   children,
   className,
-  shrink,
   clearBackground,
   isSelected,
   ...props
@@ -54,10 +52,9 @@ export const ValidatorCardWrapper = <
       className: cn(
         "flex h-16 items-center justify-between gap-x-4 rounded-2xl px-4 py-2 text-sm group transition-colors duration-200",
         {
-          "w-[95%]": shrink,
-          "w-full": !shrink,
-          "border bg-indigo-50 dark:bg-indigo-950": clearBackground,
-          "bg-white dark:bg-black": !clearBackground,
+          "border bg-transparent border-indigo-200 dark:border-indigo-900":
+            clearBackground,
+          "bg-white dark:bg-gray-900": !clearBackground,
           ...ValidatorCardBorderStyles({
             clearBackground,
             onClick,

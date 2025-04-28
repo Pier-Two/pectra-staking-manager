@@ -1,6 +1,6 @@
 import {
-  NEW_WITHDRAWAL_COLUMN_HEADERS,
-  type WithdrawalTableValidatorDetails,
+  WITHDRAWAL_COLUMN_HEADERS,
+  WithdrawalTableValidatorDetails,
 } from "pec/constants/columnHeaders";
 import type { WithdrawalFormType } from "pec/lib/api/schemas/withdrawal";
 import { cn } from "pec/lib/utils";
@@ -28,10 +28,10 @@ export const WithdrawalValidatorTable = ({
   removeWithdrawal,
 }: WithdrawalValidatorTable) => {
   const selectedValidatorIndexes: Record<number, number> = withdrawals.reduce(
-      (acc, field, index) => ({
-        ...acc,
-        [field.validator.validatorIndex]: index,
-      }),
+    (acc, field, index) => ({
+      ...acc,
+      [field.validator.validatorIndex]: index,
+    }),
     {},
   );
 
@@ -39,7 +39,7 @@ export const WithdrawalValidatorTable = ({
     // Find if this validator is already in the array
     const existingIndex =
       selectedValidatorIndexes[validator.validatorIndex] ?? -1;
-  
+
     if (existingIndex === -1) {
       // Add if not found
       addWithdrawal({
@@ -124,7 +124,7 @@ export const WithdrawalValidatorTable = ({
       validators.map((validator) => {
         const withdrawalIndex =
           selectedValidatorIndexes[validator.validatorIndex] ?? -1;
-  
+
         return {
           ...validator,
           withdrawalAmount: withdrawals[withdrawalIndex]?.amount ?? 0,
@@ -136,7 +136,7 @@ export const WithdrawalValidatorTable = ({
   return (
     <ValidatorTable
       data={validatorDetailsRow}
-      headers={NEW_WITHDRAWAL_COLUMN_HEADERS}
+      headers={WITHDRAWAL_COLUMN_HEADERS}
       selectableRows={{
         onClick: handleValidatorSelect,
         showCheckIcons: true,

@@ -16,11 +16,15 @@ interface ConsolidationSummaryProps {
   reset: () => void;
   destinationValidator: ValidatorDetails;
   sourceValidators: ValidatorDetails[];
+  upgradeTransactions: number;
+  consolidationTransactions: number;
 }
 
 export const ConsolidationSummary = ({
   destinationValidator,
   sourceValidators,
+  upgradeTransactions,
+  consolidationTransactions,
   goBack,
   goToSubmit,
   reset,
@@ -32,34 +36,12 @@ export const ConsolidationSummary = ({
     reset();
   };
 
-  const transactionsRequired = (() => {
-    const needsUpgradeTx = (v: ValidatorDetails): boolean => {
-      return !v.withdrawalAddress.startsWith("0x02");
-    };
-    const sourceValidatorUpgradeTxs = sourceValidators.filter(needsUpgradeTx);
-
-    const upgradeTransactions =
-      sourceValidatorUpgradeTxs.length +
-      (needsUpgradeTx(destinationValidator) ? 1 : 0);
-
-    return {
-      // the amount of transactions required to move validators from 0x01 to 0x02
-      upgradeTransactions,
-      consolidationTransactions: sourceValidators.length,
-    };
-  })();
-
-  // Calculate transactions data once before the return statement
-  const totalTransactions =
-    transactionsRequired.upgradeTransactions +
-    transactionsRequired.consolidationTransactions;
-
   return (
     <div className="space-y-8">
-      <div className="space-y-2">
+      <div className="space-y-6">
         <div className="text-2xl font-medium">Consolidation Summary</div>
 
-        <div className="text-sm text-gray-700 dark:text-gray-300">
+        <div className="text-base">
           Review and submit your consolidation request.
         </div>
       </div>
@@ -69,7 +51,7 @@ export const ConsolidationSummary = ({
           <div className="text-md font-medium">Destination validator</div>
 
           <div className="flex flex-col items-center justify-center gap-4">
-            <ValidatorCard shrink={false} validator={destinationValidator} />
+            <ValidatorCard validator={destinationValidator} />
 
             <SecondaryButton
               className="w-full"
@@ -101,8 +83,13 @@ export const ConsolidationSummary = ({
       </div>
 
       <div className="space-y-2">
-        <div className="text-md font-medium">Summary</div>
-        <Overview />
+        <div className="text-base font-medium">Summary</div>
+        <Overview
+          sourceValidators={sourceValidators}
+          destinationValidator={destinationValidator}
+          upgradeTransactions={upgradeTransactions}
+          consolidationTransactions={consolidationTransactions}
+        />
 
         <Email
           showEmail={showEmail}
@@ -122,19 +109,22 @@ export const ConsolidationSummary = ({
           disabled={false}
         />
 
-        <div className="text-center text-sm text-gray-700 dark:text-gray-300">
+        <div className="text-center text-sm text-zinc-700 dark:text-zinc-300">
           <div>
             <p>
-              You will be required to submit {totalTransactions} transactions.
+              You will be required to submit{" "}
+              {upgradeTransactions + consolidationTransactions} transactions.
             </p>
 
-            <p className="text-xs">
-              ({transactionsRequired.upgradeTransactions}{" "}
-              {transactionsRequired.upgradeTransactions > 1
-                ? "transactions are "
-                : "transaction is "}{" "}
-              required to upgrade your validators to version 0x02)
-            </p>
+            {upgradeTransactions > 0 && (
+              <p className="text-xs">
+                ({upgradeTransactions}{" "}
+                {upgradeTransactions > 1
+                  ? "transactions are "
+                  : "transaction is "}{" "}
+                required to upgrade your validators to version 0x02)
+              </p>
+            )}
           </div>
         </div>
       </div>

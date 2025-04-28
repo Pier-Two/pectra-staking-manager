@@ -3,18 +3,13 @@ import type {
   IHeaderConfig,
   TableValidatorDetails,
 } from "pec/types/validatorTable";
-
-export const WITHDRAWAL_COLUMN_HEADERS = [
-  { label: "Validator", showSort: true },
-  { label: "Balance", showSort: true },
-  { label: "Withdrawal", showSort: false },
-] as const;
+import { TransactionStatus } from "pec/types/withdraw";
 
 export type WithdrawalTableValidatorDetails = TableValidatorDetails & {
   withdrawalAmount: number;
 };
 
-export const NEW_WITHDRAWAL_COLUMN_HEADERS: IHeaderConfig<WithdrawalTableValidatorDetails>[] =
+export const WITHDRAWAL_COLUMN_HEADERS: IHeaderConfig<WithdrawalTableValidatorDetails>[] =
   [
     { label: "Validator", sortKey: "validatorIndex", mobile: true },
     { label: "Balance", sortKey: "balance", mobile: true },
@@ -35,6 +30,7 @@ export const SUBMITTING_WITHDRAWAL_COLUMN_HEADERS: IHeaderConfig<WithdrawalTable
       mobile: true,
     },
   ];
+
 export const DEPOSIT_COLUMN_HEADERS = [
   { label: "Validator", showSort: true },
   { label: "Balance", showSort: true },
@@ -70,3 +66,22 @@ export const SIGN_DEPOSIT_COLUMN_HEADERS = [
     showSort: false,
   },
 ];
+
+export const CONSOLIDATION_TABLE_HEADERS: IHeaderConfig<ValidatorDetails>[] = [
+  { label: "Validator", sortKey: "validatorIndex", mobile: true },
+  { label: "Credentials", sortKey: "withdrawalAddress", mobile: true },
+  { label: "Balance", sortKey: "balance", mobile: true },
+];
+
+export interface SubmittingConsolidationValidatorDetails
+  extends ValidatorDetails {
+  transactionStatus: TransactionStatus;
+  consolidationType: "upgrade" | "consolidate";
+}
+
+export const SUBMITTING_CONSOLIDATION_TABLE_HEADERS: IHeaderConfig<SubmittingConsolidationValidatorDetails>[] =
+  [
+    { label: "Validator", sortKey: "validatorIndex", mobile: true },
+    { label: "Type", sortKey: "consolidationType", mobile: true },
+    { label: "Status", sortKey: "transactionStatus", mobile: true },
+  ];
