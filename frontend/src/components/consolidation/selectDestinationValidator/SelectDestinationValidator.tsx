@@ -20,12 +20,12 @@ export const SelectDestinationValidator = ({
   return (
     <div className="space-y-6">
       <div className="text-2xl font-medium">Destination Validator</div>
-      <div className="text-base text-gray-700 dark:text-gray-300">
+      <div className="text-base">
         Your destination validator will receive all staked ETH from source
         validators and be updated to the new Pectra standard (0x02).
       </div>
 
-      <div className="text-base text-gray-700 dark:text-gray-300">
+      <div className="text-base">
         To consolidate a single validator, select it as both the destination and
         the source validator.
       </div>

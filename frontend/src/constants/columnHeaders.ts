@@ -3,6 +3,7 @@ import type {
   IHeaderConfig,
   TableValidatorDetails,
 } from "pec/types/validatorTable";
+import { TransactionStatus } from "pec/types/withdraw";
 
 export type WithdrawalTableValidatorDetails = TableValidatorDetails & {
   withdrawalAmount: number;
@@ -71,3 +72,16 @@ export const CONSOLIDATION_TABLE_HEADERS: IHeaderConfig<ValidatorDetails>[] = [
   { label: "Credentials", sortKey: "withdrawalAddress", mobile: true },
   { label: "Balance", sortKey: "balance", mobile: true },
 ];
+
+export interface SubmittingConsolidationValidatorDetails
+  extends ValidatorDetails {
+  transactionStatus: TransactionStatus;
+  consolidationType: "upgrade" | "consolidate";
+}
+
+export const SUBMITTING_CONSOLIDATION_TABLE_HEADERS: IHeaderConfig<SubmittingConsolidationValidatorDetails>[] =
+  [
+    { label: "Validator", sortKey: "validatorIndex", mobile: true },
+    { label: "Type", sortKey: "consolidationType", mobile: true },
+    { label: "Status", sortKey: "transactionStatus", mobile: true },
+  ];
