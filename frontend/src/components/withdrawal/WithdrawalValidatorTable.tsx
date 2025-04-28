@@ -1,12 +1,12 @@
 import {
   NEW_WITHDRAWAL_COLUMN_HEADERS,
-  WithdrawalTableValidatorDetails,
+  type WithdrawalTableValidatorDetails,
 } from "pec/constants/columnHeaders";
-import { WithdrawalFormType } from "pec/lib/api/schemas/withdrawal";
+import type { WithdrawalFormType } from "pec/lib/api/schemas/withdrawal";
 import { cn } from "pec/lib/utils";
-import { ValidatorDetails } from "pec/types/validator";
+import type { ValidatorDetails } from "pec/types/validator";
 import { useCallback, useMemo } from "react";
-import { FieldErrors, UseFormRegister } from "react-hook-form";
+import type { FieldErrors, UseFormRegister } from "react-hook-form";
 import { Input } from "../ui/input";
 import { ValidatorTable } from "../ui/table/ValidatorTable";
 
@@ -88,8 +88,8 @@ export const WithdrawalValidatorTable = ({
             <span className="text-sm">ETH</span>
             <Input
               className={cn(
-                "w-full rounded-xl border border-indigo-300 bg-white p-2 text-sm text-gray-700 dark:border-gray-800 dark:bg-black dark:text-gray-300",
-                locked ? "opacity-50" : "",
+                "w-full rounded-xl border border-border bg-white p-2 text-sm text-gray-700 dark:border-gray-800 dark:bg-black dark:text-gray-300",
+                locked && "opacity-50",
               )}
               type="number"
               step="any"

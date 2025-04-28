@@ -4,9 +4,9 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Mail } from "lucide-react";
 import { Input } from "pec/components/ui/input";
 import { Switch } from "pec/components/ui/switch";
-import { DepositType } from "pec/lib/api/schemas/deposit";
-import { type FC } from "react";
-import { FieldErrors } from "react-hook-form";
+import type { DepositType } from "pec/lib/api/schemas/deposit";
+import type { FC } from "react";
+import type { FieldErrors } from "react-hook-form";
 
 export interface IConsolidationEmail {
   cardText: string;
