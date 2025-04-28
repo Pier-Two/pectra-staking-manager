@@ -13,7 +13,7 @@ export const redisCacheMiddleware = ({
   keyPrefix?: string;
   staleTime?: number;
 } = {}) => {
-  return createTRPCMiddleware(async ({ ctx, input, path, next }) => {
+  return createTRPCMiddleware(async ({ input, path, next }) => {
     // Create a cache key based on the procedure path and input
     const cacheKey = `${keyPrefix}${path}:${JSON.stringify(input)}`;
 
