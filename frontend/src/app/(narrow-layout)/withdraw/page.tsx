@@ -6,6 +6,7 @@ import { ArrowUpFromDot } from "lucide-react";
 import Image from "next/image";
 import { ValidatorHeader } from "pec/components/batch-deposits/validators/ValidatorHeader";
 import { Email } from "pec/components/consolidation/summary/Email";
+import { DisplayAmount } from "pec/components/ui/table/TableComponents";
 import { ValidatorTable } from "pec/components/ui/table/ValidatorTable";
 import { WithdrawalInformation } from "pec/components/withdrawal/WithdrawalInformation";
 import { WithdrawalValidatorTable } from "pec/components/withdrawal/WithdrawalValidatorTable";
@@ -25,7 +26,6 @@ import { ValidatorStatus } from "pec/types/validator";
 import { type FC, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import WithdrawalLoading from "./loading";
-import { DisplayAmount } from "pec/components/ui/table/TableComponents";
 
 const Withdrawal: FC = () => {
   const walletAddress = useWalletAddress();
@@ -96,10 +96,10 @@ const Withdrawal: FC = () => {
         <div className="flex flex-col gap-4">
           <div className="flex gap-x-4 text-primary-dark dark:text-indigo-300">
             <ArrowUpFromDot className="h-8 w-8 self-center" />
-            <div className="text-2xl font-medium">Withdrawal</div>
+            <div className="text-3xl font-medium">Withdrawal</div>
           </div>
 
-          <div className="text-piertwo-text font-inter text-xs">
+          <div className="text-base">
             Submit onchain execution layer withdrawal requests against
             validators, as per Pectra EIP-7002.
           </div>
