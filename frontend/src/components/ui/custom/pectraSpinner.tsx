@@ -1,4 +1,9 @@
+import { useId } from "react";
+
 export const PectraSpinner = () => {
+  const uniqueId = useId();
+  const gradientId = `gradient-${uniqueId}`;
+
   return (
     <svg
       className="h-6 w-6 animate-spin"
@@ -9,7 +14,7 @@ export const PectraSpinner = () => {
       strokeLinejoin="round"
     >
       <defs>
-        <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <linearGradient id={gradientId} x1="0%" y1="0%" x2="100%" y2="0%">
           <stop offset="11.34%" stopColor="#00FFA7" />
           <stop offset="31.73%" stopColor="#5164DC" />
           <stop offset="59.22%" stopColor="#313C86" />
@@ -19,7 +24,7 @@ export const PectraSpinner = () => {
 
       <path
         d="M3 12a9 9 0 0 1 18 0M12 3a9 9 0 0 1 7.5 13.5"
-        stroke="url(#gradient)"
+        stroke={`url(#${gradientId})`}
       />
     </svg>
   );

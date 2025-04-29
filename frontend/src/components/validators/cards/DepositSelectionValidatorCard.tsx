@@ -11,6 +11,7 @@ import { EDistributionMethod } from "pec/types/batch-deposits";
 import type { ValidatorDetails } from "pec/types/validator";
 import type { FieldErrors, UseFormRegister } from "react-hook-form";
 import { cn } from "pec/lib/utils";
+import { MAX_VALIDATOR_BALANCE } from "pec/constants/deposit";
 
 export interface IDepositSelectionValidatorCard {
   distributionMethod: EDistributionMethod;
@@ -24,8 +25,6 @@ export interface IDepositSelectionValidatorCard {
   errors: FieldErrors<DepositType>;
   register: UseFormRegister<DepositType>;
 }
-
-const MAX_VALIDATOR_BALANCE = 2048;
 
 export const DepositSelectionValidatorCard = ({
   distributionMethod,
@@ -82,7 +81,7 @@ export const DepositSelectionValidatorCard = ({
 
         <div className="flex flex-col">
           <div className="text-sm font-570">{validator.validatorIndex}</div>
-          <div className="text-piertwo-text text-sm">
+          <div className="text-sm text-piertwo-text">
             {validator.publicKey.slice(0, 5)}...{validator.publicKey.slice(-4)}
           </div>
         </div>
@@ -92,7 +91,7 @@ export const DepositSelectionValidatorCard = ({
         <div className="flex flex-1 items-center font-inter">
           Ξ {displayedEthAmount(validator.balance)}
         </div>
-        <div className="text-piertwo-text flex flex-1 items-center font-inter text-xs">
+        <div className="flex flex-1 items-center font-inter text-xs text-piertwo-text">
           Ξ
           {(
             MAX_VALIDATOR_BALANCE -
@@ -113,7 +112,7 @@ export const DepositSelectionValidatorCard = ({
           })}
         >
           <div className="relative w-full">
-            <div className="text-piertwo-text pointer-events-none absolute left-2 top-1/2 -translate-y-1/2 text-sm">
+            <div className="pointer-events-none absolute left-2 top-1/2 -translate-y-1/2 text-sm text-piertwo-text">
               Ξ
             </div>
             <Input

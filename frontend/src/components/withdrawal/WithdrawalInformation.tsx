@@ -52,8 +52,8 @@ export const WithdrawalInformation = ({
     );
 
   const isPending =
-  stage.type === "sign-submit-finalise" &&
-  Object.values(stage.txHashes).some((tx) => tx.status === "pending");
+    stage.type === "sign-submit-finalise" &&
+    Object.values(stage.txHashes).some((tx) => tx.status === "pending");
 
   const isSigning =
     stage.type === "sign-submit-finalise" &&
@@ -73,7 +73,7 @@ export const WithdrawalInformation = ({
     );
 
   return (
-    <div className="flex w-full flex-col gap-4 rounded-xl border border-indigo-400 bg-white p-4 dark:border dark:border-gray-800 dark:bg-black">
+    <div className="flex w-full flex-col gap-4 rounded-2xl border border-border bg-white p-4 dark:border-gray-800 dark:bg-black">
       <div className="flex w-full flex-col items-center justify-between gap-4 md:flex-row">
         <div className="flex flex-wrap items-center gap-10">
           {distributionStats.map((stat, index) => (
@@ -92,15 +92,17 @@ export const WithdrawalInformation = ({
                     <Image
                       src={stat.imageUrl}
                       alt="Icon"
-                      width={16}
-                      height={16}
+                      width={14}
+                      height={14}
                       className=""
                     />
                   )}
-                  <div className="text-sm font-inter font-670">{stat.value}</div>
+                  <div className="font-inter text-sm font-670">
+                    {stat.value}
+                  </div>
                 </div>
 
-                <div className="text-xs text-gray-500 dark:text-gray-500 font-inter font-380">
+                <div className="font-inter text-xs font-380 text-gray-500 dark:text-gray-500">
                   {stat.label}
                 </div>
               </div>
@@ -109,17 +111,18 @@ export const WithdrawalInformation = ({
         </div>
 
         <div className="px-6">
-          {(isSigning || isSubmitting || isPending) && !allTransactionsFinalised && (
-            <div className="flex flex-row items-center gap-2">
-              <PectraSpinner />
-              {isPending && (
-                <div className="text-sm">Awaiting Signatures...</div>
-              )}
-              {isSubmitting && (
-                <div className="text-sm">Submitting Transactions...</div>
-              )}
-            </div>
-          )}
+          {(isSigning || isSubmitting || isPending) &&
+            !allTransactionsFinalised && (
+              <div className="flex flex-row items-center gap-2">
+                <PectraSpinner />
+                {isPending && (
+                  <div className="text-sm">Awaiting Signatures...</div>
+                )}
+                {isSubmitting && (
+                  <div className="text-sm">Submitting Transactions...</div>
+                )}
+              </div>
+            )}
 
           {allTransactionsFinalised && (
             <>
@@ -132,17 +135,17 @@ export const WithdrawalInformation = ({
             </>
           )}
           {stage.type === "data-capture" && (
-            <div className="flex flex-row gap-2 md:gap-4 items-center relative">
+            <div className="relative flex flex-row items-center gap-2 md:gap-4">
               <div
                 className={cn(
                   "transition-all duration-500 ease-in-out",
                   validatorsSelected !== availableValidators
-                    ? "opacity-100 translate-x-0"
-                    : "opacity-0 -translate-x-8 pointer-events-none"
+                    ? "translate-x-0 opacity-100"
+                    : "pointer-events-none -translate-x-8 opacity-0",
                 )}
               >
                 <SecondaryButton
-                  className="border-gray-200 dark:border-gray-800"
+                  className="border-border hover:bg-indigo-100/30 dark:border-gray-800"
                   label="Max"
                   disabled={false}
                   onClick={() => {
@@ -154,7 +157,8 @@ export const WithdrawalInformation = ({
               <PrimaryButton
                 className={cn(
                   "w-60 transition-all duration-500 ease-in-out",
-                  validatorsSelected === availableValidators && "mr-16 md:mr-4 w-64"
+                  validatorsSelected === availableValidators &&
+                    "mr-16 w-64 md:mr-4",
                 )}
                 label={buttonText}
                 disabled={!disabled}
