@@ -61,6 +61,8 @@ export const DetectedValidators: FC<IDetectedValidators> = (props) => {
         <ValidatorTable
           data={activeValidators}
           headers={CONSOLIDATION_TABLE_HEADERS}
+          wrapperProps={{ clearBackground: true }}
+          disablePagination
         />
       )}
     </div>

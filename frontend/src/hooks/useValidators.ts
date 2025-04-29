@@ -5,6 +5,8 @@ import { groupBy } from "lodash";
 import { useMemo } from "react";
 import { validatorIsActive } from "pec/lib/utils/validators/status";
 import { ValidatorStatus } from "pec/types/validator";
+import { groupValidatorsByWithdrawalPrefix } from "pec/lib/utils/validators/withdrawalAddress";
+import { TYPE_2_PREFIX } from "pec/constants/pectra";
 
 export const useValidators = () => {
   const walletAddress = useWalletAddress();
@@ -26,11 +28,18 @@ export const useValidators = () => {
     });
   }, [queryFn.data]);
 
+  // This the subset of validators that is valid for the withdrawal and deposit flows
+  const activeType2Validators =
+    groupValidatorsByWithdrawalPrefix(
+      groupedValidators[ValidatorStatus.ACTIVE] ?? [],
+    )[TYPE_2_PREFIX] ?? [];
+
   return {
     data: queryFn.data,
     isFetched: queryFn.isFetched,
     isLoading: queryFn.isLoading,
     isError: queryFn.isError,
     groupedValidators,
+    activeType2Validators,
   };
 };

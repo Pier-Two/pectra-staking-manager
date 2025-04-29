@@ -16,8 +16,15 @@ import { useForm, useWatch } from "react-hook-form";
 import { Email } from "../consolidation/summary/Email";
 import { DistributionMethod } from "./distribution/DistributionMethod";
 import { SignatureDetails } from "./SignatureDetails";
-import { DepositList } from "./validators/DepositList";
 import { SelectValidators } from "./validators/SelectValidators";
+import { ValidatorTable } from "../ui/table/ValidatorTable";
+import {
+  DepositTableValidatorDetails,
+  SUBMITTING_DEPOSIT_COLUMN_HEADERS,
+} from "pec/constants/columnHeaders";
+import { DisplayAmount } from "../ui/table/TableComponents";
+import { DistributionInformation } from "./distribution/DistributionInformation";
+import { DepositSignDataCard } from "../validators/cards/DepositSignDataCard";
 
 export interface IDepositWorkflowProps {
   validators: ValidatorDetails[];
@@ -91,7 +98,6 @@ export const DepositWorkflow = ({
   };
 
   const handleClearValidators = () => {
-    setValue("totalToDistribute", 0);
     setValue("deposits", []);
   };
 
@@ -150,12 +156,12 @@ export const DepositWorkflow = ({
     <div className="flex w-full flex-col gap-y-4">
       <div className="space-y-8">
         <div className="flex flex-col gap-4">
-          <div className="flex gap-x-4 text-primary-dark dark:text-indigo-200">
+          <div className="flex gap-x-4 text-primary-dark dark:text-indigo-300">
             <ArrowDownToDot className="h-8 w-8 self-center" />
-            <div className="text-2xl font-medium">Batch Deposit</div>
+            <div className="text-3xl font-medium">Batch Deposit</div>
           </div>
 
-          <div className="font-inter text-xs text-piertwo-text">
+          <div className="text-base">
             Top up your existing validators in one transaction.
           </div>
         </div>
@@ -207,7 +213,6 @@ export const DepositWorkflow = ({
                     clearSelectedValidators={handleClearValidators}
                     distributionMethod={watchedDistributionMethod}
                     handleValidatorSelect={handleValidatorSelect}
-                    totalAllocated={totalAllocated}
                     totalToDistribute={totalToDistribute}
                     deposits={watchedDeposits}
                     validators={validators}
@@ -218,14 +223,40 @@ export const DepositWorkflow = ({
           </>
         )}
 
-        {stage.type !== "data-capture" && (
+        {stage.type === "sign-submit" && (
           <>
-            <DepositList
+            <DistributionInformation
+              resetBatchDeposit={reset}
               stage={stage}
-              deposits={watchedDeposits}
-              resetBatchDeposit={handleResetBatchDeposit}
               totalAllocated={totalAllocated}
               totalToDistribute={totalToDistribute}
+              numDeposits={watchedDeposits.length}
+            />
+            <div className="text-md font-670">Deposits</div>
+            <ValidatorTable
+              headers={SUBMITTING_DEPOSIT_COLUMN_HEADERS}
+              data={watchedDeposits.map(
+                (w): DepositTableValidatorDetails => ({
+                  ...w.validator,
+                  depositAmount: w.amount,
+                }),
+              )}
+              wrapperProps={{ clearBackground: true }}
+              disableSort
+              disablePagination
+              renderOverrides={{
+                depositAmount: (value) => (
+                  <DisplayAmount
+                    amount={value.depositAmount}
+                    opts={{ decimals: 4 }}
+                  />
+                ),
+                transactionStatus: () => (
+                  <DepositSignDataCard
+                    transactionStatus={stage.transactionStatus}
+                  />
+                ),
+              }}
             />
           </>
         )}

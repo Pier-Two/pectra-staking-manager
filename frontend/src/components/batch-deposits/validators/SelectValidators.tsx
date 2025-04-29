@@ -1,21 +1,21 @@
-import { keyBy, orderBy } from "lodash";
-import { DEPOSIT_COLUMN_HEADERS } from "pec/constants/columnHeaders";
+import {
+  DEPOSIT_COLUMN_HEADERS,
+  DepositTableValidatorDetails,
+} from "pec/constants/columnHeaders";
 import type { DepositData, DepositType } from "pec/lib/api/schemas/deposit";
-import type { EDistributionMethod } from "pec/types/batch-deposits";
+import { EDistributionMethod } from "pec/types/batch-deposits";
 import { type ValidatorDetails } from "pec/types/validator";
-import { useState } from "react";
+import { useCallback, useMemo } from "react";
 import type { FieldErrors, UseFormRegister } from "react-hook-form";
-import { DepositSelectionValidatorCard } from "../../validators/cards/DepositSelectionValidatorCard";
-import { type SortDirection } from "./ColumnHeader";
 import { ValidatorHeader } from "./ValidatorHeader";
-import { ValidatorListHeaders } from "./ValidatorListHeaders";
+import { ValidatorTable } from "pec/components/ui/table/ValidatorTable";
+import { AmountInput } from "pec/components/ui/custom/AmountInput";
 
 export interface ISelectValidatorsProps {
   clearSelectedValidators: () => void;
   distributionMethod: EDistributionMethod;
   handleValidatorSelect: (validator: ValidatorDetails) => void;
   deposits: DepositData[];
-  totalAllocated: number;
   totalToDistribute: number;
   validators: ValidatorDetails[];
   errors: FieldErrors<DepositType>;
@@ -29,39 +29,85 @@ export const SelectValidators = ({
   register,
   handleValidatorSelect,
   deposits,
-  totalAllocated,
   totalToDistribute,
   validators,
 }: ISelectValidatorsProps) => {
-  const [sortColumn, setSortColumn] = useState<string | null>(null);
-  const [sortDirection, setSortDirection] = useState<SortDirection>(null);
+  const selectedValidatorIndexes = deposits.reduce<Record<number, number>>(
+    (acc, field, index) => {
+      acc[field.validator.validatorIndex] = index;
+      return {
+        ...acc,
+        [field.validator.validatorIndex]: index,
+      };
+    },
+    {},
+  );
 
   const handleClearValidators = () => {
     clearSelectedValidators();
-    setSortColumn(null);
-    setSortDirection(null);
   };
 
-  const depositRecord = keyBy(deposits, (v) => v.validator.validatorIndex);
+  const validatorDetailsRow: DepositTableValidatorDetails[] = useMemo(
+    () =>
+      validators.map((v): DepositTableValidatorDetails => {
+        const depositIndex = selectedValidatorIndexes[v.validatorIndex] ?? -1;
 
-  const handleSort = (column: string) => {
-    if (sortColumn === column) {
-      setSortDirection((prev) => {
-        if (prev === null) return "asc";
-        if (prev === "asc") return "desc";
-        return "asc";
-      });
-    } else {
-      setSortColumn(column);
-      setSortDirection("asc");
-    }
+        return {
+          ...v,
+          depositAmount: deposits[depositIndex]?.amount ?? 0,
+        };
+      }),
+    [deposits, selectedValidatorIndexes, validators],
+  );
+
+  const setValueHandler = (value: string) => {
+    const numValue = parseFloat(value);
+    if (isNaN(numValue)) return 0;
+
+    if (
+      distributionMethod === EDistributionMethod.SPLIT &&
+      numValue > totalToDistribute
+    )
+      return totalToDistribute;
+
+    return numValue;
   };
 
-  const sortedValidators = (() => {
-    if (!sortColumn || !sortDirection || !validators) return validators;
+  const depositAmountRowRender = useCallback(
+    (validator: ValidatorDetails) => {
+      const depositIndex =
+        selectedValidatorIndexes[validator.validatorIndex] ?? -1;
 
-    return orderBy(validators, ["validatorIndex", "balance"], [sortDirection]);
-  })();
+      const value = depositIndex === -1 ? 0 : undefined;
+
+      return (
+        <AmountInput
+          inputProps={{
+            disabled:
+              depositIndex === -1 ||
+              distributionMethod === EDistributionMethod.SPLIT,
+            ...register(`deposits.${depositIndex}.amount`, {
+              setValueAs: (value: string) => setValueHandler(value),
+            }),
+            onClick: (e) => {
+              if (depositIndex === -1) {
+                handleValidatorSelect(validator);
+              }
+
+              e.stopPropagation();
+            },
+            value,
+          }}
+          error={
+            errors.deposits?.[depositIndex]?.amount
+              ? "Please enter a valid amount"
+              : undefined
+          }
+        />
+      );
+    },
+    [register, selectedValidatorIndexes, handleValidatorSelect],
+  );
 
   return (
     <>
@@ -70,38 +116,18 @@ export const SelectValidators = ({
         totalCount={validators?.length ?? 0}
         onClear={handleClearValidators}
       />
-
-      <div className="flex flex-col items-center gap-4">
-        <ValidatorListHeaders
-          columnHeaders={DEPOSIT_COLUMN_HEADERS}
-          onSort={handleSort}
-          sortColumn={sortColumn ?? ""}
-          sortDirection={sortDirection}
-        />
-
-        <div className="flex w-full flex-col gap-y-2">
-          {sortedValidators?.map((validator) => {
-            const depositIndex = deposits.findIndex(
-              (d) => d.validator.validatorIndex === validator.validatorIndex,
-            );
-            return (
-              <DepositSelectionValidatorCard
-                key={`depositValidator-${validator.validatorIndex}`}
-                depositIndex={depositIndex}
-                depositAmount={deposits[depositIndex]?.amount ?? 0}
-                errors={errors}
-                handleSelect={() => handleValidatorSelect(validator)}
-                register={register}
-                validator={validator}
-                distributionMethod={distributionMethod}
-                selected={!!depositRecord[validator.validatorIndex]}
-                totalAllocated={totalAllocated}
-                totalToDistribute={totalToDistribute}
-              />
-            );
-          })}
-        </div>
-      </div>
+      <ValidatorTable
+        data={validatorDetailsRow}
+        headers={DEPOSIT_COLUMN_HEADERS}
+        renderOverrides={{ depositAmount: depositAmountRowRender }}
+        selectableRows={{
+          onClick: (row) => handleValidatorSelect(row),
+          isSelected: (row) =>
+            selectedValidatorIndexes[row.validatorIndex] !== undefined,
+          showCheckIcons: true,
+        }}
+        disablePagination
+      />
     </>
   );
 };

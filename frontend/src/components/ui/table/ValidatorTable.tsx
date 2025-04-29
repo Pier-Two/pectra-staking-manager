@@ -23,6 +23,7 @@ interface ValidatorTableProps<T extends TableValidatorDetails> {
   children?: (params: { setCurrentPage: (page: number) => void }) => ReactNode;
   disableSearch?: boolean;
   disableSort?: boolean;
+  disablePagination?: boolean;
   renderOverrides?: Partial<Record<keyof T, (data: T) => JSX.Element>>;
 }
 
@@ -35,6 +36,7 @@ export const ValidatorTable = <T extends TableValidatorDetails>({
   wrapperProps,
   disableSearch,
   disableSort,
+  disablePagination,
   renderOverrides,
 }: ValidatorTableProps<T>) => {
   const { filteredData, searchTerm, setSearchTerm } = useSearch({
@@ -53,6 +55,7 @@ export const ValidatorTable = <T extends TableValidatorDetails>({
     itemsPerPage,
   } = usePagination({
     data: sortedValidators,
+    disabled: disablePagination,
   });
 
   return (
@@ -96,13 +99,15 @@ export const ValidatorTable = <T extends TableValidatorDetails>({
           )}
         </tbody>
       </table>
-      <TablePagination
-        currentPage={currentPage}
-        totalPages={totalPages}
-        totalItems={sortedValidators.length}
-        itemsPerPage={itemsPerPage}
-        onPageChange={setCurrentPage}
-      />
+      {!disablePagination && (
+        <TablePagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          totalItems={sortedValidators.length}
+          itemsPerPage={itemsPerPage}
+          onPageChange={setCurrentPage}
+        />
+      )}
     </div>
   );
 };

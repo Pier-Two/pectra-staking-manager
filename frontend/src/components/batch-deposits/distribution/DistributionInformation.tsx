@@ -84,12 +84,13 @@ export const DistributionInformation = ({
         </div>
 
         <div className="flex items-center justify-end md:min-w-52">
-          {stage.type === "transactions-finalised" && (
-            <div className="mr-4 flex flex-row items-center gap-2">
-              <Check className="h-4 w-4 text-green-500" />
-              <div className="text-sm font-570">Done</div>
-            </div>
-          )}
+          {stage.type === "sign-submit" &&
+            stage.transactionStatus.status === "finalised" && (
+              <div className="mr-4 flex flex-row items-center gap-2">
+                <Check className="h-4 w-4 text-green-500" />
+                <div className="text-sm font-570">Done</div>
+              </div>
+            )}
           {stage.type === "data-capture" && (
             <PrimaryButton
               className="w-full"
@@ -101,35 +102,43 @@ export const DistributionInformation = ({
         </div>
       </div>
 
-      {(stage.type === "transactions-submitted" ||
-        stage.type === "transactions-finalised") && (
-        <>
-          <div className="rounded-md bg-green-100 p-2 text-[13px] font-570 text-green-500">
-            Your transactions{" "}
-            {stage.type === "transactions-submitted"
-              ? "have been submitted successfully and will be processed shortly. It is safe to leave this page."
-              : "have been processed successfully."}
-          </div>
+      {stage.type === "sign-submit" &&
+        (stage.transactionStatus.status === "submitted" ||
+          stage.transactionStatus.status === "finalised") && (
+          <>
+            <div className="rounded-md bg-green-100 p-2 text-[13px] font-570 text-green-500">
+              Your transactions{" "}
+              {stage.transactionStatus.status === "submitted"
+                ? "have been submitted successfully and will be processed shortly. It is safe to leave this page."
+                : "have been processed successfully."}
+            </div>
 
-          <SecondaryButton
-            label="View transaction"
-            icon={<ExternalLink className="h-4 w-4" />}
-            className="border-none"
-            iconPosition={EIconPosition.RIGHT}
+            <SecondaryButton
+              label="View transaction"
+              icon={<ExternalLink className="h-4 w-4" />}
+              className="border-none"
+              iconPosition={EIconPosition.RIGHT}
+              disabled={false}
+              onClick={() => {
+                window.open(
+                  // I hate to cast here, but this is type-narrowed properly with the above check, but for some reason typescript is confused
+                  // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
+                  `https://etherscan.io/tx/${(stage.transactionStatus as any).txHash}`,
+                  "_blank",
+                );
+              }}
+            />
+          </>
+        )}
+      {stage.type === "sign-submit" &&
+        stage.transactionStatus.status !== "pending" &&
+        stage.transactionStatus.status !== "signing" && (
+          <PrimaryButton
+            label="Make another deposit"
+            onClick={handleMakeAnotherDeposit}
             disabled={false}
-            onClick={() => {
-              window.open(`https://etherscan.io/tx/${stage.txHash}`, "_blank");
-            }}
           />
-        </>
-      )}
-      {stage.type !== "data-capture" && stage.type !== "sign-data" && (
-        <PrimaryButton
-          label="Make another deposit"
-          onClick={handleMakeAnotherDeposit}
-          disabled={false}
-        />
-      )}
+        )}
     </div>
   );
 };

@@ -1,4 +1,4 @@
-import { CircleCheck, CircleMinus, CirclePlay, CirclePlus } from "lucide-react";
+import { CircleMinus, CirclePlay, CirclePlus } from "lucide-react";
 import { ValidatorStatus } from "pec/types/validator";
 import { IHeaderConfig, TableValidatorDetails } from "pec/types/validatorTable";
 import {
@@ -14,6 +14,7 @@ import {
   ValidatorIndex,
   WithdrawalAddress,
 } from "./TableComponents";
+import { FaCircleCheck, FaCircleMinus, FaCirclePlus } from "react-icons/fa6";
 
 export interface IValidatorRowProps<T extends TableValidatorDetails> {
   wrapperProps?: Omit<ValidatorCardWrapperProps, "onClick" | "children">;
@@ -139,25 +140,37 @@ export const ValidatorRow = <T extends TableValidatorDetails>({
                 <div className="flex items-center justify-center">
                   {selectableRows.isSelected ? (
                     <>
-                      <CircleCheck
+                      <FaCircleCheck
                         className={cn(
-                          "h-4 min-h-4 w-4 min-w-4 text-green-500",
+                          "h-5 min-h-5 w-5 min-w-5 text-green-500",
                           { hidden: isHovering },
                         )}
                       />
-                      <CircleMinus
+                      <FaCircleMinus
                         className={cn(
-                          "hidden h-4 min-h-4 w-4 min-w-4 text-red-500",
-                          { block: isHovering },
+                          "hidden h-5 min-h-5 w-5 min-w-5 text-red-500",
+                          {
+                            block: isHovering,
+                          },
                         )}
                       />
                     </>
                   ) : (
-                    <CirclePlus
-                      className={cn("h-4 min-h-4 w-4 min-w-4 text-indigo-500", {
-                        "fill-indigo-500 text-white": isHovering,
-                      })}
-                    />
+                    <>
+                      <CirclePlus
+                        className={cn("h-5 min-h-5 w-5 min-w-5 text-primary", {
+                          hidden: isHovering,
+                        })}
+                      />
+                      <FaCirclePlus
+                        className={cn(
+                          "hidden h-5 min-h-5 w-5 min-w-5 text-primary",
+                          {
+                            block: isHovering,
+                          },
+                        )}
+                      />
+                    </>
                   )}
                 </div>
               )}

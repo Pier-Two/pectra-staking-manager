@@ -17,7 +17,7 @@ import {
   VALIDATOR_PERFORMANCE_FILTER_TO_BEACONCHAIN,
 } from "pec/lib/constants/validators/performance";
 import { populateBeaconchainValidatorDetails } from "pec/server/helpers/validators";
-import { IResponse } from "pec/types/response";
+import type { IResponse } from "pec/types/response";
 import { EmailSchema } from "pec/lib/api/schemas/email";
 
 export const validatorRouter = createTRPCRouter({
@@ -147,6 +147,9 @@ export const validatorRouter = createTRPCRouter({
     }),
 
   updateConsolidationRecord: publicProcedure
+    .meta({
+      noRateLimit: true, // no rate limit since this is hit many times during consolidation
+    })
     .input(
       z.object({
         targetValidatorIndex: z.number(),

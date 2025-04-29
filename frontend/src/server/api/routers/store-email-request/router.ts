@@ -1,5 +1,9 @@
 import { z } from "zod";
-import { createTRPCRouter, publicProcedure } from "pec/server/api/trpc";
+import {
+  createRedisRateLimiterMiddleware,
+  createTRPCRouter,
+  publicProcedure,
+} from "pec/server/api/trpc";
 import { SupportedChainIdSchema } from "pec/lib/api/schemas/network";
 import { DepositModel, WithdrawalModel } from "pec/lib/database/models";
 import { getBeaconChainAxios } from "pec/lib/server/axios";
@@ -14,9 +18,13 @@ import type { IResponse } from "pec/types/response";
 import { generateErrorResponse } from "pec/lib/utils";
 import { DatabaseDepositSchema } from "pec/lib/api/schemas/database/deposit";
 import { createContact } from "pec/lib/services/emailService";
+import { Ratelimit } from "@upstash/ratelimit";
 
 export const storeEmailRequestRouter = createTRPCRouter({
   storeWithdrawalRequest: publicProcedure
+    .meta({
+      noRateLimit: true, // no rate limit since this is hit many times during withdrawal processing
+    })
     .input(
       z.object({
         requestData: StoreWithdrawalRequestSchema,
@@ -73,12 +81,17 @@ export const storeEmailRequestRouter = createTRPCRouter({
     }),
 
   storeDepositRequest: publicProcedure
+    // stricter rate limit for deposit requests
+    .use(createRedisRateLimiterMiddleware(Ratelimit.slidingWindow(10, "60 s")))
     .input(DatabaseDepositSchema.omit({ status: true }).array())
     .mutation(async ({ input }): Promise<IResponse<null>> => {
       try {
-        //Each batched deposit request in the array will have the same email
+        // Each batched deposit request in the array will have the same email
         const email = input[0]?.email;
-        await DepositModel.create({ ...input, status: ACTIVE_STATUS });
+
+        await DepositModel.create(
+          input.map((deposit) => ({ ...deposit, status: ACTIVE_STATUS })),
+        );
 
         if (email) {
           const contactResponse = await createContact(email);

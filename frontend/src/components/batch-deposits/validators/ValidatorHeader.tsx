@@ -14,7 +14,7 @@ export const ValidatorHeader = ({
   onClear,
 }: IValidatorHeader) => {
   return (
-    <div className="flex flex-row justify-between">
+    <div className="flex flex-row items-center justify-between">
       <div className="text-lg font-670">Select validators</div>
       {selectedCount > 0 && (
         <div className="flex flex-row items-center gap-4">
@@ -35,3 +35,4 @@ export const ValidatorHeader = ({
     </div>
   );
 };
+

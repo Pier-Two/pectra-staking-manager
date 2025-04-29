@@ -6,6 +6,7 @@ import { ArrowUpFromDot } from "lucide-react";
 import Image from "next/image";
 import { ValidatorHeader } from "pec/components/batch-deposits/validators/ValidatorHeader";
 import { Email } from "pec/components/consolidation/summary/Email";
+import { DisplayAmount } from "pec/components/ui/table/TableComponents";
 import { ValidatorTable } from "pec/components/ui/table/ValidatorTable";
 import { WithdrawalInformation } from "pec/components/withdrawal/WithdrawalInformation";
 import { WithdrawalValidatorTable } from "pec/components/withdrawal/WithdrawalValidatorTable";
@@ -21,18 +22,14 @@ import {
   type WithdrawalFormType,
 } from "pec/lib/api/schemas/withdrawal";
 import { formatAddressToShortenedString } from "pec/lib/utils/address";
-import { ValidatorStatus } from "pec/types/validator";
 import { type FC, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import WithdrawalLoading from "./loading";
-import { DisplayAmount } from "pec/components/ui/table/TableComponents";
 
 const Withdrawal: FC = () => {
   const walletAddress = useWalletAddress();
   const [showEmail, setShowEmail] = useState(false);
-  const { groupedValidators, isLoading } = useValidators();
-
-  const availableValidators = groupedValidators[ValidatorStatus.ACTIVE] ?? [];
+  const { activeType2Validators, isLoading } = useValidators();
 
   const { submitWithdrawals, stage, setStage } = useSubmitWithdraw();
 
@@ -66,7 +63,7 @@ const Withdrawal: FC = () => {
   const handleMaxAllocation = () => {
     setValue(
       "withdrawals",
-      availableValidators.map(
+      activeType2Validators.map(
         (validator) => ({
           validator,
           amount: validator.balance,
@@ -96,10 +93,10 @@ const Withdrawal: FC = () => {
         <div className="flex flex-col gap-4">
           <div className="flex gap-x-4 text-primary-dark dark:text-indigo-300">
             <ArrowUpFromDot className="h-8 w-8 self-center" />
-            <div className="text-2xl font-medium">Withdrawal</div>
+            <div className="text-3xl font-medium">Withdrawal</div>
           </div>
 
-          <div className="text-piertwo-text font-inter text-xs">
+          <div className="text-base">
             Submit onchain execution layer withdrawal requests against
             validators, as per Pectra EIP-7002.
           </div>
@@ -127,7 +124,7 @@ const Withdrawal: FC = () => {
             onSubmit={handleSubmit(onSubmit)}
             resetWithdrawal={handleResetWithdrawal}
             stage={stage}
-            availableValidators={availableValidators.length}
+            availableValidators={activeType2Validators.length}
             validatorsSelected={withdrawals.length}
             withdrawalTotal={withdrawalTotal}
           />
@@ -150,12 +147,12 @@ const Withdrawal: FC = () => {
             />
             <ValidatorHeader
               selectedCount={withdrawals.length}
-              totalCount={availableValidators.length}
+              totalCount={activeType2Validators.length}
               onClear={handleResetWithdrawal}
             />
 
             <WithdrawalValidatorTable
-              validators={availableValidators}
+              validators={activeType2Validators}
               withdrawals={withdrawals}
               addWithdrawal={append}
               removeWithdrawal={remove}
@@ -174,7 +171,9 @@ const Withdrawal: FC = () => {
                 withdrawalAmount: w.amount,
               }),
             )}
+            wrapperProps={{ clearBackground: true }}
             disableSort
+            disablePagination
             renderOverrides={{
               withdrawalAmount: (value) => (
                 <DisplayAmount
