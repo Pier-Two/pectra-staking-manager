@@ -143,7 +143,6 @@ interface DisplayAmountProps {
   className?: string;
   opts?: {
     decimals?: number;
-    hidePostfixSymbol?: boolean;
   };
 }
 
@@ -154,51 +153,7 @@ export const DisplayAmount = ({
 }: DisplayAmountProps) => {
   return (
     <div className={cn("text-sm font-semibold", className)}>
-      Ξ {displayedEthAmount(amount, opts?.decimals)}{" "}
-      {!opts?.hidePostfixSymbol && "ETH"}
-    </div>
-  );
-};
-
-interface TableInputFieldProps {
-  inputProps: InputProps;
-  error?: string;
-}
-
-export const TableInputField = ({
-  inputProps,
-  error,
-}: TableInputFieldProps) => {
-  if (inputProps.disabled) {
-    return (
-      <div className="flex w-full flex-col">
-        <div className="flex flex-row items-center gap-2">
-          <span className="text-sm">ETH</span>
-          <Input
-            className="w-full rounded-xl border border-indigo-300 bg-white p-2 text-sm text-gray-700 dark:border-gray-800 dark:bg-black dark:text-gray-300"
-            disabled
-            value={0}
-          />
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <div className="flex w-full flex-col">
-      <div className="flex flex-row items-center gap-2">
-        <span className="text-sm">ETH</span>
-        <Input
-          className={cn(
-            "w-full rounded-xl border border-border bg-white p-2 text-sm text-gray-700 dark:border-gray-800 dark:bg-black dark:text-gray-300",
-          )}
-          type="number"
-          step="any"
-          {...inputProps}
-        />
-      </div>
-
-      {error && <div className="mt-1 text-xs text-red-500">{error}</div>}
+      Ξ {displayedEthAmount(amount, opts?.decimals)}
     </div>
   );
 };

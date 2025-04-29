@@ -121,14 +121,11 @@ export const SelectSourceValidators = ({
       <div className="flex flex-row items-center justify-center gap-2 text-sm text-gray-600 dark:text-gray-400">
         <Zap className="h-4 w-4 fill-indigo-500 text-indigo-500" />
         <div className="text-sm">New destination balance:</div>
-        <DisplayAmount
-          amount={newDestinationBalance}
-          opts={{ decimals: 2, hidePostfixSymbol: true }}
-        />
+        <DisplayAmount amount={newDestinationBalance} opts={{ decimals: 2 }} />
         {"/"}
         <DisplayAmount
           amount={2048}
-          opts={{ decimals: 0, hidePostfixSymbol: true }}
+          opts={{ decimals: 0 }}
           className="font-normal"
         />
         max

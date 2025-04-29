@@ -51,23 +51,23 @@ export const useBatchDeposit = () => {
       return;
     }
 
-    const availableDeposits = deposits.filter(
-      (deposit) => deposit.validator.status !== ValidatorStatus.EXITED,
-    );
-
-    if (availableDeposits.length !== deposits.length) {
+    if (
+      deposits.some(
+        (deposit) => deposit.validator.status === ValidatorStatus.EXITED,
+      )
+    ) {
       toast({
-        title: "Deposits Removed from contract call",
-        description:
-          "Some validators are currently exiting so they have been removed from this deposit call.",
+        title: "Error",
+        description: "Some validators have exited the network.",
         variant: "error",
       });
+      return;
     }
 
-    setStage({ type: "sign-data" });
+    setStage({ type: "sign-submit", transactionStatus: { status: "signing" } });
 
     try {
-      const formattedDeposits: BatchDepositRequest[] = availableDeposits.map(
+      const formattedDeposits: BatchDepositRequest[] = deposits.map(
         (deposit) => ({
           pubKey: deposit.validator.publicKey as `0x${string}`,
           amount: parseEther(deposit.amount.toString()),
@@ -87,7 +87,15 @@ export const useBatchDeposit = () => {
         }),
       });
 
-      const saveDepositDetails = availableDeposits.map((deposit) => ({
+      setStage({
+        type: "sign-submit",
+        transactionStatus: {
+          status: "submitted",
+          txHash: receipt.transactionHash,
+        },
+      });
+
+      const saveDepositDetails = deposits.map((deposit) => ({
         validatorIndex: deposit.validator.validatorIndex,
         txHash: receipt.transactionHash,
         email: email,
@@ -108,38 +116,25 @@ export const useBatchDeposit = () => {
         variant: "success",
       });
 
-      setStage({
-        type: "transactions-submitted",
-        txHash: receipt.transactionHash,
+      const txReceipt = await waitForReceipt({
+        transactionHash: receipt.transactionHash,
+        client,
+        chain,
       });
 
-      try {
-        const txReceipt = await waitForReceipt({
-          transactionHash: receipt.transactionHash,
-          client,
-          chain,
-        });
-
-        setStage({
-          type: "transactions-finalised",
+      setStage({
+        type: "sign-submit",
+        transactionStatus: {
+          status: "finalised",
           txHash: txReceipt.transactionHash,
-        });
+        },
+      });
 
-        toast({
-          title: "Success",
-          description: "Deposits finalised successfully",
-          variant: "success",
-        });
-      } catch (error) {
-        console.error("Error waiting for transaction receipt:", error);
-        toast({
-          title: "Error",
-          description: parseError(error),
-          variant: "error",
-        });
-
-        setStage({ type: "data-capture" });
-      }
+      toast({
+        title: "Success",
+        description: "Deposits finalised successfully",
+        variant: "success",
+      });
     } catch (error) {
       console.error("Error submitting batch deposit:", error);
       toast({

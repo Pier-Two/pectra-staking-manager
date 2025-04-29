@@ -1,26 +1,21 @@
-import { keyBy, orderBy } from "lodash";
 import {
   DEPOSIT_COLUMN_HEADERS,
   DepositTableValidatorDetails,
 } from "pec/constants/columnHeaders";
 import type { DepositData, DepositType } from "pec/lib/api/schemas/deposit";
-import type { EDistributionMethod } from "pec/types/batch-deposits";
+import { EDistributionMethod } from "pec/types/batch-deposits";
 import { type ValidatorDetails } from "pec/types/validator";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo } from "react";
 import type { FieldErrors, UseFormRegister } from "react-hook-form";
-import { DepositSelectionValidatorCard } from "../../validators/cards/DepositSelectionValidatorCard";
-import { type SortDirection } from "./ColumnHeader";
 import { ValidatorHeader } from "./ValidatorHeader";
-import { ValidatorListHeaders } from "./ValidatorListHeaders";
 import { ValidatorTable } from "pec/components/ui/table/ValidatorTable";
-import { TableInputField } from "pec/components/ui/table/TableComponents";
+import { AmountInput } from "pec/components/ui/custom/AmountInput";
 
 export interface ISelectValidatorsProps {
   clearSelectedValidators: () => void;
   distributionMethod: EDistributionMethod;
   handleValidatorSelect: (validator: ValidatorDetails) => void;
   deposits: DepositData[];
-  totalAllocated: number;
   totalToDistribute: number;
   validators: ValidatorDetails[];
   errors: FieldErrors<DepositType>;
@@ -34,15 +29,17 @@ export const SelectValidators = ({
   register,
   handleValidatorSelect,
   deposits,
-  totalAllocated,
   totalToDistribute,
   validators,
 }: ISelectValidatorsProps) => {
-  const selectedValidatorIndexes: Record<number, number> = deposits.reduce(
-    (acc, field, index) => ({
-      ...acc,
-      [field.validator.validatorIndex]: index,
-    }),
+  const selectedValidatorIndexes = deposits.reduce<Record<number, number>>(
+    (acc, field, index) => {
+      acc[field.validator.validatorIndex] = index;
+      return {
+        ...acc,
+        [field.validator.validatorIndex]: index,
+      };
+    },
     {},
   );
 
@@ -67,6 +64,12 @@ export const SelectValidators = ({
     const numValue = parseFloat(value);
     if (isNaN(numValue)) return 0;
 
+    if (
+      distributionMethod === EDistributionMethod.SPLIT &&
+      numValue > totalToDistribute
+    )
+      return totalToDistribute;
+
     return numValue;
   };
 
@@ -75,10 +78,14 @@ export const SelectValidators = ({
       const depositIndex =
         selectedValidatorIndexes[validator.validatorIndex] ?? -1;
 
+      const value = depositIndex === -1 ? 0 : undefined;
+
       return (
-        <TableInputField
+        <AmountInput
           inputProps={{
-            disabled: depositIndex === -1,
+            disabled:
+              depositIndex === -1 ||
+              distributionMethod === EDistributionMethod.SPLIT,
             ...register(`deposits.${depositIndex}.amount`, {
               setValueAs: (value: string) => setValueHandler(value),
             }),
@@ -89,6 +96,7 @@ export const SelectValidators = ({
 
               e.stopPropagation();
             },
+            value,
           }}
           error={
             errors.deposits?.[depositIndex]?.amount
@@ -114,9 +122,11 @@ export const SelectValidators = ({
         renderOverrides={{ depositAmount: depositAmountRowRender }}
         selectableRows={{
           onClick: (row) => handleValidatorSelect(row),
-          isSelected: (row) => !!selectedValidatorIndexes[row.validatorIndex],
+          isSelected: (row) =>
+            selectedValidatorIndexes[row.validatorIndex] !== undefined,
           showCheckIcons: true,
         }}
+        disablePagination
       />
     </>
   );

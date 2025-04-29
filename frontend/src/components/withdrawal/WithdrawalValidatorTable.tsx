@@ -9,7 +9,7 @@ import { useCallback, useMemo } from "react";
 import type { FieldErrors, UseFormRegister } from "react-hook-form";
 import { Input } from "../ui/input";
 import { ValidatorTable } from "../ui/table/ValidatorTable";
-import { TableInputField } from "../ui/table/TableComponents";
+import { AmountInput } from "../ui/custom/AmountInput";
 
 interface WithdrawalValidatorTable {
   validators: ValidatorDetails[];
@@ -67,7 +67,7 @@ export const WithdrawalValidatorTable = ({
         selectedValidatorIndexes[validator.validatorIndex] ?? -1;
 
       return (
-        <TableInputField
+        <AmountInput
           inputProps={{
             disabled: withdrawalIndex === -1,
             ...register(`withdrawals.${withdrawalIndex}.amount`, {
