@@ -21,3 +21,5 @@ export const DISTRIBUTION_OPTIONS: IDistributionOption[] = [
 export const SIGNATURE_BYTE_LENGTH = 96;
 
 export const WITHDRAWAL_CREDENTIALS_BYTE_LENGTH = 32;
+
+export const MAX_VALIDATOR_BALANCE = 2048;
