@@ -6,7 +6,7 @@ const WithdrawalLoading: FC = () => {
     <div className="mx-auto w-full animate-pulse space-y-8">
       <div className="flex gap-x-4 text-primary-dark dark:text-indigo-200">
         <ArrowUpFromDot className="h-8 w-8 self-center" />
-        <div className="text-2xl font-medium">Withdrawal</div>
+        <div className="text-3xl font-medium">Withdrawal</div>
       </div>
 
       <div className="flex flex-col gap-4">
