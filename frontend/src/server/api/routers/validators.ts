@@ -7,18 +7,13 @@ import type {
   BeaconChainValidatorPerformanceResponse,
 } from "pec/types/api";
 import { type ValidatorDetails } from "pec/types/validator";
-import { ConsolidationModel } from "pec/lib/database/models";
-import { ACTIVE_STATUS } from "pec/types/app";
 import { SupportedChainIdSchema } from "pec/lib/api/schemas/network";
 import { getBeaconChainAxios } from "pec/lib/server/axios";
-import { createContact } from "pec/lib/services/emailService";
 import {
   PERFORMANCE_FILTERS,
   VALIDATOR_PERFORMANCE_FILTER_TO_BEACONCHAIN,
 } from "pec/lib/constants/validators/performance";
 import { populateBeaconchainValidatorDetails } from "pec/server/helpers/validators";
-import type { IResponse } from "pec/types/response";
-import { EmailSchema } from "pec/lib/api/schemas/email";
 
 export const validatorRouter = createTRPCRouter({
   getValidators: publicProcedure
@@ -144,67 +139,5 @@ export const validatorRouter = createTRPCRouter({
         console.error("Error getting validator: ", error);
         return "NOT_FOUND";
       }
-    }),
-
-  updateConsolidationRecord: publicProcedure
-    .meta({
-      noRateLimit: true, // no rate limit since this is hit many times during consolidation
-    })
-    .input(
-      z.object({
-        targetValidatorIndex: z.number(),
-        sourceTargetValidatorIndex: z.number(),
-        txHash: z.string(),
-        email: EmailSchema,
-      }),
-    )
-    .mutation(async ({ input }): Promise<IResponse<null>> => {
-      const {
-        targetValidatorIndex,
-        sourceTargetValidatorIndex,
-        txHash,
-        email,
-      } = input;
-
-      const existingRecord = await ConsolidationModel.findOne({
-        $or: [
-          {
-            targetValidatorIndex,
-            sourceTargetValidatorIndex,
-          },
-          {
-            targetValidatorIndex: sourceTargetValidatorIndex,
-            sourceTargetValidatorIndex: targetValidatorIndex,
-          },
-        ],
-      });
-
-      if (existingRecord)
-        throw new Error(
-          `Consolidation record already exists for validators ${targetValidatorIndex} and ${sourceTargetValidatorIndex}`,
-        );
-
-      await ConsolidationModel.create({
-        targetValidatorIndex,
-        sourceTargetValidatorIndex,
-        status: ACTIVE_STATUS,
-        txHash,
-        email,
-      });
-
-      if (email) {
-        const contactResponse = await createContact(email);
-
-        if (!contactResponse.success)
-          console.error(
-            `Error creating contact in Hubspot for ${email}`,
-            contactResponse.error,
-          );
-      }
-
-      return {
-        success: true,
-        data: null,
-      };
     }),
 });

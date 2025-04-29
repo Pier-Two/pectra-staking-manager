@@ -1,5 +1,5 @@
 import { verifySignatureAppRouter } from "@upstash/qstash/nextjs";
-import { processConsolidations } from "pec/server/api/routers/store-email-request/consolidation";
+import { processConsolidations } from "pec/server/helpers/process-requests/consolidation";
 
 async function consolidationHandler(_request: Request) {
   const result = await processConsolidations();

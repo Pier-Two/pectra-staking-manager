@@ -5,7 +5,11 @@ import {
   publicProcedure,
 } from "pec/server/api/trpc";
 import { SupportedChainIdSchema } from "pec/lib/api/schemas/network";
-import { DepositModel, WithdrawalModel } from "pec/lib/database/models";
+import {
+  ConsolidationModel,
+  DepositModel,
+  WithdrawalModel,
+} from "pec/lib/database/models";
 import { getBeaconChainAxios } from "pec/lib/server/axios";
 import {
   type BeaconchainWithdrawalResponse,
@@ -19,6 +23,7 @@ import { generateErrorResponse } from "pec/lib/utils";
 import { DatabaseDepositSchema } from "pec/lib/api/schemas/database/deposit";
 import { createContact } from "pec/lib/services/emailService";
 import { Ratelimit } from "@upstash/ratelimit";
+import { EmailSchema } from "pec/lib/api/schemas/email";
 
 export const storeEmailRequestRouter = createTRPCRouter({
   storeWithdrawalRequest: publicProcedure
@@ -111,5 +116,66 @@ export const storeEmailRequestRouter = createTRPCRouter({
         console.log(error);
         return generateErrorResponse(error);
       }
+    }),
+  storeConsolidationRequest: publicProcedure
+    .meta({
+      noRateLimit: true, // no rate limit since this is hit many times during consolidation
+    })
+    .input(
+      z.object({
+        targetValidatorIndex: z.number(),
+        sourceTargetValidatorIndex: z.number(),
+        txHash: z.string(),
+        email: EmailSchema,
+      }),
+    )
+    .mutation(async ({ input }): Promise<IResponse<null>> => {
+      const {
+        targetValidatorIndex,
+        sourceTargetValidatorIndex,
+        txHash,
+        email,
+      } = input;
+
+      const existingRecord = await ConsolidationModel.findOne({
+        $or: [
+          {
+            targetValidatorIndex,
+            sourceTargetValidatorIndex,
+          },
+          {
+            targetValidatorIndex: sourceTargetValidatorIndex,
+            sourceTargetValidatorIndex: targetValidatorIndex,
+          },
+        ],
+      });
+
+      if (existingRecord)
+        throw new Error(
+          `Consolidation record already exists for validators ${targetValidatorIndex} and ${sourceTargetValidatorIndex}`,
+        );
+
+      await ConsolidationModel.create({
+        targetValidatorIndex,
+        sourceTargetValidatorIndex,
+        status: ACTIVE_STATUS,
+        txHash,
+        email,
+      });
+
+      if (email) {
+        const contactResponse = await createContact(email);
+
+        if (!contactResponse.success)
+          console.error(
+            `Error creating contact in Hubspot for ${email}`,
+            contactResponse.error,
+          );
+      }
+
+      return {
+        success: true,
+        data: null,
+      };
     }),
 });

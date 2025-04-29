@@ -1,5 +1,5 @@
 import { verifySignatureAppRouter } from "@upstash/qstash/nextjs";
-import { processDeposits } from "pec/server/api/routers/store-email-request/deposit";
+import { processDeposits } from "pec/server/helpers/process-requests/deposit";
 
 async function depositHandler(_request: Request) {
   const result = await processDeposits();
