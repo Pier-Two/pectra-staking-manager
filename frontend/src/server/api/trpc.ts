@@ -6,10 +6,12 @@
  * TL;DR - This is where all the tRPC server stuff is created and plugged in. The pieces you will
  * need to use are documented accordingly near the end.
  */
-import { initTRPC } from "@trpc/server";
+import { initTRPC, TRPCError } from "@trpc/server";
 import { connect } from "pec/lib/database/models";
 import superjson from "superjson";
 import { ZodError } from "zod";
+import { Ratelimit } from "@upstash/ratelimit";
+import { redis } from "pec/lib/utils/redis";
 
 /**
  * 1. CONTEXT
@@ -99,10 +101,49 @@ const timingMiddleware = t.middleware(async ({ next, path }) => {
 });
 
 /**
+ * Rate limiter middleware for tRPC procedures
+ *
+ * // TODO: what should the default rate limit be?
+ * @param limiter - The rate limiter to use
+ * @returns The rate limiter middleware
+ */
+export const createRedisRateLimiterMiddleware = (
+  limiter = Ratelimit.slidingWindow(10, "10 s"), // default rate limit of 10 requests per 10 seconds
+) =>
+  createTRPCMiddleware(async ({ ctx, path, next }) => {
+    const ratelimit = new Ratelimit({
+      redis: redis,
+      limiter,
+      analytics: true,
+    });
+
+    const ip =
+      ctx.headers.get("x-forwarded-for") ?? ctx.headers.get("x-real-ip");
+
+    // if we don't have an ip address, we can't rate limit
+    if (!ip) return next();
+
+    // check if the identifier is already in the ratelimit
+    const { success } = await ratelimit.limit(`${ip}:${path}`);
+
+    // if the request is not successful, we throw an error
+    if (!success) {
+      throw new TRPCError({
+        code: "TOO_MANY_REQUESTS",
+        message: "Too many requests",
+      });
+    }
+
+    return next();
+  });
+
+/**
  * Public (unauthenticated) procedure
  *
  * This is the base piece you use to build new queries and mutations on your tRPC API. It does not
  * guarantee that a user querying is authorized, but you can still access user session data if they
  * are logged in.
  */
-export const publicProcedure = t.procedure.use(timingMiddleware);
+export const publicProcedure = t.procedure
+  .use(timingMiddleware)
+  .use(createRedisRateLimiterMiddleware());
