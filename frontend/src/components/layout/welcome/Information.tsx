@@ -1,5 +1,4 @@
 import type { FC } from "react";
-import { motion } from "motion/react";
 import { EnterAnimation } from "pec/app/(login-layout)/welcome/_components/enter-animation";
 
 const benefits = [
