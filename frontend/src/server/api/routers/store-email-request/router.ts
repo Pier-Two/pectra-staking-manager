@@ -97,8 +97,8 @@ export const storeEmailRequestRouter = createTRPCRouter({
           const lastDeposit = await DepositModel.findOne({
             email,
             validatorIndex: {
-              $in: input.map((deposit) => deposit.validatorIndex),
-            }, // check against all provided validator indexes
+              $in: input.map((deposit) => deposit.validatorIndex), // check against all provided validator indexes
+            },
           }).sort({
             createdAt: -1,
           });
