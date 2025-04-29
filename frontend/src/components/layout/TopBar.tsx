@@ -92,7 +92,7 @@ export const TopBar: FC<ITopBar> = (props) => {
               >
                 <div className="absolute inset-[1px] rounded-[3px] bg-white dark:bg-gray-950" />
                 <p className="relative text-sm font-medium">
-                  {groupedValidators[ValidatorStatus.ACTIVE]?.length}
+                  {groupedValidators[ValidatorStatus.ACTIVE]?.length ?? 0}
                 </p>
               </div>
             )}
