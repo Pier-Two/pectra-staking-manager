@@ -94,7 +94,7 @@ const Withdrawal: FC = () => {
     <div className="flex w-full flex-col gap-y-2">
       <div className="space-y-8">
         <div className="flex flex-col gap-4">
-          <div className="flex gap-x-4 text-primary-dark dark:text-indigo-300">
+          <div className="flex gap-x-4">
             <ArrowUpFromDot className="h-8 w-8 self-center" />
             <div className="text-3xl font-medium">Withdrawal</div>
           </div>
