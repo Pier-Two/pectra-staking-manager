@@ -88,7 +88,9 @@ export const SubmitConsolidationRequests = ({
         <ValidatorTable
           headers={SUBMITTING_CONSOLIDATION_TABLE_HEADERS}
           data={transactions}
+          wrapperProps={{ clearBackground: true }}
           disableSort
+          disablePagination
           renderOverrides={{
             consolidationType: (data) => {
               if (data.consolidationType === "upgrade") {

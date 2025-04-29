@@ -13,7 +13,6 @@ import { useContracts } from "./useContracts";
 import { useRpcClient } from "./useRpcClient";
 import { SubmittingConsolidationValidatorDetails } from "pec/constants/columnHeaders";
 import { TransactionStatus } from "pec/types/withdraw";
-import { parseError } from "pec/lib/utils/parseError";
 import { client } from "pec/lib/wallet/client";
 import { cloneDeep } from "lodash";
 
@@ -102,7 +101,7 @@ export const useSubmitConsolidate = () => {
     rawTransactions: SubmittingConsolidationValidatorDetails[],
     updateTransactionStatus: (index: number, status: TransactionStatus) => void,
     email: string,
-  ) => {
+  ): Promise<boolean> => {
     const transactions = cloneDeep(rawTransactions);
 
     // This method just ensures the local transactions object stays in sync with the state
@@ -120,7 +119,7 @@ export const useSubmitConsolidate = () => {
         description: "Please try again or double check input fields.",
         variant: "error",
       });
-      return;
+      return false;
     }
 
     for (const [index, validatorConsolidationTx] of transactions.entries()) {
@@ -150,16 +149,12 @@ export const useSubmitConsolidate = () => {
         }
       } catch (error) {
         toast({
-          title: "Error consolidating",
-          description: parseError(error),
+          title: "User cancelled",
+          description: "Please update selections and continue",
           variant: "error",
         });
 
-        // TODO: What to do here?
-        updateTransactionStatusWithLocalState(index, {
-          status: "failedToSubmit",
-          error: parseError(error),
-        });
+        return false;
       }
     }
 
@@ -190,141 +185,7 @@ export const useSubmitConsolidate = () => {
       }
     }
 
-    // // if the user is consolidating to one of their own validators, and that validator is version
-    // // 0x01, it must be updated to 0x02 first
-    // if (
-    //   !manuallySettingValidator &&
-    //   destination.withdrawalAddress.startsWith("0x01") &&
-    //   !destination.upgradeSubmitted // if they have already submitted an upgrade tx but API returns 0x01, we use our DB flag
-    // ) {
-    //   try {
-    //     const upgradeTx = await consolidateValidator(
-    //       contracts.consolidation.address,
-    //       account,
-    //       destination.publicKey,
-    //       destination.publicKey,
-    //       feeData,
-    //       chain,
-    //     );
-    //
-    //     // save upgrade tx to db
-    //     await saveConsolidationToDatabase({
-    //       targetValidatorIndex: destination.validatorIndex,
-    //       sourceTargetValidatorIndex: destination.validatorIndex,
-    //       txHash: upgradeTx.transactionHash,
-    //       email: summaryEmail,
-    //     });
-    //
-    //     toast({
-    //       title: `Validator ${destination.validatorIndex} Upgraded`,
-    //       description:
-    //         "The transaction to update the validator version been submitted",
-    //       variant: "success",
-    //     });
-    //   } catch (err) {
-    //     console.error(`Error upgrading validator`, err);
-    //
-    //     toast({
-    //       title: `Error Upgrading Validator ${destination.validatorIndex}`,
-    //       description: "Please try again.",
-    //       variant: "error",
-    //     });
-    //     return;
-    //   }
-    // }
-    //
-    // // this is the actual consolidation flow. First, it checks that the source validator is version 0x02. If it isn't,
-    // // it submits an upgrade transaction first, before submitting the consolidation transaction
-    // for (const validator of source) {
-    //   try {
-    //     setCurrentPubKey(validator.publicKey);
-    //
-    //     // if it's version 0x01 - submit the upgrade tx for this validator
-    //     if (
-    //       validator.withdrawalAddress.startsWith("0x01") &&
-    //       !validator.upgradeSubmitted
-    //     ) {
-    //       const upgradeTx = await consolidateValidator(
-    //         contracts.consolidation.address,
-    //         account,
-    //         validator.publicKey,
-    //         validator.publicKey,
-    //         feeData,
-    //         chain,
-    //       );
-    //
-    //       // save upgrade tx to db
-    //       await saveConsolidationToDatabase({
-    //         targetValidatorIndex: validator.validatorIndex,
-    //         sourceTargetValidatorIndex: validator.validatorIndex,
-    //         txHash: upgradeTx.transactionHash,
-    //         email: summaryEmail,
-    //       });
-    //     }
-    //
-    //     // now the actual consolidation process can occur
-    //
-    //     // update the validator status to be in progress
-    //     updateConsolidatedValidator(
-    //       validator,
-    //       undefined, // empty tx hash
-    //       TransactionStatus.IN_PROGRESS,
-    //     );
-    //
-    //     const consolidationTx = await consolidateValidator(
-    //       contracts.consolidation.address,
-    //       account,
-    //       validator.publicKey,
-    //       destination.publicKey,
-    //       feeData,
-    //       chain,
-    //     );
-    //
-    //     updateConsolidatedValidator(
-    //       validator,
-    //       consolidationTx.transactionHash,
-    //       TransactionStatus.SUBMITTED,
-    //     );
-    //
-    //     await saveConsolidationToDatabase({
-    //       targetValidatorIndex: destination.validatorIndex,
-    //       sourceTargetValidatorIndex: validator.validatorIndex,
-    //       txHash: consolidationTx.transactionHash,
-    //       email: summaryEmail,
-    //     });
-    //
-    //     results.push({
-    //       validator,
-    //       txHash: consolidationTx.transactionHash,
-    //       success: true,
-    //     });
-    //   } catch (error) {
-    //     console.error(
-    //       `Error consolidating validator ${validator.validatorIndex}:`,
-    //       error,
-    //     );
-    //     updateConsolidatedValidator(
-    //       validator,
-    //       undefined,
-    //       TransactionStatus.UPCOMING,
-    //     );
-    //     results.push({ validator, error, success: false });
-    //
-    //     // break out of the loop if it errors
-    //     setCurrentPubKey("");
-    //
-    //     toast({
-    //       title: `Error Consolidating Validator ${validator.validatorIndex}`,
-    //       description: "Please try again.",
-    //       variant: "error",
-    //     });
-    //     break;
-    //   }
-    //
-    //   setCurrentPubKey("");
-    // }
-
-    return [];
+    return true;
   };
 
   return consolidate;

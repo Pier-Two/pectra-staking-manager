@@ -10,6 +10,7 @@ import { cn } from "pec/lib/utils";
 import { ValidatorDetails } from "pec/types/validator";
 import type { TransactionStatus } from "pec/types/withdraw";
 import { displayedEthAmount } from "pec/lib/utils/validators/balance";
+import { Input, InputProps } from "../input";
 
 interface StatusConfig {
   text: string;
@@ -142,7 +143,6 @@ interface DisplayAmountProps {
   className?: string;
   opts?: {
     decimals?: number;
-    hidePostfixSymbol?: boolean;
   };
 }
 
@@ -153,8 +153,7 @@ export const DisplayAmount = ({
 }: DisplayAmountProps) => {
   return (
     <div className={cn("text-sm font-semibold", className)}>
-      Ξ {displayedEthAmount(amount, opts?.decimals)}{" "}
-      {!opts?.hidePostfixSymbol && "ETH"}
+      Ξ {displayedEthAmount(amount, opts?.decimals)}
     </div>
   );
 };
