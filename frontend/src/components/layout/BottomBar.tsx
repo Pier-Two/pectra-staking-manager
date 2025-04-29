@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { logoPaths } from "pec/constants/logo"; // Import logoPaths
+import { logoPaths } from "pec/constants/logo";
 import { useTheme } from "pec/hooks/useTheme";
 import { EThemeMode } from "pec/types/theme";
 import type { FC } from "react";
@@ -30,7 +30,7 @@ export const BottomBar: FC = () => {
   };
 
   return (
-    <footer className="sticky bottom-0 z-10 flex flex-col sm:flex-row p-4 w-full items-center justify-center sm:justify-between border-t gap-y-4 bg-[rgba(255,255,255,0.98)] px-6 shadow-sm dark:border-gray-800 dark:bg-gray-950">
+    <footer className="fixed bottom-0 z-10 flex flex-col sm:flex-row p-4 w-full items-center justify-center sm:justify-between border-t gap-y-4 bg-[rgba(255,255,255,0.98)] px-6 shadow-sm dark:border-gray-800 dark:bg-gray-950">
       <div className="text-[11px] leading-[11px] text-zinc-950 dark:text-gray-300 text-center sm:text-left">
         Built with 🩶 by and for the Ethereum community
       </div>
