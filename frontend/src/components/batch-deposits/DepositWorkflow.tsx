@@ -241,7 +241,9 @@ export const DepositWorkflow = ({
                   depositAmount: w.amount,
                 }),
               )}
+              wrapperProps={{ clearBackground: true }}
               disableSort
+              disablePagination
               renderOverrides={{
                 depositAmount: (value) => (
                   <DisplayAmount

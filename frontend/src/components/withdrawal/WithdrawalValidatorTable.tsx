@@ -111,6 +111,7 @@ export const WithdrawalValidatorTable = ({
     <ValidatorTable
       data={validatorDetailsRow}
       headers={WITHDRAWAL_COLUMN_HEADERS}
+      disablePagination
       selectableRows={{
         onClick: handleValidatorSelect,
         showCheckIcons: true,

@@ -171,7 +171,9 @@ const Withdrawal: FC = () => {
                 withdrawalAmount: w.amount,
               }),
             )}
+            wrapperProps={{ clearBackground: true }}
             disableSort
+            disablePagination
             renderOverrides={{
               withdrawalAmount: (value) => (
                 <DisplayAmount
