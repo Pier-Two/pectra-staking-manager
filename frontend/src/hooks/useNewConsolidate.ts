@@ -120,7 +120,7 @@ export const useNewConsolidate = ({ activeValidators }: UseConsolidate) => {
     });
   };
 
-  const goToSubmit = () => {
+  const goToSubmit = async () => {
     if (stage.stage !== "summary") {
       console.error("Invalid state", stage);
 
@@ -143,14 +143,15 @@ export const useNewConsolidate = ({ activeValidators }: UseConsolidate) => {
 
     setStage(updatedStage);
 
-    // Add void to ignore the promise
     // TODO: EMAIL
-    void consolidate(
+    const result = await consolidate(
       updatedStage.destinationValidator,
       updatedStage.transactions.transactions,
       updateTransactionStatus,
       "",
     );
+
+    if (!result) goBack();
   };
 
   const goBack = () => {

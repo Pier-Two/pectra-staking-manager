@@ -114,6 +114,7 @@ export const SelectSourceValidators = ({
               isSelected: isValidatorSelected,
               showCheckIcons: true,
             }}
+            disablePagination
           />
         </TabsContent>
       </Tabs>

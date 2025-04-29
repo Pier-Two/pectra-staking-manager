@@ -77,10 +77,9 @@ export const useSubmitWithdraw = () => {
     const filteredWithdrawals = withdrawals.filter(
       (withdrawal) => withdrawal.amount > 0,
     );
-    
+
     for (const withdrawal of filteredWithdrawals) {
       try {
-        
         const callData = encodePacked(
           ["bytes", "uint64"],
           [
@@ -132,7 +131,6 @@ export const useSubmitWithdraw = () => {
             variant: "error",
           });
 
-          
           continue;
         }
 
@@ -143,21 +141,16 @@ export const useSubmitWithdraw = () => {
         });
       } catch (error) {
         toast({
-          title: "Error withdrawing",
-          description: parseError(error),
+          title: "User cancelled",
+          description: "Please update selections and continue",
           variant: "error",
         });
 
-        
-        txHashes[withdrawal.validator.validatorIndex] = {
-          status: "failedToSubmit",
-           error: parseError(error)
-        };
-
         setStage({
-          type: "sign-submit-finalise",
-          txHashes,
+          type: "data-capture",
         });
+
+        return;
       }
     }
 
@@ -169,30 +162,30 @@ export const useSubmitWithdraw = () => {
         continue;
       }
 
-        const receipt = await waitForReceipt({
-          transactionHash: tx.txHash,
-          chain,
-          client,
-        });
+      const receipt = await waitForReceipt({
+        transactionHash: tx.txHash,
+        chain,
+        client,
+      });
 
-        if (receipt.status === "success") {
-          // If the transaction was successful
-          txHashes[Number(validatorIndex)] = {
-            status: "finalised",
-            txHash: receipt.transactionHash,
-          };
-        } else {
-          // If the transaction failed
-          txHashes[Number(validatorIndex)] = {
-            status: "failed",
-            txHash: tx.txHash,
-          };
-        }
+      if (receipt.status === "success") {
+        // If the transaction was successful
+        txHashes[Number(validatorIndex)] = {
+          status: "finalised",
+          txHash: receipt.transactionHash,
+        };
+      } else {
+        // If the transaction failed
+        txHashes[Number(validatorIndex)] = {
+          status: "failed",
+          txHash: tx.txHash,
+        };
+      }
 
-        setStage({
-          type: "sign-submit-finalise",
-          txHashes,
-        });
+      setStage({
+        type: "sign-submit-finalise",
+        txHashes,
+      });
     }
   };
 

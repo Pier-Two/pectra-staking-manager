@@ -21,7 +21,6 @@ import {
   type WithdrawalFormType,
 } from "pec/lib/api/schemas/withdrawal";
 import { formatAddressToShortenedString } from "pec/lib/utils/address";
-import { ValidatorStatus } from "pec/types/validator";
 import { type FC, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import WithdrawalLoading from "./loading";
@@ -30,9 +29,7 @@ import { DisplayAmount } from "pec/components/ui/table/TableComponents";
 const Withdrawal: FC = () => {
   const walletAddress = useWalletAddress();
   const [showEmail, setShowEmail] = useState(false);
-  const { groupedValidators, isLoading } = useValidators();
-
-  const availableValidators = groupedValidators[ValidatorStatus.ACTIVE] ?? [];
+  const { activeType2Validators, isLoading } = useValidators();
 
   const { submitWithdrawals, stage, setStage } = useSubmitWithdraw();
 
@@ -66,7 +63,7 @@ const Withdrawal: FC = () => {
   const handleMaxAllocation = () => {
     setValue(
       "withdrawals",
-      availableValidators.map(
+      activeType2Validators.map(
         (validator) => ({
           validator,
           amount: validator.balance,
@@ -127,7 +124,7 @@ const Withdrawal: FC = () => {
             onSubmit={handleSubmit(onSubmit)}
             resetWithdrawal={handleResetWithdrawal}
             stage={stage}
-            availableValidators={availableValidators.length}
+            availableValidators={activeType2Validators.length}
             validatorsSelected={withdrawals.length}
             withdrawalTotal={withdrawalTotal}
           />
@@ -150,12 +147,12 @@ const Withdrawal: FC = () => {
             />
             <ValidatorHeader
               selectedCount={withdrawals.length}
-              totalCount={availableValidators.length}
+              totalCount={activeType2Validators.length}
               onClear={handleResetWithdrawal}
             />
 
             <WithdrawalValidatorTable
-              validators={availableValidators}
+              validators={activeType2Validators}
               withdrawals={withdrawals}
               addWithdrawal={append}
               removeWithdrawal={remove}

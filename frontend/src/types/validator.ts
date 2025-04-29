@@ -1,3 +1,8 @@
+import {
+  TYPE_0_PREFIX,
+  TYPE_1_PREFIX,
+  TYPE_2_PREFIX,
+} from "pec/constants/pectra";
 import type {
   TransactionSchema,
   ValidatorDataSchema,
@@ -49,3 +54,8 @@ export enum TransactionStatus {
   UPCOMING = "Upcoming",
   SUBMITTED = "Submitted",
 }
+
+export type WithdrawalAddressPrefixType =
+  | typeof TYPE_2_PREFIX
+  | typeof TYPE_1_PREFIX
+  | typeof TYPE_0_PREFIX;
