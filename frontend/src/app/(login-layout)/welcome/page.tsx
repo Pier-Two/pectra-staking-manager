@@ -5,34 +5,47 @@ import { Information } from "pec/components/layout/welcome/Information";
 import { PectraLink } from "pec/components/layout/welcome/PectraLink";
 import { Suspense, type FC } from "react";
 import { EnterSiteButton } from "./_components/enter-site-button";
+import { EnterAnimation } from "./_components/enter-animation";
 
 const Welcome: FC = async () => {
   return (
     <div className="flex h-full w-full flex-col gap-y-[72px]">
       <div className="flex flex-col gap-y-4">
         <div className="flex w-full flex-col items-center justify-center gap-y-4">
-          <PectraLink />
+          <EnterAnimation delay={0.4}>
+            <PectraLink />
+          </EnterAnimation>
 
-          <p className="text-center text-[50px] font-670 leading-[54px]">
-            <span>This is the Future of</span>
-            <span className="md:block"> Ethereum Staking</span>
-          </p>
+          <EnterAnimation>
+            <p className="text-center text-[50px] font-670 leading-[54px]">
+              <span>This is the Future of</span>
+              <span className="md:block"> Ethereum Staking</span>
+            </p>
+          </EnterAnimation>
         </div>
       </div>
 
-      <Information />
+      <EnterAnimation delay={0.4}>
+        <Information />
+      </EnterAnimation>
 
-      <EnterSiteButton />
+      <EnterAnimation delay={1.2}>
+        <EnterSiteButton />
+      </EnterAnimation>
 
-      <div className="flex flex-col items-center justify-center">
+      <EnterAnimation delay={1.4}>
         <div className="flex flex-col items-center justify-center">
-          <Suspense fallback={<ChartSkeleton />}>
-            <ChartPrefetch />
-          </Suspense>
+          <div className="flex flex-col items-center justify-center">
+            <Suspense fallback={<ChartSkeleton />}>
+              <ChartPrefetch />
+            </Suspense>
+          </div>
         </div>
-      </div>
+      </EnterAnimation>
 
-      <Footer />
+      <EnterAnimation delay={1.6}>
+        <Footer />
+      </EnterAnimation>
     </div>
   );
 };

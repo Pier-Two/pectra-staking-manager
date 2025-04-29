@@ -1,32 +1,50 @@
-import { HiCheck } from "react-icons/hi";
 import type { FC } from "react";
+import { motion } from "motion/react";
+import { EnterAnimation } from "pec/app/(login-layout)/welcome/_components/enter-animation";
+
+const benefits = [
+  {
+    title: "Auto-compounding interest",
+    description:
+      "Automatically restakes your ETH rewards updating your validator’s withdrawal credentials to Type 2 (0x02).",
+  },
+  {
+    title: "Onchain withdrawals",
+    description:
+      "Submit partial withdrawals using only your withdrawal credential wallet, directly on the execution layer.",
+  },
+  {
+    title: "Validator consolidation",
+    description:
+      "Merge multiple validators into fewer, larger ones with balances up to 2,048 ETH, via a simple click-through process.",
+  },
+];
 
 export const Information: FC = () => {
-  const benefits = [
-    "Auto-compounding interest",
-    "Onchain withdrawals",
-    "Validator consolidation",
-  ];
-
   return (
-    <div className="flex w-full flex-col gap-y-3 text-black dark:text-white">
+    <div className="flex w-full flex-col gap-6 text-black dark:text-white">
       <p className="w-full text-center text-[14px] font-570 leading-[14px] text-[#27272A] dark:text-zinc-50">
-        Use this tool to enable and manage:
+        The Pectra Staking Manager is a self-service tool designed solely to
+        help you:
       </p>
 
-      <div className="flex w-full flex-wrap justify-center gap-3">
-        {benefits.map((benefit) => (
-          <div
-            key={benefit}
-            className="flex h-10 w-fit flex-row items-center gap-3 rounded-lg border-[0.5px] border-border bg-white p-3 dark:border-gray-700 dark:bg-black"
-          >
-            <div className="flex h-[13px] w-[13px] items-center justify-center rounded-full bg-primary">
-              <HiCheck className="h-2 w-2 text-white dark:text-black" />
+      <div className="flex w-full justify-center gap-3">
+        {benefits.map((benefit, index) => (
+          <EnterAnimation key={benefit.title} delay={0.6 + index * 0.2}>
+            <div className="flex max-w-[330px] flex-col items-start gap-6 rounded-lg border-[0.5px] border-border bg-white p-6 dark:border-gray-700 dark:bg-black">
+              <div className="flex size-8 items-center justify-center rounded bg-primary/15 text-[16px] font-[790] text-primary">
+                {index + 1}
+              </div>
+              <div className="flex flex-col gap-3">
+                <div className="text-[18px] font-670 text-[#4C4C4C] dark:text-zinc-50">
+                  {benefit.title}
+                </div>
+                <p className="text-[14px] font-380 text-[#4C4C4C] dark:text-zinc-50">
+                  {benefit.description}
+                </p>
+              </div>
             </div>
-            <div className="text-[14px] font-570 leading-[14px] text-[#4C4C4C] dark:text-zinc-50">
-              {benefit}
-            </div>
-          </div>
+          </EnterAnimation>
         ))}
       </div>
     </div>
