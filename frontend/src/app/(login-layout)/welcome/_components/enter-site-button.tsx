@@ -26,12 +26,12 @@ export const EnterSiteButton = () => {
       </div>
 
       {!hasWalletAddress && (
-        <div className="text-center text-[14px] font-570 leading-[14px]">
+        <div className="z-10 text-center text-[14px] font-570 leading-[14px]">
           Connect your withdrawal address to access validators
         </div>
       )}
 
-      <div className="flex flex-col items-center justify-center gap-4">
+      <div className="z-10 flex flex-col items-center justify-center gap-4">
         {hasWalletAddress ? (
           <PrimaryButton
             className="h-10 w-full"
