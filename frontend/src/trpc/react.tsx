@@ -2,10 +2,12 @@
 
 import { QueryClientProvider, type QueryClient } from "@tanstack/react-query";
 import { loggerLink, httpBatchLink } from "@trpc/client";
+import type { TRPCClientError } from "@trpc/client";
 import { createTRPCReact } from "@trpc/react-query";
 import { type inferRouterInputs, type inferRouterOutputs } from "@trpc/server";
 import { useState } from "react";
 import SuperJSON from "superjson";
+import { toast } from "sonner";
 
 import { type AppRouter } from "pec/server/api/root";
 import { createQueryClient } from "./query-client";
@@ -59,6 +61,20 @@ export function TRPCReactProvider(props: { children: React.ReactNode }) {
       ],
     }),
   );
+
+  // Set up global error handling for rate limit errors
+  queryClient.setDefaultOptions({
+    mutations: {
+      onError: (error: unknown) => {
+        if (error instanceof Error && "data" in error) {
+          const trpcError = error as TRPCClientError<AppRouter>;
+          if (trpcError.data?.code === "TOO_MANY_REQUESTS") {
+            toast.error("Rate limit exceeded. Please try again later.");
+          }
+        }
+      },
+    },
+  });
 
   return (
     <QueryClientProvider client={queryClient}>
