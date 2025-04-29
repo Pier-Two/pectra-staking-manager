@@ -7,6 +7,7 @@ import { Suspense, type FC } from "react";
 import { EnterSiteButton } from "./_components/enter-site-button";
 import { Headline } from "./_components/headline";
 import { EnterAnimation } from "./_components/enter-animation";
+import { welcomeAnimationDelays } from "pec/constants/animationDelays";
 
 const Welcome: FC = () => {
   return (
@@ -25,7 +26,7 @@ const Welcome: FC = () => {
 
       <Footer />
 
-      <EnterAnimation delay={1.75}>
+      <EnterAnimation delay={welcomeAnimationDelays.chart}>
         <div className="flex flex-col items-center justify-center">
           <div className="flex flex-col items-center justify-center">
             <Suspense fallback={<ChartSkeleton />}>

@@ -6,7 +6,7 @@ import { PrimaryButton } from "pec/components/ui/custom/PrimaryButton";
 import { ConnectWalletButton } from "pec/components/ui/wallet/ConnectWallet";
 import OvalBlur from "pec/components/layout/welcome/oval-blur";
 import { EnterAnimation } from "./enter-animation";
-
+import { welcomeAnimationDelays } from "pec/constants/animationDelays";
 export const EnterSiteButton = () => {
   const router = useRouter();
   const walletAddress = useWalletAddress();
@@ -19,7 +19,7 @@ export const EnterSiteButton = () => {
   return (
     <EnterAnimation
       className="relative flex w-full flex-col items-center justify-center gap-y-4"
-      delay={1.375}
+      delay={welcomeAnimationDelays.enterSiteButton}
     >
       <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
         <OvalBlur />

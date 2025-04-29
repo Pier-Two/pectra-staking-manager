@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "motion/react";
+import { welcomeAnimationDelays } from "pec/constants/animationDelays";
 
 const AnimatedText = ({
   children,
@@ -24,12 +25,20 @@ export const Headline = () => {
   return (
     <div className="flex flex-col items-center gap-y-2">
       <div className="flex flex-row gap-2">
-        <AnimatedText delay={0}>This is</AnimatedText>
-        <AnimatedText delay={0.25}>the Future of</AnimatedText>
+        <AnimatedText delay={welcomeAnimationDelays.headline.thisIs}>
+          This is
+        </AnimatedText>
+        <AnimatedText delay={welcomeAnimationDelays.headline.theFutureOf}>
+          the Future of
+        </AnimatedText>
       </div>
       <div className="flex flex-row gap-2">
-        <AnimatedText delay={0.5}>Ethereum</AnimatedText>
-        <AnimatedText delay={0.75}>Staking</AnimatedText>
+        <AnimatedText delay={welcomeAnimationDelays.headline.ethereum}>
+          Ethereum
+        </AnimatedText>
+        <AnimatedText delay={welcomeAnimationDelays.headline.staking}>
+          Staking
+        </AnimatedText>
       </div>
     </div>
   );
