@@ -78,10 +78,10 @@ export const TableFilters: FC<ITableFiltersProps> = (props) => {
           <DropdownMenuContent
             side="bottom"
             align="start"
-            className="bg-white dark:bg-gray-900 w-[200px] max-w-[90vw] border-indigo-200 dark:border-gray-500 rounded-xl p-2"
+            className="bg-white dark:bg-black w-[200px] max-w-[90vw] border-indigo-200 dark:border-gray-500 rounded-xl p-2"
           >
             {/* Dropdown Header */}
-            <div className="w-full flex items-center px-2 bg-white dark:bg-gray-900">
+            <div className="w-full flex items-center px-2 border border-indigo-200 dark:border-gray-600 rounded-xl mb-2">
               <Search className="h-4 w-4 text-gray-400 dark:text-gray-400 rounded-full" />
               <Input
                 placeholder="Search"
@@ -92,7 +92,7 @@ export const TableFilters: FC<ITableFiltersProps> = (props) => {
                 }}
               />
             </div>
-            <Separator className="bg-indigo-100 dark:bg-gray-800" />
+            <Separator className="bg-indigo-100 dark:bg-gray-600" />
 
             {/* Dropdown Items */}
             {statusItems.map((item) => (
@@ -108,7 +108,7 @@ export const TableFilters: FC<ITableFiltersProps> = (props) => {
                 >
                   <div className="flex items-center">
                     <Checkbox
-                      className="mr-4 dark:border-gray-800 dark:bg-black"
+                      className="mr-4 dark:border-gray-600"
                       checked={item.isSelected}
                       onCheckedChange={item.onClick}
                     />
