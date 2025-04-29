@@ -44,7 +44,7 @@
 :root {
   --color-text: theme("colors.zinc.950"); /* Light mode default */
   --piertwo-text: theme("colors.gray.600"); /* gray-600 */
-  --piertwoDark-text: theme("colors.indigo.800"); /* indigo-800 */
+  --piertwoDark-text: theme("colors.primary-dark.DEFAULT"); /* indigo-800 */
 }
 
 .dark {

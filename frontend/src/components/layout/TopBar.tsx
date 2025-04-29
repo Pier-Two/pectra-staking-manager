@@ -90,7 +90,7 @@ export const TopBar: FC<ITopBar> = (props) => {
                     "linear-gradient(130.54deg, #00FFA7 11.34%, #5164DC 31.73%, #313C86 59.22%, rgba(113, 255, 224, 0.8) 100%)",
                 }}
               >
-                <div className="absolute inset-[1px] rounded-[3px] bg-white dark:bg-gray-950" />
+                <div className="absolute inset-[1px] rounded-[3px] bg-[#F6F7FF] dark:bg-gray-950" />
                 <p className="relative text-sm font-medium">
                   {groupedValidators[ValidatorStatus.ACTIVE]?.length ?? 0}
                 </p>
