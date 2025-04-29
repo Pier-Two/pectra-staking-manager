@@ -122,6 +122,7 @@ export const DistributionInformation = ({
               onClick={() => {
                 window.open(
                   // I hate to cast here, but this is type-narrowed properly with the above check, but for some reason typescript is confused
+                  // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
                   `https://etherscan.io/tx/${(stage.transactionStatus as any).txHash}`,
                   "_blank",
                 );
