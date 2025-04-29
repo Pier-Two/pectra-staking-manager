@@ -18,15 +18,13 @@ import type { IResponse } from "pec/types/response";
 import { generateErrorResponse } from "pec/lib/utils";
 import { DatabaseDepositSchema } from "pec/lib/api/schemas/database/deposit";
 import { createContact } from "pec/lib/services/emailService";
-import { subMinutes } from "date-fns";
 import { Ratelimit } from "@upstash/ratelimit";
-import { TRPCError } from "@trpc/server";
 
 export const storeEmailRequestRouter = createTRPCRouter({
   storeWithdrawalRequest: publicProcedure
-    // stricter rate limit for withdrawal requests
-    // TODO: what should the rate limit be?
-    .use(createRedisRateLimiterMiddleware(Ratelimit.slidingWindow(10, "60 s")))
+    .meta({
+      noRateLimit: true, // no rate limit since this is hit many times during withdrawal processing
+    })
     .input(
       z.object({
         requestData: StoreWithdrawalRequestSchema,
@@ -84,7 +82,6 @@ export const storeEmailRequestRouter = createTRPCRouter({
 
   storeDepositRequest: publicProcedure
     // stricter rate limit for deposit requests
-    // TODO: what should the rate limit be?
     .use(createRedisRateLimiterMiddleware(Ratelimit.slidingWindow(10, "60 s")))
     .input(DatabaseDepositSchema.omit({ status: true }).array())
     .mutation(async ({ input }): Promise<IResponse<null>> => {
@@ -92,31 +89,9 @@ export const storeEmailRequestRouter = createTRPCRouter({
         // Each batched deposit request in the array will have the same email
         const email = input[0]?.email;
 
-        if (email) {
-          // Check if the email has already submitted a deposit within the last 30 minutes
-          const lastDeposit = await DepositModel.findOne({
-            email,
-            validatorIndex: {
-              $in: input.map((deposit) => deposit.validatorIndex), // check against all provided validator indexes
-            },
-          }).sort({
-            createdAt: -1,
-          });
-
-          if (
-            lastDeposit?.createdAt &&
-            lastDeposit.createdAt > subMinutes(new Date(), 30)
-          ) {
-            throw new TRPCError({
-              code: "TOO_MANY_REQUESTS",
-              message:
-                "You can't submit more than one deposit request within 30 minutes for the same validator",
-            });
-          }
-        }
-
-        // TODO: whats happening here? spreading the input array into a single object?
-        await DepositModel.create({ ...input, status: ACTIVE_STATUS });
+        await DepositModel.create(
+          input.map((deposit) => ({ ...deposit, status: ACTIVE_STATUS })),
+        );
 
         if (email) {
           const contactResponse = await createContact(email);

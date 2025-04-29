@@ -147,6 +147,9 @@ export const validatorRouter = createTRPCRouter({
     }),
 
   updateConsolidationRecord: publicProcedure
+    .meta({
+      noRateLimit: true, // no rate limit since this is hit many times during consolidation
+    })
     .input(
       z.object({
         targetValidatorIndex: z.number(),

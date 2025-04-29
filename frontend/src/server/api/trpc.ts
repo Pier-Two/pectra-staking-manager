@@ -40,19 +40,27 @@ export const createTRPCContext = async (opts: { headers: Headers }) => {
  * ZodErrors so that you get typesafety on the frontend if your procedure fails due to validation
  * errors on the backend.
  */
-const t = initTRPC.context<typeof createTRPCContext>().create({
-  transformer: superjson,
-  errorFormatter({ shape, error }) {
-    return {
-      ...shape,
-      data: {
-        ...shape.data,
-        zodError:
-          error.cause instanceof ZodError ? error.cause.flatten() : null,
-      },
-    };
-  },
-});
+const t = initTRPC
+  .context<typeof createTRPCContext>()
+  .meta<{
+    /**
+     * If true, the procedure will not be rate limited
+     */
+    noRateLimit?: boolean;
+  }>()
+  .create({
+    transformer: superjson,
+    errorFormatter({ shape, error }) {
+      return {
+        ...shape,
+        data: {
+          ...shape.data,
+          zodError:
+            error.cause instanceof ZodError ? error.cause.flatten() : null,
+        },
+      };
+    },
+  });
 
 /**
  * Create a server-side caller.
@@ -110,7 +118,9 @@ const timingMiddleware = t.middleware(async ({ next, path }) => {
 export const createRedisRateLimiterMiddleware = (
   limiter = Ratelimit.slidingWindow(10, "10 s"), // default rate limit of 10 requests per 10 seconds
 ) =>
-  createTRPCMiddleware(async ({ ctx, path, next }) => {
+  createTRPCMiddleware(async ({ ctx, path, next, meta }) => {
+    if (meta?.noRateLimit) return next();
+
     const ratelimit = new Ratelimit({
       redis: redis,
       limiter,
