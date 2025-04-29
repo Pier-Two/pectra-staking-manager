@@ -2,16 +2,25 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuTrigger,
-  Separator,
+  DropdownMenuTrigger
 } from "@radix-ui/react-dropdown-menu";
 import { ArrowDownToDot, ArrowUpFromDot, MoreVertical } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Button } from "pec/components/ui/button";
-import { ValidatorDetails } from "pec/types/validator";
+import { cn } from "pec/lib/utils";
+import type { ValidatorDetails } from "pec/types/validator";
+import { ValidatorStatus } from "pec/types/validator";
 
 interface ValidatorRowEndContentProps {
   validator: ValidatorDetails;
+}
+
+interface DropDownItem {
+  label: string;
+  icon?: React.ElementType;
+  iconClassName?: string;
+  onClick: () => void;
+  isDisabled?: boolean;
 }
 
 export const ValidatorRowEndContent = ({
@@ -19,20 +28,31 @@ export const ValidatorRowEndContent = ({
 }: ValidatorRowEndContentProps) => {
   const router = useRouter();
 
-  const handleDepositNavigation = () => {
-    router.push("/batch-deposit");
-  };
+  const isDisabled = validator.status === ValidatorStatus.EXITED;
 
-  const handleWithdrawalNavigation = () => {
-    router.push("/withdraw");
-  };
-
-  const handleBeaconscanNavigation = () => {
-    window.open(
-      `https://beaconscan.com/validator/${validator.validatorIndex}`,
-      "_blank",
-    );
-  };
+  const dropDownItems: DropDownItem[] = [
+    {
+      label: "Deposit",
+      icon: ArrowDownToDot,
+      iconClassName: "text-indigo-500 dark:text-indigo-300",
+      onClick: () => router.push("/batch-deposit"),
+      isDisabled,
+    },
+    {
+      label: "Withdraw",
+      icon: ArrowUpFromDot,
+      iconClassName: "text-green-500 dark:text-green-300",
+      onClick: () => router.push("/withdraw"),
+      isDisabled,
+    },
+    {
+      label: "View on Beaconscan",
+      onClick: () => window.open(
+        `https://beaconscan.com/validator/${validator.validatorIndex}`,
+        "_blank",
+      ),
+    },
+  ];
 
   return (
     <div className="font-normal">
@@ -44,30 +64,27 @@ export const ValidatorRowEndContent = ({
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent
-          className="space-y-2 rounded-xl bg-white p-2 dark:border-gray-500 dark:bg-gray-900 dark:text-white"
+          className="space-y-4 z-50 rounded-xl p-2 bg-white shadow-lg border border-gray-200 dark:border-gray-500 dark:bg-gray-900 dark:text-white"
           align="end"
         >
-          <DropdownMenuItem
-            className="cursor-pointer hover:bg-gray-100"
-            onClick={handleDepositNavigation}
-          >
-            <ArrowDownToDot className="h-4 w-4 text-indigo-500 dark:text-indigo-300" />
-            Deposit
-          </DropdownMenuItem>
-          <DropdownMenuItem
-            className="cursor-pointer hover:bg-gray-100"
-            onClick={handleWithdrawalNavigation}
-          >
-            <ArrowUpFromDot className="h-4 w-4 text-green-500 dark:text-green-300" />
-            Withdraw
-          </DropdownMenuItem>
-          <Separator className="bg-gray-200 dark:bg-gray-800" />
-          <DropdownMenuItem
-            className="cursor-pointer hover:bg-gray-100"
-            onClick={handleBeaconscanNavigation}
-          >
-            View on Beaconscan
-          </DropdownMenuItem>
+          {dropDownItems.map((item) => (
+            <DropdownMenuItem
+              key={item.label}
+              className={cn(
+                "cursor-pointer flex items-center gap-2",
+                {
+                  "hover:cursor-not-allowed text-gray-400 dark:text-gray-600":
+                    item.isDisabled,
+                },
+              )}
+              onClick={item.isDisabled ? undefined : item.onClick}
+            >
+              {item.icon && (
+                <item.icon className={cn("h-4 w-4", item.iconClassName)} />
+              )}
+              {item.label}
+            </DropdownMenuItem>
+          ))}
         </DropdownMenuContent>
       </DropdownMenu>
     </div>
