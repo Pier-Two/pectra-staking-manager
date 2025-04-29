@@ -111,7 +111,6 @@ const timingMiddleware = t.middleware(async ({ next, path }) => {
 /**
  * Rate limiter middleware for tRPC procedures
  *
- * // TODO: what should the default rate limit be?
  * @param limiter - The rate limiter to use
  * @returns The rate limiter middleware
  */
