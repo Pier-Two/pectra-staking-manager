@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useWalletAddress } from "pec/hooks/useWallet";
 import { PrimaryButton } from "pec/components/ui/custom/PrimaryButton";
 import { ConnectWalletButton } from "pec/components/ui/wallet/ConnectWallet";
+import OvalBlur from "pec/components/layout/welcome/oval-blur";
 
 export const EnterSiteButton = () => {
   const router = useRouter();
@@ -15,7 +16,11 @@ export const EnterSiteButton = () => {
   };
 
   return (
-    <div className="flex w-full flex-col items-center justify-center gap-y-4">
+    <div className="relative flex w-full flex-col items-center justify-center gap-y-4">
+      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+        <OvalBlur />
+      </div>
+
       {!hasWalletAddress && (
         <div className="text-center text-[14px] font-570 leading-[14px]">
           Connect your withdrawal address to access validators
