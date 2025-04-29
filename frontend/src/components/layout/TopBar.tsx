@@ -12,7 +12,6 @@ import { Tools } from "./Tools";
 import { useValidators } from "pec/hooks/useValidators";
 import { PectraSpinner } from "../ui/custom/pectraSpinner";
 import { ValidatorStatus } from "pec/types/validator";
-import { motion } from "motion/react";
 
 export interface ITopBar {
   type?: "profile" | "wallet_connect";
@@ -41,14 +40,7 @@ export const TopBar: FC<ITopBar> = (props) => {
   };
 
   return (
-    <motion.header
-      initial={pathname === "/welcome" ? { opacity: 1, y: -100 } : false}
-      animate={pathname === "/welcome" ? { opacity: 1, y: 0 } : false}
-      transition={{
-        delay: 1.8,
-      }}
-      className="sticky top-0 z-50 flex w-full items-center justify-between border-b border-zinc-200 bg-white/40 p-4 shadow-sm backdrop-blur-md dark:border-gray-800 dark:bg-gray-950"
-    >
+    <header className="sticky top-0 z-50 flex w-full items-center justify-between border-b border-zinc-200 bg-white/40 p-4 shadow-sm backdrop-blur-md dark:border-gray-800 dark:bg-gray-950">
       <div className="order-2 mr-4 flex items-center md:order-1 md:mr-0">
         <div
           className="flex flex-row-reverse items-center gap-x-3 hover:cursor-pointer md:flex-row"
@@ -139,6 +131,6 @@ export const TopBar: FC<ITopBar> = (props) => {
           <ConnectWalletButton className="!w-fit !min-w-[123px]" />
         </div>
       </div>
-    </motion.header>
+    </header>
   );
 };
