@@ -36,7 +36,11 @@ export const useValidators = () => {
 
   return {
     data: queryFn.data,
+    /**
+     * @deprecated use isSuccess instead
+     */
     isFetched: queryFn.isFetched,
+    isSuccess: queryFn.isSuccess,
     isLoading: queryFn.isLoading,
     isError: queryFn.isError,
     groupedValidators,

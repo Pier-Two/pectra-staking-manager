@@ -1,18 +1,13 @@
-import type { ValidatorDetails, ValidatorStatus } from "pec/types/validator";
+import type { ValidatorStatus } from "pec/types/validator";
 import { useMemo, useState } from "react";
 import { useSearch } from "./useSearch";
+import { useValidators } from "./useValidators";
 
-interface UseDashboardValidatorTable {
-  data: ValidatorDetails[];
-  groupedValidators: Partial<Record<ValidatorStatus, ValidatorDetails[]>>;
-}
+export function useDashboardValidatorTable() {
+  const { data, groupedValidators, isLoading } = useValidators();
 
-export function useDashboardValidatorTable({
-  data,
-  groupedValidators,
-}: UseDashboardValidatorTable) {
   const { filteredData, searchTerm, setSearchTerm } = useSearch({
-    data,
+    data: data ?? [],
   });
 
   const [statusFilter, setStatusFilter] = useState<string[]>([]);
@@ -23,7 +18,7 @@ export function useDashboardValidatorTable({
     return (
       data?.filter((validator) => {
         return statusFilter.includes(validator.status);
-      }) || []
+      }) ?? []
     );
   }, [data, filteredData, statusFilter]);
 
@@ -47,5 +42,8 @@ export function useDashboardValidatorTable({
     handleStatusFilterChange,
     handleSearchChange: setSearchTerm,
     getValidatorCount,
+
+    // Loading
+    isLoading,
   };
 }

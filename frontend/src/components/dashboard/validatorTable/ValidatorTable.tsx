@@ -3,17 +3,10 @@
 import { ValidatorTable } from "pec/components/ui/table/ValidatorTable";
 import { DASHBOARD_VALIDATOR_COLUMN_HEADERS } from "pec/constants/columnHeaders";
 import { useDashboardValidatorTable } from "pec/hooks/useDashboardValidatorTable";
-import type { ValidatorDetails, ValidatorStatus } from "pec/types/validator";
-import type { FC } from "react";
 import { ValidatorRowEndContent } from "./TableComponents";
 import { TableFilters } from "./TableFilters";
 
-interface IGenericValidators {
-  data: ValidatorDetails[];
-  groupedValidators: Partial<Record<ValidatorStatus, ValidatorDetails[]>>;
-}
-
-export const DashboardValidatorTable: FC<IGenericValidators> = (props) => {
+export const DashboardValidatorTable = () => {
   const {
     searchTerm,
     statusFilter,
@@ -21,7 +14,8 @@ export const DashboardValidatorTable: FC<IGenericValidators> = (props) => {
     handleStatusFilterChange,
     handleSearchChange,
     getValidatorCount,
-  } = useDashboardValidatorTable(props);
+    isLoading,
+  } = useDashboardValidatorTable();
 
   return (
     <ValidatorTable
@@ -35,6 +29,7 @@ export const DashboardValidatorTable: FC<IGenericValidators> = (props) => {
       }}
       // We disable search here because we have a custom search component here
       disableSearch
+      isLoading={isLoading}
     >
       {({ setCurrentPage }) => (
         <TableFilters

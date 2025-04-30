@@ -1,12 +1,12 @@
 import { useId } from "react";
-
-export const PectraSpinner = () => {
+import { cn } from "pec/lib/utils";
+export const PectraSpinner = ({ className }: { className?: string }) => {
   const uniqueId = useId();
   const gradientId = `gradient-${uniqueId}`;
 
   return (
     <svg
-      className="h-6 w-6 animate-spin"
+      className={cn("h-6 w-6 animate-spin", className)}
       viewBox="0 0 24 24"
       fill="none"
       strokeWidth="1"
