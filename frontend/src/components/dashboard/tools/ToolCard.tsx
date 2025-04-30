@@ -1,16 +1,15 @@
-"use client";
-
 import {
   ArrowDownToDot,
   ArrowRight,
   ArrowUpFromDot,
   Merge,
 } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { PrimaryButton } from "pec/components/ui/custom/PrimaryButton";
 import { cn } from "pec/lib/utils";
+import { PrimaryButton } from "pec/components/ui/custom/PrimaryButton";
 import { EIconPosition } from "pec/types/components";
-
+import Link from "next/link";
+import { EnterAnimation } from "pec/app/(login-layout)/welcome/_components/enter-animation";
+import { dashboardAnimationDelays } from "pec/constants/animationDelays";
 type ToolCardProps = {
   preset: keyof typeof cardPresets;
 };
@@ -24,6 +23,7 @@ export const cardPresets = {
     buttonLabel: "Consolidate now",
     icon: <Merge className="rotate-90" size={24} />,
     iconHover: "group-hover:text-orange-400",
+    delay: dashboardAnimationDelays.toolCards.consolidate,
   },
   BatchDeposit: {
     title: "Batch Deposit",
@@ -33,6 +33,7 @@ export const cardPresets = {
     buttonLabel: "Deposit now",
     icon: <ArrowDownToDot size={24} />,
     iconHover: "group-hover:text-blue-200",
+    delay: dashboardAnimationDelays.toolCards.batchDeposit,
   },
   Withdrawal: {
     title: "Partial Withdrawal",
@@ -42,46 +43,45 @@ export const cardPresets = {
     buttonLabel: "Withdraw now",
     icon: <ArrowUpFromDot size={24} />,
     iconHover: "group-hover:text-green-400",
+    delay: dashboardAnimationDelays.toolCards.withdrawal,
   },
 };
 
 export const ToolCard = ({ preset }: ToolCardProps) => {
-  const { title, description, url, buttonLabel, icon, iconHover } =
+  const { title, description, url, buttonLabel, icon, iconHover, delay } =
     cardPresets[preset];
 
-  const router = useRouter();
-
-  const handleRedirect = () => {
-    router.push(url);
-  };
-
   return (
-    <div
-      className="hover:bg-activeCard hover:border-3 group flex h-[231px] grow basis-0 flex-col space-y-4 rounded-2xl border border-indigo-200 bg-white p-6 text-gray-900 hover:cursor-pointer hover:text-white dark:border-gray-700 dark:bg-black dark:text-white"
-      onClick={handleRedirect}
-    >
-      <div
-        className={cn(
-          "flex flex-row items-center gap-x-2 text-primary-dark dark:text-indigo-200",
-          iconHover,
-        )}
-      >
-        {icon}
-        <p className="text-2xl font-670 leading-[24px]">{title}</p>
-      </div>
+    <EnterAnimation delay={delay}>
+      <div className="hover:bg-activeCard hover:border-3 group flex h-[231px] grow basis-0 flex-col space-y-4 rounded-2xl border border-indigo-200 bg-white p-6 text-gray-900 hover:cursor-pointer hover:text-white dark:border-gray-700 dark:bg-black dark:text-white">
+        <div
+          className={cn(
+            "flex flex-row items-center gap-x-2 text-primary-dark dark:text-indigo-200",
+            iconHover,
+          )}
+        >
+          {icon}
+          <p className="text-2xl font-670 leading-[24px]">{title}</p>
+        </div>
 
-      <div className="flex flex-grow flex-col justify-end gap-y-6">
-        <p className="h-12 text-base font-380 leading-[20px]">{description}</p>
+        <div className="flex flex-grow flex-col justify-end gap-y-6">
+          <p className="h-12 text-base font-380 leading-[20px]">
+            {description}
+          </p>
 
-        <PrimaryButton
-          className="w-fit border-white text-xs font-570 leading-[13px] backdrop-blur-xl group-hover:border group-hover:bg-white/10 group-hover:text-white dark:group-hover:bg-white dark:group-hover:text-indigo-800"
-          label={buttonLabel}
-          icon={<ArrowRight className="-me-1 ms-2 opacity-60 transition-transform group-hover:translate-x-0.5" />}
-          iconPosition={EIconPosition.RIGHT}
-          onClick={handleRedirect}
-          disabled={false}
-        />
+          <Link href={url}>
+            <PrimaryButton
+              className="w-fit border-white text-xs font-570 leading-[13px] backdrop-blur-xl group-hover:border group-hover:bg-white/10 group-hover:text-white dark:group-hover:bg-white dark:group-hover:text-indigo-800"
+              label={buttonLabel}
+              icon={
+                <ArrowRight className="-me-1 ms-2 opacity-60 transition-transform group-hover:translate-x-0.5" />
+              }
+              iconPosition={EIconPosition.RIGHT}
+              disabled={false}
+            />
+          </Link>
+        </div>
       </div>
-    </div>
+    </EnterAnimation>
   );
 };

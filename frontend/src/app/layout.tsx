@@ -9,6 +9,9 @@ import { ThemeProvider } from "pec/contexts/ThemeContext";
 import { cn } from "pec/lib/utils";
 import "pec/styles/globals.css";
 import { TRPCReactProvider } from "pec/trpc/react";
+import { GoogleAnalytics } from "@next/third-parties/google";
+import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const sans = localFont({
   src: "../fonts/Saans-TRIAL-VF.woff2",
@@ -23,8 +26,9 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Pectra Staking Management",
-  description: "Pectra Staking Management",
+  title: "Pectra Staking Manager: This is the Future of Ethereum Staking",
+  description:
+    "Take control of your validators with the Pectra upgrade! Upgrade to Pextra (0x02), and consolidate multiple validators for easier management, perform batch top-ups to the new max value from 32ETH to 2048ETH, perform withdraws, and monitor the adoption of Pectra via our charts.",
   icons: [{ rel: "icon", url: "/favicon.svg" }],
 };
 
@@ -33,6 +37,9 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className={cn(sans.variable, inter.variable)}>
+      <GoogleAnalytics gaId="G-34ZMX7ZL6X" />
+      <Analytics />
+      <SpeedInsights />
       <NetworkContextProvider>
         <TRPCReactProvider>
           <ThemeProvider>

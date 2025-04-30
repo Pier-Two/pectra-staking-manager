@@ -187,6 +187,7 @@ export const validatorRouter = createTRPCRouter({
     ),
 
   getValidatorsPerformanceInWei: publicProcedure
+    .use(redisCacheMiddleware())
     .input(
       z.object({
         address: z.string(),

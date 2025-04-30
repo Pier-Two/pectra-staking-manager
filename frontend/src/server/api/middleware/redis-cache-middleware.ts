@@ -3,10 +3,10 @@ import { createTRPCMiddleware } from "../trpc";
 
 // Cache middleware for tRPC procedures
 export const redisCacheMiddleware = ({
-  ttl = 30, // Default 30 seconds cache
+  ttl = 60 * 5, // Default 5 minutes cache
   staleWhileRevalidate = true, // Enable stale-while-revalidate by default
   keyPrefix = "trpc-cache:",
-  staleTime = 60, // Default 60 seconds stale time
+  staleTime = 60 * 5, // Default 5 minutes stale time
 }: {
   ttl?: number;
   staleWhileRevalidate?: boolean;

@@ -1,41 +1,28 @@
-"use client";
+import { DepositWorkflowWrapper } from "./_components/deposit-workflow";
+import { title } from "pec/constants/metadata";
+import type { Metadata } from "next";
+import { ArrowDownToDot } from "lucide-react";
 
-import type { FC } from "react";
-import BatchDepositLoading from "./loading";
-import { useWalletAddress } from "pec/hooks/useWallet";
-import { useActiveChainWithDefault } from "pec/hooks/useChain";
-import { useWalletBalance } from "thirdweb/react";
-import { client } from "pec/lib/wallet/client";
-import { DepositWorkflow } from "pec/components/batch-deposits/DepositWorkflow";
-import { useValidators } from "pec/hooks/useValidators";
-import { formatEther } from "viem";
-
-const BatchDeposit: FC = () => {
-  const walletAddress = useWalletAddress();
-  const chain = useActiveChainWithDefault();
-  const {
-    data: balance,
-    isLoading,
-    isError,
-  } = useWalletBalance({
-    chain,
-    address: walletAddress || "",
-    client,
-  });
-
-  const { isFetched, activeType2Validators } = useValidators();
-
-  const componentLoading =
-    !walletAddress || !chain || !balance || !isFetched || isLoading || isError;
-
-  if (componentLoading) return <BatchDepositLoading />;
-
-  return (
-    <DepositWorkflow
-      validators={activeType2Validators}
-      balance={Number(formatEther(balance.value)) ?? 0}
-    />
-  );
+export const metadata: Metadata = {
+  title: title("Batch Deposit"),
 };
+
+const BatchDeposit = () => (
+  <div className="flex w-full flex-col gap-y-4">
+    <div className="space-y-8">
+      <div className="flex flex-col gap-4">
+        <div className="flex gap-x-4 text-primary-dark dark:text-indigo-300">
+          <ArrowDownToDot className="h-8 w-8 self-center" />
+          <div className="text-3xl font-medium">Batch Deposit</div>
+        </div>
+
+        <div className="text-base">
+          Top up your existing validators in one transaction.
+        </div>
+      </div>
+      <DepositWorkflowWrapper />
+    </div>
+  </div>
+);
 
 export default BatchDeposit;

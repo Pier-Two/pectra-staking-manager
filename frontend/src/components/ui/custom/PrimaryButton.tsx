@@ -1,3 +1,5 @@
+"use client";
+
 import clsx from "clsx";
 import { EIconPosition, type ICustomButton } from "pec/types/components";
 import type { FC } from "react";

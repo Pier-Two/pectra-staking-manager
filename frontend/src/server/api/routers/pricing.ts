@@ -2,7 +2,8 @@ import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "pec/server/api/trpc";
 import type { CoinMarketCapPriceResponse } from "pec/types/api";
 import { CoinMarketCapAxios } from "pec/lib/server/axios";
-
+import { TRPCError } from "@trpc/server";
+import { redisCacheMiddleware } from "../middleware/redis-cache-middleware";
 export const pricingRouter = createTRPCRouter({
   getCurrentEthPrice: publicProcedure
     .input(
@@ -11,6 +12,7 @@ export const pricingRouter = createTRPCRouter({
         convert: z.string(),
       }),
     )
+    .use(redisCacheMiddleware())
     .query(async ({ input: { symbol, convert } }) => {
       const response = await CoinMarketCapAxios.get<CoinMarketCapPriceResponse>(
         "/cryptocurrency/quotes/latest",
@@ -22,6 +24,15 @@ export const pricingRouter = createTRPCRouter({
         },
       );
 
-      return response?.data?.data.ETH?.quote.USD?.price;
+      const price = response?.data?.data.ETH?.quote.USD?.price;
+
+      if (!price) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "No price found",
+        });
+      }
+
+      return price;
     }),
 });
