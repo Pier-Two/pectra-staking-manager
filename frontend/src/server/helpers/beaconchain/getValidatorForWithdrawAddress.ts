@@ -1,21 +1,25 @@
 import { SupportedNetworkIds } from "pec/constants/chain";
+import { executeBeaconchainTypesafeRequest } from "./generics";
+import {
+  GetValidatorsForWithdrawAddressResponse,
+  GetValidatorsForWithdrawAddressResponseSchema,
+} from "pec/lib/api/schemas/beaconchain/validator";
+import { IResponse } from "pec/types/response";
 
 export const getValidatorsForWithdrawAddress = async (
   withdrawAddress: string,
   network: SupportedNetworkIds,
-): Promise<IResponse<ValidatorResponse["data"]>> => {
-  const response = await getBeaconChainAxios(network).get(
-    `/api/v1/validator/withdrawals/${withdrawAddress}`,
+): Promise<IResponse<GetValidatorsForWithdrawAddressResponse["data"]>> => {
+  const url = `/api/v1/validator/withdrawals/${withdrawAddress}`;
+
+  return executeBeaconchainTypesafeRequest(
+    GetValidatorsForWithdrawAddressResponseSchema,
+    url,
+    network,
+    {
+      params: {
+        limit: 200,
+      },
+    },
   );
-
-  const parsedData = ValidatorResponseSchema.safeParse(response.data);
-
-  if (!parsedData.success) {
-    return generateErrorResponse(parsedData.error);
-  }
-
-  return {
-    success: true,
-    data: parsedData.data.data,
-  };
 };

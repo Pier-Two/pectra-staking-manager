@@ -1,3 +1,4 @@
+import { AxiosRequestConfig } from "axios";
 import { SupportedNetworkIds } from "pec/constants/chain";
 import { getBeaconChainAxios } from "pec/lib/server/axios";
 import { generateErrorResponse } from "pec/lib/utils";
@@ -10,6 +11,7 @@ import { z } from "zod";
  * @param responseSchema - The Zod schema to validate the response
  * @param url - The URL of the API endpoint
  * @param network - The network ID to use for the API call
+ * @param axiosConfig - Optional Axios request configuration
  * @returns A function that calls the API and returns a typed response
  */
 export const executeBeaconchainTypesafeRequest = async <
@@ -19,9 +21,10 @@ export const executeBeaconchainTypesafeRequest = async <
   responseSchema: TSchema,
   url: string,
   network: SupportedNetworkIds,
+  axiosConfig?: AxiosRequestConfig<any>,
 ): Promise<IResponse<TResponseData>> => {
   try {
-    const response = await getBeaconChainAxios(network).get(url);
+    const response = await getBeaconChainAxios(network).get(url, axiosConfig);
     const parsedData = responseSchema.safeParse(response.data);
 
     if (!parsedData.success) {

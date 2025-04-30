@@ -1,14 +1,3 @@
-interface BeaconChainAllValidators {
-  publickey: string;
-  valid_signature: boolean;
-  validatorindex: number;
-}
-
-export interface BeaconChainAllValidatorsResponse {
-  status: string;
-  data: BeaconChainAllValidators[];
-}
-
 export interface BeaconChainValidatorPerformance {
   performance1d?: number;
   performance7d?: number;

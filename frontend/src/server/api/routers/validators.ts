@@ -1,9 +1,6 @@
 import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "pec/server/api/trpc";
-import type {
-  BeaconChainAllValidatorsResponse,
-  BeaconChainValidatorPerformanceResponse,
-} from "pec/types/api";
+import type { BeaconChainValidatorPerformanceResponse } from "pec/types/api";
 import { type ValidatorDetails } from "pec/types/validator";
 import { SupportedChainIdSchema } from "pec/lib/api/schemas/network";
 import { getBeaconChainAxios } from "pec/lib/server/axios";
@@ -15,6 +12,7 @@ import { populateBeaconchainValidatorResponse } from "pec/server/helpers/validat
 import { getValidators } from "pec/server/helpers/beaconchain/getValidators";
 import { routeHandler } from "pec/server/helpers/route-errors";
 import { IResponse } from "pec/types/response";
+import { getValidatorsForWithdrawAddress } from "pec/server/helpers/beaconchain/getValidatorForWithdrawAddress";
 
 export const validatorRouter = createTRPCRouter({
   getValidators: publicProcedure
@@ -24,24 +22,13 @@ export const validatorRouter = createTRPCRouter({
         input: { address, chainId: network },
       }): Promise<ValidatorDetails[]> =>
         routeHandler(async (): Promise<IResponse<ValidatorDetails[]>> => {
-          const validatorResponse = await getBeaconChainAxios(
-            network,
-          ).get<BeaconChainAllValidatorsResponse>(
-            `/api/v1/validator/withdrawalCredentials/${address}`,
-            {
-              params: {
-                limit: 200,
-              },
-            },
-          );
+          const withdrawAddressValidators =
+            await getValidatorsForWithdrawAddress(address, network);
 
-          if (
-            !validatorResponse.data ||
-            validatorResponse.data.data.length === 0
-          )
-            return { success: true, data: [] };
+          if (!withdrawAddressValidators.success)
+            return withdrawAddressValidators;
 
-          const validatorIndexes = validatorResponse.data.data.map(
+          const validatorIndexes = withdrawAddressValidators.data.map(
             (validator) => validator.validatorindex,
           );
 
@@ -74,21 +61,15 @@ export const validatorRouter = createTRPCRouter({
     )
     .query(async ({ input: { address, chainId: network, filter } }) =>
       routeHandler(async (): Promise<IResponse<number>> => {
-        const validatorResponse = await getBeaconChainAxios(
+        const withdrawAddressValidators = await getValidatorsForWithdrawAddress(
+          address,
           network,
-        ).get<BeaconChainAllValidatorsResponse>(
-          `/api/v1/validator/withdrawalCredentials/${address}`,
-          {
-            params: {
-              limit: 200,
-            },
-          },
         );
 
-        if (!validatorResponse.data || validatorResponse.data.data.length === 0)
-          return { success: true, data: 0 };
+        if (!withdrawAddressValidators.success)
+          return withdrawAddressValidators;
 
-        const validatorIndexes = validatorResponse.data.data.map(
+        const validatorIndexes = withdrawAddressValidators.data.map(
           (validator) => validator.validatorindex,
         );
 
