@@ -1,17 +1,17 @@
 "use client";
 
 import Image from "next/image";
-import { useRouter, usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { ConnectWalletButton } from "pec/components/ui/wallet/ConnectWallet";
-import type { FC } from "react";
 import { cn } from "pec/lib/utils";
+import type { FC } from "react";
 
+import { useValidators } from "pec/hooks/useValidators";
+import { ValidatorStatus } from "pec/types/validator";
 import DarkMode from "../dark-mode";
+import { PectraSpinner } from "../ui/custom/pectraSpinner";
 import { SidebarTrigger } from "../ui/sidebar";
 import { Tools } from "./Tools";
-import { useValidators } from "pec/hooks/useValidators";
-import { PectraSpinner } from "../ui/custom/pectraSpinner";
-import { ValidatorStatus } from "pec/types/validator";
 
 export interface ITopBar {
   type?: "profile" | "wallet_connect";
@@ -40,7 +40,7 @@ export const TopBar: FC<ITopBar> = (props) => {
   };
 
   return (
-    <header className="sticky top-0 z-50 flex w-full items-center justify-between border-b border-zinc-200 bg-white/40 p-4 shadow-sm backdrop-blur-md dark:border-gray-800 dark:bg-gray-950">
+    <header className="fixed top-0 z-50 flex w-full items-center justify-between border-b border-zinc-200 bg-white/40 p-4 shadow-sm backdrop-blur-md dark:border-gray-800 dark:bg-gray-950">
       <div className="order-2 mr-4 flex items-center md:order-1 md:mr-0">
         <div
           className="flex flex-row-reverse items-center gap-x-3 hover:cursor-pointer md:flex-row"
