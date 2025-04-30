@@ -1,7 +1,4 @@
-"use client";
-
 import { toast } from "pec/components/ui/Toast";
-import { useConsolidationStore } from "pec/hooks/use-consolidation-store";
 import { useState } from "react";
 
 import { Copy } from "lucide-react";
@@ -19,9 +16,15 @@ import { useActiveChainWithDefault } from "pec/hooks/useChain";
 import { api } from "pec/trpc/react";
 import { displayedEthAmount } from "pec/lib/utils/validators/balance";
 import { PrimaryButton } from "pec/components/ui/custom/PrimaryButton";
+import { ValidatorDetails } from "pec/types/validator";
 
-export const ManuallyEnterValidator = () => {
-  const { setConsolidationTarget, setProgress } = useConsolidationStore();
+interface ManuallyEnterValidatorProps {
+  goToSelectSourceValidators: (validator: ValidatorDetails) => void;
+}
+
+export const ManuallyEnterValidator = ({
+  goToSelectSourceValidators,
+}: ManuallyEnterValidatorProps) => {
   const [input, setInput] = useState("");
   const [searchTerm, setSearchTerm] = useState<string>();
   const chain = useActiveChainWithDefault();
@@ -78,8 +81,7 @@ export const ManuallyEnterValidator = () => {
 
   const handleConfirmValidator = () => {
     if (!validator || typeof validator === "string") return;
-    setConsolidationTarget(validator);
-    setProgress("source");
+    goToSelectSourceValidators(validator);
   };
 
   const [copied, setCopied] = useState(false);
