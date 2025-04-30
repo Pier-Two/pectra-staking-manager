@@ -11,3 +11,9 @@ export const groupValidatorsByWithdrawalPrefix = (
     validator.withdrawalAddress.slice(0, 4),
   );
 };
+
+export const getWithdrawalAddressPrefixType = (
+  withdrawalAddress: string,
+): WithdrawalAddressPrefixType => {
+  return withdrawalAddress.slice(0, 4) as WithdrawalAddressPrefixType;
+};

@@ -1,5 +1,3 @@
-import type { IResponse } from "pec/types/response";
-import { generateErrorResponse } from "../utils";
 import { type EmailNames } from "pec/types/emails";
 import hubspotApi from "./hubspot-api";
 import { parseError } from "../utils/parseError";
@@ -29,10 +27,20 @@ export const createContact = async (
   }
 };
 
+/**
+ * Sends an email notification using HubSpot.
+ * If the email address is empty or undefined, the function returns early.
+ *
+ * @param {EmailNames} emailName - The name of the email template to be used.
+ * @param {string | undefined} email - The email address to send the notification to.
+ * @returns {Promise<void>} - A promise that resolves when the email is sent.
+ */
 export const sendEmailNotification = async (
   emailName: EmailNames,
-  email: string,
-): Promise<IResponse> => {
+  email: string | undefined,
+): Promise<void> => {
+  if (!email || email.length === 0) return;
+
   try {
     const payload = {
       emailName,
@@ -42,12 +50,9 @@ export const sendEmailNotification = async (
     };
 
     await hubspotApi.post("/email", payload);
-
-    return {
-      success: true,
-      data: null,
-    };
   } catch (error) {
-    return generateErrorResponse(error, "Error sending email notification");
+    console.error(
+      `Failed to send email notification for ${email}: ${parseError(error)}`,
+    );
   }
 };

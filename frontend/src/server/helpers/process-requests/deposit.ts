@@ -1,19 +1,41 @@
-import { type AxiosResponse } from "axios";
 import { chunk, groupBy } from "lodash";
-import { env } from "pec/env";
-import {
-  BCDepositResponse,
-  BCDepositResponseSchema,
-} from "pec/lib/api/schemas/beaconchain/deposits";
 import { CHUNK_SIZE } from "pec/lib/constants";
 import { MAIN_CHAIN } from "pec/lib/constants/contracts";
 import type { Deposit } from "pec/lib/database/classes/deposit";
 import { DepositModel } from "pec/lib/database/models";
-import { getBeaconChainAxios } from "pec/lib/server/axios";
 import { sendEmailNotification } from "pec/lib/services/emailService";
 import { generateErrorResponse } from "pec/lib/utils";
 import { ACTIVE_STATUS, INACTIVE_STATUS } from "pec/types/app";
 import type { IResponse } from "pec/types/response";
+import { getDeposits } from "../beaconchain/getDeposits";
+import { BCDepositData } from "pec/lib/api/schemas/beaconchain/deposits";
+
+const checkDepositProcessedAndUpdate = async (
+  dbDeposit: Deposit,
+  validatorDeposits: BCDepositData[],
+): Promise<boolean> => {
+  const depositExists = validatorDeposits.find(
+    (deposit) => deposit.tx_hash === dbDeposit.txHash,
+  );
+
+  if (depositExists) {
+    await sendEmailNotification(
+      "PECTRA_STAKING_MANAGER_DEPLOYMENT_COMPLETE",
+      dbDeposit.email,
+    );
+
+    await DepositModel.updateOne(
+      { validatorIndex: dbDeposit.validatorIndex },
+      {
+        $set: {
+          status: INACTIVE_STATUS,
+        },
+      },
+    );
+  }
+
+  return false;
+};
 
 export const processDeposits = async (): Promise<IResponse> => {
   try {
@@ -27,29 +49,18 @@ export const processDeposits = async (): Promise<IResponse> => {
         error: "Deposit query failed to execute.",
       };
 
-    if (deposits.length === 0)
-      return {
-        success: true,
-        data: null,
-      };
-
-    const chunkedDeposits = chunkDeposits(deposits);
+    const chunkedDeposits = chunk(deposits, CHUNK_SIZE);
 
     for (const chunk of chunkedDeposits) {
-      const validatorIndexString = chunk
-        .map((item) => item.validatorIndex)
-        .join(",");
-
-      const response = await getBeaconChainAxios(
+      const validatorIndexesForChunk = chunk.map((item) => item.validatorIndex);
+      const response = await getDeposits(
+        validatorIndexesForChunk,
         MAIN_CHAIN.id,
-      ).get<BCDepositResponse>(
-        `/api/v1/validator/${validatorIndexString}/deposits?apikey=${env.BEACONCHAIN_API_KEY}`,
       );
 
-      if (!isResponseValid(response))
-        return generateErrorResponse(response.status);
+      if (!response.success) return response;
 
-      const groupedDeposits = groupDepositsByValidator(response.data);
+      const groupedDeposits = groupBy(response.data, "validatorindex");
 
       for (const validatorIndex in groupedDeposits) {
         const validatorDeposits = groupedDeposits[validatorIndex];
@@ -61,34 +72,8 @@ export const processDeposits = async (): Promise<IResponse> => {
         });
 
         if (!targetDeposit) continue;
-        const targetTransactionHash = targetDeposit.txHash;
 
-        const depositExists = validatorDeposits.find(
-          (deposit) => deposit.tx_hash === targetTransactionHash,
-        );
-
-        if (!depositExists) continue;
-
-        if (targetDeposit.email) {
-          const email = await sendEmailNotification(
-            "PECTRA_STAKING_MANAGER_DEPLOYMENT_COMPLETE",
-            targetDeposit.email,
-          );
-
-          if (!email.success) {
-            console.error("Error sending email notification:", email.error);
-            continue;
-          }
-        }
-
-        await DepositModel.updateOne(
-          { validatorIndex },
-          {
-            $set: {
-              status: INACTIVE_STATUS,
-            },
-          },
-        );
+        await checkDepositProcessedAndUpdate(targetDeposit, validatorDeposits);
       }
     }
 
@@ -99,24 +84,4 @@ export const processDeposits = async (): Promise<IResponse> => {
   } catch (error) {
     return generateErrorResponse(error);
   }
-};
-
-const groupDepositsByValidator = (data: BCDepositResponse) => {
-  return groupBy(data.data, "validatorindex");
-};
-
-const chunkDeposits = (deposits: Deposit[]) => {
-  const formatted = deposits.map((deposit) => ({
-    validatorIndex: deposit.validatorIndex,
-  }));
-
-  return chunk(formatted, CHUNK_SIZE);
-};
-
-const isResponseValid = (
-  response: AxiosResponse<BCDepositResponse>,
-): boolean => {
-  if (!response || response.status !== 200) return false;
-  const result = BCDepositResponseSchema.safeParse(response.data);
-  return result.success;
 };

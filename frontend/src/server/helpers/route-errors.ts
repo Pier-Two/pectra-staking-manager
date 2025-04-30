@@ -9,6 +9,8 @@ export const routeHandler = async <T>(
     const response = await routeMethod();
 
     if (!response.success) {
+      console.error("Error in route handler:", response.error);
+
       throw new TRPCError({
         code: "INTERNAL_SERVER_ERROR",
         message: "Failed to fetch validators",

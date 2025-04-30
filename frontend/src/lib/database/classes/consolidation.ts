@@ -4,6 +4,7 @@ import {
   type SupportedNetworkIds,
 } from "pec/constants/chain";
 import { DatabaseDocumentStatuses } from "pec/types/app";
+
 @modelOptions({
   schemaOptions: {
     timestamps: true,

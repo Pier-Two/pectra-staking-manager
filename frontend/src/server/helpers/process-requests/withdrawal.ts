@@ -25,12 +25,6 @@ export const processWithdrawals = async (): Promise<IResponse> => {
         error: "Withdrawal query failed to execute.",
       };
 
-    if (withdrawals.length === 0)
-      return {
-        success: true,
-        data: null,
-      };
-
     const chunkedWithdrawals = chunkWithdrawals(withdrawals);
 
     for (const chunk of chunkedWithdrawals) {
@@ -70,17 +64,10 @@ export const processWithdrawals = async (): Promise<IResponse> => {
         )
           continue;
 
-        if (currentWithdrawal.email) {
-          const email = await sendEmailNotification(
-            "PECTRA_STAKING_MANAGER_WITHDRAWAL_COMPLETE",
-            currentWithdrawal.email,
-          );
-
-          if (!email.success) {
-            console.error("Error sending email notification:", email.error);
-            continue;
-          }
-        }
+        await sendEmailNotification(
+          "PECTRA_STAKING_MANAGER_WITHDRAWAL_COMPLETE",
+          currentWithdrawal.email,
+        );
 
         await WithdrawalModel.updateOne(
           { validatorIndex },

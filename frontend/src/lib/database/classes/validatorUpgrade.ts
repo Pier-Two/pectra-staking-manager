@@ -9,10 +9,10 @@ import { DatabaseDocumentStatuses } from "pec/types/app";
   schemaOptions: {
     timestamps: true,
     toObject: { virtuals: true },
-    collection: "withdrawals",
+    collection: "validatorUpgrade",
   },
 })
-export class Withdrawal {
+export class ValidatorUpgrade {
   @prop()
   public email?: string;
 
@@ -21,12 +21,6 @@ export class Withdrawal {
 
   @prop({ required: true })
   public validatorIndex!: number;
-
-  @prop({ required: true })
-  public withdrawalIndex!: number;
-
-  @prop({ required: true })
-  public amount!: number;
 
   @prop({ required: true })
   public txHash!: string;

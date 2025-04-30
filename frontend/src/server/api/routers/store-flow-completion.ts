@@ -6,6 +6,7 @@ import {
 import {
   ConsolidationModel,
   DepositModel,
+  ValidatorUpgradeModel,
   WithdrawalModel,
 } from "pec/lib/database/models";
 import { StoreWithdrawalRequestSchema } from "pec/lib/api/schemas/withdrawal";
@@ -18,7 +19,6 @@ import { getWithdrawals } from "pec/server/helpers/beaconchain/getWithdrawals";
 import { StoreDatabaseDepositSchema } from "pec/lib/api/schemas/deposit";
 import { StoreConsolidationSchema } from "pec/lib/api/schemas/consolidation";
 import { routeHandler } from "pec/server/helpers/route-errors";
-import { generateErrorResponse } from "pec/lib/utils";
 
 export const storeFlowCompletion = createTRPCRouter({
   storeWithdrawalRequest: publicProcedure
@@ -87,50 +87,42 @@ export const storeFlowCompletion = createTRPCRouter({
       noRateLimit: true, // no rate limit since this is hit many times during consolidation
     })
     .input(StoreConsolidationSchema)
-    .mutation(async ({ input }) =>
-      routeHandler(async (): Promise<IResponse<null>> => {
-        const {
+    .mutation(
+      async ({
+        input: {
           targetValidatorIndex,
           sourceTargetValidatorIndex,
           txHash,
           email,
           network,
-        } = input;
-
-        const existingRecord = await ConsolidationModel.findOne({
-          $or: [
-            {
+        },
+      }) =>
+        routeHandler(async (): Promise<IResponse<null>> => {
+          if (targetValidatorIndex === sourceTargetValidatorIndex) {
+            await ValidatorUpgradeModel.create({
+              validatorIndex: targetValidatorIndex,
+              email,
+              status: ACTIVE_STATUS,
+              networkId: network,
+              txHash,
+            });
+          } else {
+            await ConsolidationModel.create({
               targetValidatorIndex,
               sourceTargetValidatorIndex,
-            },
-            {
-              targetValidatorIndex: sourceTargetValidatorIndex,
-              sourceTargetValidatorIndex: targetValidatorIndex,
-            },
-          ],
-        });
+              status: ACTIVE_STATUS,
+              txHash,
+              email,
+              networkId: network,
+            });
+          }
 
-        if (existingRecord) {
-          return generateErrorResponse(
-            `Consolidation record already exists for validators ${targetValidatorIndex} and ${sourceTargetValidatorIndex}`,
-          );
-        }
+          await createContact(email);
 
-        await ConsolidationModel.create({
-          targetValidatorIndex,
-          sourceTargetValidatorIndex,
-          status: ACTIVE_STATUS,
-          txHash,
-          email,
-          networkId: network,
-        });
-
-        await createContact(email);
-
-        return {
-          success: true,
-          data: null,
-        };
-      }),
+          return {
+            success: true,
+            data: null,
+          };
+        }),
     ),
 });

@@ -10,7 +10,7 @@ export const getValidatorsForWithdrawAddress = async (
   withdrawAddress: string,
   network: SupportedNetworkIds,
 ): Promise<IResponse<BCValidatorsForWithdrawAddressResponse["data"]>> => {
-  const url = `/api/v1/validator/withdrawals/${withdrawAddress}`;
+  const url = `/api/v1/validator/eth1/${withdrawAddress}`;
 
   return executeBeaconchainTypesafeRequest(
     BCValidatorsForWithdrawAddressResponseSchema,

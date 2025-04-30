@@ -17,6 +17,8 @@ export const BCDepositDataSchema = z.object({
   withdrawal_credentials: z.string(),
 });
 
+export type BCDepositData = z.infer<typeof BCDepositDataSchema>;
+
 export const BCDepositResponseSchema = z.object({
   status: z.literal(BEACONCHAIN_OK_STATUS),
   data: z.array(BCDepositDataSchema),
