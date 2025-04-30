@@ -96,6 +96,9 @@ export const ConnectWalletButton = ({ className }: StyleableComponent) => {
         size: "wide",
         title: "Login/Sign up",
       }}
+      onConnect={() => {
+        router.push("/validators-found");
+      }}
     />
   );
 };

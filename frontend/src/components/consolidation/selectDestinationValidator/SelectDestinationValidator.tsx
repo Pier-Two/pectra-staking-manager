@@ -45,7 +45,9 @@ export const SelectDestinationValidator = ({
         />
       </div>
       {manuallySettingValidator ? (
-        <ManuallyEnterValidator />
+        <ManuallyEnterValidator
+          goToSelectSourceValidators={goToSelectSourceValidators}
+        />
       ) : (
         <ValidatorTable
           data={validators}

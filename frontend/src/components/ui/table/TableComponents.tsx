@@ -153,10 +153,9 @@ export const DisplayAmount = ({
   children,
 }: DisplayAmountProps) => {
   return (
-    <div className="flex-col">
-      <div className={cn("text-sm font-570", className)}>
-        Ξ {displayedEthAmount(amount, opts?.decimals)}
-      </div>
+    <div className={cn("text-sm font-semibold", className)}>
+      <span className="hidden md:contents"> Ξ</span>{" "}
+      {displayedEthAmount(amount, opts?.decimals)}
       {children}
     </div>
   );
