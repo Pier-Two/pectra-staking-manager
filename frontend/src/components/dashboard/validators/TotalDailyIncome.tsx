@@ -1,12 +1,13 @@
 "use client";
 
-import { MyValidatorsCard, MyValidatorsCardLoading } from "./MyValidatorsCard";
+import { MyValidatorsCard } from "./MyValidatorsCard";
 import { DECIMAL_PLACES } from "pec/lib/constants";
 import { formatUnits } from "viem";
 import { displayedEthAmount } from "pec/lib/utils/validators/balance";
 import { Skeleton } from "pec/components/ui/skeleton";
 import { useValidatorPerformance } from "pec/hooks/useValidatorPerformance";
 import { useEthPrice } from "pec/hooks/useEthPrice";
+import { dashboardAnimationDelays } from "pec/constants/animationDelays";
 
 export const TotalDailyIncome = () => {
   const { data: ethPrice, isSuccess: isEthPriceSuccessful } = useEthPrice(
@@ -37,6 +38,8 @@ export const TotalDailyIncome = () => {
 
   return (
     <MyValidatorsCard
+      layoutId="total-daily-income-card"
+      delay={dashboardAnimationDelays.totalDailyIncome}
       title="Total Daily Income"
       body={<p>Ξ {displayEth}</p>}
       subtext={`Earning $${totalInUsd.toFixed(DECIMAL_PLACES)} per day`}
@@ -45,7 +48,10 @@ export const TotalDailyIncome = () => {
 };
 
 export const TotalDailyIncomeLoading = () => (
-  <MyValidatorsCardLoading
+  <MyValidatorsCard
+    isLoading
+    layoutId="total-daily-income-card"
+    delay={dashboardAnimationDelays.totalDailyIncome}
     title="Total Daily Income"
     body={
       <div className="flex flex-row items-center gap-x-2">

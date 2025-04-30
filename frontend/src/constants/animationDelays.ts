@@ -26,3 +26,18 @@ export const welcomeAnimationDelays = (() => {
     chart: 16 * d,
   };
 })();
+
+export const dashboardAnimationDelays = (() => {
+  const d = 0.125;
+
+  return {
+    toolCards: {
+      consolidate: 0,
+      batchDeposit: d,
+      withdrawal: d * 2,
+    },
+    activeValidators: 0,
+    totalStake: 0,
+    totalDailyIncome: 0,
+  };
+})();

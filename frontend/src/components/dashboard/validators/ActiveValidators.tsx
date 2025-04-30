@@ -1,11 +1,11 @@
 "use client";
 
 import Image from "next/image";
-import { MyValidatorsCard, MyValidatorsCardLoading } from "./MyValidatorsCard";
+import { MyValidatorsCard } from "./MyValidatorsCard";
 import { ValidatorStatus } from "pec/types/validator";
 import { useValidators } from "pec/hooks/useValidators";
 import { Skeleton } from "pec/components/ui/skeleton";
-
+import { dashboardAnimationDelays } from "pec/constants/animationDelays";
 export const ActiveValidators = () => {
   const { data: validators, groupedValidators } = useValidators();
 
@@ -17,7 +17,10 @@ export const ActiveValidators = () => {
 
   if (inactiveValidators === null)
     return (
-      <MyValidatorsCardLoading
+      <MyValidatorsCard
+        isLoading
+        delay={dashboardAnimationDelays.activeValidators}
+        layoutId="active-validators-card"
         title="Active Validators"
         body={
           <div className="flex flex-row items-center gap-x-2">
@@ -35,6 +38,7 @@ export const ActiveValidators = () => {
 
   return (
     <MyValidatorsCard
+      layoutId="active-validators-card"
       title="Active Validators"
       body={
         <div className="flex flex-row items-center gap-x-2">

@@ -7,11 +7,13 @@ export const EnterAnimation = ({
   delay = 0,
   className,
   direction = "up",
+  layoutId,
 }: {
   children: React.ReactNode;
   delay?: number;
   className?: string;
   direction?: "up" | "down";
+  layoutId?: string;
 }) => {
   return (
     <motion.div
@@ -23,6 +25,7 @@ export const EnterAnimation = ({
       }}
       animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
       transition={{ duration: 0.25, delay, ease: "easeInOut" }}
+      layoutId={layoutId}
     >
       {children}
     </motion.div>

@@ -1,16 +1,20 @@
 "use client";
 
 import { useValidators } from "pec/hooks/useValidators";
-import { MyValidatorsCard, MyValidatorsCardLoading } from "./MyValidatorsCard";
+import { MyValidatorsCard } from "./MyValidatorsCard";
 import { displayedEthAmount } from "pec/lib/utils/validators/balance";
 import { Skeleton } from "pec/components/ui/skeleton";
+import { dashboardAnimationDelays } from "pec/constants/animationDelays";
 export const TotalStake = () => {
   const { data: validators, isSuccess: isValidatorsSuccessful } =
     useValidators();
 
   if (!isValidatorsSuccessful || !validators)
     return (
-      <MyValidatorsCardLoading
+      <MyValidatorsCard
+        isLoading
+        delay={dashboardAnimationDelays.totalStake}
+        layoutId="total-stake-card"
         title="Total ETH Staked"
         body={
           <div className="flex flex-row items-center gap-x-2">
@@ -37,6 +41,8 @@ export const TotalStake = () => {
 
   return (
     <MyValidatorsCard
+      layoutId="total-stake-card"
+      delay={dashboardAnimationDelays.totalStake}
       title="Total ETH Staked"
       body={<p>Ξ {displayedEthAmount(totalStake)}</p>}
       subtext={`Average ${displayedEthAmount(averageStake)} per validator`}
