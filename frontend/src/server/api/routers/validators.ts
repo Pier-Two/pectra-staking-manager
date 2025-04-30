@@ -23,7 +23,6 @@ import { redisCacheMiddleware } from "../middleware/redis-cache-middleware";
 
 export const validatorRouter = createTRPCRouter({
   getValidators: publicProcedure
-    .use(redisCacheMiddleware())
     .input(z.object({ address: z.string(), chainId: SupportedChainIdSchema }))
     .query(async ({ input: { address, chainId: network } }) => {
       try {
