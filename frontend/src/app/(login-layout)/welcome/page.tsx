@@ -11,7 +11,7 @@ import { welcomeAnimationDelays } from "pec/constants/animationDelays";
 
 const Welcome: FC = () => {
   return (
-    <div className="flex h-full w-full flex-col gap-y-[72px]">
+    <div className="flex h-full w-full flex-col gap-y-8 px-4 sm:gap-y-[72px]">
       <div className="flex flex-col gap-y-4">
         <div className="flex w-full flex-col items-center justify-center gap-y-4">
           <PectraLink />

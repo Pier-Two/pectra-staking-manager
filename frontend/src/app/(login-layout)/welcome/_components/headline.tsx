@@ -23,8 +23,8 @@ const AnimatedText = ({
 };
 export const Headline = () => {
   return (
-    <div className="flex flex-col items-center gap-y-2">
-      <div className="flex flex-row gap-2">
+    <div className="flex flex-col items-center gap-2">
+      <div className="flex flex-col gap-2 sm:flex-row">
         <AnimatedText delay={welcomeAnimationDelays.headline.thisIs}>
           This is
         </AnimatedText>
@@ -32,7 +32,7 @@ export const Headline = () => {
           the Future of
         </AnimatedText>
       </div>
-      <div className="flex flex-row gap-2">
+      <div className="flex flex-col gap-2 sm:flex-row">
         <AnimatedText delay={welcomeAnimationDelays.headline.ethereum}>
           Ethereum
         </AnimatedText>

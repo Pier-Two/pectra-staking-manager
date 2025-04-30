@@ -26,19 +26,19 @@ const benefits = [
 export const Information: FC = () => {
   return (
     <div className="flex w-full flex-col items-center gap-6 text-black dark:text-white">
-      <EnterAnimationParagraph
+      <EnterAnimation
         delay={welcomeAnimationDelays.infoParagraph}
-        className="w-full text-center text-[14px] font-570 leading-[14px] text-[#27272A] dark:text-zinc-50"
+        className="flex w-full flex-col items-center justify-center gap-x-1 gap-y-2 text-center text-[14px] font-570 leading-[14px] text-[#27272A] dark:text-zinc-50 sm:flex-row"
       >
-        The Pectra Staking Manager is a self-service tool designed solely to
-        help you:
-      </EnterAnimationParagraph>
+        <p>The Pectra Staking Manager is a self-service</p>
+        <p>tool designed solely to help you:</p>
+      </EnterAnimation>
 
-      <div className="flex w-full justify-center gap-3">
+      <div className="flex w-full flex-col justify-center gap-3 sm:flex-row">
         {benefits.map((benefit, index) => (
           <EnterAnimation
             key={benefit.title}
-            className="flex max-w-[330px] flex-col items-start gap-6 rounded-lg border-[0.5px] border-border bg-white p-6 dark:border-gray-700 dark:bg-black"
+            className="flex w-full flex-col items-start gap-6 rounded-lg border-[0.5px] border-border bg-white p-6 dark:border-gray-700 dark:bg-black sm:max-w-[330px]"
             delay={welcomeAnimationDelays.infoCards[index]}
           >
             <div className="flex size-8 items-center justify-center rounded bg-primary/15 text-[16px] font-[790] text-primary">
@@ -58,9 +58,9 @@ export const Information: FC = () => {
 
       <EnterAnimation
         delay={welcomeAnimationDelays.infoShield}
-        className="flex max-w-[683px] flex-row items-center gap-[10px] rounded-xl bg-black/[2%] px-6 py-3 text-[15px] font-380"
+        className="flex w-full flex-col items-start gap-[10px] rounded-xl bg-black/[2%] px-6 py-3 text-[15px] font-380 sm:max-w-[683px] sm:flex-row sm:items-center"
       >
-        <GradientShield className="size-12" />
+        <GradientShield className="size-8 flex-shrink-0 sm:size-8" />
         <p>
           You retain full control over your validators and staked ETH at all
           times. This tool does not control, custody, manage, or interact with
