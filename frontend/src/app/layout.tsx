@@ -23,8 +23,9 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Pectra Staking Management",
-  description: "Pectra Staking Management",
+  title: "Pectra Staking Manager: This is the Future of Ethereum Staking",
+  description:
+    "Take control of your validators with the Pectra upgrade! Upgrade to Pextra (0x02), and consolidate multiple validators for easier management, perform batch top-ups to the new max value from 32ETH to 2048ETH, perform withdraws, and monitor the adoption of Pectra via our charts.",
   icons: [{ rel: "icon", url: "/favicon.svg" }],
 };
 

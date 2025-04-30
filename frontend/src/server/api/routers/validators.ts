@@ -19,9 +19,11 @@ import {
 import { populateBeaconchainValidatorDetails } from "pec/server/helpers/validators";
 import type { IResponse } from "pec/types/response";
 import { EmailSchema } from "pec/lib/api/schemas/email";
+import { redisCacheMiddleware } from "../middleware/redis-cache-middleware";
 
 export const validatorRouter = createTRPCRouter({
   getValidators: publicProcedure
+    .use(redisCacheMiddleware())
     .input(z.object({ address: z.string(), chainId: SupportedChainIdSchema }))
     .query(async ({ input: { address, chainId: network } }) => {
       try {
@@ -65,6 +67,7 @@ export const validatorRouter = createTRPCRouter({
     }),
 
   getValidatorsPerformanceInWei: publicProcedure
+    .use(redisCacheMiddleware())
     .input(
       z.object({
         address: z.string(),
