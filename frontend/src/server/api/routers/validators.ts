@@ -127,7 +127,6 @@ export const validatorRouter = createTRPCRouter({
     }),
 
   getValidatorDetails: publicProcedure
-    .use(redisCacheMiddleware())
     .input(
       z.object({ searchTerm: z.string(), network: SupportedChainIdSchema }),
     )
