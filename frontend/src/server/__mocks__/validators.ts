@@ -22,7 +22,7 @@ const generateWithdrawalAddress = () => {
 };
 
 // Function to generate validator data using Faker
-export const buildValidatorDetails = (
+export const buildMockValidatorDetails = (
   overrides: Partial<ValidatorDetails> = {},
 ): ValidatorDetails => {
   return {
@@ -41,13 +41,13 @@ export const buildValidatorDetails = (
   };
 };
 
-export const buildValidatorDetailsArray = (
+export const buildMockValidatorDetailsArray = (
   length = 10,
   overrides: Partial<ValidatorDetails>[] = [],
 ): ValidatorDetails[] => {
   return Array.from({ length }, (_, i) => {
     const override = overrides[i] || {};
-    return buildValidatorDetails(override);
+    return buildMockValidatorDetails(override);
   });
 };
 

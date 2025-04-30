@@ -49,6 +49,8 @@ export const processConsolidations = async (): Promise<IResponse> => {
         [consolidation.sourceTargetValidatorIndex],
         MAIN_CHAIN.id,
       );
+      console.log("Consolidation response");
+      console.log(response);
 
       if (!response.success) return response;
 
