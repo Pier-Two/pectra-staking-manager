@@ -1,13 +1,33 @@
-import { MyValidatorsCard } from "./MyValidatorsCard";
+"use client";
+
+import { useValidators } from "pec/hooks/useValidators";
+import { MyValidatorsCard, MyValidatorsCardLoading } from "./MyValidatorsCard";
 import { displayedEthAmount } from "pec/lib/utils/validators/balance";
-import { ValidatorDetails } from "pec/types/validator";
+import { Skeleton } from "pec/components/ui/skeleton";
+export const TotalStake = () => {
+  const { data: validators, isSuccess: isValidatorsSuccessful } =
+    useValidators();
 
-interface TotalStakeProps {
-  validators: ValidatorDetails[];
-}
+  if (!isValidatorsSuccessful || !validators)
+    return (
+      <MyValidatorsCardLoading
+        title="Total ETH Staked"
+        body={
+          <div className="flex flex-row items-center gap-x-2">
+            <span>Ξ</span>
+            <Skeleton className="h-8 w-16 bg-slate-50" />
+          </div>
+        }
+        subtext={
+          <div className="flex flex-row items-center gap-x-2">
+            <span>Average</span>
+            <Skeleton className="mt-1 h-3 w-12 bg-slate-50" />
+            <span>per validator</span>
+          </div>
+        }
+      />
+    );
 
-export const TotalStake = (props: TotalStakeProps) => {
-  const { validators } = props;
   const totalStake = validators.reduce(
     (acc, validator) => acc + validator.balance,
     0,

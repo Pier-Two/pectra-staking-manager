@@ -1,14 +1,18 @@
-import { IHeaderConfig, TableValidatorDetails } from "pec/types/validatorTable";
+import type {
+  IHeaderConfig,
+  TableValidatorDetails,
+} from "pec/types/validatorTable";
 import { TableHeader } from "./TableHeader";
 import { useValidatorSorting } from "pec/hooks/use-validator-sorting";
 import { TableNoResults } from "pec/components/dashboard/validatorTable/TableNoResults";
 import { ValidatorRow } from "pec/components/ui/table/ValidatorRow";
 import { usePagination } from "pec/hooks/use-pagination";
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 import { TablePagination } from "./TablePagination";
-import { ValidatorCardWrapperProps } from "../custom/validator-card-wrapper";
+import type { ValidatorCardWrapperProps } from "../custom/validator-card-wrapper";
 import { useSearch } from "pec/hooks/useSearch";
 import { SearchFilter } from "./SearchFilter";
+import { TableRow, TableCell } from "../table";
 
 interface ValidatorTableProps<T extends TableValidatorDetails> {
   data: T[];
@@ -25,6 +29,7 @@ interface ValidatorTableProps<T extends TableValidatorDetails> {
   disableSort?: boolean;
   disablePagination?: boolean;
   renderOverrides?: Partial<Record<keyof T, (data: T) => JSX.Element>>;
+  isLoading?: boolean;
 }
 
 export const ValidatorTable = <T extends TableValidatorDetails>({
@@ -38,6 +43,7 @@ export const ValidatorTable = <T extends TableValidatorDetails>({
   disableSort,
   disablePagination,
   renderOverrides,
+  isLoading,
 }: ValidatorTableProps<T>) => {
   const { filteredData, searchTerm, setSearchTerm } = useSearch({
     data,
@@ -74,7 +80,14 @@ export const ValidatorTable = <T extends TableValidatorDetails>({
           disableSort={disableSort}
         />
         <tbody className="">
-          {sortedValidators.length > 0 ? (
+          {isLoading ? (
+            <TableRow>
+              <TableCell colSpan={8} className="py-4 text-center">
+                {/* TODO: add skeleton loader */}
+                Loading...
+              </TableCell>
+            </TableRow>
+          ) : sortedValidators.length > 0 ? (
             paginatedData.map((validator, index) => (
               <ValidatorRow
                 headers={headers}

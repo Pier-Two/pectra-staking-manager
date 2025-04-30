@@ -1,18 +1,34 @@
-import type { FC } from "react";
-import { MyValidatorsCard } from "./MyValidatorsCard";
+"use client";
+
+import { MyValidatorsCard, MyValidatorsCardLoading } from "./MyValidatorsCard";
 import { DECIMAL_PLACES } from "pec/lib/constants";
 import { formatUnits } from "viem";
 import { displayedEthAmount } from "pec/lib/utils/validators/balance";
+import { Skeleton } from "pec/components/ui/skeleton";
+import { useValidatorPerformance } from "pec/hooks/useValidatorPerformance";
+import { useEthPrice } from "pec/hooks/useEthPrice";
 
-interface ITotalDailyIncome {
-  validatorPerformanceInWei: number;
-  ethPrice: number;
-}
+export const TotalDailyIncome = () => {
+  const { data: ethPrice, isSuccess: isEthPriceSuccessful } = useEthPrice(
+    "ETH",
+    "USD",
+  );
 
-export const TotalDailyIncome: FC<ITotalDailyIncome> = ({
-  validatorPerformanceInWei,
-  ethPrice,
-}) => {
+  const {
+    data: validatorPerformanceInWei,
+    isSuccess: isPerformanceSuccessful,
+  } = useValidatorPerformance("daily");
+
+  if (
+    !(
+      isEthPriceSuccessful &&
+      isPerformanceSuccessful &&
+      ethPrice &&
+      validatorPerformanceInWei
+    )
+  )
+    return <TotalDailyIncomeLoading />;
+
   const totalInEth = parseFloat(
     formatUnits(BigInt(validatorPerformanceInWei), 18),
   );
@@ -27,3 +43,22 @@ export const TotalDailyIncome: FC<ITotalDailyIncome> = ({
     />
   );
 };
+
+export const TotalDailyIncomeLoading = () => (
+  <MyValidatorsCardLoading
+    title="Total Daily Income"
+    body={
+      <div className="flex flex-row items-center gap-x-2">
+        <span>Ξ</span>
+        <Skeleton className="h-8 w-16 bg-slate-50" />
+      </div>
+    }
+    subtext={
+      <div className="flex flex-row items-center gap-x-2">
+        <span>Earning</span>
+        <Skeleton className="mt-1 h-3 w-12 bg-slate-50" />
+        <span>per day</span>
+      </div>
+    }
+  />
+);
