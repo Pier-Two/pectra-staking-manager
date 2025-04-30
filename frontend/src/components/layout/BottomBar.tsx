@@ -1,8 +1,9 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { logoPaths } from "pec/constants/logo";
-import { labrysUrl, openInNewTab, pierTwoUrl } from "pec/helpers/getExternalLink";
+import { labrysUrl, pierTwoUrl } from "pec/helpers/getExternalLink";
 import { useTheme } from "pec/hooks/useTheme";
 import { cn } from "pec/lib/utils";
 import { EThemeMode } from "pec/types/theme";
@@ -61,12 +62,12 @@ export const BottomBar: FC = () => {
 
       <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-8">
         {items.map((item) => (
-          <div className="flex flex-wrap items-center justify-center gap-x-3 hover:cursor-pointer" onClick={() => openInNewTab(item.redirectUrl)} key={item.logo}>
+          <Link href={item.redirectUrl} target="_blank" className="flex flex-wrap items-center justify-center gap-x-3 hover:cursor-pointer" key={item.logo}>
             <p className="text-xs leading-[11px] text-zinc-950 dark:text-gray-300">
               {item.text}
           </p>
             <RenderLogo logo={item.logo} grayscale={true} width={100} height={100} />
-          </div>
+          </Link>
         ))}
       </div>
     </footer>
