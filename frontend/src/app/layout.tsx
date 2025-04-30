@@ -24,7 +24,7 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: "Pectra Staking Manager",
-  description: "Pectra Staking Manager",
+  description: "This is the Future of Ethereum Staking",
   icons: [{ rel: "icon", url: "/favicon.svg" }],
 };
 

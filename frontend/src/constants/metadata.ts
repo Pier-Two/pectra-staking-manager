@@ -1,3 +1,3 @@
-export const titleSuffix = "Pectra Staking Manager";
+import { siteConfig } from "pec/constants/site";
 
-export const title = (title: string) => `${title} | ${titleSuffix}`;
+export const title = (title: string) => `${title} | ${siteConfig.titleSuffix}`;
