@@ -1,5 +1,4 @@
 import { TYPE_2_PREFIX } from "pec/constants/pectra";
-import { BCValidatorsData } from "pec/lib/api/schemas/beaconchain/validator";
 import { ValidatorUpgrade } from "pec/lib/database/classes/validatorUpgrade";
 import { ValidatorUpgradeModel } from "pec/lib/database/models";
 import { sendEmailNotification } from "pec/lib/services/emailService";
@@ -7,14 +6,11 @@ import { generateErrorResponse } from "pec/lib/utils";
 import { getWithdrawalAddressPrefixType } from "pec/lib/utils/validators/withdrawalAddress";
 import { IResponse } from "pec/types/response";
 
-const checkValidatorUpgradeProcessedAndUpdate = async (
+export const checkValidatorUpgradeProcessedAndUpdate = async (
   dbValidatorUpgrade: ValidatorUpgrade,
-  bcValidatorDetails: BCValidatorsData,
+  withdrawalAddress: string,
 ): Promise<boolean> => {
-  if (
-    getWithdrawalAddressPrefixType(bcValidatorDetails.withdrawalcredentials) ===
-    TYPE_2_PREFIX
-  ) {
+  if (getWithdrawalAddressPrefixType(withdrawalAddress) === TYPE_2_PREFIX) {
     await ValidatorUpgradeModel.updateOne(
       {
         validatorIndex: dbValidatorUpgrade.validatorIndex,

@@ -7,10 +7,10 @@ import { IResponse } from "pec/types/response";
 import { executeBeaconchainTypesafeRequest } from "./generics";
 
 export const getWithdrawals = async (
-  validatorIndex: number,
+  validators: number[],
   network: SupportedNetworkIds,
 ): Promise<IResponse<BCWithdrawalResponse["data"]>> => {
-  const url = `/api/v1/validator/${validatorIndex}/withdrawals`;
+  const url = `/api/v1/validator/${validators.join(",")}/withdrawals`;
 
   return executeBeaconchainTypesafeRequest(
     BCWithdrawalResponseSchema,

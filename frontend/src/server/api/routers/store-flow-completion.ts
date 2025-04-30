@@ -30,7 +30,7 @@ export const storeFlowCompletion = createTRPCRouter({
       routeHandler(async (): Promise<IResponse<null>> => {
         const { network, validatorIndex, email, amount, txHash } = input;
 
-        const response = await getWithdrawals(validatorIndex, network);
+        const response = await getWithdrawals([validatorIndex], network);
 
         if (!response.success) return response;
 

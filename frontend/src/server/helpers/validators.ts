@@ -1,4 +1,4 @@
-import { BCValidatorsResponse } from "pec/lib/api/schemas/beaconchain/validator";
+import { BCValidatorsData } from "pec/lib/api/schemas/beaconchain/validator";
 import {
   ConsolidationModel,
   DepositModel,
@@ -9,14 +9,14 @@ import { getValidatorStatus } from "pec/lib/utils/validators/status";
 import { ACTIVE_STATUS } from "pec/types/app";
 import { TransactionStatus, ValidatorDetails } from "pec/types/validator";
 
-export const populateBeaconchainValidatorResponse = async (
-  rawValidatorDetails: BCValidatorsResponse["data"][0],
-): Promise<ValidatorDetails> => {
+export const prePopulateBeaconchainValidatorResponse = (
+  rawValidatorDetails: BCValidatorsData,
+): ValidatorDetails => {
   const { activeSince, activeDuration } = getValidatorActiveInfo(
     rawValidatorDetails.activationepoch,
   );
 
-  const validatorDetails: ValidatorDetails = {
+  return {
     validatorIndex: rawValidatorDetails.validatorindex,
     publicKey: rawValidatorDetails.pubkey,
     withdrawalAddress: rawValidatorDetails.withdrawalcredentials,
@@ -29,8 +29,15 @@ export const populateBeaconchainValidatorResponse = async (
     consolidationTransaction: undefined,
     depositTransaction: undefined,
     upgradeSubmitted: false,
-    hasPendingDeposit: false,
+    pendingRequests: [],
   };
+};
+
+export const populateBeaconchainValidatorResponse = async (
+  rawValidatorDetails: BCValidatorsData,
+): Promise<ValidatorDetails> => {
+  const validatorDetails =
+    prePopulateBeaconchainValidatorResponse(rawValidatorDetails);
 
   const [withdrawTx, upgradeTx, consolidationTx, depositTx] = await Promise.all(
     [

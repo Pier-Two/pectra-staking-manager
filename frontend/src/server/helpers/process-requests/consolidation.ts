@@ -8,7 +8,7 @@ import { getValidators } from "../beaconchain/getValidators";
 import { Consolidation } from "pec/lib/database/classes/consolidation";
 import { BCValidatorsData } from "pec/lib/api/schemas/beaconchain/validator";
 
-const checkConsolidationProcessedAndUpdate = async (
+export const checkConsolidationProcessedAndUpdate = async (
   dbConsolidation: Consolidation,
   bcValidatorDetails: BCValidatorsData,
 ): Promise<boolean> => {
@@ -33,7 +33,6 @@ const checkConsolidationProcessedAndUpdate = async (
 
 export const processConsolidations = async (): Promise<IResponse> => {
   try {
-    // TODO: Integrate the Consolidation model
     const consolidations = await ConsolidationModel.find({
       status: ACTIVE_STATUS,
     });
@@ -44,6 +43,7 @@ export const processConsolidations = async (): Promise<IResponse> => {
         error: "Consolidation query failed to execute.",
       };
 
+    // TODO: This can be better and make a single DB call
     for (const consolidation of consolidations) {
       const response = await getValidators(
         [consolidation.sourceTargetValidatorIndex],

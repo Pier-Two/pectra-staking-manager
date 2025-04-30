@@ -1,5 +1,4 @@
-import { chunk, groupBy } from "lodash";
-import { CHUNK_SIZE } from "pec/lib/constants";
+import { groupBy } from "lodash";
 import { MAIN_CHAIN } from "pec/lib/constants/contracts";
 import type { Deposit } from "pec/lib/database/classes/deposit";
 import { DepositModel } from "pec/lib/database/models";
@@ -9,6 +8,7 @@ import { ACTIVE_STATUS, INACTIVE_STATUS } from "pec/types/app";
 import type { IResponse } from "pec/types/response";
 import { getDeposits } from "../beaconchain/getDeposits";
 import { BCDepositData } from "pec/lib/api/schemas/beaconchain/deposits";
+import { chunkRequest } from "../chunk-request";
 
 const checkDepositProcessedAndUpdate = async (
   dbDeposit: Deposit,
@@ -32,6 +32,8 @@ const checkDepositProcessedAndUpdate = async (
         },
       },
     );
+
+    return true;
   }
 
   return false;
@@ -49,31 +51,27 @@ export const processDeposits = async (): Promise<IResponse> => {
         error: "Deposit query failed to execute.",
       };
 
-    const chunkedDeposits = chunk(deposits, CHUNK_SIZE);
+    const responses = await chunkRequest(
+      deposits.map((item) => item.validatorIndex),
+      async (validatorIndexes) => getDeposits(validatorIndexes, MAIN_CHAIN.id),
+    );
 
-    for (const chunk of chunkedDeposits) {
-      const validatorIndexesForChunk = chunk.map((item) => item.validatorIndex);
-      const response = await getDeposits(
-        validatorIndexesForChunk,
-        MAIN_CHAIN.id,
-      );
+    if (!responses.success) return responses;
 
-      if (!response.success) return response;
+    const groupedDeposits = groupBy(responses.data, "validatorindex");
 
-      const groupedDeposits = groupBy(response.data, "validatorindex");
+    for (const validatorIndex in groupedDeposits) {
+      const validatorDeposits = groupedDeposits[validatorIndex]!;
 
-      for (const validatorIndex in groupedDeposits) {
-        const validatorDeposits = groupedDeposits[validatorIndex];
-        if (!validatorDeposits) continue;
+      const deposits = await DepositModel.find({
+        validatorIndex: Number(validatorIndex),
+        status: ACTIVE_STATUS,
+      });
 
-        const targetDeposit = await DepositModel.findOne({
-          validatorIndex: Number(validatorIndex),
-          status: ACTIVE_STATUS,
-        });
+      if (!deposits) continue;
 
-        if (!targetDeposit) continue;
-
-        await checkDepositProcessedAndUpdate(targetDeposit, validatorDeposits);
+      for (const deposit of deposits) {
+        await checkDepositProcessedAndUpdate(deposit, validatorDeposits);
       }
     }
 

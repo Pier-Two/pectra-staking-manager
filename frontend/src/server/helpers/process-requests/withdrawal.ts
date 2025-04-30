@@ -1,17 +1,12 @@
-import { CHUNK_SIZE } from "pec/lib/constants";
 import { WithdrawalModel } from "pec/lib/database/models";
 import { generateErrorResponse } from "pec/lib/utils";
 import { ACTIVE_STATUS, INACTIVE_STATUS } from "pec/types/app";
 import type { IResponse } from "pec/types/response";
-import { chunk, groupBy, maxBy } from "lodash";
-import type { Withdrawal } from "pec/lib/database/classes/withdrawal";
+import { groupBy, maxBy } from "lodash";
 import { sendEmailNotification } from "pec/lib/services/emailService";
-import { getBeaconChainAxios } from "pec/lib/server/axios";
 import { MAIN_CHAIN } from "pec/lib/constants/contracts";
-import {
-  BCWithdrawalResponse,
-  BCWithdrawalResponseSchema,
-} from "pec/lib/api/schemas/beaconchain/withdrawals";
+import { getWithdrawals } from "../beaconchain/getWithdrawals";
+import { chunkRequest } from "../chunk-request";
 
 export const processWithdrawals = async (): Promise<IResponse> => {
   try {
@@ -25,60 +20,52 @@ export const processWithdrawals = async (): Promise<IResponse> => {
         error: "Withdrawal query failed to execute.",
       };
 
-    const chunkedWithdrawals = chunkWithdrawals(withdrawals);
+    const allWithdrawals = await chunkRequest(
+      withdrawals.map((item) => item.validatorIndex),
+      async (validatorIndexes) =>
+        getWithdrawals(validatorIndexes, MAIN_CHAIN.id),
+    );
 
-    for (const chunk of chunkedWithdrawals) {
-      const validatorIndexString = chunk
-        .map((item) => item.validatorIndex)
-        .join(",");
+    if (!allWithdrawals.success) return allWithdrawals;
 
-      const response = await getBeaconChainAxios(
-        MAIN_CHAIN.id,
-      ).get<BCWithdrawalResponse>(
-        `/api/v1/validator/${validatorIndexString}/withdrawals`,
+    const groupedValidators = groupBy(
+      allWithdrawals.data,
+      (w) => w.validatorindex,
+    );
+
+    for (const validatorIndex in groupedValidators) {
+      const validatorWithdrawals = groupedValidators[validatorIndex]!;
+
+      const lastWithdrawal = maxBy(validatorWithdrawals, "withdrawalindex");
+      if (!lastWithdrawal) continue;
+      const lastWithdrawalIndex = Number(lastWithdrawal.withdrawalindex) ?? 0;
+
+      const currentWithdrawal = await WithdrawalModel.findOne({
+        validatorIndex: Number(validatorIndex),
+        status: ACTIVE_STATUS,
+      });
+
+      if (!currentWithdrawal) continue;
+      if (
+        lastWithdrawalIndex === 0 ||
+        lastWithdrawalIndex <= currentWithdrawal.withdrawalIndex
+      )
+        continue;
+
+      await sendEmailNotification(
+        "PECTRA_STAKING_MANAGER_WITHDRAWAL_COMPLETE",
+        currentWithdrawal.email,
       );
 
-      const result = BCWithdrawalResponseSchema.safeParse(response.data);
-
-      if (!result.success) return generateErrorResponse(response.status);
-
-      const groupedValidators = groupWithdrawalsByValidator(response.data);
-
-      for (const validatorIndex in groupedValidators) {
-        const validatorWithdrawals = groupedValidators[validatorIndex];
-        if (!validatorWithdrawals) continue;
-
-        const lastWithdrawal = maxBy(validatorWithdrawals, "withdrawalindex");
-        if (!lastWithdrawal) continue;
-        const lastWithdrawalIndex = Number(lastWithdrawal.withdrawalindex) ?? 0;
-
-        const currentWithdrawal = await WithdrawalModel.findOne({
-          validatorIndex: Number(validatorIndex),
-          status: ACTIVE_STATUS,
-        });
-
-        if (!currentWithdrawal) continue;
-        if (
-          lastWithdrawalIndex === 0 ||
-          lastWithdrawalIndex <= currentWithdrawal.withdrawalIndex
-        )
-          continue;
-
-        await sendEmailNotification(
-          "PECTRA_STAKING_MANAGER_WITHDRAWAL_COMPLETE",
-          currentWithdrawal.email,
-        );
-
-        await WithdrawalModel.updateOne(
-          { validatorIndex },
-          {
-            $set: {
-              withdrawalIndex: lastWithdrawalIndex,
-              status: INACTIVE_STATUS,
-            },
+      await WithdrawalModel.updateOne(
+        { validatorIndex },
+        {
+          $set: {
+            withdrawalIndex: lastWithdrawalIndex,
+            status: INACTIVE_STATUS,
           },
-        );
-      }
+        },
+      );
     }
 
     return {
@@ -88,16 +75,4 @@ export const processWithdrawals = async (): Promise<IResponse> => {
   } catch (error) {
     return generateErrorResponse(error);
   }
-};
-
-const groupWithdrawalsByValidator = (data: BCWithdrawalResponse) => {
-  return groupBy(data.data, "validatorindex");
-};
-
-const chunkWithdrawals = (withdrawals: Withdrawal[]) => {
-  const formatted = withdrawals.map((withdrawal) => ({
-    validatorIndex: withdrawal.validatorIndex,
-  }));
-
-  return chunk(formatted, CHUNK_SIZE);
 };

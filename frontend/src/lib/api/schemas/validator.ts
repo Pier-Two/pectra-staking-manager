@@ -19,6 +19,17 @@ const SubmittedSchema = z.object({
   isConsolidatedValidator: z.boolean().optional(),
 });
 
+const PendingRequestsSchema = z.union([
+  z.object({
+    type: z.literal("consolidation"),
+    amount: z.number(),
+  }),
+  z.object({
+    type: z.literal("deposits"),
+    amount: z.number(),
+  }),
+]);
+
 export const TransactionSchema = z.discriminatedUnion("status", [
   InProgressSchema,
   UpcomingSchema,
@@ -29,14 +40,15 @@ export const ValidatorDataSchema = z.object({
   activeDuration: z.string(),
   activeSince: z.string(),
   balance: z.number(),
+  pendingRequests: z.array(PendingRequestsSchema),
   consolidationTransaction: TransactionSchema.optional(),
   depositTransaction: TransactionSchema.optional(),
   effectiveBalance: z.number(),
-  hasPendingDeposit: z.boolean().default(false),
   numberOfWithdrawals: z.number(),
   publicKey: z.string(),
   status: z.nativeEnum(ValidatorStatus),
   upgradeSubmitted: z.boolean().default(false),
   validatorIndex: z.number(),
   withdrawalAddress: z.string(),
+  pendingUpgrade: z.boolean().optional(),
 });
