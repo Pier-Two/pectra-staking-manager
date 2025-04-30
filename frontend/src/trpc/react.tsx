@@ -62,20 +62,6 @@ export function TRPCReactProvider(props: { children: React.ReactNode }) {
     }),
   );
 
-  // Set up global error handling for rate limit errors
-  queryClient.setDefaultOptions({
-    mutations: {
-      onError: (error: unknown) => {
-        if (error instanceof Error && "data" in error) {
-          const trpcError = error as TRPCClientError<AppRouter>;
-          if (trpcError.data?.code === "TOO_MANY_REQUESTS") {
-            toast.error("Rate limit exceeded. Please try again later.");
-          }
-        }
-      },
-    },
-  });
-
   return (
     <QueryClientProvider client={queryClient}>
       <api.Provider client={trpcClient} queryClient={queryClient}>

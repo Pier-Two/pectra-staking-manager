@@ -5,6 +5,7 @@ import { ConnectedAddress } from "./ConnectedAddress";
 import { DetectedValidators } from "./DetectedValidators";
 import { ValidatorHelp } from "./ValidatorHelp";
 import { ValidatorInformation } from "./ValidatorInformation";
+import { EnterAnimation } from "pec/app/(login-layout)/welcome/_components/enter-animation";
 
 export interface IConnector {
   title?: JSX.Element | string;
@@ -42,13 +43,20 @@ export const Connector: FC<IConnector> = ({
         </div>
       </div>
 
-      <ConnectedAddress address={connectedAddress} />
+      <ConnectedAddress
+        address={connectedAddress}
+        layoutId={"validators-found-connected-address"}
+      />
       <DetectedValidators
         cardTitle="validators detected"
         validators={validators}
       />
-      <ValidatorInformation validators={validators} />
-      <ValidatorHelp />
+      <EnterAnimation>
+        <ValidatorInformation validators={validators} />
+      </EnterAnimation>
+      <EnterAnimation>
+        <ValidatorHelp />
+      </EnterAnimation>
     </>
   );
 };

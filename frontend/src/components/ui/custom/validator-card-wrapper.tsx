@@ -1,19 +1,16 @@
 import { cn } from "pec/lib/utils";
-import {
-  createElement,
-  type DetailedHTMLProps,
-  type HTMLAttributes,
-} from "react";
+import type { ComponentProps } from "react";
+import { motion } from "motion/react";
+import { omit } from "lodash";
 
-export interface ValidatorCardWrapperProps<
-  T extends keyof JSX.IntrinsicElements = "div",
-> extends DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement> {
-  as?: T;
-  children: React.ReactNode;
-  className?: string;
-  clearBackground?: boolean;
-  isSelected?: boolean;
-}
+export type ValidatorCardWrapperProps = (
+  | ({
+      as?: "div";
+    } & ComponentProps<typeof motion.div>)
+  | ({
+      as: "tr";
+    } & ComponentProps<typeof motion.tr>)
+) & { clearBackground?: boolean; isSelected?: boolean };
 
 export const ValidatorCardBorderStyles = ({
   clearBackground,
@@ -37,22 +34,20 @@ export const ValidatorCardBorderStyles = ({
     isHoveringOverride && !clearBackground,
 });
 
-export const ValidatorCardWrapper = <
-  T extends keyof JSX.IntrinsicElements = "div",
->({
-  as,
+export const ValidatorCardWrapper = ({
+  as = "div",
   onClick,
   children,
   className,
   clearBackground,
   isSelected,
   ...props
-}: ValidatorCardWrapperProps<T>) => {
-  return createElement(
-    as ?? "div",
-    {
-      className: cn(
-        "flex w-full h-16 items-center justify-between gap-x-4 rounded-2xl px-4 py-2 text-sm group transition-colors duration-200",
+}: ValidatorCardWrapperProps) => {
+  const MotionComponent = motion[as];
+  return (
+    <MotionComponent
+      className={cn(
+        "group flex h-16 w-full items-center justify-between gap-x-4 rounded-2xl px-4 py-2 text-sm transition-colors duration-200",
         {
           "bg-white dark:bg-gray-900": !clearBackground,
           ...ValidatorCardBorderStyles({
@@ -62,10 +57,11 @@ export const ValidatorCardWrapper = <
           }),
         },
         className,
-      ),
-      onClick,
-      ...props,
-    },
-    children,
+      )}
+      onClick={onClick}
+      {...omit(props, "ref")}
+    >
+      {children}
+    </MotionComponent>
   );
 };
