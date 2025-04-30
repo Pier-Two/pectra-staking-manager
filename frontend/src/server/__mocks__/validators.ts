@@ -1,5 +1,10 @@
-import { ValidatorStatus, type ValidatorDetails } from "pec/types/validator";
+import {
+  VALIDATOR_LIFECYCLE_STATUSES,
+  ValidatorStatus,
+  type ValidatorDetails,
+} from "pec/types/validator";
 import { faker } from "@faker-js/faker";
+import { BCValidatorsData } from "pec/lib/api/schemas/beaconchain/validator";
 
 // Helper function to generate random pending request
 const generatePendingRequest = () => {
@@ -19,6 +24,28 @@ const generatePublicKey = () => {
 const generateWithdrawalAddress = () => {
   const prefix = faker.helpers.arrayElement(["00", "01", "02"]);
   return `0x${prefix}${faker.string.hexadecimal({ length: 40 }).slice(2)}`;
+};
+
+export const buildMockBCValidatorsData = (
+  overrides: Partial<BCValidatorsData> = {},
+): BCValidatorsData => {
+  return {
+    activationeligibilityepoch: faker.number.int({ min: 1, max: 100 }),
+    activationepoch: faker.number.int({ min: 1, max: 100 }),
+    balance: faker.number.int({ min: 1000, max: 50000 }),
+    effectivebalance: faker.number.int({ min: 1000, max: 50000 }),
+    exitepoch: faker.number.int({ min: 100, max: 500 }),
+    lastattestationslot: faker.number.int({ min: 1, max: 10000 }),
+    name: faker.name.firstName() + " Validator",
+    pubkey: generatePublicKey(),
+    slashed: faker.datatype.boolean(),
+    status: faker.helpers.arrayElement(VALIDATOR_LIFECYCLE_STATUSES),
+    validatorindex: faker.number.int({ min: 1, max: 1000000 }),
+    withdrawableepoch: faker.number.int({ min: 200, max: 1000 }),
+    withdrawalcredentials: generateWithdrawalAddress(),
+    total_withdrawals: faker.number.int({ min: 0, max: 100 }),
+    ...overrides,
+  };
 };
 
 // Function to generate validator data using Faker

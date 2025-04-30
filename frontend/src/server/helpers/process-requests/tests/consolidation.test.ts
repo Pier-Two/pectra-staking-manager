@@ -19,14 +19,28 @@ vi.mock("../../beaconchain/getValidators", () => ({
   getValidators: vi.fn(),
 }));
 
+type MockedGetValidators = Mock<typeof getValidators>;
+
 describe("processConsolidations", () => {
   it("should return the correct data", async () => {
+    // const result = vi.fn<typeof getValidators>(getValidators);
+
+    // getValidators.mockReturnValue(
+    //   Promise.resolve({
+    //     success: true,
+    //     data: ["hey"] as any,
+    //   }),
+    // );
     // Define what the mock should return
-    (getValidators as any).mockResolvedValue([
-      { validatorId: "123", status: "active" },
-      { validatorId: "456", status: "inactive" },
-    ]);
-    // console.log(await getValidators([], 1));
+    (getValidators as MockedGetValidators).mockResolvedValue({
+      success: true,
+      data: [
+        { validatorId: "123", status: "active" },
+        { validatorId: "456", status: "inactive" },
+      ] as any,
+    });
+
+    console.log(await getValidators([], 1));
 
     const consolidations = buildMockConsolidation({ status: ACTIVE_STATUS });
     await ConsolidationModel.insertMany(consolidations);

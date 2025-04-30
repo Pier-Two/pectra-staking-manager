@@ -27,6 +27,11 @@ export const createContact = async (
   }
 };
 
+type EmailMetadataTypees =
+  | { type: "consolidation"; targetValidatorIndex: number }
+  | { type: "withdrawal"; targetValidatorIndex: number }
+  | { type: "validatorUpgrade"; targetValidatorIndex: number };
+
 /**
  * Sends an email notification using HubSpot.
  * If the email address is empty or undefined, the function returns early.
@@ -38,6 +43,7 @@ export const createContact = async (
 export const sendEmailNotification = async (
   emailName: EmailNames,
   email: string | undefined,
+  metadata: EmailMetadataTypees,
 ): Promise<void> => {
   if (!email || email.length === 0) return;
 
@@ -46,6 +52,7 @@ export const sendEmailNotification = async (
       emailName,
       metadata: {
         emailAddress: email,
+        ...metadata,
       },
     };
 
