@@ -3,6 +3,12 @@ import { ActiveValidators } from "pec/components/dashboard/validators/ActiveVali
 import { TotalStake } from "pec/components/dashboard/validators/TotalStake";
 import { TotalDailyIncome } from "pec/components/dashboard/validators/TotalDailyIncome";
 import { DashboardValidatorTable } from "pec/components/dashboard/validatorTable/ValidatorTable";
+import type { Metadata } from "next";
+import { title } from "pec/constants/metadata";
+
+export const metadata: Metadata = {
+  title: title("Dashboard"),
+};
 
 const Dashboard = () => (
   <div className="flex w-full flex-col items-center">

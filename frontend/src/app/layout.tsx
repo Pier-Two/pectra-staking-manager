@@ -23,8 +23,8 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Pectra Staking Management",
-  description: "Pectra Staking Management",
+  title: "Pectra Staking Manager",
+  description: "Pectra Staking Manager",
   icons: [{ rel: "icon", url: "/favicon.svg" }],
 };
 
