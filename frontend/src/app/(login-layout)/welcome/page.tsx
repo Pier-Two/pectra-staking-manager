@@ -38,15 +38,15 @@ const Welcome: FC = () => {
 
       <div className="flex w-full flex-col items-center justify-center">
         <div className="flex max-w-[967px] flex-col items-center justify-center gap-y-2">
-          <p className="text-center text-[14px] font-570">DISCLAIMER</p>
-          <p className="text-center text-[14px] font-380">
+          <p className="text-center text-sm font-570">DISCLAIMER</p>
+          <p className="text-center text-sm font-380">
             The Pectra Staking Manager is a non-custodial, self-directed public
             good provided for informational and operational convenience only. It
             facilitates validator-level updates (including credential upgrades
             to support auto-compounding, withdrawal enablement, and validator
             consolidation) on a voluntary basis.
           </p>
-          <p className="text-center text-[14px] font-380">
+          <p className="text-center text-sm font-380">
             Users remain solely responsible for all actions taken using this
             tool. At no point do we control, access, or direct your validator
             operations, private keys, or staked ETH. The tool does not
