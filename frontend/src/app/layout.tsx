@@ -10,6 +10,7 @@ import { cn } from "pec/lib/utils";
 import "pec/styles/globals.css";
 import { TRPCReactProvider } from "pec/trpc/react";
 import { GoogleAnalytics } from "@next/third-parties/google";
+import { Analytics } from "@vercel/analytics/react";
 
 const sans = localFont({
   src: "../fonts/Saans-TRIAL-VF.woff2",
@@ -36,6 +37,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={cn(sans.variable, inter.variable)}>
       <GoogleAnalytics gaId="G-34ZMX7ZL6X" />
+      <Analytics />
       <NetworkContextProvider>
         <TRPCReactProvider>
           <ThemeProvider>
