@@ -6,15 +6,21 @@ export const EnterAnimation = ({
   children,
   delay = 0,
   className,
+  direction = "up",
 }: {
   children: React.ReactNode;
   delay?: number;
   className?: string;
+  direction?: "up" | "down";
 }) => {
   return (
     <motion.div
       className={className}
-      initial={{ opacity: 0, y: 15, filter: "blur(10px)" }}
+      initial={{
+        opacity: 0,
+        y: direction === "up" ? 15 : -15,
+        filter: "blur(10px)",
+      }}
       animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
       transition={{ duration: 0.25, delay, ease: "easeInOut" }}
     >

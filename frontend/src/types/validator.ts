@@ -15,6 +15,7 @@ export type Transaction = z.infer<typeof TransactionSchema>;
 
 export interface IConnectedAddress {
   address: string;
+  layoutId?: string;
 }
 
 export interface IDetectedValidators {
