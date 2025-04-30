@@ -127,7 +127,7 @@ export const ValidatorRow = <T extends TableValidatorDetails>({
       {headers.map((header, index) => {
         // Apply rounded corners only to first and last cells
         const isFirst = index === 0;
-        const isLast = index === headers.length - 1 && !endContent;
+        const isLast = index === headers.length - 1;
 
         return (
           <th
@@ -187,15 +187,13 @@ export const ValidatorRow = <T extends TableValidatorDetails>({
                 </div>
               )}
               {renderCellContent(header)}
+              {endContent && (
+                <div className="ml-auto flex">{endContent(validator)}</div>
+              )}
             </div>
           </th>
         );
       })}
-      {endContent && (
-        <th className={cn("rounded-r-xl bg-inherit px-4 py-2")}>
-          <div className="flex justify-end">{endContent(validator)}</div>
-        </th>
-      )}
     </ValidatorCardWrapper>
   );
 };
