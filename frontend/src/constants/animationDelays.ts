@@ -37,7 +37,7 @@ export const dashboardAnimationDelays = (() => {
       withdrawal: d * 2,
     },
     activeValidators: 0,
-    totalStake: 0,
-    totalDailyIncome: 0,
+    totalStake: d,
+    totalDailyIncome: d * 3,
   };
 })();
