@@ -14,6 +14,11 @@ export const redisCacheMiddleware = ({
   staleTime?: number;
 } = {}) => {
   return createTRPCMiddleware(async ({ input, path, next }) => {
+    // Disable caching in test environment
+    if (process.env.NODE_ENV === "test") {
+      return next(); // Skip cache logic in tests
+    }
+
     // Create a cache key based on the procedure path and input
     const cacheKey = `${keyPrefix}${path}:${JSON.stringify(input)}`;
 

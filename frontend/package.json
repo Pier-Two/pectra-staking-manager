@@ -17,8 +17,8 @@
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "schedule-jobs": "tsx src/app/scripts/scheduleJobs.ts",
-    "test": "pnpm with-env vitest",
-    "with-env": "dotenv -e .env.local --"
+    "test": "pnpm with-env vitest run --config vitest.unit.config.ts",
+    "with-env": "dotenv -e .env.test --"
   },
   "dependencies": {
     "@hookform/resolvers": "^4.1.3",
