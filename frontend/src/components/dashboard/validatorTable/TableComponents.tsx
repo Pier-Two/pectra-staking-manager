@@ -1,12 +1,12 @@
+import { ArrowDownToDot, ArrowUpFromDot, MoreVertical } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { Button } from "pec/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger
-} from "@radix-ui/react-dropdown-menu";
-import { ArrowDownToDot, ArrowUpFromDot, MoreVertical } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { Button } from "pec/components/ui/button";
+} from "pec/components/ui/dropdown-menu";
 import { cn } from "pec/lib/utils";
 import type { ValidatorDetails } from "pec/types/validator";
 import { ValidatorStatus } from "pec/types/validator";
@@ -64,16 +64,16 @@ export const ValidatorRowEndContent = ({
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent
-          className="space-y-4 z-50 rounded-xl p-2 bg-white shadow-lg border border-gray-200 dark:border-gray-500 dark:bg-gray-900 dark:text-white"
+          className="z-50 rounded-xl border border-gray-200 bg-white p-2 shadow-lg dark:border-gray-500 dark:bg-gray-900"
           align="end"
         >
           {dropDownItems.map((item) => (
             <DropdownMenuItem
               key={item.label}
               className={cn(
-                "cursor-pointer flex items-center gap-2",
+                "cursor-pointer flex items-center",
                 {
-                  "hover:cursor-not-allowed text-gray-400 dark:text-gray-600":
+                  "cursor-not-allowed":
                     item.isDisabled,
                 },
               )}
