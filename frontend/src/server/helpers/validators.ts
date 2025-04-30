@@ -1,3 +1,4 @@
+import { GetValidatorsResponse } from "pec/lib/api/schemas/beaconchain/validator";
 import {
   ConsolidationModel,
   DepositModel,
@@ -5,12 +6,11 @@ import {
 } from "pec/lib/database/models";
 import { getValidatorActiveInfo } from "pec/lib/utils/validators/activity";
 import { getValidatorStatus } from "pec/lib/utils/validators/status";
-import { BeaconChainValidatorDetails } from "pec/types/api";
 import { ACTIVE_STATUS } from "pec/types/app";
 import { TransactionStatus, ValidatorDetails } from "pec/types/validator";
 
-export const populateBeaconchainValidatorDetails = async (
-  rawValidatorDetails: BeaconChainValidatorDetails,
+export const populateBeaconchainValidatorResponse = async (
+  rawValidatorDetails: GetValidatorsResponse["data"][0],
 ): Promise<ValidatorDetails> => {
   const { activeSince, activeDuration } = getValidatorActiveInfo(
     rawValidatorDetails.activationepoch,

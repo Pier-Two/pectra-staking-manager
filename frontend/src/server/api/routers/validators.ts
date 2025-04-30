@@ -2,8 +2,6 @@ import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "pec/server/api/trpc";
 import type {
   BeaconChainAllValidatorsResponse,
-  BeaconChainValidatorArrayDetailsResponse,
-  BeaconChainValidatorDetailsResponse,
   BeaconChainValidatorPerformanceResponse,
 } from "pec/types/api";
 import { type ValidatorDetails } from "pec/types/validator";
@@ -13,51 +11,58 @@ import {
   PERFORMANCE_FILTERS,
   VALIDATOR_PERFORMANCE_FILTER_TO_BEACONCHAIN,
 } from "pec/lib/constants/validators/performance";
-import { populateBeaconchainValidatorDetails } from "pec/server/helpers/validators";
+import { populateBeaconchainValidatorResponse } from "pec/server/helpers/validators";
+import { getValidators } from "pec/server/helpers/beaconchain/getValidators";
+import { routeHandler } from "pec/server/helpers/route-errors";
+import { IResponse } from "pec/types/response";
 
 export const validatorRouter = createTRPCRouter({
   getValidators: publicProcedure
     .input(z.object({ address: z.string(), chainId: SupportedChainIdSchema }))
-    .query(async ({ input: { address, chainId: network } }) => {
-      try {
-        const validatorResponse = await getBeaconChainAxios(
-          network,
-        ).get<BeaconChainAllValidatorsResponse>(
-          `/api/v1/validator/withdrawalCredentials/${address}`,
-          {
-            params: {
-              limit: 200,
+    .query(
+      async ({
+        input: { address, chainId: network },
+      }): Promise<ValidatorDetails[]> =>
+        routeHandler(async (): Promise<IResponse<ValidatorDetails[]>> => {
+          const validatorResponse = await getBeaconChainAxios(
+            network,
+          ).get<BeaconChainAllValidatorsResponse>(
+            `/api/v1/validator/withdrawalCredentials/${address}`,
+            {
+              params: {
+                limit: 200,
+              },
             },
-          },
-        );
+          );
 
-        if (!validatorResponse.data || validatorResponse.data.data.length === 0)
-          return [];
+          if (
+            !validatorResponse.data ||
+            validatorResponse.data.data.length === 0
+          )
+            return { success: true, data: [] };
 
-        const validatorIndexes = validatorResponse.data.data.map(
-          (validator) => validator.validatorindex,
-        );
+          const validatorIndexes = validatorResponse.data.data.map(
+            (validator) => validator.validatorindex,
+          );
 
-        const validatorDetails = await getBeaconChainAxios(
-          network,
-        ).get<BeaconChainValidatorArrayDetailsResponse>(
-          `/api/v1/validator/${validatorIndexes.join(",")}`,
-        );
+          const validatorDetails = await getValidators(
+            validatorIndexes,
+            network,
+          );
 
-        if (!validatorDetails.data) return [];
+          if (!validatorDetails.success) return validatorDetails;
 
-        const validators: ValidatorDetails[] = [];
+          const validators: ValidatorDetails[] = [];
 
-        for (const validator of validatorDetails.data.data) {
-          validators.push(await populateBeaconchainValidatorDetails(validator));
-        }
+          for (const validator of validatorDetails.data) {
+            validators.push(
+              await populateBeaconchainValidatorResponse(validator),
+            );
+          }
 
-        return validators;
-      } catch (error) {
-        console.error("Error fetching validators:", error);
-        return [];
-      }
-    }),
+          return { success: true, data: validators };
+        }),
+    ),
 
   getValidatorsPerformanceInWei: publicProcedure
     .input(
@@ -67,8 +72,8 @@ export const validatorRouter = createTRPCRouter({
         filter: z.enum(PERFORMANCE_FILTERS),
       }),
     )
-    .query(async ({ input: { address, chainId: network, filter } }) => {
-      try {
+    .query(async ({ input: { address, chainId: network, filter } }) =>
+      routeHandler(async (): Promise<IResponse<number>> => {
         const validatorResponse = await getBeaconChainAxios(
           network,
         ).get<BeaconChainAllValidatorsResponse>(
@@ -81,7 +86,7 @@ export const validatorRouter = createTRPCRouter({
         );
 
         if (!validatorResponse.data || validatorResponse.data.data.length === 0)
-          return 0;
+          return { success: true, data: 0 };
 
         const validatorIndexes = validatorResponse.data.data.map(
           (validator) => validator.validatorindex,
@@ -93,7 +98,7 @@ export const validatorRouter = createTRPCRouter({
           `/api/v1/validator/${validatorIndexes.join(",")}/execution/performance`,
         );
 
-        if (!validatorPerformances.data) return 0;
+        if (!validatorPerformances.data) return { success: true, data: 0 };
 
         let totalInWei = 0;
 
@@ -111,33 +116,29 @@ export const validatorRouter = createTRPCRouter({
           totalInWei += value;
         }
 
-        return totalInWei;
-      } catch (error) {
-        console.error("Error fetching validators performance:", error);
-        return 0;
-      }
-    }),
+        return { success: true, data: totalInWei };
+      }),
+    ),
 
   getValidatorDetails: publicProcedure
     .input(
       z.object({ searchTerm: z.string(), network: SupportedChainIdSchema }),
     )
-    .query(async ({ input: { searchTerm, network } }) => {
-      try {
-        const { data } = await getBeaconChainAxios(
-          network,
-        ).get<BeaconChainValidatorDetailsResponse>(
-          `/api/v1/validator/${searchTerm}`,
-        );
+    .query(async ({ input: { searchTerm, network } }) =>
+      routeHandler(async (): Promise<IResponse<ValidatorDetails>> => {
+        const validatorResponse = await getValidators([searchTerm], network);
 
-        const validator = data.data;
+        if (!validatorResponse.success) return validatorResponse;
+        const [validator] = validatorResponse.data;
 
-        if (!validator.validatorindex) return "NOT_FOUND";
+        if (!validator) {
+          return { success: false, error: "NOT_FOUND" };
+        }
 
-        return await populateBeaconchainValidatorDetails(validator);
-      } catch (error) {
-        console.error("Error getting validator: ", error);
-        return "NOT_FOUND";
-      }
-    }),
+        const populatedDetails =
+          await populateBeaconchainValidatorResponse(validator);
+
+        return { success: true, data: populatedDetails };
+      }),
+    ),
 });

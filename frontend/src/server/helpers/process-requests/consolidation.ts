@@ -1,5 +1,4 @@
-import axios, { type AxiosResponse } from "axios";
-import { getBeaconChainURL } from "pec/constants/beaconchain";
+import { type AxiosResponse } from "axios";
 import { ConsolidationModel } from "pec/lib/database/models";
 import { generateErrorResponse } from "pec/lib/utils";
 import { ACTIVE_STATUS, INACTIVE_STATUS } from "pec/types/app";
@@ -8,6 +7,8 @@ import { env } from "pec/env";
 import { z } from "zod";
 import { BEACONCHAIN_OK_STATUS } from "pec/lib/constants";
 import { sendEmailNotification } from "pec/lib/services/emailService";
+import { getBeaconChainAxios } from "pec/lib/server/axios";
+import { MAIN_CHAIN } from "pec/lib/constants/contracts";
 
 const ConsolidationDataSchema = z.object({
   activationeligibilityepoch: z.number(),
@@ -62,8 +63,8 @@ export const processConsolidations = async (): Promise<IResponse> => {
         email: usersEmail,
       } = consolidation;
 
-      const response = await axios.get<ConsolidationResponse>(
-        `${getBeaconChainURL()}api/v1/validator/${sourceTargetValidatorIndex}?apikey=${env.BEACONCHAIN_API_KEY}`,
+      const response = await getBeaconChainAxios(MAIN_CHAIN.id).get(
+        `/api/v1/validator/${sourceTargetValidatorIndex}?apikey=${env.BEACONCHAIN_API_KEY}`,
       );
 
       if (!isResponseValid(response)) {

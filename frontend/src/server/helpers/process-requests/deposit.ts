@@ -2,7 +2,11 @@ import { type AxiosResponse } from "axios";
 import { chunk, groupBy } from "lodash";
 import { getBeaconChainURL } from "pec/constants/beaconchain";
 import { env } from "pec/env";
-import { BEACONCHAIN_OK_STATUS, CHUNK_SIZE } from "pec/lib/constants";
+import {
+  DepositResponse,
+  DepositResponseSchema,
+} from "pec/lib/api/schemas/beaconchain/deposits";
+import { CHUNK_SIZE } from "pec/lib/constants";
 import { MAIN_CHAIN } from "pec/lib/constants/contracts";
 import type { Deposit } from "pec/lib/database/classes/deposit";
 import { DepositModel } from "pec/lib/database/models";
@@ -11,30 +15,6 @@ import { sendEmailNotification } from "pec/lib/services/emailService";
 import { generateErrorResponse } from "pec/lib/utils";
 import { ACTIVE_STATUS, INACTIVE_STATUS } from "pec/types/app";
 import type { IResponse } from "pec/types/response";
-import { z } from "zod";
-
-const DepositDataSchema = z.object({
-  amount: z.number(),
-  block_number: z.number(),
-  block_ts: z.number(),
-  from_address: z.string(),
-  merkletree_index: z.string(),
-  publickey: z.string(),
-  removed: z.boolean(),
-  signature: z.string(),
-  tx_hash: z.string(),
-  tx_index: z.number(),
-  tx_input: z.string(),
-  valid_signature: z.boolean(),
-  withdrawal_credentials: z.string(),
-});
-
-const DepositResponseSchema = z.object({
-  status: z.literal(BEACONCHAIN_OK_STATUS),
-  data: z.array(DepositDataSchema),
-});
-
-type DepositResponse = z.infer<typeof DepositResponseSchema>;
 
 export const processDeposits = async (): Promise<IResponse> => {
   try {
@@ -64,7 +44,7 @@ export const processDeposits = async (): Promise<IResponse> => {
       const response = await getBeaconChainAxios(
         MAIN_CHAIN.id,
       ).get<DepositResponse>(
-        `${getBeaconChainURL()}api/v1/validator/${validatorIndexString}/deposits?apikey=${env.BEACONCHAIN_API_KEY}`,
+        `/api/v1/validator/${validatorIndexString}/deposits?apikey=${env.BEACONCHAIN_API_KEY}`,
       );
 
       if (!isResponseValid(response))
