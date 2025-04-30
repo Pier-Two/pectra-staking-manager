@@ -8,11 +8,10 @@ import { EnterSiteButton } from "./_components/enter-site-button";
 import { Headline } from "./_components/headline";
 import { EnterAnimation } from "./_components/enter-animation";
 import { welcomeAnimationDelays } from "pec/constants/animationDelays";
-import { title } from "pec/constants/metadata";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: title("Welcome"),
+  title: "Pectra Staking Manager: This is the Future of Ethereum Staking",
 };
 
 const Welcome: FC = () => {
