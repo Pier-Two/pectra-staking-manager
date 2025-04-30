@@ -1,6 +1,7 @@
+import { readFile } from "fs/promises";
+import { join } from "node:path";
 import { ImageResponse } from "next/og";
 import PectraStakingManager from "./logos/PectraStakingManager";
-
 // Image metadata
 // These must be re-exported from the individual opengraph-image.ts files
 export const size = {
@@ -10,9 +11,9 @@ export const size = {
 export const contentType = "image/png";
 
 export const generateOpenGraphImage = async () => {
-  const fontData = await fetch(
-    new URL("src/fonts/Saans-TRIAL-VF.otf", import.meta.url),
-  ).then((res) => res.arrayBuffer());
+  const saans = await readFile(
+    join(process.cwd(), "src/fonts/Saans-TRIAL-VF.otf"),
+  );
 
   return new ImageResponse(
     (
@@ -71,7 +72,7 @@ export const generateOpenGraphImage = async () => {
       fonts: [
         {
           name: "Saans",
-          data: fontData,
+          data: saans,
           style: "normal",
           weight: 400,
         },
