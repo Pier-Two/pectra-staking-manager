@@ -18,8 +18,8 @@ import { useValidators } from "pec/hooks/useValidators";
 import { useWalletAddress } from "pec/hooks/useWallet";
 import { useSubmitWithdraw } from "pec/hooks/useWithdraw";
 import {
-  WithdrawalFormSchema,
-  type WithdrawalFormType,
+  FormWithdrawalSchema,
+  type FormWithdrawalType,
 } from "pec/lib/api/schemas/withdrawal";
 import { formatAddressToShortenedString } from "pec/lib/utils/address";
 import { type FC, useState } from "react";
@@ -41,8 +41,8 @@ const Withdrawal: FC = () => {
     watch,
     register,
     formState: { isValid, errors },
-  } = useForm<WithdrawalFormType>({
-    resolver: zodResolver(WithdrawalFormSchema),
+  } = useForm<FormWithdrawalType>({
+    resolver: zodResolver(FormWithdrawalSchema),
     defaultValues: { withdrawals: [], email: "" },
     mode: "onChange",
   });
@@ -83,7 +83,7 @@ const Withdrawal: FC = () => {
     setStage({ type: "data-capture" });
   };
 
-  const onSubmit = async (data: WithdrawalFormType) => {
+  const onSubmit = async (data: FormWithdrawalType) => {
     await submitWithdrawals(data.withdrawals, data.email ?? "");
   };
 
@@ -113,7 +113,7 @@ const Withdrawal: FC = () => {
             />
 
             <div className="text-sm font-570">Withdrawal address</div>
-            <div className="text-piertwo-text text-sm">
+            <div className="text-sm text-piertwo-text">
               {formatAddressToShortenedString(walletAddress)}
             </div>
           </div>

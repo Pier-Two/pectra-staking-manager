@@ -4,9 +4,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowDownToDot } from "lucide-react";
 import { useBatchDeposit } from "pec/hooks/useBatchDeposit";
 import {
-  type DepositData,
-  DepositSchema,
-  type DepositType,
+  type FormDepositData,
+  FormDepositSchema,
+  type FormDepositType,
 } from "pec/lib/api/schemas/deposit";
 import { DECIMAL_PLACES } from "pec/lib/constants";
 import { EDistributionMethod } from "pec/types/batch-deposits";
@@ -38,7 +38,7 @@ export const DepositWorkflow = ({
   const { submitBatchDeposit, stage, resetStage } = useBatchDeposit();
   const [showEmail, setShowEmail] = useState(false);
 
-  const initialValues: DepositType = {
+  const initialValues: FormDepositType = {
     deposits: [],
     totalToDistribute: 0,
     distributionMethod: EDistributionMethod.SPLIT,
@@ -52,8 +52,8 @@ export const DepositWorkflow = ({
     setValue,
     reset,
     formState: { isValid, errors },
-  } = useForm<DepositType>({
-    resolver: zodResolver(DepositSchema(balance)),
+  } = useForm<FormDepositType>({
+    resolver: zodResolver(FormDepositSchema(balance)),
     defaultValues: initialValues,
     mode: "onChange",
   });
@@ -102,7 +102,7 @@ export const DepositWorkflow = ({
   };
 
   const updateDepositsArrayWithSplitAmount = (
-    deposits: DepositData[],
+    deposits: FormDepositData[],
     totalToDistribute: number,
   ) => {
     const splitAmount = totalToDistribute / deposits.length;
@@ -147,7 +147,7 @@ export const DepositWorkflow = ({
     resetStage();
   };
 
-  const onSubmit = async (data: DepositType) => {
+  const onSubmit = async (data: FormDepositType) => {
     const filteredData = data.deposits.filter((deposit) => deposit.amount > 0);
     await submitBatchDeposit(filteredData, totalAllocated, data.email);
   };

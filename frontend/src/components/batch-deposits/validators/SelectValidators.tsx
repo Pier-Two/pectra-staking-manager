@@ -2,7 +2,10 @@ import {
   DEPOSIT_COLUMN_HEADERS,
   DepositTableValidatorDetails,
 } from "pec/constants/columnHeaders";
-import type { DepositData, DepositType } from "pec/lib/api/schemas/deposit";
+import type {
+  FormDepositData,
+  FormDepositType,
+} from "pec/lib/api/schemas/deposit";
 import { EDistributionMethod } from "pec/types/batch-deposits";
 import { type ValidatorDetails } from "pec/types/validator";
 import { useCallback, useMemo } from "react";
@@ -15,11 +18,11 @@ export interface ISelectValidatorsProps {
   clearSelectedValidators: () => void;
   distributionMethod: EDistributionMethod;
   handleValidatorSelect: (validator: ValidatorDetails) => void;
-  deposits: DepositData[];
+  deposits: FormDepositData[];
   totalToDistribute: number;
   validators: ValidatorDetails[];
-  errors: FieldErrors<DepositType>;
-  register: UseFormRegister<DepositType>;
+  errors: FieldErrors<FormDepositType>;
+  register: UseFormRegister<FormDepositType>;
 }
 
 export const SelectValidators = ({

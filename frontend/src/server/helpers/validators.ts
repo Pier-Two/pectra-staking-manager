@@ -26,7 +26,6 @@ export const populateBeaconchainValidatorResponse = async (
     numberOfWithdrawals: rawValidatorDetails.total_withdrawals,
     activeSince,
     activeDuration,
-    withdrawalTransactions: [],
     consolidationTransaction: undefined,
     depositTransaction: undefined,
     upgradeSubmitted: false,
@@ -62,7 +61,7 @@ export const populateBeaconchainValidatorResponse = async (
     ],
   );
 
-  if (withdrawTx) validatorDetails.withdrawalTransactions = withdrawTx;
+  // if (withdrawTx) validatorDetails.withdrawalTransactions = withdrawTx;
 
   if (upgradeTx) validatorDetails.upgradeSubmitted = true;
 

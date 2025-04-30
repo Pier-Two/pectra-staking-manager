@@ -1,7 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { toast } from "pec/components/ui/Toast";
-import { type WithdrawalFormType } from "pec/lib/api/schemas/withdrawal";
-import { parseError } from "pec/lib/utils/parseError";
+import { type FormWithdrawalType } from "pec/lib/api/schemas/withdrawal";
 import { client } from "pec/lib/wallet/client";
 import { api } from "pec/trpc/react";
 import type { TxHashRecord, WithdrawWorkflowStages } from "pec/types/withdraw";
@@ -49,7 +48,7 @@ export const useSubmitWithdraw = () => {
     api.storeEmailRequest.storeWithdrawalRequest.useMutation();
 
   const submitWithdrawals = async (
-    withdrawals: WithdrawalFormType["withdrawals"],
+    withdrawals: FormWithdrawalType["withdrawals"],
     email: string,
   ) => {
     if (!contracts || !rpcClient || !account || !withdrawalFee) {
@@ -114,20 +113,20 @@ export const useSubmitWithdraw = () => {
           txHashes,
         });
 
-        const result = await saveWithdrawalToDatabase({
-          requestData: {
+        // Emails get their own try-catch, because they are non-critical errors that we are kinda ignoring so the flow doesn't break for the user
+        try {
+          await saveWithdrawalToDatabase({
             validatorIndex: withdrawal.validator.validatorIndex,
             amount: withdrawal.amount,
             txHash: txHash.transactionHash,
             email,
-          },
-          network: chain.id,
-        });
-
-        if (!result.success) {
+            network: chain.id,
+          });
+        } catch (e) {
+          console.error("Error saving withdrawal to database", e);
           toast({
-            title: "Error withdrawing",
-            description: result.error,
+            title:
+              "Error saving withdrawal to database, emails may not be sent",
             variant: "error",
           });
 

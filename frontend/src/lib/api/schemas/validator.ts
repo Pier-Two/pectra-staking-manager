@@ -1,6 +1,5 @@
 import { TransactionStatus, ValidatorStatus } from "pec/types/validator";
 import { z } from "zod";
-import { DatabaseWithdrawalSchema } from "./database/withdrawal";
 
 const InProgressSchema = z.object({
   status: z.literal(TransactionStatus.IN_PROGRESS),
@@ -40,5 +39,4 @@ export const ValidatorDataSchema = z.object({
   upgradeSubmitted: z.boolean().default(false),
   validatorIndex: z.number(),
   withdrawalAddress: z.string(),
-  withdrawalTransactions: z.array(DatabaseWithdrawalSchema),
 });

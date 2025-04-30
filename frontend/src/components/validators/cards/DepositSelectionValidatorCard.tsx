@@ -4,7 +4,7 @@ import { FaCircleCheck, FaCircleMinus, FaCirclePlus } from "react-icons/fa6";
 import Image from "next/image";
 import { ValidatorCardWrapper } from "pec/components/ui/custom/validator-card-wrapper";
 import { Input } from "pec/components/ui/input";
-import type { DepositType } from "pec/lib/api/schemas/deposit";
+import type { FormDepositType } from "pec/lib/api/schemas/deposit";
 import { DECIMAL_PLACES } from "pec/lib/constants";
 import { displayedEthAmount } from "pec/lib/utils/validators/balance";
 import { EDistributionMethod } from "pec/types/batch-deposits";
@@ -22,8 +22,8 @@ export interface IDepositSelectionValidatorCard {
   totalAllocated: number;
   totalToDistribute: number;
   validator: ValidatorDetails;
-  errors: FieldErrors<DepositType>;
-  register: UseFormRegister<DepositType>;
+  errors: FieldErrors<FormDepositType>;
+  register: UseFormRegister<FormDepositType>;
 }
 
 export const DepositSelectionValidatorCard = ({

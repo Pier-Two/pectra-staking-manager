@@ -17,38 +17,34 @@ import { getValidatorsForWithdrawAddress } from "pec/server/helpers/beaconchain/
 export const validatorRouter = createTRPCRouter({
   getValidators: publicProcedure
     .input(z.object({ address: z.string(), chainId: SupportedChainIdSchema }))
-    .query(
-      async ({
-        input: { address, chainId: network },
-      }): Promise<ValidatorDetails[]> =>
-        routeHandler(async (): Promise<IResponse<ValidatorDetails[]>> => {
-          const withdrawAddressValidators =
-            await getValidatorsForWithdrawAddress(address, network);
+    .query(async ({ input: { address, chainId: network } }) =>
+      routeHandler(async (): Promise<IResponse<ValidatorDetails[]>> => {
+        const withdrawAddressValidators = await getValidatorsForWithdrawAddress(
+          address,
+          network,
+        );
 
-          if (!withdrawAddressValidators.success)
-            return withdrawAddressValidators;
+        if (!withdrawAddressValidators.success)
+          return withdrawAddressValidators;
 
-          const validatorIndexes = withdrawAddressValidators.data.map(
-            (validator) => validator.validatorindex,
+        const validatorIndexes = withdrawAddressValidators.data.map(
+          (validator) => validator.validatorindex,
+        );
+
+        const validatorDetails = await getValidators(validatorIndexes, network);
+
+        if (!validatorDetails.success) return validatorDetails;
+
+        const validators: ValidatorDetails[] = [];
+
+        for (const validator of validatorDetails.data) {
+          validators.push(
+            await populateBeaconchainValidatorResponse(validator),
           );
+        }
 
-          const validatorDetails = await getValidators(
-            validatorIndexes,
-            network,
-          );
-
-          if (!validatorDetails.success) return validatorDetails;
-
-          const validators: ValidatorDetails[] = [];
-
-          for (const validator of validatorDetails.data) {
-            validators.push(
-              await populateBeaconchainValidatorResponse(validator),
-            );
-          }
-
-          return { success: true, data: validators };
-        }),
+        return { success: true, data: validators };
+      }),
     ),
 
   getValidatorsPerformanceInWei: publicProcedure

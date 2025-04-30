@@ -1,5 +1,8 @@
 import { modelOptions, prop } from "@typegoose/typegoose";
-import { DatabaseConsolidationType } from "pec/lib/api/schemas/database/consolidation";
+import {
+  SUPPORTED_NETWORKS_IDS,
+  type SupportedNetworkIds,
+} from "pec/constants/chain";
 import { DatabaseDocumentStatuses } from "pec/types/app";
 @modelOptions({
   schemaOptions: {
@@ -8,7 +11,7 @@ import { DatabaseDocumentStatuses } from "pec/types/app";
     collection: "consolidations",
   },
 })
-export class Consolidation implements DatabaseConsolidationType {
+export class Consolidation {
   @prop()
   public email?: string;
 
@@ -23,4 +26,7 @@ export class Consolidation implements DatabaseConsolidationType {
 
   @prop({ required: true })
   public txHash!: string;
+
+  @prop({ required: true, enum: SUPPORTED_NETWORKS_IDS })
+  public networkId!: SupportedNetworkIds;
 }

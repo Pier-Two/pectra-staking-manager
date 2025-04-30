@@ -4,7 +4,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { HiMail } from "react-icons/hi";
 import { Input } from "pec/components/ui/input";
 import { Switch } from "pec/components/ui/switch";
-import { type DepositType } from "pec/lib/api/schemas/deposit";
+import { type FormDepositType } from "pec/lib/api/schemas/deposit";
 import { type FC } from "react";
 import { type FieldErrors } from "react-hook-form";
 
@@ -13,7 +13,7 @@ export interface IConsolidationEmail {
   cardTitle: string;
   summaryEmail: string;
   setSummaryEmail: (email: string) => void;
-  errors?: FieldErrors<DepositType>;
+  errors?: FieldErrors<FormDepositType>;
   showEmail: boolean;
   setShowEmail: (showEmail: boolean) => void;
 }
@@ -42,7 +42,7 @@ export const Email: FC<IConsolidationEmail> = (props) => {
           <div className="flex-col items-center">
             <div className="text-md font-570">{cardTitle}</div>
 
-            <div className="text-piertwo-text text-sm">{cardText}</div>
+            <div className="text-sm text-piertwo-text">{cardText}</div>
           </div>
         </div>
 

@@ -9,6 +9,7 @@ import { BEACONCHAIN_OK_STATUS } from "pec/lib/constants";
 import { sendEmailNotification } from "pec/lib/services/emailService";
 import { getBeaconChainAxios } from "pec/lib/server/axios";
 import { MAIN_CHAIN } from "pec/lib/constants/contracts";
+import { getValidators } from "../beaconchain/getValidators";
 
 const ConsolidationDataSchema = z.object({
   activationeligibilityepoch: z.number(),
@@ -62,6 +63,11 @@ export const processConsolidations = async (): Promise<IResponse> => {
         txHash,
         email: usersEmail,
       } = consolidation;
+
+      const response = await getValidators(
+        [sourceTargetValidatorIndex],
+        MAIN_CHAIN.id,
+      );
 
       const response = await getBeaconChainAxios(MAIN_CHAIN.id).get(
         `/api/v1/validator/${sourceTargetValidatorIndex}?apikey=${env.BEACONCHAIN_API_KEY}`,

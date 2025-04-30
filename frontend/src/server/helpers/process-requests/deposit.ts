@@ -1,6 +1,5 @@
 import { type AxiosResponse } from "axios";
 import { chunk, groupBy } from "lodash";
-import { getBeaconChainURL } from "pec/constants/beaconchain";
 import { env } from "pec/env";
 import {
   BCDepositResponse,

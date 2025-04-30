@@ -1,5 +1,8 @@
 import { modelOptions, prop } from "@typegoose/typegoose";
-import { DatabaseWithdrawalType } from "pec/lib/api/schemas/database/withdrawal";
+import {
+  SUPPORTED_NETWORKS_IDS,
+  type SupportedNetworkIds,
+} from "pec/constants/chain";
 import { DatabaseDocumentStatuses } from "pec/types/app";
 @modelOptions({
   schemaOptions: {
@@ -8,7 +11,7 @@ import { DatabaseDocumentStatuses } from "pec/types/app";
     collection: "withdrawals",
   },
 })
-export class Withdrawal implements DatabaseWithdrawalType {
+export class Withdrawal {
   @prop()
   public email?: string;
 
@@ -26,4 +29,7 @@ export class Withdrawal implements DatabaseWithdrawalType {
 
   @prop({ required: true })
   public txHash!: string;
+
+  @prop({ required: true, enum: SUPPORTED_NETWORKS_IDS })
+  public networkId!: SupportedNetworkIds;
 }
