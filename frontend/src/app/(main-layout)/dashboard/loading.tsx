@@ -2,7 +2,7 @@ import { Skeleton } from "pec/components/ui/skeleton";
 
 const DashboardLoading = () => {
   return (
-    <div className="w-full space-y-8 p-4 dark:text-white md:p-6 lg:p-8">
+    <div className="w-full space-y-8 dark:text-white">
       {/* Tools Section */}
       <SectionTitle title="Tools" />
       <GridContainer>

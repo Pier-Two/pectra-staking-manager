@@ -1,5 +1,4 @@
 import type { ValidatorDetails, ValidatorStatus } from "pec/types/validator";
-import type { IHeaderConfig } from "pec/types/validatorTable";
 import { useMemo, useState } from "react";
 import { useSearch } from "./useSearch";
 
@@ -17,9 +16,6 @@ export function useDashboardValidatorTable({
   });
 
   const [statusFilter, setStatusFilter] = useState<string[]>([]);
-  const [filterTableOptions, setFilterTableOptions] = useState<
-    IHeaderConfig["label"][]
-  >([]);
 
   const statusFilteredData = useMemo(() => {
     if (statusFilter.length === 0) return filteredData;
@@ -41,15 +37,8 @@ export function useDashboardValidatorTable({
     else setStatusFilter([...statusFilter, status]);
   };
 
-  const handleFilterTableOptionsChange = (option: IHeaderConfig["label"]) => {
-    if (filterTableOptions.includes(option))
-      setFilterTableOptions(filterTableOptions.filter((v) => v !== option));
-    else setFilterTableOptions([...filterTableOptions, option]);
-  };
-
   return {
     // State
-    filterTableOptions,
     searchTerm,
     statusFilter,
     filteredData: statusFilteredData,
@@ -58,6 +47,5 @@ export function useDashboardValidatorTable({
     handleStatusFilterChange,
     handleSearchChange: setSearchTerm,
     getValidatorCount,
-    handleFilterTableOptionsChange,
   };
 }

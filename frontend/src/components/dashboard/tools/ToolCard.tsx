@@ -1,6 +1,5 @@
 "use client";
 
-import clsx from "clsx";
 import {
   ArrowDownToDot,
   ArrowRight,
@@ -9,6 +8,7 @@ import {
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { PrimaryButton } from "pec/components/ui/custom/PrimaryButton";
+import { cn } from "pec/lib/utils";
 import { EIconPosition } from "pec/types/components";
 
 type ToolCardProps = {
@@ -61,23 +61,22 @@ export const ToolCard = ({ preset }: ToolCardProps) => {
       onClick={handleRedirect}
     >
       <div
-        className={clsx(
+        className={cn(
           "flex flex-row items-center gap-x-2 text-primary-dark dark:text-indigo-200",
           iconHover,
         )}
       >
         {icon}
-        <p className="text-[24px] font-670 leading-[24px]">{title}</p>
+        <p className="text-2xl font-670 leading-[24px]">{title}</p>
       </div>
 
-      <div className="flex flex-grow flex-col justify-end gap-y-4">
-        <p className="text-[16px] font-380 leading-[16px]">{description}</p>
+      <div className="flex flex-grow flex-col justify-end gap-y-6">
+        <p className="h-12 text-base font-380 leading-[20px]">{description}</p>
 
         <PrimaryButton
-          className="w-fit border-white text-[13px] font-570 leading-[13px] backdrop-blur-xl group-hover:border group-hover:bg-white/10 group-hover:text-white dark:group-hover:bg-white dark:group-hover:text-indigo-800"
+          className="w-fit border-white text-xs font-570 leading-[13px] backdrop-blur-xl group-hover:border group-hover:bg-white/10 group-hover:text-white dark:group-hover:bg-white dark:group-hover:text-indigo-800"
           label={buttonLabel}
-          // TODO: Implement animation for arrow
-          icon={<ArrowRight />}
+          icon={<ArrowRight className="-me-1 ms-2 opacity-60 transition-transform group-hover:translate-x-0.5" />}
           iconPosition={EIconPosition.RIGHT}
           onClick={handleRedirect}
           disabled={false}

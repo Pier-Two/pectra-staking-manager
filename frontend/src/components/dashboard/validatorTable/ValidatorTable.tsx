@@ -1,12 +1,12 @@
 "use client";
 
-import { useDashboardValidatorTable } from "pec/hooks/useDashboardValidatorTable";
-import type { FC } from "react";
-import { TableFilters } from "./TableFilters";
-import { DASHBOARD_VALIDATOR_COLUMN_HEADERS } from "pec/constants/columnHeaders";
 import { ValidatorTable } from "pec/components/ui/table/ValidatorTable";
+import { DASHBOARD_VALIDATOR_COLUMN_HEADERS } from "pec/constants/columnHeaders";
+import { useDashboardValidatorTable } from "pec/hooks/useDashboardValidatorTable";
+import type { ValidatorDetails, ValidatorStatus } from "pec/types/validator";
+import type { FC } from "react";
 import { ValidatorRowEndContent } from "./TableComponents";
-import { ValidatorDetails, ValidatorStatus } from "pec/types/validator";
+import { TableFilters } from "./TableFilters";
 
 interface IGenericValidators {
   data: ValidatorDetails[];
@@ -17,11 +17,9 @@ export const DashboardValidatorTable: FC<IGenericValidators> = (props) => {
   const {
     searchTerm,
     statusFilter,
-    filterTableOptions,
     filteredData,
     handleStatusFilterChange,
     handleSearchChange,
-    handleFilterTableOptionsChange,
     getValidatorCount,
   } = useDashboardValidatorTable(props);
 
@@ -50,8 +48,6 @@ export const DashboardValidatorTable: FC<IGenericValidators> = (props) => {
             handleStatusFilterChange(status);
             setCurrentPage(1);
           }}
-          filterTableOptions={filterTableOptions}
-          onFilterTableOptionsChange={handleFilterTableOptionsChange}
           getValidatorCount={getValidatorCount}
         />
       )}
