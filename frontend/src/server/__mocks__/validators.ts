@@ -1,4 +1,55 @@
 import { ValidatorStatus, type ValidatorDetails } from "pec/types/validator";
+import { faker } from "@faker-js/faker";
+
+// Helper function to generate random pending request
+const generatePendingRequest = () => {
+  const requestType = faker.helpers.arrayElement(["consolidation", "deposits"]);
+  return {
+    type: requestType,
+    amount: faker.number.int({ min: 1, max: 10000 }), // Random number between 1 and 10000
+  };
+};
+
+// Helper function to generate a public key in the required format
+const generatePublicKey = () => {
+  return `0x${faker.string.hexadecimal({ length: 64 }).slice(2)}`;
+};
+
+// Helper function to generate a withdrawal address in the required format
+const generateWithdrawalAddress = () => {
+  const prefix = faker.helpers.arrayElement(["00", "01", "02"]);
+  return `0x${prefix}${faker.string.hexadecimal({ length: 40 }).slice(2)}`;
+};
+
+// Function to generate validator data using Faker
+export const buildValidatorDetails = (
+  overrides: Partial<ValidatorDetails> = {},
+): ValidatorDetails => {
+  return {
+    activeDuration: `${faker.number.int({ min: 1, max: 100 })} days`,
+    activeSince: faker.date.past().toISOString(),
+    balance: faker.number.int({ min: 0, max: 10000 }),
+    pendingRequests: [generatePendingRequest(), generatePendingRequest()],
+    effectiveBalance: faker.number.int({ min: 0, max: 10000 }),
+    numberOfWithdrawals: faker.number.int({ min: 0, max: 100 }),
+    publicKey: generatePublicKey(),
+    status: faker.helpers.arrayElement(Object.values(ValidatorStatus)),
+    validatorIndex: faker.number.int({ min: 1, max: 1000000 }),
+    withdrawalAddress: generateWithdrawalAddress(),
+    pendingUpgrade: faker.datatype.boolean(),
+    ...overrides,
+  };
+};
+
+export const buildValidatorDetailsArray = (
+  length = 10,
+  overrides: Partial<ValidatorDetails>[] = [],
+): ValidatorDetails[] => {
+  return Array.from({ length }, (_, i) => {
+    const override = overrides[i] || {};
+    return buildValidatorDetails(override);
+  });
+};
 
 export const MOCK_VALIDATORS: ValidatorDetails[] = [
   {
