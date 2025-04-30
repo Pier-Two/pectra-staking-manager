@@ -10,11 +10,6 @@ import {
   DepositModel,
   WithdrawalModel,
 } from "pec/lib/database/models";
-import { getBeaconChainAxios } from "pec/lib/server/axios";
-import {
-  type BeaconchainWithdrawalResponse,
-  isBeaconchainWithdrawalResponseValid,
-} from "pec/lib/api/schemas/beaconchain";
 import { StoreWithdrawalRequestSchema } from "pec/lib/api/schemas/withdrawal";
 import { ACTIVE_STATUS } from "pec/types/app";
 import { maxBy } from "lodash";
@@ -24,6 +19,7 @@ import { DatabaseDepositSchema } from "pec/lib/api/schemas/database/deposit";
 import { createContact } from "pec/lib/services/emailService";
 import { Ratelimit } from "@upstash/ratelimit";
 import { EmailSchema } from "pec/lib/api/schemas/email";
+import { getWithdrawals } from "pec/server/helpers/beaconchain/getWithdrawals";
 
 export const storeEmailRequestRouter = createTRPCRouter({
   storeWithdrawalRequest: publicProcedure
@@ -40,25 +36,20 @@ export const storeEmailRequestRouter = createTRPCRouter({
       const { requestData, network } = input;
 
       try {
-        const response = await getBeaconChainAxios(
+        const response = await getWithdrawals(
+          requestData.validatorIndex,
           network,
-        ).get<BeaconchainWithdrawalResponse>(
-          `/api/v1/validator/${requestData.validatorIndex}/withdrawals`,
         );
 
-        const beaconchainResonseValid =
-          isBeaconchainWithdrawalResponseValid(response);
-
-        let withdrawalIndex = 0;
-        if (beaconchainResonseValid) {
-          const lastWithdrawal = maxBy(response.data.data, "withdrawalindex");
-
-          withdrawalIndex = lastWithdrawal?.withdrawalindex ?? 0;
-        } else {
+        if (!response.success) {
           console.error(
-            `Invalid response from BeaconChain API: ${response.status}`,
+            `Error fetching withdrawals from BeaconChain API: ${response.error}`,
           );
+          return generateErrorResponse(response.error);
         }
+
+        const lastWithdrawal = maxBy(response.data, "withdrawalindex");
+        const withdrawalIndex = lastWithdrawal?.withdrawalindex ?? 0;
 
         await WithdrawalModel.create({
           ...requestData,

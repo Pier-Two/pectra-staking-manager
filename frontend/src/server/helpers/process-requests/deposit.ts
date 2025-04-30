@@ -3,8 +3,8 @@ import { chunk, groupBy } from "lodash";
 import { getBeaconChainURL } from "pec/constants/beaconchain";
 import { env } from "pec/env";
 import {
-  DepositResponse,
-  DepositResponseSchema,
+  BCDepositResponse,
+  BCDepositResponseSchema,
 } from "pec/lib/api/schemas/beaconchain/deposits";
 import { CHUNK_SIZE } from "pec/lib/constants";
 import { MAIN_CHAIN } from "pec/lib/constants/contracts";
@@ -43,7 +43,7 @@ export const processDeposits = async (): Promise<IResponse> => {
 
       const response = await getBeaconChainAxios(
         MAIN_CHAIN.id,
-      ).get<DepositResponse>(
+      ).get<BCDepositResponse>(
         `/api/v1/validator/${validatorIndexString}/deposits?apikey=${env.BEACONCHAIN_API_KEY}`,
       );
 
@@ -102,7 +102,7 @@ export const processDeposits = async (): Promise<IResponse> => {
   }
 };
 
-const groupDepositsByValidator = (data: DepositResponse) => {
+const groupDepositsByValidator = (data: BCDepositResponse) => {
   return groupBy(data.data, "validatorindex");
 };
 
@@ -114,8 +114,10 @@ const chunkDeposits = (deposits: Deposit[]) => {
   return chunk(formatted, CHUNK_SIZE);
 };
 
-const isResponseValid = (response: AxiosResponse<DepositResponse>): boolean => {
+const isResponseValid = (
+  response: AxiosResponse<BCDepositResponse>,
+): boolean => {
   if (!response || response.status !== 200) return false;
-  const result = DepositResponseSchema.safeParse(response.data);
+  const result = BCDepositResponseSchema.safeParse(response.data);
   return result.success;
 };

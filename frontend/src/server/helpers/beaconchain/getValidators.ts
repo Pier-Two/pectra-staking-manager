@@ -1,7 +1,7 @@
 import { SupportedNetworkIds } from "pec/constants/chain";
 import {
-  GetValidatorsResponse,
-  GetValidatorsResponseSchema,
+  BCValidatorsResponse,
+  BCValidatorsResponseSchema,
 } from "pec/lib/api/schemas/beaconchain/validator";
 import { IResponse } from "pec/types/response";
 import { executeBeaconchainTypesafeRequest } from "./generics";
@@ -16,11 +16,11 @@ import { executeBeaconchainTypesafeRequest } from "./generics";
 export const getValidators = async (
   validators: Array<number | string>,
   network: SupportedNetworkIds,
-): Promise<IResponse<GetValidatorsResponse["data"]>> => {
+): Promise<IResponse<BCValidatorsResponse["data"]>> => {
   const url = `/api/v1/validator/${validators.join(",")}`;
 
   return executeBeaconchainTypesafeRequest(
-    GetValidatorsResponseSchema,
+    BCValidatorsResponseSchema,
     url,
     network,
   );

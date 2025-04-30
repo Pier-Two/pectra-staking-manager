@@ -2,7 +2,7 @@ import { z } from "zod";
 import { buildBeaconchainResponseSchema } from "./generic";
 import { VALIDATOR_LIFECYCLE_STATUSES } from "pec/types/validator";
 
-export const GetValidatorsDataSchema = z.array(
+export const BCValidatorsDataSchema = z.array(
   z.object({
     activationeligibilityepoch: z.number(),
     activationepoch: z.number(),
@@ -21,13 +21,13 @@ export const GetValidatorsDataSchema = z.array(
   }),
 );
 
-export const GetValidatorsResponseSchema = buildBeaconchainResponseSchema(
-  GetValidatorsDataSchema,
+export const BCValidatorsResponseSchema = buildBeaconchainResponseSchema(
+  BCValidatorsDataSchema,
 );
 
-export type GetValidatorsResponse = z.infer<typeof GetValidatorsResponseSchema>;
+export type BCValidatorsResponse = z.infer<typeof BCValidatorsResponseSchema>;
 
-export const GetValidatorsForWithdrawAddressSchema = z.array(
+export const BCValidatorsForWithdrawAddressSchema = z.array(
   z.object({
     publickey: z.string(),
     valid_signature: z.boolean(),
@@ -35,9 +35,9 @@ export const GetValidatorsForWithdrawAddressSchema = z.array(
   }),
 );
 
-export const GetValidatorsForWithdrawAddressResponseSchema =
-  buildBeaconchainResponseSchema(GetValidatorsForWithdrawAddressSchema);
+export const BCValidatorsForWithdrawAddressResponseSchema =
+  buildBeaconchainResponseSchema(BCValidatorsForWithdrawAddressSchema);
 
-export type GetValidatorsForWithdrawAddressResponse = z.infer<
-  typeof GetValidatorsForWithdrawAddressResponseSchema
+export type BCValidatorsForWithdrawAddressResponse = z.infer<
+  typeof BCValidatorsForWithdrawAddressResponseSchema
 >;

@@ -1,7 +1,7 @@
 import { BEACONCHAIN_OK_STATUS } from "pec/lib/constants";
 import { z } from "zod";
 
-export const DepositDataSchema = z.object({
+export const BCDepositDataSchema = z.object({
   amount: z.number(),
   block_number: z.number(),
   block_ts: z.number(),
@@ -17,9 +17,9 @@ export const DepositDataSchema = z.object({
   withdrawal_credentials: z.string(),
 });
 
-export const DepositResponseSchema = z.object({
+export const BCDepositResponseSchema = z.object({
   status: z.literal(BEACONCHAIN_OK_STATUS),
-  data: z.array(DepositDataSchema),
+  data: z.array(BCDepositDataSchema),
 });
 
-export type DepositResponse = z.infer<typeof DepositResponseSchema>;
+export type BCDepositResponse = z.infer<typeof BCDepositResponseSchema>;

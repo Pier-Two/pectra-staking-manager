@@ -9,8 +9,8 @@ import { sendEmailNotification } from "pec/lib/services/emailService";
 import { getBeaconChainAxios } from "pec/lib/server/axios";
 import { MAIN_CHAIN } from "pec/lib/constants/contracts";
 import {
-  WithdrawalResponse,
-  WithdrawalResponseSchema,
+  BCWithdrawalResponse,
+  BCWithdrawalResponseSchema,
 } from "pec/lib/api/schemas/beaconchain/withdrawals";
 
 export const processWithdrawals = async (): Promise<IResponse> => {
@@ -40,11 +40,11 @@ export const processWithdrawals = async (): Promise<IResponse> => {
 
       const response = await getBeaconChainAxios(
         MAIN_CHAIN.id,
-      ).get<WithdrawalResponse>(
+      ).get<BCWithdrawalResponse>(
         `/api/v1/validator/${validatorIndexString}/withdrawals`,
       );
 
-      const result = WithdrawalResponseSchema.safeParse(response.data);
+      const result = BCWithdrawalResponseSchema.safeParse(response.data);
 
       if (!result.success) return generateErrorResponse(response.status);
 
@@ -103,7 +103,7 @@ export const processWithdrawals = async (): Promise<IResponse> => {
   }
 };
 
-const groupWithdrawalsByValidator = (data: WithdrawalResponse) => {
+const groupWithdrawalsByValidator = (data: BCWithdrawalResponse) => {
   return groupBy(data.data, "validatorindex");
 };
 
