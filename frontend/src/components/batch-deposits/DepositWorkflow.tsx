@@ -2,6 +2,10 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowDownToDot } from "lucide-react";
+import {
+  type DepositTableValidatorDetails,
+  SUBMITTING_DEPOSIT_COLUMN_HEADERS,
+} from "pec/constants/columnHeaders";
 import { useBatchDeposit } from "pec/hooks/useBatchDeposit";
 import {
   type DepositData,
@@ -14,17 +18,15 @@ import type { ValidatorDetails } from "pec/types/validator";
 import { useEffect, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { Email } from "../consolidation/summary/Email";
+import { DisplayAmount } from "../ui/table/TableComponents";
+import { ValidatorTable } from "../ui/table/ValidatorTable";
+import { DepositSignDataCard } from "../validators/cards/DepositSignDataCard";
+import { DistributionInformation } from "./distribution/DistributionInformation";
 import { DistributionMethod } from "./distribution/DistributionMethod";
 import { SignatureDetails } from "./SignatureDetails";
 import { SelectValidators } from "./validators/SelectValidators";
-import { ValidatorTable } from "../ui/table/ValidatorTable";
-import {
-  DepositTableValidatorDetails,
-  SUBMITTING_DEPOSIT_COLUMN_HEADERS,
-} from "pec/constants/columnHeaders";
-import { DisplayAmount } from "../ui/table/TableComponents";
-import { DistributionInformation } from "./distribution/DistributionInformation";
-import { DepositSignDataCard } from "../validators/cards/DepositSignDataCard";
+import { sumBy } from "lodash";
+import { MAX_VALIDATOR_BALANCE } from "pec/constants/deposit";
 
 export interface IDepositWorkflowProps {
   validators: ValidatorDetails[];
@@ -37,6 +39,11 @@ export const DepositWorkflow = ({
 }: IDepositWorkflowProps) => {
   const { submitBatchDeposit, stage, resetStage } = useBatchDeposit();
   const [showEmail, setShowEmail] = useState(false);
+
+  const totalValidatorBalance = sumBy(validators, "balance");
+
+  const maxTotalRemaining =
+    validators.length * MAX_VALIDATOR_BALANCE - totalValidatorBalance;
 
   const initialValues: DepositType = {
     deposits: [],
@@ -53,7 +60,7 @@ export const DepositWorkflow = ({
     reset,
     formState: { isValid, errors },
   } = useForm<DepositType>({
-    resolver: zodResolver(DepositSchema(balance)),
+    resolver: zodResolver(DepositSchema(balance, maxTotalRemaining)),
     defaultValues: initialValues,
     mode: "onChange",
   });
@@ -83,18 +90,32 @@ export const DepositWorkflow = ({
       .toFixed(DECIMAL_PLACES),
   );
 
-  const shouldBeDisabled =
+  const depositExceedsRemaining = watchedDeposits.some((deposit) => {
+    const remainingBalance = MAX_VALIDATOR_BALANCE - deposit.validator.balance;
+    return remainingBalance < deposit.amount;
+  });
+
+  const hasInvalidAmount = watchedDeposits.some((deposit) => {
+    return deposit.amount === 0 || depositExceedsRemaining;
+  });
+
+  const submitButtonDisabled =
     !isValid ||
     totalAllocated !== totalToDistribute ||
     totalToDistribute <= 0 ||
     totalAllocated > balance ||
-    (showEmail && email.length === 0);
+    (showEmail && email.length === 0) ||
+    hasInvalidAmount;
 
   const handleDistributionMethodChange = (method: EDistributionMethod) => {
-    setValue("distributionMethod", method);
+    reset({
+      ...initialValues,
+      distributionMethod: method,
+    });
 
-    if (method === EDistributionMethod.SPLIT)
+    if (method === EDistributionMethod.SPLIT) {
       updateDepositsArrayWithSplitAmount(watchedDeposits, totalToDistribute);
+    }
   };
 
   const handleClearValidators = () => {
@@ -176,7 +197,7 @@ export const DepositWorkflow = ({
             ) : (
               <>
                 <DistributionMethod
-                  submitButtonDisabled={shouldBeDisabled}
+                  submitButtonDisabled={submitButtonDisabled}
                   errors={errors}
                   register={register}
                   distributionMethod={watchedDistributionMethod}
@@ -216,6 +237,7 @@ export const DepositWorkflow = ({
                     totalToDistribute={totalToDistribute}
                     deposits={watchedDeposits}
                     validators={validators}
+                    depositExceedsRemaining={depositExceedsRemaining}
                   />
                 )}
               </>

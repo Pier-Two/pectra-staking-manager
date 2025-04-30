@@ -4,14 +4,12 @@ import type { FieldErrors, UseFormRegister } from "react-hook-form";
 import { WalletBalance } from "./WalletBalance";
 
 export interface ITotalAmountInput {
-  amount: number;
   walletBalance: number;
   errors: FieldErrors<DepositType>;
   register: UseFormRegister<DepositType>;
 }
 
 export const TotalAmountInput = ({
-  amount,
   walletBalance,
   register,
   errors,
@@ -35,19 +33,13 @@ export const TotalAmountInput = ({
           />
         </div>
 
-        {errors.totalToDistribute && (
+        {errors.totalToDistribute?.message && (
           <div className="mt-1 text-xs text-red-500">
-            Please enter an amount less than or equal to your available balance.
+            {errors.totalToDistribute.message}
           </div>
         )}
 
         <WalletBalance balance={walletBalance} />
-
-        {!errors.totalToDistribute && amount === 0 && (
-          <div className="text-xs text-red-700 dark:text-red-300">
-            Please select an amount to distribute.
-          </div>
-        )}
       </div>
     </div>
   );

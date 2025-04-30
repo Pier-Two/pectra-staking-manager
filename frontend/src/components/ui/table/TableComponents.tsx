@@ -7,10 +7,9 @@ import {
   openInNewTab,
 } from "pec/helpers/getExternalLink";
 import { cn } from "pec/lib/utils";
-import { ValidatorDetails } from "pec/types/validator";
+import { type ValidatorDetails } from "pec/types/validator";
 import type { TransactionStatus } from "pec/types/withdraw";
 import { displayedEthAmount } from "pec/lib/utils/validators/balance";
-import { Input, InputProps } from "../input";
 
 interface StatusConfig {
   text: string;
@@ -112,7 +111,7 @@ export const ValidatorIndex = ({ validator }: TableComponentProps) => {
         width={24}
         height={24}
       />
-      <div className="text-piertwo-text flex flex-col gap-1 text-sm">
+      <div className="flex flex-col gap-1 text-sm text-piertwo-text">
         <div className="font-semibold">{validator.validatorIndex}</div>
         <div className="font-light">
           {validator.publicKey.slice(0, 5)}...
@@ -144,16 +143,21 @@ interface DisplayAmountProps {
   opts?: {
     decimals?: number;
   };
+  children?: React.ReactNode;
 }
 
 export const DisplayAmount = ({
   amount,
   className,
   opts,
+  children,
 }: DisplayAmountProps) => {
   return (
-    <div className={cn("text-sm font-semibold", className)}>
-      Ξ {displayedEthAmount(amount, opts?.decimals)}
+    <div className="flex-col">
+      <div className={cn("text-sm font-570", className)}>
+        Ξ {displayedEthAmount(amount, opts?.decimals)}
+      </div>
+      {children}
     </div>
   );
 };
