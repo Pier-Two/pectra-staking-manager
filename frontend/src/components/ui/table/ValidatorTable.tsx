@@ -75,7 +75,7 @@ export const ValidatorTable = <T extends TableValidatorDetails>({
         />
         <tbody className="">
           {sortedValidators.length > 0 ? (
-            paginatedData.map((validator) => (
+            paginatedData.map((validator, index) => (
               <ValidatorRow
                 headers={headers}
                 key={validator.publicKey}
@@ -92,6 +92,7 @@ export const ValidatorTable = <T extends TableValidatorDetails>({
                     : undefined
                 }
                 renderOverrides={renderOverrides}
+                index={index}
               />
             ))
           ) : (

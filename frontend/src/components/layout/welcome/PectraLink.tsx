@@ -1,13 +1,23 @@
 "use client";
 
 import { ChevronRight } from "lucide-react";
+import { motion } from "motion/react";
 import { Button } from "pec/components/ui/button";
 import { GlowEffect } from "pec/components/ui/glow-effect";
 import type { FC } from "react";
-
+import { welcomeAnimationDelays } from "pec/constants/animationDelays";
 export const PectraLink: FC = () => {
   return (
-    <div className="relative z-10">
+    <motion.div
+      className="relative z-10"
+      initial={{ opacity: 0, y: -15 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{
+        duration: 0.5,
+        ease: "easeInOut",
+        delay: welcomeAnimationDelays.pectraLink,
+      }}
+    >
       <GlowEffect
         colors={["#FDBA74", "#5164DC", "#86EFAC", "#313C86"]}
         mode="pulse"
@@ -33,6 +43,6 @@ export const PectraLink: FC = () => {
           <ChevronRight className="h-4 w-4" />
         </div>
       </Button>
-    </div>
+    </motion.div>
   );
 };

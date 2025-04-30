@@ -10,6 +10,7 @@ import { EIconPosition } from "pec/types/components";
 import type { FC } from "react";
 import ValidatorsFoundLoading from "./loading";
 import { useValidators } from "pec/hooks/useValidators";
+import { EnterAnimation } from "pec/app/(login-layout)/welcome/_components/enter-animation";
 
 const ValidatorsFound: FC = () => {
   const walletAddress = useWalletAddress();
@@ -28,28 +29,30 @@ const ValidatorsFound: FC = () => {
         validators={data}
       />
 
-      <div className="flex flex-col gap-4 !pt-6">
-        <Link href="/consolidation" className="flex w-full justify-center">
-          <PrimaryButton
-            label="Start consolidation"
-            disabled={false}
-            className="w-full"
-          />
-        </Link>
+      <EnterAnimation>
+        <div className="flex flex-col gap-4 !pt-6">
+          <Link href="/consolidation" className="flex w-full justify-center">
+            <PrimaryButton
+              label="Start consolidation"
+              disabled={false}
+              className="w-full"
+            />
+          </Link>
 
-        <Link href="/dashboard" className="flex w-full justify-center">
-          <SecondaryButton
-            label="Skip and go to Dashboard"
-            icon={<ArrowRightIcon />}
-            iconPosition={EIconPosition.RIGHT}
-            disabled={false}
-            className="w-full"
-          />
-        </Link>
-        <p className="flex justify-center text-[13px] leading-[13px]">
-          You can access consolidation anytime.
-        </p>
-      </div>
+          <Link href="/dashboard" className="flex w-full justify-center">
+            <SecondaryButton
+              label="Skip and go to Dashboard"
+              icon={<ArrowRightIcon />}
+              iconPosition={EIconPosition.RIGHT}
+              disabled={false}
+              className="w-full"
+            />
+          </Link>
+          <p className="flex justify-center text-[13px] leading-[13px]">
+            You can access consolidation anytime.
+          </p>
+        </div>
+      </EnterAnimation>
     </div>
   );
 };

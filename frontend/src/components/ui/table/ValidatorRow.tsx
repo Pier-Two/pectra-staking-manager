@@ -17,7 +17,10 @@ import {
 import { FaCircleCheck, FaCircleMinus, FaCirclePlus } from "react-icons/fa6";
 
 export interface IValidatorRowProps<T extends TableValidatorDetails> {
-  wrapperProps?: Omit<ValidatorCardWrapperProps, "onClick" | "children">;
+  wrapperProps?: Omit<
+    ValidatorCardWrapperProps,
+    "onClick" | "children" | "ref"
+  >;
   validator: T;
   headers: IHeaderConfig<T>[];
   endContent?: (data: T) => JSX.Element;
@@ -27,6 +30,7 @@ export interface IValidatorRowProps<T extends TableValidatorDetails> {
     showCheckIcons: boolean;
   };
   renderOverrides?: Partial<Record<keyof T, (data: T) => JSX.Element>>;
+  index: number;
 }
 
 export const ValidatorRow = <T extends TableValidatorDetails>({
@@ -36,6 +40,7 @@ export const ValidatorRow = <T extends TableValidatorDetails>({
   selectableRows,
   wrapperProps,
   renderOverrides,
+  index,
 }: IValidatorRowProps<T>) => {
   const [isHovering, setIsHovering] = useState(false);
 
@@ -107,6 +112,13 @@ export const ValidatorRow = <T extends TableValidatorDetails>({
       as="tr"
       onMouseEnter={() => setIsHovering(true)}
       onMouseLeave={() => setIsHovering(false)}
+      initial={{ opacity: 0, y: 15, filter: "blur(10px)" }}
+      animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+      transition={{
+        duration: 0.25,
+        ease: "easeInOut",
+        delay: index * 0.05,
+      }}
     >
       {/* Desktop View - Table Row */}
       {headers.map((header, index) => {
