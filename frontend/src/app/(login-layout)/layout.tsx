@@ -8,7 +8,7 @@ const LoginLayout: FC<ChildrenProp> = (props) => {
 
   return (
     <ThemeProvider>
-      <div className="flex min-h-screen w-screen flex-col bg-indigo-50 dark:bg-gray-950">
+      <div className="flex min-h-screen w-screen flex-col bg-indigo-50 pt-20 dark:bg-gray-950">
         <TopBar />
 
         <div className="flex flex-1 justify-center">

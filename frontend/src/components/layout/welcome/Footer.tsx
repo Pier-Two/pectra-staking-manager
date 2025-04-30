@@ -4,6 +4,8 @@ import { EnterAnimation } from "pec/app/(login-layout)/welcome/_components/enter
 import { welcomeAnimationDelays } from "pec/constants/animationDelays";
 import type { FC } from "react";
 import { RenderLogo } from "../BottomBar";
+import Link from "next/link";
+import { labrysUrl, pierTwoUrl } from "pec/helpers/getExternalLink";
 
 export const Footer: FC = () => {
   return (
@@ -13,26 +15,38 @@ export const Footer: FC = () => {
           delay={welcomeAnimationDelays.footer.pierTwo}
           className="flex flex-col items-center gap-y-3"
         >
-          <div className="text-[11px] leading-[11px] text-zinc-600">
-            Product by
-          </div>
-          <RenderLogo logo="PierTwo" width={150} height={150} />
-          <div className="text-[11px] leading-[11px] text-zinc-600">
-            Onchain infrastructure
-          </div>
+          <Link
+            target="_blank"
+            href={pierTwoUrl}
+            className="flex flex-col items-center gap-y-3 hover:cursor-pointer"
+          >
+            <div className="text-[11px] leading-[11px] text-zinc-600">
+              Product by
+            </div>
+            <RenderLogo logo="PierTwo" width={150} height={150} />
+            <div className="text-[11px] leading-[11px] text-zinc-600">
+              Onchain infrastructure
+            </div>
+          </Link>
         </EnterAnimation>
 
         <EnterAnimation
           delay={welcomeAnimationDelays.footer.labrys}
           className="flex flex-col items-center gap-y-3"
         >
-          <div className="text-[11px] leading-[11px] text-zinc-600">
-            Produced by
-          </div>
-          <RenderLogo logo="Labrys" width={150} height={150} />
-          <div className="text-[11px] leading-[11px] text-zinc-600">
-            Onchain developers
-          </div>
+          <Link
+            target="_blank"
+            href={labrysUrl}
+            className="flex flex-col items-center gap-y-3 hover:cursor-pointer"
+          >
+            <div className="text-[11px] leading-[11px] text-zinc-600">
+              Produced by
+            </div>
+            <RenderLogo logo="Labrys" width={150} height={150} />
+            <div className="text-[11px] leading-[11px] text-zinc-600">
+              Onchain developers
+            </div>
+          </Link>
         </EnterAnimation>
       </div>
     </div>
