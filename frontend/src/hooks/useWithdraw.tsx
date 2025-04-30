@@ -45,7 +45,7 @@ export const useSubmitWithdraw = () => {
   const chain = useActiveChainWithDefault();
 
   const { mutateAsync: saveWithdrawalToDatabase } =
-    api.storeEmailRequest.storeWithdrawalRequest.useMutation();
+    api.storeFlowCompletion.storeWithdrawalRequest.useMutation();
 
   const submitWithdrawals = async (
     withdrawals: FormWithdrawalType["withdrawals"],

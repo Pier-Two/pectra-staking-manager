@@ -49,7 +49,7 @@ export const useSubmitConsolidate = () => {
   const chain = useActiveChainWithDefault();
 
   const { mutateAsync: saveConsolidationToDatabase } =
-    api.storeEmailRequest.storeConsolidationRequest.useMutation();
+    api.storeFlowCompletion.storeConsolidationRequest.useMutation();
 
   const sendConsolidationAndSaveToDatabase = async (
     updateTransactionStatus: (index: number, status: TransactionStatus) => void,

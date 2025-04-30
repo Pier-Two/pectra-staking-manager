@@ -1,6 +1,6 @@
 import { createCallerFactory, createTRPCRouter } from "pec/server/api/trpc";
 import { validatorRouter } from "./routers/validators";
-import { storeEmailRequestRouter } from "./routers/store-email-request/router";
+import { storeFlowCompletion } from "./routers/store-flow-completion";
 import { chartRouter } from "./routers/charts";
 import { pricingRouter } from "./routers/pricing";
 /**
@@ -11,7 +11,7 @@ import { pricingRouter } from "./routers/pricing";
 export const appRouter = createTRPCRouter({
   validators: validatorRouter,
   pricing: pricingRouter,
-  storeEmailRequest: storeEmailRequestRouter,
+  storeFlowCompletion: storeFlowCompletion,
   charts: chartRouter,
 });
 

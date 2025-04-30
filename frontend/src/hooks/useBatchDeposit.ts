@@ -35,7 +35,7 @@ export const useBatchDeposit = () => {
   const chain = useActiveChainWithDefault();
 
   const { mutateAsync: saveDepositToDatabase } =
-    api.storeEmailRequest.storeDepositRequest.useMutation();
+    api.storeFlowCompletion.storeDepositRequest.useMutation();
 
   const submitBatchDeposit = async (
     deposits: FormDepositData[],

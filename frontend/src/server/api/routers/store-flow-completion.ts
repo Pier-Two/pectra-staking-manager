@@ -20,7 +20,7 @@ import { StoreConsolidationSchema } from "pec/lib/api/schemas/consolidation";
 import { routeHandler } from "pec/server/helpers/route-errors";
 import { generateErrorResponse } from "pec/lib/utils";
 
-export const storeEmailRequestRouter = createTRPCRouter({
+export const storeFlowCompletion = createTRPCRouter({
   storeWithdrawalRequest: publicProcedure
     .meta({
       noRateLimit: true, // no rate limit since this is hit many times during withdrawal processing
