@@ -5,14 +5,13 @@ import { AppSidebar } from "pec/components/app-sidebar";
 import { SidebarProvider } from "pec/components/ui/sidebar";
 import { Toaster } from "pec/components/ui/sonner";
 import { NetworkContextProvider } from "pec/contexts/NetworkContext";
-import { ThemeProvider } from "pec/contexts/ThemeContext";
 import { cn } from "pec/lib/utils";
 import "pec/styles/globals.css";
 import { TRPCReactProvider } from "pec/trpc/react";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
-import { Author } from "next/dist/lib/metadata/types/metadata-types";
+import { ThemeProvider } from "pec/components/theme-provider";
 
 const sans = localFont({
   src: "../fonts/Saans-TRIAL-VF.woff2",
@@ -41,13 +40,22 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={cn(sans.variable, inter.variable)}>
+    <html
+      lang="en"
+      className={cn(sans.variable, inter.variable)}
+      suppressHydrationWarning
+    >
       <GoogleAnalytics gaId="G-34ZMX7ZL6X" />
       <Analytics />
       <SpeedInsights />
       <NetworkContextProvider>
         <TRPCReactProvider>
-          <ThemeProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
             <body className="bg-indigo-50 dark:bg-gray-950">
               <SidebarProvider>
                 <div className="md:hidden">

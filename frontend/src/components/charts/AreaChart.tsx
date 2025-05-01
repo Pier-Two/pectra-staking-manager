@@ -1,5 +1,6 @@
 "use client";
 
+import { useTheme } from "next-themes";
 import {
   ChartContainer,
   ChartLegend,
@@ -7,7 +8,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "pec/components/ui/chart";
-import { useTheme } from "pec/hooks/useTheme";
+
 import { cn } from "pec/lib/utils";
 import type { IAreaChart } from "pec/types/chart";
 import type { FC } from "react";
@@ -45,10 +46,10 @@ export const AreaChartComponent: FC<IAreaChart> = ({ chart, isFullscreen }) => {
     orientation: xOrientation,
   } = xAxis;
 
-  const { darkMode } = useTheme();
+  const { resolvedTheme: theme } = useTheme();
 
   const axisTextStyle = {
-    stroke: darkMode ? "#e3e3e3" : "#a1a1a1",
+    stroke: theme === "dark" ? "#e3e3e3" : "#a1a1a1",
     fontSize: "11px",
     fontWeight: 180,
   };
@@ -78,7 +79,12 @@ export const AreaChartComponent: FC<IAreaChart> = ({ chart, isFullscreen }) => {
     >
       <AreaChart
         data={chartData}
-        margin={{ top: 10, right: 50, left: 10, bottom: isFullscreen ? 200 : 10 }}
+        margin={{
+          top: 10,
+          right: 50,
+          left: 10,
+          bottom: isFullscreen ? 200 : 10,
+        }}
         width={
           typeof window !== "undefined"
             ? isFullscreen
