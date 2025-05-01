@@ -133,6 +133,7 @@ export const useSubmitWithdraw = () => {
             txHash: txHash.transactionHash,
             email,
             network: chain.id,
+            withdrawalAddress: account.address,
           });
         } catch (e) {
           console.error("Error saving withdrawal to database", e);

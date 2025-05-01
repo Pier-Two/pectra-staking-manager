@@ -20,6 +20,9 @@ export class Exit {
   public status!: (typeof DatabaseDocumentStatuses)[number];
 
   @prop({ required: true })
+  public withdrawalAddress!: string;
+
+  @prop({ required: true })
   public validatorIndex!: number;
 
   @prop({ required: true })

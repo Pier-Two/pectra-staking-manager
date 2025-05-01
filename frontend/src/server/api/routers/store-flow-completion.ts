@@ -29,8 +29,15 @@ export const storeFlowCompletion = createTRPCRouter({
     .input(StoreWithdrawalRequestSchema)
     .mutation(async ({ input }) =>
       routeHandler(async (): Promise<IResponse<null>> => {
-        const { network, validatorIndex, email, amount, txHash, balance } =
-          input;
+        const {
+          network,
+          validatorIndex,
+          email,
+          amount,
+          txHash,
+          balance,
+          withdrawalAddress,
+        } = input;
 
         if (amount === balance) {
           await ExitModel.create({
@@ -40,6 +47,7 @@ export const storeFlowCompletion = createTRPCRouter({
             txHash,
             networkId: network,
             amount,
+            withdrawalAddress,
           });
 
           await createContact(email);
@@ -65,6 +73,7 @@ export const storeFlowCompletion = createTRPCRouter({
           networkId: network,
           amount,
           txHash,
+          withdrawalAddress,
         });
 
         await createContact(email);
