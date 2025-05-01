@@ -16,7 +16,7 @@ import { getValidators } from "pec/server/helpers/requests/beaconchain/getValida
 import { routeHandler } from "pec/server/helpers/route-errors";
 import { type IResponse } from "pec/types/response";
 import { getValidatorsForWithdrawAddress } from "pec/server/helpers/requests/beaconchain/getValidatorForWithdrawAddress";
-import { type BCValidatorsData } from "pec/lib/api/schemas/beaconchain/validator";
+import { type BCValidatorDetails } from "pec/lib/api/schemas/beaconchain/validator";
 import {
   ConsolidationModel,
   DepositModel,
@@ -31,7 +31,7 @@ import { checkExitProcessedAndUpdate } from "pec/server/helpers/process-requests
 import { redisCacheMiddleware } from "../middleware/redis-cache-middleware";
 
 const populateStuff = async (
-  bcValidatorData: BCValidatorsData[],
+  bcValidatorData: BCValidatorDetails[],
 ): Promise<ValidatorDetails[]> => {
   const validatorDetails = bcValidatorData.map(
     prePopulateBeaconchainValidatorResponse,

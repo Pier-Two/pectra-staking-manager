@@ -5,13 +5,13 @@ import type { IResponse } from "pec/types/response";
 import { sendEmailNotification } from "pec/lib/services/emailService";
 import { getValidators } from "../requests/beaconchain/getValidators";
 import { type Consolidation } from "pec/server/database/classes/consolidation";
-import { type BCValidatorsData } from "pec/lib/api/schemas/beaconchain/validator";
+import { type BCValidatorDetails } from "pec/lib/api/schemas/beaconchain/validator";
 import { type SupportedNetworkIds } from "pec/constants/chain";
 import { keyBy } from "lodash";
 
 export const checkConsolidationProcessedAndUpdate = async (
   dbConsolidation: Consolidation,
-  bcValidatorDetails: BCValidatorsData,
+  bcValidatorDetails: BCValidatorDetails,
 ): Promise<boolean> => {
   if (bcValidatorDetails.status === "exited") {
     await ConsolidationModel.updateOne(

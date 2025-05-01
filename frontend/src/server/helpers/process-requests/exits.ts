@@ -1,4 +1,4 @@
-import { type BCValidatorsData } from "pec/lib/api/schemas/beaconchain/validator";
+import { type BCValidatorDetails } from "pec/lib/api/schemas/beaconchain/validator";
 import { sendEmailNotification } from "pec/lib/services/emailService";
 import { type Exit } from "pec/server/database/classes/exit";
 import { ExitModel } from "pec/server/database/models";
@@ -10,7 +10,7 @@ import { keyBy } from "lodash";
 
 export const checkExitProcessedAndUpdate = async (
   dbExit: Exit,
-  bcValidatorDetails: BCValidatorsData,
+  bcValidatorDetails: BCValidatorDetails,
 ): Promise<boolean> => {
   if (bcValidatorDetails.status === "exited") {
     await ExitModel.updateOne(

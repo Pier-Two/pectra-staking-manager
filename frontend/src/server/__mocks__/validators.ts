@@ -1,10 +1,11 @@
 import {
   VALIDATOR_LIFECYCLE_STATUSES,
   ValidatorStatus,
+  WithdrawalAddressPrefixType,
   type ValidatorDetails,
 } from "pec/types/validator";
 import { faker } from "@faker-js/faker";
-import { type BCValidatorsData } from "pec/lib/api/schemas/beaconchain/validator";
+import { type BCValidatorDetails } from "pec/lib/api/schemas/beaconchain/validator";
 
 // Helper function to generate random pending request
 const generatePendingRequest = () => {
@@ -25,14 +26,17 @@ export const generateAddress = () => {
 };
 
 // Helper function to generate a withdrawal address in the required format
-export const generateWithdrawalCredentials = () => {
-  const prefix = faker.helpers.arrayElement(["00", "01", "02"]);
+export const generateWithdrawalCredentials = (
+  overridePrefix?: WithdrawalAddressPrefixType,
+) => {
+  const prefix =
+    overridePrefix?.slice(2) ?? faker.helpers.arrayElement(["00", "01", "02"]);
   return `0x${prefix}${faker.string.hexadecimal({ length: 40, casing: "lower", prefix: "" })}`;
 };
 
 export const buildMockBCValidatorsData = (
-  overrides: Partial<BCValidatorsData> = {},
-): BCValidatorsData => {
+  overrides: Partial<BCValidatorDetails> = {},
+): BCValidatorDetails => {
   return {
     activationeligibilityepoch: faker.number.int({ min: 1, max: 100 }),
     activationepoch: faker.number.int({ min: 1, max: 100 }),

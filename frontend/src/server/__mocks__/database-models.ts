@@ -4,6 +4,7 @@ import { SUPPORTED_NETWORKS_IDS } from "pec/constants/chain";
 import { type Consolidation } from "pec/server/database/classes/consolidation";
 import { Exit } from "../database/classes/exit";
 import { generateAddress } from "./validators";
+import { ValidatorUpgrade } from "../database/classes/validatorUpgrade";
 
 // Helper function to generate random txHash
 const generateTxHash = () => {
@@ -42,6 +43,18 @@ export const buildMockExit = (overrides: Partial<Exit> = {}): Exit => {
     txHash: generateTxHash(),
     networkId: faker.helpers.arrayElement(SUPPORTED_NETWORKS_IDS),
     amount: faker.number.int({ min: 1, max: 1000000 }),
+    ...overrides,
+  };
+};
+export const buildMockValidatorUpgrade = (
+  overrides: Partial<ValidatorUpgrade> = {},
+): ValidatorUpgrade => {
+  return {
+    email: faker.internet.email(),
+    status: faker.helpers.arrayElement(Object.values(DatabaseDocumentStatuses)),
+    validatorIndex: faker.number.int({ min: 1, max: 1000000 }),
+    txHash: generateTxHash(),
+    networkId: faker.helpers.arrayElement(SUPPORTED_NETWORKS_IDS),
     ...overrides,
   };
 };
