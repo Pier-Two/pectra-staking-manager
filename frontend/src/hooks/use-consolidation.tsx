@@ -3,7 +3,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { toast } from "pec/components/ui/Toast";
 import { api } from "pec/trpc/react";
-import { ValidatorDetails } from "pec/types/validator";
+import { type ValidatorDetails } from "pec/types/validator";
 import { eth_call, waitForReceipt } from "thirdweb";
 import { useActiveAccount } from "thirdweb/react";
 import { type Account } from "thirdweb/wallets";
@@ -11,10 +11,11 @@ import { fromHex } from "viem";
 import { useActiveChainWithDefault } from "./useChain";
 import { useContracts } from "./useContracts";
 import { useRpcClient } from "./useRpcClient";
-import { SubmittingConsolidationValidatorDetails } from "pec/constants/columnHeaders";
-import { TransactionStatus } from "pec/types/withdraw";
+import { type SubmittingConsolidationValidatorDetails } from "pec/constants/columnHeaders";
+import { type TransactionStatus } from "pec/types/withdraw";
 import { client } from "pec/lib/wallet/client";
 import { cloneDeep } from "lodash";
+import { trackEvent } from "pec/helpers/trackEvent";
 
 export const useConsolidationFee = () => {
   const contracts = useContracts();
@@ -149,7 +150,7 @@ export const useSubmitConsolidate = () => {
             email,
           );
         }
-      } catch (error) {
+      } catch {
         toast({
           title: "User cancelled",
           description: "Please update selections and continue",
@@ -185,6 +186,16 @@ export const useSubmitConsolidate = () => {
           txHash: validator.transactionStatus.txHash,
         });
       }
+    }
+
+    // track event
+    trackEvent("consolidation_completed", {
+      destination: destination.validatorIndex,
+      source: `[${transactions.map((t) => t.validatorIndex).join(",")}]`,
+    });
+
+    if (email) {
+      trackEvent("consolidation_email_submitted");
     }
 
     return true;

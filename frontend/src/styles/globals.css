@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 .hover\:bg-activeCard:hover {
-  background-image: url("/cards/backgrounds/WorkflowOption.png") !important;
+  background-image: url("/cards/backgrounds/WorkflowOption.webp") !important;
   background-size: cover !important;
   background-position: center !important;
 }

@@ -1,6 +1,6 @@
 import {
   DEPOSIT_COLUMN_HEADERS,
-  DepositTableValidatorDetails,
+  type DepositTableValidatorDetails,
 } from "pec/constants/columnHeaders";
 import type {
   FormDepositData,
@@ -13,6 +13,8 @@ import type { FieldErrors, UseFormRegister } from "react-hook-form";
 import { ValidatorHeader } from "./ValidatorHeader";
 import { ValidatorTable } from "pec/components/ui/table/ValidatorTable";
 import { AmountInput } from "pec/components/ui/custom/AmountInput";
+import { MAX_VALIDATOR_BALANCE } from "pec/constants/deposit";
+import { DisplayAmount } from "pec/components/ui/table/TableComponents";
 
 export interface ISelectValidatorsProps {
   clearSelectedValidators: () => void;
@@ -21,8 +23,9 @@ export interface ISelectValidatorsProps {
   deposits: FormDepositData[];
   totalToDistribute: number;
   validators: ValidatorDetails[];
-  errors: FieldErrors<FormDepositType>;
-  register: UseFormRegister<FormDepositType>;
+  errors: FieldErrors<DepositType>;
+  register: UseFormRegister<DepositType>;
+  depositExceedsRemaining: boolean;
 }
 
 export const SelectValidators = ({
@@ -34,6 +37,7 @@ export const SelectValidators = ({
   deposits,
   totalToDistribute,
   validators,
+  depositExceedsRemaining,
 }: ISelectValidatorsProps) => {
   const selectedValidatorIndexes = deposits.reduce<Record<number, number>>(
     (acc, field, index) => {
@@ -80,8 +84,12 @@ export const SelectValidators = ({
     (validator: ValidatorDetails) => {
       const depositIndex =
         selectedValidatorIndexes[validator.validatorIndex] ?? -1;
-
       const value = depositIndex === -1 ? 0 : undefined;
+      const isSelected = depositIndex !== -1;
+      const depositAmount = deposits[depositIndex]?.amount ?? 0;
+      const remainingBalance = MAX_VALIDATOR_BALANCE - validator.balance;
+      const invalidAmount =
+        (depositAmount === 0 && isSelected) || remainingBalance < depositAmount;
 
       return (
         <AmountInput
@@ -92,15 +100,15 @@ export const SelectValidators = ({
             ...register(`deposits.${depositIndex}.amount`, {
               setValueAs: (value: string) => setValueHandler(value),
             }),
-            onClick: (e) => {
-              if (depositIndex === -1) {
+            onClick: (e: React.MouseEvent<HTMLInputElement>) => {
+              if (!isSelected) {
                 handleValidatorSelect(validator);
               }
-
               e.stopPropagation();
             },
             value,
           }}
+          invalidAmount={invalidAmount}
           error={
             errors.deposits?.[depositIndex]?.amount
               ? "Please enter a valid amount"
@@ -109,7 +117,14 @@ export const SelectValidators = ({
         />
       );
     },
-    [register, selectedValidatorIndexes, handleValidatorSelect],
+    [
+      register,
+      selectedValidatorIndexes,
+      handleValidatorSelect,
+      deposits,
+      errors,
+      distributionMethod,
+    ],
   );
 
   return (
@@ -122,7 +137,18 @@ export const SelectValidators = ({
       <ValidatorTable
         data={validatorDetailsRow}
         headers={DEPOSIT_COLUMN_HEADERS}
-        renderOverrides={{ depositAmount: depositAmountRowRender }}
+        renderOverrides={{
+          depositAmount: depositAmountRowRender,
+          balance: (validator) => (
+            <DisplayAmount amount={validator.balance}>
+              <div className="mt-1 font-inter text-xs font-light text-piertwo-text">
+                <span className="hidden md:contents">Ξ</span>
+                {(MAX_VALIDATOR_BALANCE - validator.balance).toFixed(2)}{" "}
+                remaining
+              </div>
+            </DisplayAmount>
+          ),
+        }}
         selectableRows={{
           onClick: (row) => handleValidatorSelect(row),
           isSelected: (row) =>
@@ -131,6 +157,13 @@ export const SelectValidators = ({
         }}
         disablePagination
       />
+      {depositExceedsRemaining && (
+        <p className="text-xs text-red-500">
+          The amount you are trying to deposit exceeds the remaining balance of
+          one or more validators. To make adjustments please choose Manual entry
+          or adjust Total Amount
+        </p>
+      )}
     </>
   );
 };

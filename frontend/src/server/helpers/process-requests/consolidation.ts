@@ -20,10 +20,13 @@ export const checkConsolidationProcessedAndUpdate = async (
       { $set: { status: INACTIVE_STATUS } },
     );
 
-    await sendEmailNotification(
-      "PECTRA_STAKING_MANAGER_CONSOLIDATION_COMPLETE",
-      dbConsolidation.email,
-    );
+    await sendEmailNotification({
+      emailName: "PECTRA_STAKING_MANAGER_CONSOLIDATION_COMPLETE",
+      metadata: {
+        emailAddress: dbConsolidation.email,
+        targetValidatorIndex: dbConsolidation.targetValidatorIndex,
+      },
+    });
 
     return true;
   }

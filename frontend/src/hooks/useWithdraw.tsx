@@ -11,6 +11,8 @@ import { encodePacked, fromHex, parseGwei } from "viem";
 import { useActiveChainWithDefault } from "./useChain";
 import { useContracts } from "./useContracts";
 import { useRpcClient } from "./useRpcClient";
+import { trackEvent } from "pec/helpers/trackEvent";
+import { useEffect } from "react";
 
 export const useWithdraw = () => {
   const rpcClient = useRpcClient();
@@ -39,6 +41,14 @@ export const useSubmitWithdraw = () => {
   const [stage, setStage] = useImmer<WithdrawWorkflowStages>({
     type: "data-capture",
   });
+
+  // track stage
+  useEffect(() => {
+    trackEvent(`withdraw_stage_changed`, {
+      stage: stage.type,
+    });
+  }, [stage]);
+
   const contracts = useContracts();
   const rpcClient = useRpcClient();
   const account = useActiveAccount();
@@ -140,6 +150,16 @@ export const useSubmitWithdraw = () => {
           description: "Withdrawal request submitted successfully",
           variant: "success",
         });
+
+        // track event
+        trackEvent("withdrawal_submitted", {
+          validatorIndex: withdrawal.validator.validatorIndex,
+          amount: withdrawal.amount,
+        });
+
+        if (email) {
+          trackEvent("withdrawal_email_submitted");
+        }
       } catch (error) {
         toast({
           title: "User cancelled",

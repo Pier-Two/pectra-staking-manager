@@ -17,6 +17,7 @@ const DarkMode = () => {
           : "border-primary/30 bg-transparent hover:bg-primary/10",
       )}
       onClick={toggleDarkMode}
+      aria-label="Toggle dark mode"
     >
       {darkMode ? (
         <Sun className="text-white" />

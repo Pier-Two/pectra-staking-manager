@@ -92,7 +92,7 @@ export const SelectSourceValidators = ({
           }
         }}
       >
-        <TabsList className="text-piertwoDark-text grid w-full grid-cols-2 rounded-md bg-indigo-800 bg-opacity-10 dark:bg-gray-800">
+        <TabsList className="grid w-full grid-cols-2 rounded-md bg-indigo-800 bg-opacity-10 text-piertwoDark-text dark:bg-gray-800">
           <TabsListItem value="maxConsolidate">Max consolidate</TabsListItem>
 
           <TabsListItem value="manuallySelect">Manually select</TabsListItem>
@@ -150,7 +150,7 @@ interface TabsListItemProps {
 const TabsListItem = ({ value, children }: TabsListItemProps) => {
   return (
     <TabsTrigger
-      className="text-piertwo-text data-[state=active]:text-piertwoDark-text rounded-md font-semibold data-[state=active]:bg-white data-[state=active]:dark:bg-black"
+      className="rounded-md font-semibold text-piertwo-text data-[state=active]:bg-white data-[state=active]:text-piertwoDark-text data-[state=active]:dark:bg-black"
       value={value}
     >
       {children}

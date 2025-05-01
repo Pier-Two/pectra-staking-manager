@@ -39,7 +39,7 @@ export const ConnectedAddress: FC<IConnectedAddress> = (props) => {
         </div>
       </div>
 
-      <div className="flex h-10 w-12 items-center justify-center rounded-full p-3 transition-colors hover:cursor-pointer hover:bg-indigo-100 dark:hover:bg-gray-900">
+      <div className="flex h-10 w-12 items-center justify-center rounded-full p-3 transition-colors duration-300 hover:cursor-pointer hover:bg-indigo-100 dark:hover:bg-gray-900">
         <Power
           className="h-4 w-4 text-gray-800 dark:text-white"
           onClick={handleWelcomeNavigation}

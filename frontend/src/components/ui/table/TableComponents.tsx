@@ -7,7 +7,7 @@ import {
   openInNewTab,
 } from "pec/helpers/getExternalLink";
 import { cn } from "pec/lib/utils";
-import { ValidatorDetails } from "pec/types/validator";
+import { type ValidatorDetails } from "pec/types/validator";
 import type { TransactionStatus } from "pec/types/withdraw";
 import { displayedEthAmount } from "pec/lib/utils/validators/balance";
 import { useActiveChainWithDefault } from "pec/hooks/useChain";
@@ -147,17 +147,20 @@ interface DisplayAmountProps {
   opts?: {
     decimals?: number;
   };
+  children?: React.ReactNode;
 }
 
 export const DisplayAmount = ({
   amount,
   className,
   opts,
+  children,
 }: DisplayAmountProps) => {
   return (
     <div className={cn("text-sm font-semibold", className)}>
-      <span className="hidden md:contents"> Ξ</span>{" "}
+      <span className="hidden md:contents">Ξ</span>{" "}
       {displayedEthAmount(amount, opts?.decimals)}
+      {children}
     </div>
   );
 };

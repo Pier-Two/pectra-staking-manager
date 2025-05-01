@@ -1,6 +1,6 @@
-import { type EmailNames } from "pec/types/emails";
 import hubspotApi from "./hubspot-api";
 import { parseError } from "../utils/parseError";
+import { EmailPayload } from "pec/types/emails";
 
 /**
  * Creates a contact in HubSpot using the provided email address.
@@ -27,38 +27,27 @@ export const createContact = async (
   }
 };
 
-type EmailMetadataTypees =
-  | { type: "consolidation"; targetValidatorIndex: number }
-  | { type: "withdrawal"; targetValidatorIndex: number }
-  | { type: "validatorUpgrade"; targetValidatorIndex: number };
-
 /**
  * Sends an email notification using HubSpot.
  * If the email address is empty or undefined, the function returns early.
  *
- * @param {EmailNames} emailName - The name of the email template to be used.
- * @param {string | undefined} email - The email address to send the notification to.
+ * @param {EmailNames} emailPayload - The payload containing the email address and other metadata.
  * @returns {Promise<void>} - A promise that resolves when the email is sent.
  */
 export const sendEmailNotification = async (
-  emailName: EmailNames,
-  email: string | undefined,
+  emailPayload: EmailPayload,
 ): Promise<void> => {
-  if (!email || email.length === 0) return;
+  if (
+    !emailPayload.metadata.emailAddress ||
+    emailPayload.metadata.emailAddress.length === 0
+  )
+    return;
 
   try {
-    const payload = {
-      emailName,
-      metadata: {
-        emailAddress: email,
-        ...metadata,
-      },
-    };
-
-    await hubspotApi.post("/email", payload);
+    await hubspotApi.post("/email", emailPayload);
   } catch (error) {
     console.error(
-      `Failed to send email notification for ${email}: ${parseError(error)}`,
+      `Failed to send email notification with payload ${emailPayload}: ${parseError(error)}`,
     );
   }
 };

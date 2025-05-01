@@ -58,7 +58,6 @@ export const DistributionMethod = ({
 
       {distributionMethod === EDistributionMethod.SPLIT && (
         <TotalAmountInput
-          amount={totalToDistribute}
           errors={errors}
           register={register}
           walletBalance={walletBalance}
