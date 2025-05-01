@@ -34,6 +34,6 @@ export class Withdrawal {
   @prop({ required: true })
   public txHash!: string;
 
-  @prop({ required: true, enum: SUPPORTED_NETWORKS_IDS })
+  @prop({ required: true, enum: SUPPORTED_NETWORKS_IDS, type: Number })
   public networkId!: SupportedNetworkIds;
 }

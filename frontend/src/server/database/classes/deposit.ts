@@ -25,7 +25,7 @@ export class Deposit {
   @prop()
   public email?: string;
 
-  @prop({ required: true, enum: SUPPORTED_NETWORKS_IDS as readonly number[] })
+  @prop({ required: true, enum: SUPPORTED_NETWORKS_IDS, type: Number })
   public networkId!: SupportedNetworkIds;
 
   @prop({ required: true })
