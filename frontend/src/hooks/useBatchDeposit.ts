@@ -6,13 +6,14 @@ import { parseError } from "pec/lib/utils/parseError";
 import { client } from "pec/lib/wallet/client";
 import { api } from "pec/trpc/react";
 import { type DepositWorkflowStage } from "pec/types/batch-deposits";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { prepareContractCall, sendTransaction, waitForReceipt } from "thirdweb";
 import { useActiveAccount } from "thirdweb/react";
 import { parseEther } from "viem";
 import { useActiveChainWithDefault } from "./useChain";
 import { useContracts } from "./useContracts";
 import { ValidatorStatus } from "pec/types/validator";
+import { trackEvent } from "pec/helpers/trackEvent";
 
 interface BatchDepositRequest {
   pubKey: `0x${string}`;
@@ -25,6 +26,13 @@ export const useBatchDeposit = () => {
   const [stage, setStage] = useState<DepositWorkflowStage>({
     type: "data-capture",
   });
+
+  // track stage
+  useEffect(() => {
+    trackEvent(`batch_deposit_stage_changed`, {
+      stage: stage.type,
+    });
+  }, [stage]);
 
   const resetStage = () => {
     setStage({ type: "data-capture" });
@@ -116,6 +124,16 @@ export const useBatchDeposit = () => {
         variant: "success",
       });
 
+      // track event
+      trackEvent("batch_deposit_submitted", {
+        totalAmount,
+        validatorIndexes: `[${deposits.map((deposit) => deposit.validator.validatorIndex).join(",")}]`,
+      });
+
+      if (email) {
+        trackEvent("batch_deposit_email_submitted");
+      }
+
       const txReceipt = await waitForReceipt({
         transactionHash: receipt.transactionHash,
         client,
@@ -134,6 +152,12 @@ export const useBatchDeposit = () => {
         title: "Success",
         description: "Deposits finalised successfully",
         variant: "success",
+      });
+
+      // track event
+      trackEvent("batch_deposit_finalised", {
+        totalAmount,
+        validatorIndexes: `[${deposits.map((deposit) => deposit.validator.validatorIndex).join(",")}]`,
       });
     } catch (error) {
       console.error("Error submitting batch deposit:", error);

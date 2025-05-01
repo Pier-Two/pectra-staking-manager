@@ -10,11 +10,21 @@ import { EIconPosition } from "pec/types/components";
 import { useValidators } from "pec/hooks/useValidators";
 import { EnterAnimation } from "pec/app/(login-layout)/welcome/_components/enter-animation";
 import ValidatorsFoundLoading from "./validators-found-loading";
+import { useEffect } from "react";
+import { trackEvent } from "pec/helpers/trackEvent";
 
 const ValidatorsFound = () => {
   const walletAddress = useWalletAddress();
 
   const { data, isSuccess } = useValidators();
+
+  useEffect(() => {
+    if (data && isSuccess) {
+      trackEvent("validators_found", {
+        validators: data.length,
+      });
+    }
+  }, [data, isSuccess]);
 
   if (!walletAddress || !data || !isSuccess) return <ValidatorsFoundLoading />;
 
@@ -35,6 +45,9 @@ const ValidatorsFound = () => {
               label="Start consolidation"
               disabled={false}
               className="w-full"
+              onClick={() => {
+                trackEvent("validators_found_start_consolidation");
+              }}
             />
           </Link>
 
@@ -45,6 +58,9 @@ const ValidatorsFound = () => {
               iconPosition={EIconPosition.RIGHT}
               disabled={false}
               className="w-full"
+              onClick={() => {
+                trackEvent("validators_found_skip_consolidation");
+              }}
             />
           </Link>
           <p className="flex justify-center text-[13px] leading-[13px]">
