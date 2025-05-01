@@ -1,14 +1,18 @@
 import { modelOptions, prop } from "@typegoose/typegoose";
-import { DatabaseConsolidationType } from "pec/lib/api/schemas/database/consolidation";
+import {
+  SUPPORTED_NETWORKS_IDS,
+  type SupportedNetworkIds,
+} from "pec/constants/chain";
 import { DatabaseDocumentStatuses } from "pec/types/app";
+
 @modelOptions({
   schemaOptions: {
     timestamps: true,
     toObject: { virtuals: true },
-    collection: "consolidations",
+    collection: "exit",
   },
 })
-export class Consolidation implements DatabaseConsolidationType {
+export class Exit {
   @prop()
   public email?: string;
 
@@ -16,11 +20,17 @@ export class Consolidation implements DatabaseConsolidationType {
   public status!: (typeof DatabaseDocumentStatuses)[number];
 
   @prop({ required: true })
-  public targetValidatorIndex!: number;
+  public withdrawalAddress!: string;
 
   @prop({ required: true })
-  public sourceTargetValidatorIndex!: number;
+  public validatorIndex!: number;
 
   @prop({ required: true })
   public txHash!: string;
+
+  @prop({ required: true, enum: SUPPORTED_NETWORKS_IDS, type: Number })
+  public networkId!: SupportedNetworkIds;
+
+  @prop({ required: true })
+  public amount!: number;
 }

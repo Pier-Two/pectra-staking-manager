@@ -1,15 +1,21 @@
 import { modelOptions, prop } from "@typegoose/typegoose";
+import {
+  SUPPORTED_NETWORKS_IDS,
+  type SupportedNetworkIds,
+} from "pec/constants/chain";
 import { DatabaseDocumentStatuses } from "pec/types/app";
-import { DatabaseDepositType } from "pec/lib/api/schemas/database/deposit";
 
 @modelOptions({
   schemaOptions: {
     timestamps: true,
     toObject: { virtuals: true },
-    collection: "deposits",
+    collection: "validatorUpgrade",
   },
 })
-export class Deposit implements DatabaseDepositType {
+export class ValidatorUpgrade {
+  @prop()
+  public email?: string;
+
   @prop({ required: true, type: String })
   public status!: (typeof DatabaseDocumentStatuses)[number];
 
@@ -19,6 +25,6 @@ export class Deposit implements DatabaseDepositType {
   @prop({ required: true })
   public txHash!: string;
 
-  @prop()
-  public email?: string;
+  @prop({ required: true, enum: SUPPORTED_NETWORKS_IDS, type: Number })
+  public networkId!: SupportedNetworkIds;
 }

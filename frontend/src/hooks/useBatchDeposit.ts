@@ -1,6 +1,6 @@
 import { toast } from "pec/components/ui/Toast";
 import { SIGNATURE_BYTE_LENGTH } from "pec/constants/deposit";
-import { type DepositData } from "pec/lib/api/schemas/deposit";
+import { type FormDepositData } from "pec/lib/api/schemas/deposit";
 import { generateByteString } from "pec/lib/utils/bytes";
 import { parseError } from "pec/lib/utils/parseError";
 import { client } from "pec/lib/wallet/client";
@@ -43,10 +43,10 @@ export const useBatchDeposit = () => {
   const chain = useActiveChainWithDefault();
 
   const { mutateAsync: saveDepositToDatabase } =
-    api.storeEmailRequest.storeDepositRequest.useMutation();
+    api.storeFlowCompletion.storeDepositRequest.useMutation();
 
   const submitBatchDeposit = async (
-    deposits: DepositData[],
+    deposits: FormDepositData[],
     totalAmount: number,
     email?: string,
   ) => {
@@ -103,26 +103,24 @@ export const useBatchDeposit = () => {
         },
       });
 
-      const saveDepositDetails = deposits.map((deposit) => ({
-        validatorIndex: deposit.validator.validatorIndex,
-        txHash: receipt.transactionHash,
-        email: email,
-      }));
-
-      const result = await saveDepositToDatabase(saveDepositDetails);
-
-      if (!result.success)
+      // Emails get their own try-catch, because they are non-critical errors that we are kinda ignoring so the flow doesn't break for the user
+      try {
+        await saveDepositToDatabase({
+          deposits: deposits.map((deposit) => ({
+            validatorIndex: deposit.validator.validatorIndex,
+            txHash: receipt.transactionHash,
+            amount: deposit.amount,
+          })),
+          network: chain.id,
+          email,
+        });
+      } catch (e) {
+        console.error("Error saving deposit to database:", e);
         toast({
-          title: "Error",
-          description: "There was an error saving the deposit.",
+          title: "Error saving deposit to database, emails may not be sent",
           variant: "error",
         });
-
-      toast({
-        title: "Success",
-        description: "Deposits saved successfully",
-        variant: "success",
-      });
+      }
 
       // track event
       trackEvent("batch_deposit_submitted", {

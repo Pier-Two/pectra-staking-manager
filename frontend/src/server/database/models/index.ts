@@ -5,6 +5,8 @@ import { Consolidation } from "../classes/consolidation";
 import { Deposit } from "../classes/deposit";
 import { ValidatorSummary } from "../classes/validatorSummary";
 import { Withdrawal } from "../classes/withdrawal";
+import { ValidatorUpgrade } from "../classes/validatorUpgrade";
+import { Exit } from "../classes/exit";
 
 // Create a cached connection variable
 let conn: Mongoose | null = null;
@@ -24,6 +26,11 @@ export const WithdrawalModel: Model<Withdrawal> =
 
 export type WithdrawalDocumentType = DocumentType<Withdrawal>;
 
+export const ExitModel: Model<Exit> =
+  mongoose.models.Exit ?? getModelForClass(Exit);
+
+export type ExitDocumentType = DocumentType<Exit>;
+
 // DEPOSITS
 
 export const DepositModel: Model<Deposit> =
@@ -37,6 +44,11 @@ export const ConsolidationModel: Model<Consolidation> =
   mongoose.models.Consolidation ?? getModelForClass(Consolidation);
 
 export type ConsolidationDocumentType = DocumentType<Consolidation>;
+
+export const ValidatorUpgradeModel: Model<ValidatorUpgrade> =
+  mongoose.models.ValidatorUpgrade ?? getModelForClass(ValidatorUpgrade);
+
+export type ValidatorUpgradeDocumentType = DocumentType<ValidatorUpgrade>;
 
 // VALIDATOR
 export const ValidatorSummaryModel: Model<ValidatorSummary> =

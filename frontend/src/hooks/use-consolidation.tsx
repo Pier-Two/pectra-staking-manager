@@ -50,7 +50,7 @@ export const useSubmitConsolidate = () => {
   const chain = useActiveChainWithDefault();
 
   const { mutateAsync: saveConsolidationToDatabase } =
-    api.validators.updateConsolidationRecord.useMutation();
+    api.storeFlowCompletion.storeConsolidationRequest.useMutation();
 
   const sendConsolidationAndSaveToDatabase = async (
     updateTransactionStatus: (index: number, status: TransactionStatus) => void,
@@ -80,18 +80,20 @@ export const useSubmitConsolidate = () => {
       txHash: upgradeTx.transactionHash,
     });
 
-    // save upgrade tx to db
-    const result = await saveConsolidationToDatabase({
-      targetValidatorIndex: destination.validatorIndex,
-      sourceTargetValidatorIndex: source.validatorIndex,
-      txHash: upgradeTx.transactionHash,
-      email,
-    });
-
-    if (!result.success) {
+    // Emails get their own try-catch, because they are non-critical errors that we are kinda ignoring so the flow doesn't break for the user
+    try {
+      await saveConsolidationToDatabase({
+        targetValidatorIndex: destination.validatorIndex,
+        sourceValidatorIndex: source.validatorIndex,
+        txHash: upgradeTx.transactionHash,
+        email,
+        network: chain.id,
+        amount: source.balance,
+      });
+    } catch (e) {
+      console.error("Error saving consolidation to database:", e);
       toast({
-        title: "Failed to save transaction",
-        description: result.error,
+        title: "Error saving consolidation to database, emails may not be sent",
         variant: "error",
       });
     }

@@ -2,20 +2,21 @@ import { EDistributionMethod } from "pec/types/batch-deposits";
 import { z } from "zod";
 import { EmailSchema } from "./email";
 import { ValidatorDataSchema } from "./validator";
+import { SupportedChainIdSchema } from "./network";
 
-export const DepositDataSchema = z.object({
+const FormDepositDataSchema = z.object({
   validator: ValidatorDataSchema,
   amount: z.number().min(0, { message: "Please enter an acceptable amount" }),
 });
 
-export type DepositData = z.infer<typeof DepositDataSchema>;
+export type FormDepositData = z.infer<typeof FormDepositDataSchema>;
 
-export const DepositSchema = (
+export const FormDepositSchema = (
   maxTotalToDistribute: number,
   maxTotalRemaining: number,
 ) =>
   z.object({
-    deposits: z.array(DepositDataSchema),
+    deposits: z.array(FormDepositDataSchema),
     totalToDistribute: z
       .number({ invalid_type_error: "Please enter a valid amount" })
       .min(0)
@@ -30,4 +31,16 @@ export const DepositSchema = (
     email: EmailSchema,
   });
 
-export type DepositType = z.infer<ReturnType<typeof DepositSchema>>;
+export type FormDepositType = z.infer<ReturnType<typeof FormDepositSchema>>;
+
+export const StoreDatabaseDepositSchema = z.object({
+  deposits: z.array(
+    z.object({
+      validatorIndex: z.number(),
+      txHash: z.string(),
+      amount: z.number(),
+    }),
+  ),
+  network: SupportedChainIdSchema,
+  email: EmailSchema,
+});

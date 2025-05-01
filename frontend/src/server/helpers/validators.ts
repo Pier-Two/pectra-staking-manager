@@ -1,22 +1,22 @@
+import { BCValidatorsData } from "pec/lib/api/schemas/beaconchain/validator";
 import {
   ConsolidationModel,
   DepositModel,
   WithdrawalModel,
-} from "pec/lib/database/models";
+} from "pec/server/database/models";
 import { getValidatorActiveInfo } from "pec/lib/utils/validators/activity";
 import { getValidatorStatus } from "pec/lib/utils/validators/status";
-import { BeaconChainValidatorDetails } from "pec/types/api";
 import { ACTIVE_STATUS } from "pec/types/app";
 import { TransactionStatus, ValidatorDetails } from "pec/types/validator";
 
-export const populateBeaconchainValidatorDetails = async (
-  rawValidatorDetails: BeaconChainValidatorDetails,
-): Promise<ValidatorDetails> => {
+export const prePopulateBeaconchainValidatorResponse = (
+  rawValidatorDetails: BCValidatorsData,
+): ValidatorDetails => {
   const { activeSince, activeDuration } = getValidatorActiveInfo(
     rawValidatorDetails.activationepoch,
   );
 
-  const validatorDetails: ValidatorDetails = {
+  return {
     validatorIndex: rawValidatorDetails.validatorindex,
     publicKey: rawValidatorDetails.pubkey,
     withdrawalAddress: rawValidatorDetails.withdrawalcredentials,
@@ -26,12 +26,16 @@ export const populateBeaconchainValidatorDetails = async (
     numberOfWithdrawals: rawValidatorDetails.total_withdrawals,
     activeSince,
     activeDuration,
-    withdrawalTransactions: [],
-    consolidationTransaction: undefined,
-    depositTransaction: undefined,
-    upgradeSubmitted: false,
-    hasPendingDeposit: false,
+    pendingRequests: [],
+    pendingUpgrade: false,
   };
+};
+
+export const populateBeaconchainValidatorResponse = async (
+  rawValidatorDetails: BCValidatorsData,
+): Promise<ValidatorDetails> => {
+  const validatorDetails =
+    prePopulateBeaconchainValidatorResponse(rawValidatorDetails);
 
   const [withdrawTx, upgradeTx, consolidationTx, depositTx] = await Promise.all(
     [
@@ -41,7 +45,7 @@ export const populateBeaconchainValidatorDetails = async (
       }),
       await ConsolidationModel.findOne({
         targetValidatorIndex: validatorDetails.validatorIndex,
-        sourceTargetValidatorIndex: validatorDetails.validatorIndex,
+        sourceValidatorIndex: validatorDetails.validatorIndex,
         status: ACTIVE_STATUS,
       }),
       // TODO make this exclusive OR?
@@ -51,7 +55,7 @@ export const populateBeaconchainValidatorDetails = async (
         $or: [
           { targetValidatorIndex: Number(validatorDetails.validatorIndex) },
           {
-            sourceTargetValidatorIndex: Number(validatorDetails.validatorIndex),
+            sourceValidatorIndex: Number(validatorDetails.validatorIndex),
           },
         ],
       }),
@@ -61,29 +65,6 @@ export const populateBeaconchainValidatorDetails = async (
       }),
     ],
   );
-
-  if (withdrawTx) validatorDetails.withdrawalTransactions = withdrawTx;
-
-  if (upgradeTx) validatorDetails.upgradeSubmitted = true;
-
-  // TODO: Doesn't capture that there might be 2 consolidations for an address; 1 to upgrade, 2 to consolidate
-  if (consolidationTx) {
-    validatorDetails.consolidationTransaction = {
-      hash: consolidationTx.txHash,
-      status: TransactionStatus.SUBMITTED,
-      isConsolidatedValidator:
-        rawValidatorDetails.validatorindex ===
-        consolidationTx?.targetValidatorIndex,
-    };
-  }
-
-  if (depositTx) {
-    validatorDetails.depositTransaction = {
-      hash: depositTx.txHash,
-      status: TransactionStatus.SUBMITTED,
-    };
-    validatorDetails.hasPendingDeposit = true;
-  }
 
   return validatorDetails;
 };

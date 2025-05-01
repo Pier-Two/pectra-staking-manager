@@ -1,69 +1,191 @@
 import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "pec/server/api/trpc";
-import type {
-  BeaconChainAllValidatorsResponse,
-  BeaconChainValidatorArrayDetailsResponse,
-  BeaconChainValidatorDetailsResponse,
-  BeaconChainValidatorPerformanceResponse,
-} from "pec/types/api";
-import { type ValidatorDetails } from "pec/types/validator";
-import { ConsolidationModel } from "pec/lib/database/models";
-import { ACTIVE_STATUS } from "pec/types/app";
+import type { BeaconChainValidatorPerformanceResponse } from "pec/types/api";
+import { ValidatorStatus, type ValidatorDetails } from "pec/types/validator";
 import { SupportedChainIdSchema } from "pec/lib/api/schemas/network";
 import { getBeaconChainAxios } from "pec/lib/server/axios";
-import { createContact } from "pec/lib/services/emailService";
 import {
   PERFORMANCE_FILTERS,
   VALIDATOR_PERFORMANCE_FILTER_TO_BEACONCHAIN,
 } from "pec/lib/constants/validators/performance";
-import { populateBeaconchainValidatorDetails } from "pec/server/helpers/validators";
-import type { IResponse } from "pec/types/response";
-import { EmailSchema } from "pec/lib/api/schemas/email";
+import {
+  populateBeaconchainValidatorResponse,
+  prePopulateBeaconchainValidatorResponse,
+} from "pec/server/helpers/validators";
+import { getValidators } from "pec/server/helpers/beaconchain/getValidators";
+import { routeHandler } from "pec/server/helpers/route-errors";
+import { type IResponse } from "pec/types/response";
+import { getValidatorsForWithdrawAddress } from "pec/server/helpers/beaconchain/getValidatorForWithdrawAddress";
+import { type BCValidatorsData } from "pec/lib/api/schemas/beaconchain/validator";
+import {
+  ConsolidationModel,
+  DepositModel,
+  ExitModel,
+  ValidatorUpgradeModel,
+} from "pec/server/database/models";
+import { keyBy, values } from "lodash";
+import { checkValidatorUpgradeProcessedAndUpdate } from "pec/server/helpers/process-requests/validatorUpgrade";
+import { ACTIVE_STATUS } from "pec/types/app";
+import { checkConsolidationProcessedAndUpdate } from "pec/server/helpers/process-requests/consolidation";
+import { checkExitProcessedAndUpdate } from "pec/server/helpers/process-requests/exits";
 import { redisCacheMiddleware } from "../middleware/redis-cache-middleware";
+
+const populateStuff = async (
+  bcValidatorData: BCValidatorsData[],
+): Promise<ValidatorDetails[]> => {
+  const validatorDetails = bcValidatorData.map(
+    prePopulateBeaconchainValidatorResponse,
+  );
+
+  const keyedBCValidatorData = keyBy(bcValidatorData, (v) => v.validatorindex);
+  const keyedValidatorDetails = keyBy(
+    validatorDetails,
+    (v) => v.validatorIndex,
+  );
+
+  const mutateValidator = (
+    validatorIndex: number,
+    fields: Partial<ValidatorDetails>,
+  ) => {
+    const validator = keyedValidatorDetails[validatorIndex];
+
+    if (!validator) {
+      console.error(
+        `Validator with validatorIndex ${validatorIndex} not found in validator details`,
+      );
+      return;
+    }
+
+    Object.assign(validator, fields);
+  };
+
+  const allValidatorIndexes = validatorDetails.map((v) => v.validatorIndex);
+
+  const exits = await ExitModel.find({
+    validatorIndex: { $in: allValidatorIndexes },
+    status: ACTIVE_STATUS,
+  });
+
+  for (const exit of exits) {
+    const bcValidatorData = keyedBCValidatorData[exit.validatorIndex]!;
+
+    await checkExitProcessedAndUpdate(exit, bcValidatorData);
+
+    // We don't need to do this, the Beaconchain response should set this correctly but why not do this as a just incase.
+    mutateValidator(exit.validatorIndex, {
+      status: ValidatorStatus.EXITED,
+    });
+  }
+
+  const validatorUpgrades = await ValidatorUpgradeModel.find({
+    validatorIndex: { $in: allValidatorIndexes },
+    status: ACTIVE_STATUS,
+  });
+
+  for (const upgrade of validatorUpgrades) {
+    const validator = keyedValidatorDetails[upgrade.validatorIndex]!;
+
+    const isProcessed = await checkValidatorUpgradeProcessedAndUpdate(
+      upgrade,
+      validator.withdrawalAddress,
+    );
+
+    if (!isProcessed) {
+      validator.pendingUpgrade = true;
+    }
+  }
+
+  const consolidations = await ConsolidationModel.find({
+    status: ACTIVE_STATUS,
+    $or: [
+      { targetValidatorIndex: { $in: allValidatorIndexes } },
+      { sourceValidatorIndex: { $in: allValidatorIndexes } },
+    ],
+  });
+
+  for (const consolidation of consolidations) {
+    const bcSourceValidator =
+      keyedBCValidatorData[consolidation.sourceValidatorIndex];
+
+    if (!bcSourceValidator) {
+      console.error(
+        `No source validator found for consolidation ${consolidation._id.toString()}`,
+      );
+      continue;
+    }
+
+    // This should definitely exist for the user, but just incase
+    const isProcessed = await checkConsolidationProcessedAndUpdate(
+      consolidation,
+      bcSourceValidator,
+    );
+
+    // This would already be exited in most cases, buut just in case
+    mutateValidator(consolidation.sourceValidatorIndex, {
+      status: ValidatorStatus.EXITED,
+    });
+
+    if (!isProcessed) {
+      const targetValidatorDetails =
+        keyedValidatorDetails[consolidation.targetValidatorIndex];
+
+      // If the current user owns the target validator, we need to modify the target validator to include the pending consolidation request
+      if (targetValidatorDetails) {
+        mutateValidator(consolidation.targetValidatorIndex, {
+          pendingRequests: [
+            ...targetValidatorDetails.pendingRequests,
+            { type: "consolidation", amount: bcSourceValidator.balance },
+          ],
+        });
+      }
+    }
+  }
+
+  const deposits = await DepositModel.find({
+    validatorIndex: { $in: allValidatorIndexes },
+    status: ACTIVE_STATUS,
+  });
+
+  if (deposits.length) {
+    // const bcDeposits =
+  }
+
+  // Use the keyed object here because that is what we mutate throughout the function
+  return values(keyedValidatorDetails);
+};
 
 export const validatorRouter = createTRPCRouter({
   getValidators: publicProcedure
     .input(z.object({ address: z.string(), chainId: SupportedChainIdSchema }))
-    .query(async ({ input: { address, chainId: network } }) => {
-      try {
-        const validatorResponse = await getBeaconChainAxios(
+    .query(async ({ input: { address, chainId: network } }) =>
+      routeHandler(async (): Promise<IResponse<ValidatorDetails[]>> => {
+        const withdrawAddressValidators = await getValidatorsForWithdrawAddress(
+          address,
           network,
-        ).get<BeaconChainAllValidatorsResponse>(
-          `/api/v1/validator/withdrawalCredentials/${address}`,
-          {
-            params: {
-              limit: 200,
-            },
-          },
         );
 
-        if (!validatorResponse.data || validatorResponse.data.data.length === 0)
-          return [];
+        if (!withdrawAddressValidators.success)
+          return withdrawAddressValidators;
 
-        const validatorIndexes = validatorResponse.data.data.map(
+        const validatorIndexes = withdrawAddressValidators.data.map(
           (validator) => validator.validatorindex,
         );
 
-        const validatorDetails = await getBeaconChainAxios(
-          network,
-        ).get<BeaconChainValidatorArrayDetailsResponse>(
-          `/api/v1/validator/${validatorIndexes.join(",")}`,
-        );
+        const validatorDetails = await getValidators(validatorIndexes, network);
 
-        if (!validatorDetails.data) return [];
+        if (!validatorDetails.success) return validatorDetails;
 
         const validators: ValidatorDetails[] = [];
 
-        for (const validator of validatorDetails.data.data) {
-          validators.push(await populateBeaconchainValidatorDetails(validator));
+        for (const validator of validatorDetails.data) {
+          validators.push(
+            await populateBeaconchainValidatorResponse(validator),
+          );
         }
 
-        return validators;
-      } catch (error) {
-        console.error("Error fetching validators:", error);
-        return [];
-      }
-    }),
+        return { success: true, data: validators };
+      }),
+    ),
 
   getValidatorsPerformanceInWei: publicProcedure
     .use(redisCacheMiddleware())
@@ -74,23 +196,17 @@ export const validatorRouter = createTRPCRouter({
         filter: z.enum(PERFORMANCE_FILTERS),
       }),
     )
-    .query(async ({ input: { address, chainId: network, filter } }) => {
-      try {
-        const validatorResponse = await getBeaconChainAxios(
+    .query(async ({ input: { address, chainId: network, filter } }) =>
+      routeHandler(async (): Promise<IResponse<number>> => {
+        const withdrawAddressValidators = await getValidatorsForWithdrawAddress(
+          address,
           network,
-        ).get<BeaconChainAllValidatorsResponse>(
-          `/api/v1/validator/withdrawalCredentials/${address}`,
-          {
-            params: {
-              limit: 200,
-            },
-          },
         );
 
-        if (!validatorResponse.data || validatorResponse.data.data.length === 0)
-          return 0;
+        if (!withdrawAddressValidators.success)
+          return withdrawAddressValidators;
 
-        const validatorIndexes = validatorResponse.data.data.map(
+        const validatorIndexes = withdrawAddressValidators.data.map(
           (validator) => validator.validatorindex,
         );
 
@@ -100,7 +216,7 @@ export const validatorRouter = createTRPCRouter({
           `/api/v1/validator/${validatorIndexes.join(",")}/execution/performance`,
         );
 
-        if (!validatorPerformances.data) return 0;
+        if (!validatorPerformances.data) return { success: true, data: 0 };
 
         let totalInWei = 0;
 
@@ -118,95 +234,29 @@ export const validatorRouter = createTRPCRouter({
           totalInWei += value;
         }
 
-        return totalInWei;
-      } catch (error) {
-        console.error("Error fetching validators performance:", error);
-        return 0;
-      }
-    }),
+        return { success: true, data: totalInWei };
+      }),
+    ),
 
   getValidatorDetails: publicProcedure
     .input(
       z.object({ searchTerm: z.string(), network: SupportedChainIdSchema }),
     )
-    .query(async ({ input: { searchTerm, network } }) => {
-      try {
-        const { data } = await getBeaconChainAxios(
-          network,
-        ).get<BeaconChainValidatorDetailsResponse>(
-          `/api/v1/validator/${searchTerm}`,
-        );
+    .query(async ({ input: { searchTerm, network } }) =>
+      routeHandler(async (): Promise<IResponse<ValidatorDetails>> => {
+        const validatorResponse = await getValidators([searchTerm], network);
 
-        const validator = data.data;
+        if (!validatorResponse.success) return validatorResponse;
+        const [validator] = validatorResponse.data;
 
-        if (!validator.validatorindex) return "NOT_FOUND";
+        if (!validator) {
+          return { success: false, error: "NOT_FOUND" };
+        }
 
-        return await populateBeaconchainValidatorDetails(validator);
-      } catch (error) {
-        console.error("Error getting validator: ", error);
-        return "NOT_FOUND";
-      }
-    }),
+        const populatedDetails =
+          await populateBeaconchainValidatorResponse(validator);
 
-  updateConsolidationRecord: publicProcedure
-    .meta({
-      noRateLimit: true, // no rate limit since this is hit many times during consolidation
-    })
-    .input(
-      z.object({
-        targetValidatorIndex: z.number(),
-        sourceTargetValidatorIndex: z.number(),
-        txHash: z.string(),
-        email: EmailSchema,
+        return { success: true, data: populatedDetails };
       }),
-    )
-    .mutation(async ({ input }): Promise<IResponse<null>> => {
-      const {
-        targetValidatorIndex,
-        sourceTargetValidatorIndex,
-        txHash,
-        email,
-      } = input;
-
-      const existingRecord = await ConsolidationModel.findOne({
-        $or: [
-          {
-            targetValidatorIndex,
-            sourceTargetValidatorIndex,
-          },
-          {
-            targetValidatorIndex: sourceTargetValidatorIndex,
-            sourceTargetValidatorIndex: targetValidatorIndex,
-          },
-        ],
-      });
-
-      if (existingRecord)
-        throw new Error(
-          `Consolidation record already exists for validators ${targetValidatorIndex} and ${sourceTargetValidatorIndex}`,
-        );
-
-      await ConsolidationModel.create({
-        targetValidatorIndex,
-        sourceTargetValidatorIndex,
-        status: ACTIVE_STATUS,
-        txHash,
-        email,
-      });
-
-      if (email) {
-        const contactResponse = await createContact(email);
-
-        if (!contactResponse.success)
-          console.error(
-            `Error creating contact in Hubspot for ${email}`,
-            contactResponse.error,
-          );
-      }
-
-      return {
-        success: true,
-        data: null,
-      };
-    }),
+    ),
 });

@@ -1,14 +1,18 @@
 import { modelOptions, prop } from "@typegoose/typegoose";
-import { DatabaseWithdrawalType } from "pec/lib/api/schemas/database/withdrawal";
+import {
+  SUPPORTED_NETWORKS_IDS,
+  type SupportedNetworkIds,
+} from "pec/constants/chain";
 import { DatabaseDocumentStatuses } from "pec/types/app";
+
 @modelOptions({
   schemaOptions: {
     timestamps: true,
     toObject: { virtuals: true },
-    collection: "withdrawals",
+    collection: "consolidations",
   },
 })
-export class Withdrawal implements DatabaseWithdrawalType {
+export class Consolidation {
   @prop()
   public email?: string;
 
@@ -16,14 +20,17 @@ export class Withdrawal implements DatabaseWithdrawalType {
   public status!: (typeof DatabaseDocumentStatuses)[number];
 
   @prop({ required: true })
-  public validatorIndex!: number;
+  public targetValidatorIndex!: number;
 
   @prop({ required: true })
-  public withdrawalIndex!: number;
-
-  @prop({ required: true })
-  public amount!: number;
+  public sourceValidatorIndex!: number;
 
   @prop({ required: true })
   public txHash!: string;
+
+  @prop({ required: true, enum: SUPPORTED_NETWORKS_IDS, type: Number })
+  public networkId!: SupportedNetworkIds;
+
+  @prop({ required: true })
+  public amount!: number;
 }

@@ -1,11 +1,16 @@
+import { HOODI_CHAIN_DETAILS, SupportedNetworkIds } from "pec/constants/chain";
+
 /**
  * Get the block explorer transaction URL
  * @param txHash - The transaction hash
  * @returns The block explorer transaction URL
  */
-export const getBlockExplorerTxUrl = (txHash: string | undefined) => {
-  if (!txHash) return "";
-  return `https://etherscan.io/tx/${txHash}`;
+export const getBlockExplorerTxUrl = (
+  txHash: string,
+  networkId: SupportedNetworkIds,
+) => {
+  const prefix = networkId === HOODI_CHAIN_DETAILS.id ? "hoodi." : "";
+  return `https://${prefix}etherscan.io/tx/${txHash}`;
 };
 
 export const labrysUrl = `https://labrys.io/`;
