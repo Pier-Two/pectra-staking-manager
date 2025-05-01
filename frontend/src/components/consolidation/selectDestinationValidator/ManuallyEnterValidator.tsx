@@ -1,7 +1,6 @@
-import { toast } from "pec/components/ui/Toast";
 import { useState } from "react";
-
 import { Copy } from "lucide-react";
+
 import { Button } from "pec/components/ui/button";
 import {
   Card,
@@ -10,12 +9,13 @@ import {
   CardHeader,
   CardTitle,
 } from "pec/components/ui/card";
+import { PrimaryButton } from "pec/components/ui/custom/PrimaryButton";
 import { Input } from "pec/components/ui/input";
 import { Skeleton } from "pec/components/ui/skeleton";
+import { toast } from "pec/components/ui/Toast";
 import { useActiveChainWithDefault } from "pec/hooks/useChain";
-import { api } from "pec/trpc/react";
 import { displayedEthAmount } from "pec/lib/utils/validators/balance";
-import { PrimaryButton } from "pec/components/ui/custom/PrimaryButton";
+import { api } from "pec/trpc/react";
 import { ValidatorDetails } from "pec/types/validator";
 
 interface ManuallyEnterValidatorProps {

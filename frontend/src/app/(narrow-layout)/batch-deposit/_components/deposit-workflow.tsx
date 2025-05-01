@@ -1,12 +1,14 @@
 "use client";
 
-import { useWalletAddress } from "pec/hooks/useWallet";
-import { useValidators } from "pec/hooks/useValidators";
-import { DepositWorkflow } from "pec/components/batch-deposits/DepositWorkflow";
-import { formatEther } from "viem";
 import { useWalletBalance } from "thirdweb/react";
+import { formatEther } from "viem";
+
+import { DepositWorkflow } from "pec/components/batch-deposits/DepositWorkflow";
 import { useActiveChainWithDefault } from "pec/hooks/useChain";
+import { useValidators } from "pec/hooks/useValidators";
+import { useWalletAddress } from "pec/hooks/useWallet";
 import { client } from "pec/lib/wallet/client";
+
 import { BatchDepositLoading } from "./batch-deposit-loading";
 
 /**

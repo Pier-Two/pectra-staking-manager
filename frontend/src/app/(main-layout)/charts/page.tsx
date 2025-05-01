@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
+import type { FC } from "react";
+import { Suspense } from "react";
+
 import { ChartPrefetch } from "pec/components/charts/ChartPrefetch";
 import { ChartSkeleton } from "pec/components/charts/ChartSkeleton";
 import { title } from "pec/constants/metadata";
-import { Suspense, type FC } from "react";
 
 export const metadata: Metadata = {
   title: title("Charts"),

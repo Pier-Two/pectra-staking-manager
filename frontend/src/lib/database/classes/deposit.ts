@@ -1,6 +1,7 @@
 import { modelOptions, prop } from "@typegoose/typegoose";
-import { DatabaseDocumentStatuses } from "pec/types/app";
+
 import { DatabaseDepositType } from "pec/lib/api/schemas/database/deposit";
+import { DatabaseDocumentStatuses } from "pec/types/app";
 
 @modelOptions({
   schemaOptions: {

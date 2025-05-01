@@ -1,12 +1,13 @@
 "use client";
 
+import { type FC } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import { type FieldErrors } from "react-hook-form";
 import { HiMail } from "react-icons/hi";
+
 import { Input } from "pec/components/ui/input";
 import { Switch } from "pec/components/ui/switch";
 import { type DepositType } from "pec/lib/api/schemas/deposit";
-import { type FC } from "react";
-import { type FieldErrors } from "react-hook-form";
 
 export interface IConsolidationEmail {
   cardText: string;
@@ -42,7 +43,7 @@ export const Email: FC<IConsolidationEmail> = (props) => {
           <div className="flex-col items-center">
             <div className="text-md font-570">{cardTitle}</div>
 
-            <div className="text-piertwo-text text-sm">{cardText}</div>
+            <div className="text-sm text-piertwo-text">{cardText}</div>
           </div>
         </div>
 

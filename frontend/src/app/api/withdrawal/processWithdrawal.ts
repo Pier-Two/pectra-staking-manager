@@ -1,17 +1,16 @@
+import { chunk, groupBy, maxBy } from "lodash";
+
+import type { BeaconchainWithdrawalResponse } from "pec/lib/api/schemas/beaconchain";
+import type { Withdrawal } from "pec/lib/database/classes/withdrawal";
+import type { IResponse } from "pec/types/response";
+import { isBeaconchainWithdrawalResponseValid } from "pec/lib/api/schemas/beaconchain";
 import { CHUNK_SIZE } from "pec/lib/constants";
+import { PROCESS_REQUESTS_NETWORK_ID } from "pec/lib/constants/feature-flags";
 import { WithdrawalModel } from "pec/lib/database/models";
+import { getBeaconChainAxios } from "pec/lib/server/axios";
+import { sendEmailNotification } from "pec/lib/services/emailService";
 import { generateErrorResponse } from "pec/lib/utils";
 import { ACTIVE_STATUS, INACTIVE_STATUS } from "pec/types/app";
-import type { IResponse } from "pec/types/response";
-import { chunk, groupBy, maxBy } from "lodash";
-import type { Withdrawal } from "pec/lib/database/classes/withdrawal";
-import { sendEmailNotification } from "pec/lib/services/emailService";
-import { getBeaconChainAxios } from "pec/lib/server/axios";
-import { PROCESS_REQUESTS_NETWORK_ID } from "pec/lib/constants/feature-flags";
-import {
-  type BeaconchainWithdrawalResponse,
-  isBeaconchainWithdrawalResponseValid,
-} from "pec/lib/api/schemas/beaconchain";
 
 export const processWithdrawals = async (): Promise<IResponse> => {
   try {

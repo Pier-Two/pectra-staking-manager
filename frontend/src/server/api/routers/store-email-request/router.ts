@@ -1,24 +1,23 @@
+import { Ratelimit } from "@upstash/ratelimit";
+import { maxBy } from "lodash";
 import { z } from "zod";
+
+import type { BeaconchainWithdrawalResponse } from "pec/lib/api/schemas/beaconchain";
+import type { IResponse } from "pec/types/response";
+import { isBeaconchainWithdrawalResponseValid } from "pec/lib/api/schemas/beaconchain";
+import { DatabaseDepositSchema } from "pec/lib/api/schemas/database/deposit";
+import { SupportedChainIdSchema } from "pec/lib/api/schemas/network";
+import { StoreWithdrawalRequestSchema } from "pec/lib/api/schemas/withdrawal";
+import { DepositModel, WithdrawalModel } from "pec/lib/database/models";
+import { getBeaconChainAxios } from "pec/lib/server/axios";
+import { createContact } from "pec/lib/services/emailService";
+import { generateErrorResponse } from "pec/lib/utils";
 import {
   createRedisRateLimiterMiddleware,
   createTRPCRouter,
   publicProcedure,
 } from "pec/server/api/trpc";
-import { SupportedChainIdSchema } from "pec/lib/api/schemas/network";
-import { DepositModel, WithdrawalModel } from "pec/lib/database/models";
-import { getBeaconChainAxios } from "pec/lib/server/axios";
-import {
-  type BeaconchainWithdrawalResponse,
-  isBeaconchainWithdrawalResponseValid,
-} from "pec/lib/api/schemas/beaconchain";
-import { StoreWithdrawalRequestSchema } from "pec/lib/api/schemas/withdrawal";
 import { ACTIVE_STATUS } from "pec/types/app";
-import { maxBy } from "lodash";
-import type { IResponse } from "pec/types/response";
-import { generateErrorResponse } from "pec/lib/utils";
-import { DatabaseDepositSchema } from "pec/lib/api/schemas/database/deposit";
-import { createContact } from "pec/lib/services/emailService";
-import { Ratelimit } from "@upstash/ratelimit";
 
 export const storeEmailRequestRouter = createTRPCRouter({
   storeWithdrawalRequest: publicProcedure

@@ -1,13 +1,14 @@
 "use client";
 
+import type { FC } from "react";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
-import { ConnectWalletButton } from "pec/components/ui/wallet/ConnectWallet";
-import { cn } from "pec/lib/utils";
-import type { FC } from "react";
 
+import { ConnectWalletButton } from "pec/components/ui/wallet/ConnectWallet";
 import { useValidators } from "pec/hooks/useValidators";
+import { cn } from "pec/lib/utils";
 import { ValidatorStatus } from "pec/types/validator";
+
 import DarkMode from "../dark-mode";
 import { PectraSpinner } from "../ui/custom/pectraSpinner";
 import { SidebarTrigger } from "../ui/sidebar";

@@ -1,17 +1,19 @@
 "use client";
 
-import { ArrowRightIcon } from "lucide-react";
+import { useEffect } from "react";
 import Link from "next/link";
+import { ArrowRightIcon } from "lucide-react";
+
+import { EnterAnimation } from "pec/app/(login-layout)/welcome/_components/enter-animation";
 import { PrimaryButton } from "pec/components/ui/custom/PrimaryButton";
 import { SecondaryButton } from "pec/components/ui/custom/SecondaryButton";
 import { Connector } from "pec/components/validators/Connector";
+import { trackEvent } from "pec/helpers/trackEvent";
+import { useValidators } from "pec/hooks/useValidators";
 import { useWalletAddress } from "pec/hooks/useWallet";
 import { EIconPosition } from "pec/types/components";
-import { useValidators } from "pec/hooks/useValidators";
-import { EnterAnimation } from "pec/app/(login-layout)/welcome/_components/enter-animation";
+
 import ValidatorsFoundLoading from "./validators-found-loading";
-import { useEffect } from "react";
-import { trackEvent } from "pec/helpers/trackEvent";
 
 const ValidatorsFound = () => {
   const walletAddress = useWalletAddress();

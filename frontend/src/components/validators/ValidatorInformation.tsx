@@ -1,6 +1,7 @@
-import { validatorIsActive } from "pec/lib/utils/validators/status";
-import type { ValidatorDetails } from "pec/types/validator";
 import { HiBolt } from "react-icons/hi2";
+
+import type { ValidatorDetails } from "pec/types/validator";
+import { validatorIsActive } from "pec/lib/utils/validators/status";
 
 interface ValidatorInformationProps {
   validators: ValidatorDetails[];

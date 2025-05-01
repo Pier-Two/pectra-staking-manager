@@ -1,7 +1,5 @@
-import {
-  EDistributionMethod,
-  type IDistributionOption,
-} from "pec/types/batch-deposits";
+import type { IDistributionOption } from "pec/types/batch-deposits";
+import { EDistributionMethod } from "pec/types/batch-deposits";
 
 export const DISTRIBUTION_OPTIONS: IDistributionOption[] = [
   {

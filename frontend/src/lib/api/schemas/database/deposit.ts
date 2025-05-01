@@ -1,6 +1,9 @@
-import { DatabaseDocumentStatuses } from "pec/types/app";
 import { z } from "zod";
+
+import { DatabaseDocumentStatuses } from "pec/types/app";
+
 import { EmailSchema } from "../email";
+
 export const DatabaseDepositSchema = z.object({
   status: z.enum(DatabaseDocumentStatuses),
   validatorIndex: z.number(),

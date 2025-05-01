@@ -1,4 +1,5 @@
 import type { FC } from "react";
+
 import { TableCell, TableRow } from "pec/components/ui/table";
 
 export const TableNoResults: FC = () => {

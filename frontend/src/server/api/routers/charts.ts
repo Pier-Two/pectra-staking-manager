@@ -1,15 +1,17 @@
-import { createTRPCRouter, publicProcedure } from "pec/server/api/trpc";
-import { ValidatorSummaryModel } from "pec/lib/database/models";
 import { groupBy } from "lodash";
+
+import type { ValidatorSummary } from "pec/lib/database/classes/validatorSummary";
 import type {
-  IGroupedValidatorStatistics,
   IChart,
+  IGroupedValidatorStatistics,
   ValidatorStatistics,
 } from "pec/types/chart";
-import type { ValidatorSummary } from "pec/lib/database/classes/validatorSummary";
+import { ValidatorSummaryModel } from "pec/lib/database/models";
+import { constructAverageEthStakedChartData } from "pec/lib/utils/charts/averageEthStaked";
 import { constructNumberOfValidatorsForEachUpgradeChartData } from "pec/lib/utils/charts/numberOfValidatorsForEachUpgrade";
 import { constructTotalEthStakedChartData } from "pec/lib/utils/charts/totalEthStaked";
-import { constructAverageEthStakedChartData } from "pec/lib/utils/charts/averageEthStaked";
+import { createTRPCRouter, publicProcedure } from "pec/server/api/trpc";
+
 import { redisCacheMiddleware } from "../middleware/redis-cache-middleware";
 
 export const chartRouter = createTRPCRouter({

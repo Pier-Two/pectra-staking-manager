@@ -1,24 +1,25 @@
 "use client";
 
-import { clsx } from "clsx";
-
-import { ChevronDown } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { SUPPORTED_CHAINS } from "pec/constants/chain";
-import { useTheme } from "pec/hooks/useTheme";
-import { useWalletAddress } from "pec/hooks/useWallet";
-import { client, wallets } from "pec/lib/wallet/client";
-import type { StyleableComponent } from "pec/types/components";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { clsx } from "clsx";
+import { ChevronDown } from "lucide-react";
 import {
   ConnectButton,
+  useActiveWalletConnectionStatus,
   useEnsAvatar,
   useEnsName,
   useWalletDetailsModal,
-  useActiveWalletConnectionStatus,
 } from "thirdweb/react";
-import { Button } from "../button";
+
+import type { StyleableComponent } from "pec/types/components";
+import { SUPPORTED_CHAINS } from "pec/constants/chain";
 import { trackEvent } from "pec/helpers/trackEvent";
+import { useTheme } from "pec/hooks/useTheme";
+import { useWalletAddress } from "pec/hooks/useWallet";
+import { client, wallets } from "pec/lib/wallet/client";
+
+import { Button } from "../button";
 
 export const ConnectWalletButton = ({ className }: StyleableComponent) => {
   const router = useRouter();

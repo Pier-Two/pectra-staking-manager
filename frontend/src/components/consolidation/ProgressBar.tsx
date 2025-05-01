@@ -1,8 +1,10 @@
+import type { FC } from "react";
+
 import {
   CONSOLIDATION_STEPS,
   ConsolidationStep,
 } from "pec/types/consolidation";
-import type { FC } from "react";
+
 import { SecondaryButton } from "../ui/custom/SecondaryButton";
 
 export interface IProgressBar {

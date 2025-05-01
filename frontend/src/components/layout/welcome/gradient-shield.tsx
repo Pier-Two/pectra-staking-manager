@@ -1,6 +1,7 @@
-import { cn } from "pec/lib/utils";
 import { useId } from "react";
 import { HiShieldCheck } from "react-icons/hi";
+
+import { cn } from "pec/lib/utils";
 
 /**
  * This component is used to render a gradient shield icon.

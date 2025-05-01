@@ -1,7 +1,9 @@
-import { ArrowUpFromDot } from "lucide-react";
-import Withdrawal from "./_components/withdrawal";
 import type { Metadata } from "next";
+import { ArrowUpFromDot } from "lucide-react";
+
 import { title } from "pec/constants/metadata";
+
+import Withdrawal from "./_components/withdrawal";
 
 export const metadata: Metadata = {
   title: title("Withdraw"),

@@ -1,11 +1,13 @@
-import { Check, ExternalLink } from "lucide-react";
 import Image from "next/image";
+import { Check, ExternalLink } from "lucide-react";
+
 import { SecondaryButton } from "pec/components/ui/custom/SecondaryButton";
+import { displayedEthAmount } from "pec/lib/utils/validators/balance";
 import { type DepositWorkflowStage } from "pec/types/batch-deposits";
 import { EIconPosition } from "pec/types/components";
+
 import { PrimaryButton } from "../../ui/custom/PrimaryButton";
 import { Separator } from "../../ui/separator";
-import { displayedEthAmount } from "pec/lib/utils/validators/balance";
 
 export interface IDistributionInformation {
   onSubmit?: () => void;

@@ -1,13 +1,16 @@
 "use client";
 
-import { useState, type FC } from "react";
-import { api } from "pec/trpc/react";
+import type { FC } from "react";
+import { useState } from "react";
 import Image from "next/image";
-import { Card, CardFooter, CardHeader } from "pec/components/ui/card";
-import { AreaChartComponent } from "./AreaChart";
 import { ChevronLeft, ChevronRight, Expand } from "lucide-react";
-import { ChartSkeleton } from "./ChartSkeleton";
+
 import type { ChartGroup } from "pec/types/chart";
+import { Card, CardFooter, CardHeader } from "pec/components/ui/card";
+import { api } from "pec/trpc/react";
+
+import { AreaChartComponent } from "./AreaChart";
+import { ChartSkeleton } from "./ChartSkeleton";
 
 const emptyChart = (
   <Card className="w-full rounded-xl bg-white text-black shadow-xl dark:bg-gray-900 dark:text-white">

@@ -1,7 +1,8 @@
-import { cn } from "pec/lib/utils";
 import type { ComponentProps } from "react";
-import { motion } from "motion/react";
 import { omit } from "lodash";
+import { motion } from "motion/react";
+
+import { cn } from "pec/lib/utils";
 
 export type ValidatorCardWrapperProps = (
   | ({

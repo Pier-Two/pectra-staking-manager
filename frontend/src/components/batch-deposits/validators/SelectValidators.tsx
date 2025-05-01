@@ -1,17 +1,17 @@
-import {
-  DEPOSIT_COLUMN_HEADERS,
-  type DepositTableValidatorDetails,
-} from "pec/constants/columnHeaders";
+import type { FieldErrors, UseFormRegister } from "react-hook-form";
+import { useCallback, useMemo } from "react";
+
+import type { DepositTableValidatorDetails } from "pec/constants/columnHeaders";
 import type { DepositData, DepositType } from "pec/lib/api/schemas/deposit";
+import { AmountInput } from "pec/components/ui/custom/AmountInput";
+import { DisplayAmount } from "pec/components/ui/table/TableComponents";
+import { ValidatorTable } from "pec/components/ui/table/ValidatorTable";
+import { DEPOSIT_COLUMN_HEADERS } from "pec/constants/columnHeaders";
+import { MAX_VALIDATOR_BALANCE } from "pec/constants/deposit";
 import { EDistributionMethod } from "pec/types/batch-deposits";
 import { type ValidatorDetails } from "pec/types/validator";
-import { useCallback, useMemo } from "react";
-import type { FieldErrors, UseFormRegister } from "react-hook-form";
+
 import { ValidatorHeader } from "./ValidatorHeader";
-import { ValidatorTable } from "pec/components/ui/table/ValidatorTable";
-import { AmountInput } from "pec/components/ui/custom/AmountInput";
-import { MAX_VALIDATOR_BALANCE } from "pec/constants/deposit";
-import { DisplayAmount } from "pec/components/ui/table/TableComponents";
 
 export interface ISelectValidatorsProps {
   clearSelectedValidators: () => void;

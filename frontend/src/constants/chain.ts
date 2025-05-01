@@ -1,4 +1,5 @@
-import { type ChainOptions, mainnet } from "thirdweb/chains";
+import type { ChainOptions } from "thirdweb/chains";
+import { mainnet } from "thirdweb/chains";
 
 export const HOODI_CHAIN_DETAILS: Readonly<
   ChainOptions & {

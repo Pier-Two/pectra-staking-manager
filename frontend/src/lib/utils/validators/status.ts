@@ -1,8 +1,5 @@
-import {
-  ValidatorDetails,
-  type ValidatorLifecycleStatus,
-  ValidatorStatus,
-} from "pec/types/validator";
+import type { ValidatorLifecycleStatus } from "pec/types/validator";
+import { ValidatorDetails, ValidatorStatus } from "pec/types/validator";
 
 type ValidatorState =
   | { type: "pending" }

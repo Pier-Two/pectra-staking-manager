@@ -1,7 +1,9 @@
 import { z } from "zod";
+
 import { DatabaseWithdrawalSchema } from "./database/withdrawal";
 import { EmailSchema } from "./email";
 import { ValidatorDataSchema } from "./validator";
+
 export const WithdrawalFormSchema = z.object({
   withdrawals: z.array(
     z.object({

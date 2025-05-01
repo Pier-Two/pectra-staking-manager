@@ -1,5 +1,5 @@
-import { Client } from "@upstash/qstash";
 import path from "path";
+import { Client } from "@upstash/qstash";
 import * as dotenv from "dotenv";
 
 dotenv.config({ path: path.resolve(process.cwd(), ".env.local") });

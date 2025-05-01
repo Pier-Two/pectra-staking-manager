@@ -1,7 +1,9 @@
-import { describe, it, expect } from "vitest";
-import { createCaller } from "../../root";
-import { validatorSummaries } from "pec/test-data/validatorSummaries";
+import { describe, expect, it } from "vitest";
+
 import { ValidatorSummaryModel } from "pec/lib/database/models";
+import { validatorSummaries } from "pec/test-data/validatorSummaries";
+
+import { createCaller } from "../../root";
 
 const mockCtx = {
   headers: new Headers(),

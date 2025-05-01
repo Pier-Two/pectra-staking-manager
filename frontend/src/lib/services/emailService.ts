@@ -1,6 +1,7 @@
 import type { IResponse } from "pec/types/response";
-import { generateErrorResponse } from "../utils";
 import { type EmailNames } from "pec/types/emails";
+
+import { generateErrorResponse } from "../utils";
 import hubspotApi from "./hubspot-api";
 
 export const createContact = async (email: string): Promise<IResponse> => {

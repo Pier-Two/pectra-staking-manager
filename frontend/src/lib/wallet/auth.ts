@@ -1,12 +1,15 @@
 "use server";
 
-import { env } from "pec/env";
-import { createAuth, type VerifyLoginPayloadParams } from "thirdweb/auth";
-import { client } from "./client";
+import type { VerifyLoginPayloadParams } from "thirdweb/auth";
 import { cookies } from "next/headers";
+import { createAuth } from "thirdweb/auth";
 import { privateKeyToAccount } from "thirdweb/wallets";
+
 import type { IResponse } from "pec/types/response";
 import { COOKIE_NAME } from "pec/constants/cookie";
+import { env } from "pec/env";
+
+import { client } from "./client";
 
 const thirdwebAuth = createAuth({
   domain: env.NEXT_PUBLIC_THIRDWEB_CLIENT_ID,

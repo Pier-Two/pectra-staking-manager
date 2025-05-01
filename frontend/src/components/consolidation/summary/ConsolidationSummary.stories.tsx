@@ -1,7 +1,9 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { ConsolidationSummary } from "./ConsolidationSummary";
-import { MOCK_VALIDATORS } from "pec/server/__mocks__/validators";
 import { noop } from "lodash";
+
+import { MOCK_VALIDATORS } from "pec/server/__mocks__/validators";
+
+import { ConsolidationSummary } from "./ConsolidationSummary";
 
 // More on how to set up stories at: https://storybook.js.org/docs/writing-stories#default-export
 const meta = {

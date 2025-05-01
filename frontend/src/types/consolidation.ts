@@ -1,4 +1,5 @@
 import { SubmittingConsolidationValidatorDetails } from "pec/constants/columnHeaders";
+
 import { ValidatorDetails } from "./validator";
 
 export const CONSOLIDATION_STEPS: Record<ConsolidationStep, number> = {

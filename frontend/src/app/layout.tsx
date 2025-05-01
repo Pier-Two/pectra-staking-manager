@@ -1,18 +1,22 @@
 import { type Metadata } from "next";
 import { Inter } from "next/font/google";
 import localFont from "next/font/local";
+
 import { AppSidebar } from "pec/components/app-sidebar";
 import { SidebarProvider } from "pec/components/ui/sidebar";
 import { Toaster } from "pec/components/ui/sonner";
 import { NetworkContextProvider } from "pec/contexts/NetworkContext";
 import { ThemeProvider } from "pec/contexts/ThemeContext";
 import { cn } from "pec/lib/utils";
+
 import "pec/styles/globals.css";
-import { TRPCReactProvider } from "pec/trpc/react";
+
+import { Author } from "next/dist/lib/metadata/types/metadata-types";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
-import { Author } from "next/dist/lib/metadata/types/metadata-types";
+
+import { TRPCReactProvider } from "pec/trpc/react";
 
 const sans = localFont({
   src: "../fonts/Saans-TRIAL-VF.woff2",

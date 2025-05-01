@@ -1,7 +1,8 @@
+import { type FC } from "react";
+
+import type { ChildrenProp } from "pec/types/app";
 import { SharedLayout } from "pec/components/layout";
 import { NARROW_MAX_WIDTH_STYLE } from "pec/constants/styles";
-import type { ChildrenProp } from "pec/types/app";
-import { type FC } from "react";
 
 const NarrowLayout: FC<ChildrenProp> = (props) => {
   const { children } = props;

@@ -1,4 +1,5 @@
 import { X } from "lucide-react";
+
 import { TertiaryButton } from "pec/components/ui/custom/TertiaryButton";
 import { EIconPosition } from "pec/types/components";
 
@@ -35,4 +36,3 @@ export const ValidatorHeader = ({
     </div>
   );
 };
-

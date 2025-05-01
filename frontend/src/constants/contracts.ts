@@ -1,12 +1,14 @@
-import { client } from "pec/lib/wallet/client";
-import type { Contracts } from "pec/types/contracts";
-import { getContract } from "thirdweb";
 import {
-  batchDepositDeployedAddresses,
   batchDepositABI,
+  batchDepositDeployedAddresses,
 } from "@piertwo/contracts";
-import { HOODI_CHAIN_DETAILS } from "./chain";
+import { getContract } from "thirdweb";
 import { mainnet } from "thirdweb/chains";
+
+import type { Contracts } from "pec/types/contracts";
+import { client } from "pec/lib/wallet/client";
+
+import { HOODI_CHAIN_DETAILS } from "./chain";
 
 export const getContracts = (id: number | undefined): Contracts => {
   if (id === HOODI_CHAIN_DETAILS.id || id === mainnet.id) {

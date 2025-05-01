@@ -1,12 +1,14 @@
 "use client";
 
-import { Merge } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { Merge } from "lucide-react";
+
 import { PrimaryButton } from "pec/components/ui/custom/PrimaryButton";
 import { SecondaryButton } from "pec/components/ui/custom/SecondaryButton";
 import { Connector } from "pec/components/validators/Connector";
 import { useValidators } from "pec/hooks/useValidators";
 import { useWalletAddress } from "pec/hooks/useWallet";
+
 import { ConsolidateLoading } from "./consolidate-loading";
 
 export const Consolidate = () => {

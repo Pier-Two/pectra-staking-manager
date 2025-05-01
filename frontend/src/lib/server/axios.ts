@@ -1,7 +1,8 @@
 import { HOODI_CHAIN_ID } from "@piertwo/contracts/constants/networks";
 import axios from "axios";
-import { getBeaconChainURL } from "pec/constants/beaconchain";
+
 import type { SupportedNetworkIds } from "pec/constants/chain";
+import { getBeaconChainURL } from "pec/constants/beaconchain";
 import { env } from "pec/env";
 
 export const HoodiBeaconchainAxios = axios.create({

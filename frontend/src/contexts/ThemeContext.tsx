@@ -1,8 +1,11 @@
 "use client";
 
-import { createContext, useEffect, useState, type FC } from "react";
-import { EThemeMode, type IThemeContext } from "pec/types/theme";
+import type { FC } from "react";
+import { createContext, useEffect, useState } from "react";
+
 import type { ChildrenProp } from "pec/types/app";
+import type { IThemeContext } from "pec/types/theme";
+import { EThemeMode } from "pec/types/theme";
 
 export const ThemeContext = createContext<IThemeContext>({
   darkMode: false,

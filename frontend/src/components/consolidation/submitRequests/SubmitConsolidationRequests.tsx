@@ -1,17 +1,18 @@
 import { useRouter } from "next/navigation";
-import { ValidatorDetails } from "pec/types/validator";
+import { Separator } from "@radix-ui/react-separator";
 import { ArrowRightIcon, CircleCheck, OctagonMinus } from "lucide-react";
+
+import { PectraSpinner } from "pec/components/ui/custom/pectraSpinner";
 import { PrimaryButton } from "pec/components/ui/custom/PrimaryButton";
-import { EIconPosition } from "pec/types/components";
+import { ValidatorCardWrapper } from "pec/components/ui/custom/validator-card-wrapper";
+import { ValidatorIndex } from "pec/components/ui/table/TableComponents";
 import { ValidatorTable } from "pec/components/ui/table/ValidatorTable";
 import {
   SUBMITTING_CONSOLIDATION_TABLE_HEADERS,
   SubmittingConsolidationValidatorDetails,
 } from "pec/constants/columnHeaders";
-import { ValidatorCardWrapper } from "pec/components/ui/custom/validator-card-wrapper";
-import { ValidatorIndex } from "pec/components/ui/table/TableComponents";
-import { PectraSpinner } from "pec/components/ui/custom/pectraSpinner";
-import { Separator } from "@radix-ui/react-separator";
+import { EIconPosition } from "pec/types/components";
+import { ValidatorDetails } from "pec/types/validator";
 
 interface SubmitConsolidationRequestsProps {
   destination: ValidatorDetails;

@@ -1,10 +1,10 @@
-import { WITHDRAWAL_PREFIXES } from "pec/constants/api";
 import type {
   IChartData,
   IGroupedValidatorStatistics,
   IXAxis,
   IYAxis,
 } from "pec/types/chart";
+import { WITHDRAWAL_PREFIXES } from "pec/constants/api";
 
 const convertGweiToEth = (value: number): number => value / 1e9;
 
@@ -64,7 +64,7 @@ const buildChartKey = (date: Date, filter: "days" | "months" | "years") => {
   const day = date.getUTCDate().toString().padStart(2, "0");
   const month = (date.getUTCMonth() + 1).toString().padStart(2, "0");
   const year = date.getUTCFullYear().toString().slice(-2);
-  
+
   if (filter === "days") return `${day}/${month}/${year}`;
   if (filter === "years") return `${year}`;
   return `${month}/${year}`;

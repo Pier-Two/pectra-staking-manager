@@ -1,6 +1,8 @@
+import { getRpcClient } from "thirdweb";
+
 import { HOODI_CHAIN_DETAILS } from "pec/constants/chain";
 import { client } from "pec/lib/wallet/client";
-import { getRpcClient } from "thirdweb";
+
 import { useActiveChainWithDefault } from "./useChain";
 
 export const useRpcClient = () => {

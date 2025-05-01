@@ -3,8 +3,9 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 
 import axios from "axios";
-import { type IError } from "pec/types/response";
 import { z } from "zod";
+
+import { type IError } from "pec/types/response";
 
 export const parseError = (
   error: unknown,

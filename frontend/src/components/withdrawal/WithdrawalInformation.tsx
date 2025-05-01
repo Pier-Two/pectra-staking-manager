@@ -1,9 +1,11 @@
+import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
 import { Check } from "lucide-react";
-import Image from "next/image";
+
+import type { WithdrawWorkflowStages } from "pec/types/withdraw";
 import { cn } from "pec/lib/utils";
 import { displayedEthAmount } from "pec/lib/utils/validators/balance";
-import type { WithdrawWorkflowStages } from "pec/types/withdraw";
+
 import { PectraSpinner } from "../ui/custom/pectraSpinner";
 import { PrimaryButton } from "../ui/custom/PrimaryButton";
 import { SecondaryButton } from "../ui/custom/SecondaryButton";

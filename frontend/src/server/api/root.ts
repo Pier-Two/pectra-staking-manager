@@ -1,8 +1,10 @@
 import { createCallerFactory, createTRPCRouter } from "pec/server/api/trpc";
-import { validatorRouter } from "./routers/validators";
-import { storeEmailRequestRouter } from "./routers/store-email-request/router";
+
 import { chartRouter } from "./routers/charts";
 import { pricingRouter } from "./routers/pricing";
+import { storeEmailRequestRouter } from "./routers/store-email-request/router";
+import { validatorRouter } from "./routers/validators";
+
 /**
  * This is the primary router for your server.
  *

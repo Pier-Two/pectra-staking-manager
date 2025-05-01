@@ -1,17 +1,17 @@
+import type { FieldErrors, UseFormRegister } from "react-hook-form";
+import Image from "next/image";
 import { CirclePlus } from "lucide-react";
 import { FaCircleCheck, FaCircleMinus, FaCirclePlus } from "react-icons/fa6";
 
-import Image from "next/image";
+import type { DepositType } from "pec/lib/api/schemas/deposit";
+import type { ValidatorDetails } from "pec/types/validator";
 import { ValidatorCardWrapper } from "pec/components/ui/custom/validator-card-wrapper";
 import { Input } from "pec/components/ui/input";
-import type { DepositType } from "pec/lib/api/schemas/deposit";
+import { MAX_VALIDATOR_BALANCE } from "pec/constants/deposit";
 import { DECIMAL_PLACES } from "pec/lib/constants";
+import { cn } from "pec/lib/utils";
 import { displayedEthAmount } from "pec/lib/utils/validators/balance";
 import { EDistributionMethod } from "pec/types/batch-deposits";
-import type { ValidatorDetails } from "pec/types/validator";
-import type { FieldErrors, UseFormRegister } from "react-hook-form";
-import { cn } from "pec/lib/utils";
-import { MAX_VALIDATOR_BALANCE } from "pec/constants/deposit";
 
 export interface IDepositSelectionValidatorCard {
   distributionMethod: EDistributionMethod;

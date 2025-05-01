@@ -1,15 +1,17 @@
+import { useEffect } from "react";
+import { useImmer } from "use-immer";
+
+import type { ConsolidationWorkflowStages } from "pec/types/consolidation";
+import type { TransactionStatus } from "pec/types/withdraw";
+import { trackEvent } from "pec/helpers/trackEvent";
+import { getRequiredConsolidationTransactions } from "pec/lib/utils/validators/consolidate";
 import {
   CONSOLIDATION_STEP_NUMBER_TO_NAME,
   CONSOLIDATION_STEPS,
-  type ConsolidationWorkflowStages,
 } from "pec/types/consolidation";
 import { type ValidatorDetails } from "pec/types/validator";
-import { useImmer } from "use-immer";
+
 import { useSubmitConsolidate } from "./use-consolidation";
-import { getRequiredConsolidationTransactions } from "pec/lib/utils/validators/consolidate";
-import type { TransactionStatus } from "pec/types/withdraw";
-import { trackEvent } from "pec/helpers/trackEvent";
-import { useEffect } from "react";
 
 interface UseConsolidate {
   activeValidators: ValidatorDetails[];

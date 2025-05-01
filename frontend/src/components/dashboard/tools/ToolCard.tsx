@@ -1,15 +1,17 @@
+import Link from "next/link";
 import {
   ArrowDownToDot,
   ArrowRight,
   ArrowUpFromDot,
   Merge,
 } from "lucide-react";
-import { cn } from "pec/lib/utils";
-import { PrimaryButton } from "pec/components/ui/custom/PrimaryButton";
-import { EIconPosition } from "pec/types/components";
-import Link from "next/link";
+
 import { EnterAnimation } from "pec/app/(login-layout)/welcome/_components/enter-animation";
+import { PrimaryButton } from "pec/components/ui/custom/PrimaryButton";
 import { dashboardAnimationDelays } from "pec/constants/animationDelays";
+import { cn } from "pec/lib/utils";
+import { EIconPosition } from "pec/types/components";
+
 type ToolCardProps = {
   preset: keyof typeof cardPresets;
 };

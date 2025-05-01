@@ -1,5 +1,5 @@
-import mongoose from "mongoose";
 import { DocumentType, Ref } from "@typegoose/typegoose";
+import mongoose from "mongoose";
 
 /**
  * Checks if a Ref<T> is populated and returns typeguard to DocumentType<T>

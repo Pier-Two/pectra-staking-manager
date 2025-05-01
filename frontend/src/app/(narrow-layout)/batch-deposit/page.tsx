@@ -1,7 +1,9 @@
-import { DepositWorkflowWrapper } from "./_components/deposit-workflow";
-import { title } from "pec/constants/metadata";
 import type { Metadata } from "next";
 import { ArrowDownToDot } from "lucide-react";
+
+import { title } from "pec/constants/metadata";
+
+import { DepositWorkflowWrapper } from "./_components/deposit-workflow";
 
 export const metadata: Metadata = {
   title: title("Batch Deposit"),

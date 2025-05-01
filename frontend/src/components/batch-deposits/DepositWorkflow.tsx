@@ -1,23 +1,20 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { sumBy } from "lodash";
-import {
-  type DepositTableValidatorDetails,
-  SUBMITTING_DEPOSIT_COLUMN_HEADERS,
-} from "pec/constants/columnHeaders";
+import { useForm, useWatch } from "react-hook-form";
+
+import type { DepositTableValidatorDetails } from "pec/constants/columnHeaders";
+import type { DepositData, DepositType } from "pec/lib/api/schemas/deposit";
+import type { ValidatorDetails } from "pec/types/validator";
+import { SUBMITTING_DEPOSIT_COLUMN_HEADERS } from "pec/constants/columnHeaders";
 import { MAX_VALIDATOR_BALANCE } from "pec/constants/deposit";
 import { useBatchDeposit } from "pec/hooks/useBatchDeposit";
-import {
-  type DepositData,
-  DepositSchema,
-  type DepositType,
-} from "pec/lib/api/schemas/deposit";
+import { DepositSchema } from "pec/lib/api/schemas/deposit";
 import { DECIMAL_PLACES } from "pec/lib/constants";
 import { EDistributionMethod } from "pec/types/batch-deposits";
-import type { ValidatorDetails } from "pec/types/validator";
-import { useEffect, useState } from "react";
-import { useForm, useWatch } from "react-hook-form";
+
 import { Email } from "../consolidation/summary/Email";
 import { DisplayAmount } from "../ui/table/TableComponents";
 import { ValidatorTable } from "../ui/table/ValidatorTable";

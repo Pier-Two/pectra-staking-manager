@@ -1,5 +1,7 @@
-import { DatabaseDocumentStatuses } from "pec/types/app";
 import { z } from "zod";
+
+import { DatabaseDocumentStatuses } from "pec/types/app";
+
 import { EmailSchema } from "../email";
 
 export const DatabaseWithdrawalSchema = z.object({

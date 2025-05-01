@@ -1,6 +1,7 @@
 import { ValidatorDetails } from "pec/types/validator";
-import { useValidatorSorting } from "./use-validator-sorting";
+
 import { usePagination } from "./use-pagination";
+import { useValidatorSorting } from "./use-validator-sorting";
 
 export const useConsolidationValidatorTable = (data: ValidatorDetails[]) => {
   const { sortedValidators, setSortConfig, sortConfig } = useValidatorSorting({

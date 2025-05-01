@@ -3,6 +3,7 @@
 import { ValidatorTable } from "pec/components/ui/table/ValidatorTable";
 import { DASHBOARD_VALIDATOR_COLUMN_HEADERS } from "pec/constants/columnHeaders";
 import { useDashboardValidatorTable } from "pec/hooks/useDashboardValidatorTable";
+
 import { ValidatorRowEndContent } from "./TableComponents";
 import { TableFilters } from "./TableFilters";
 

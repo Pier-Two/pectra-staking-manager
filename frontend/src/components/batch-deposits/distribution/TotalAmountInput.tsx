@@ -1,6 +1,8 @@
-import { Input } from "pec/components/ui/input";
-import type { DepositType } from "pec/lib/api/schemas/deposit";
 import type { FieldErrors, UseFormRegister } from "react-hook-form";
+
+import type { DepositType } from "pec/lib/api/schemas/deposit";
+import { Input } from "pec/components/ui/input";
+
 import { WalletBalance } from "./WalletBalance";
 
 export interface ITotalAmountInput {

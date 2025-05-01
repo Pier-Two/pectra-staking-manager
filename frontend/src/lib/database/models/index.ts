@@ -1,6 +1,10 @@
-import { getModelForClass, type DocumentType } from "@typegoose/typegoose";
-import mongoose, { type Model, type Mongoose } from "mongoose";
+import type { DocumentType } from "@typegoose/typegoose";
+import type { Model, Mongoose } from "mongoose";
+import { getModelForClass } from "@typegoose/typegoose";
+import mongoose from "mongoose";
+
 import { env } from "pec/env";
+
 import { Consolidation } from "../classes/consolidation";
 import { Deposit } from "../classes/deposit";
 import { ValidatorSummary } from "../classes/validatorSummary";

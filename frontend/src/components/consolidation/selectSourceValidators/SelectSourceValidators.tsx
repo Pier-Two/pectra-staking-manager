@@ -1,6 +1,11 @@
+import { useMemo } from "react";
+import { keyBy, sumBy } from "lodash";
 import { Pencil, Zap } from "lucide-react";
+
 import { PrimaryButton } from "pec/components/ui/custom/PrimaryButton";
 import { SecondaryButton } from "pec/components/ui/custom/SecondaryButton";
+import { DisplayAmount } from "pec/components/ui/table/TableComponents";
+import { ValidatorTable } from "pec/components/ui/table/ValidatorTable";
 import {
   Tabs,
   TabsContent,
@@ -9,13 +14,9 @@ import {
 } from "pec/components/ui/tabs";
 import { ValidatorCard } from "pec/components/validators/cards/ValidatorCard";
 import { DetectedValidators } from "pec/components/validators/DetectedValidators";
+import { CONSOLIDATION_TABLE_HEADERS } from "pec/constants/columnHeaders";
 import { EIconPosition } from "pec/types/components";
 import { type ValidatorDetails } from "pec/types/validator";
-import { useMemo } from "react";
-import { ValidatorTable } from "pec/components/ui/table/ValidatorTable";
-import { CONSOLIDATION_TABLE_HEADERS } from "pec/constants/columnHeaders";
-import { DisplayAmount } from "pec/components/ui/table/TableComponents";
-import { keyBy, sumBy } from "lodash";
 
 interface SelectSourceValidatorsProps {
   availableSourceValidators: ValidatorDetails[];

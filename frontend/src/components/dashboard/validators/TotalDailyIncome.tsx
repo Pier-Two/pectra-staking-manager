@@ -1,13 +1,15 @@
 "use client";
 
-import { MyValidatorsCard } from "./MyValidatorsCard";
-import { DECIMAL_PLACES } from "pec/lib/constants";
 import { formatUnits } from "viem";
-import { displayedEthAmount } from "pec/lib/utils/validators/balance";
+
 import { Skeleton } from "pec/components/ui/skeleton";
-import { useValidatorPerformance } from "pec/hooks/useValidatorPerformance";
 import { dashboardAnimationDelays } from "pec/constants/animationDelays";
+import { useValidatorPerformance } from "pec/hooks/useValidatorPerformance";
+import { DECIMAL_PLACES } from "pec/lib/constants";
+import { displayedEthAmount } from "pec/lib/utils/validators/balance";
 import { api } from "pec/trpc/react";
+
+import { MyValidatorsCard } from "./MyValidatorsCard";
 
 export const TotalDailyIncome = () => {
   const { data: ethPrice, isSuccess: isEthPriceSuccessful } =

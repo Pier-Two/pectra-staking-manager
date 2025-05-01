@@ -1,6 +1,9 @@
 import type { FC } from "react";
 import clsx from "clsx";
-import { EIconPosition, type ICustomButton } from "pec/types/components";
+
+import type { ICustomButton } from "pec/types/components";
+import { EIconPosition } from "pec/types/components";
+
 import { Button } from "../button";
 
 export const TertiaryButton: FC<ICustomButton> = (props) => {

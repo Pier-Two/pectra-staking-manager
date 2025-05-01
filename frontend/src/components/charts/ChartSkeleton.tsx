@@ -1,5 +1,6 @@
-import { ChevronLeft, ChevronRight, Expand } from "lucide-react";
 import Image from "next/image";
+import { ChevronLeft, ChevronRight, Expand } from "lucide-react";
+
 import { Card, CardHeader } from "pec/components/ui/card";
 import { Skeleton } from "pec/components/ui/skeleton";
 

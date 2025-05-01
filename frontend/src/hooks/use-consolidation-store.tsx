@@ -1,14 +1,14 @@
 "use client";
 
-import { ConsolidationStep } from "pec/types/consolidation";
+import { useStore } from "zustand";
+import { createStore } from "zustand/vanilla";
+
 import type {
   Transaction,
   TransactionStatus,
   ValidatorDetails,
 } from "pec/types/validator";
-
-import { useStore } from "zustand";
-import { createStore } from "zustand/vanilla";
+import { ConsolidationStep } from "pec/types/consolidation";
 
 // zustand doesnt writing bigints
 const serializeValidator = (validator: ValidatorDetails) => {

@@ -1,6 +1,7 @@
 import { AxiosResponse } from "axios";
-import { BEACONCHAIN_OK_STATUS } from "pec/lib/constants";
 import { z } from "zod";
+
+import { BEACONCHAIN_OK_STATUS } from "pec/lib/constants";
 
 const WithdrawalDataSchema = z.object({
   epoch: z.number(),

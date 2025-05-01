@@ -1,11 +1,12 @@
 "use client";
 
+import type { FC } from "react";
+import Image from "next/image";
 import { motion } from "framer-motion";
 import { Power } from "lucide-react";
-import Image from "next/image";
-import type { IConnectedAddress } from "pec/types/validator";
-import type { FC } from "react";
 import { useActiveWallet, useDisconnect } from "thirdweb/react";
+
+import type { IConnectedAddress } from "pec/types/validator";
 
 export const ConnectedAddress: FC<IConnectedAddress> = (props) => {
   const { address, layoutId } = props;

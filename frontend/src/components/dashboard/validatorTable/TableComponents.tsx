@@ -1,14 +1,15 @@
-import { ArrowDownToDot, ArrowUpFromDot, MoreVertical } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { ArrowDownToDot, ArrowUpFromDot, MoreVertical } from "lucide-react";
+
+import type { ValidatorDetails } from "pec/types/validator";
 import { Button } from "pec/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuTrigger
+  DropdownMenuTrigger,
 } from "pec/components/ui/dropdown-menu";
 import { cn } from "pec/lib/utils";
-import type { ValidatorDetails } from "pec/types/validator";
 import { ValidatorStatus } from "pec/types/validator";
 
 interface ValidatorRowEndContentProps {
@@ -47,10 +48,11 @@ export const ValidatorRowEndContent = ({
     },
     {
       label: "View on Beaconscan",
-      onClick: () => window.open(
-        `https://beaconscan.com/validator/${validator.validatorIndex}`,
-        "_blank",
-      ),
+      onClick: () =>
+        window.open(
+          `https://beaconscan.com/validator/${validator.validatorIndex}`,
+          "_blank",
+        ),
     },
   ];
 
@@ -70,13 +72,9 @@ export const ValidatorRowEndContent = ({
           {dropDownItems.map((item) => (
             <DropdownMenuItem
               key={item.label}
-              className={cn(
-                "cursor-pointer flex items-center",
-                {
-                  "cursor-not-allowed":
-                    item.isDisabled,
-                },
-              )}
+              className={cn("flex cursor-pointer items-center", {
+                "cursor-not-allowed": item.isDisabled,
+              })}
               onClick={item.isDisabled ? undefined : item.onClick}
             >
               {item.icon && (

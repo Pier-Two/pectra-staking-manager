@@ -1,4 +1,5 @@
 import type { ButtonProps } from "pec/components/ui/button";
+
 export interface StyleableComponent {
   className?: string;
 }

@@ -1,8 +1,10 @@
-import { DISTRIBUTION_OPTIONS } from "pec/constants/deposit";
+import type { FieldErrors, UseFormRegister } from "react-hook-form";
+
 import type { DepositType } from "pec/lib/api/schemas/deposit";
 import type { DepositWorkflowStage } from "pec/types/batch-deposits";
+import { DISTRIBUTION_OPTIONS } from "pec/constants/deposit";
 import { EDistributionMethod } from "pec/types/batch-deposits";
-import type { FieldErrors, UseFormRegister } from "react-hook-form";
+
 import { DistributionInformation } from "./DistributionInformation";
 import { DistributionOption } from "./DistributionOption";
 import { TotalAmountInput } from "./TotalAmountInput";

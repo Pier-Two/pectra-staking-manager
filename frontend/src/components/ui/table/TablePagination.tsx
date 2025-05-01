@@ -1,3 +1,5 @@
+import type { FC } from "react";
+
 import {
   Pagination,
   PaginationContent,
@@ -7,7 +9,6 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "pec/components/ui/pagination";
-import type { FC } from "react";
 
 const getVisiblePages = (currentPage: number, totalPages: number): number[] => {
   const pages = Array.from({ length: totalPages }, (_, i) => i + 1);

@@ -1,5 +1,6 @@
-import { cn } from "pec/lib/utils";
 import * as React from "react";
+
+import { cn } from "pec/lib/utils";
 
 export interface InputProps extends React.ComponentProps<"input"> {
   autoFocusOn?: boolean;

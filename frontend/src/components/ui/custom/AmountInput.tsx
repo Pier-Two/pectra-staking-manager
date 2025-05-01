@@ -1,5 +1,7 @@
 import { cn } from "pec/lib/utils";
-import { Input, type InputProps } from "../input";
+
+import type { InputProps } from "../input";
+import { Input } from "../input";
 
 interface TableInputFieldProps {
   inputProps: InputProps;

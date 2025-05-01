@@ -1,6 +1,8 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { ValidatorInformation } from "./ValidatorInformation";
+
 import { MOCK_VALIDATORS } from "pec/server/__mocks__/validators";
+
+import { ValidatorInformation } from "./ValidatorInformation";
 
 // More on how to set up stories at: https://storybook.js.org/docs/writing-stories#default-export
 const meta = {

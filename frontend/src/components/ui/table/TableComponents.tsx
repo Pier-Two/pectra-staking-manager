@@ -1,15 +1,16 @@
+import Image from "next/image";
 import { CircleCheck, ExternalLink, OctagonMinus } from "lucide-react";
+
+import type { TransactionStatus } from "pec/types/withdraw";
 import { Button } from "pec/components/ui/button";
 import { PectraSpinner } from "pec/components/ui/custom/pectraSpinner";
-import Image from "next/image";
 import {
   getBlockExplorerTxUrl,
   openInNewTab,
 } from "pec/helpers/getExternalLink";
 import { cn } from "pec/lib/utils";
-import { type ValidatorDetails } from "pec/types/validator";
-import type { TransactionStatus } from "pec/types/withdraw";
 import { displayedEthAmount } from "pec/lib/utils/validators/balance";
+import { type ValidatorDetails } from "pec/types/validator";
 
 interface StatusConfig {
   text: string;

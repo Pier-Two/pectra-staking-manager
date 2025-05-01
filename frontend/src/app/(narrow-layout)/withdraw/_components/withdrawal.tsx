@@ -1,29 +1,28 @@
 "use client";
 
+import type { FC } from "react";
+import { useState } from "react";
+import Image from "next/image";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { sumBy } from "lodash";
 import { ArrowUpFromDot } from "lucide-react";
-import Image from "next/image";
+import { useFieldArray, useForm } from "react-hook-form";
+
+import type { WithdrawalTableValidatorDetails } from "pec/constants/columnHeaders";
+import type { WithdrawalFormType } from "pec/lib/api/schemas/withdrawal";
 import { ValidatorHeader } from "pec/components/batch-deposits/validators/ValidatorHeader";
 import { Email } from "pec/components/consolidation/summary/Email";
 import { DisplayAmount } from "pec/components/ui/table/TableComponents";
 import { ValidatorTable } from "pec/components/ui/table/ValidatorTable";
 import { WithdrawalInformation } from "pec/components/withdrawal/WithdrawalInformation";
 import { WithdrawalValidatorTable } from "pec/components/withdrawal/WithdrawalValidatorTable";
-import {
-  SUBMITTING_WITHDRAWAL_COLUMN_HEADERS,
-  type WithdrawalTableValidatorDetails,
-} from "pec/constants/columnHeaders";
+import { SUBMITTING_WITHDRAWAL_COLUMN_HEADERS } from "pec/constants/columnHeaders";
 import { useValidators } from "pec/hooks/useValidators";
 import { useWalletAddress } from "pec/hooks/useWallet";
 import { useSubmitWithdraw } from "pec/hooks/useWithdraw";
-import {
-  WithdrawalFormSchema,
-  type WithdrawalFormType,
-} from "pec/lib/api/schemas/withdrawal";
+import { WithdrawalFormSchema } from "pec/lib/api/schemas/withdrawal";
 import { formatAddressToShortenedString } from "pec/lib/utils/address";
-import { type FC, useState } from "react";
-import { useFieldArray, useForm } from "react-hook-form";
+
 import WithdrawalLoading from "./withdraw-loading";
 
 const Withdrawal: FC = () => {
