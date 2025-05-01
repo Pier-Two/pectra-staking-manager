@@ -1,7 +1,6 @@
 import { groupBy } from "lodash";
 import type { Deposit } from "pec/server/database/classes/deposit";
 import { DepositModel } from "pec/server/database/models";
-import { sendEmailNotification } from "pec/lib/services/emailService";
 import { generateErrorResponse } from "pec/lib/utils";
 import { ACTIVE_STATUS, INACTIVE_STATUS } from "pec/types/app";
 import type { IResponse } from "pec/types/response";
@@ -18,10 +17,11 @@ const checkDepositProcessedAndUpdate = async (
   );
 
   if (depositExists) {
-    await sendEmailNotification(
-      "PECTRA_STAKING_MANAGER_DEPLOYMENT_COMPLETE",
-      dbDeposit.email,
-    );
+    // TODO: Integrate
+    // await sendEmailNotification(
+    //   "PECTRA_STAKING_MANAGER_DEPLOYMENT_COMPLETE",
+    //   dbDeposit.email,
+    // );
 
     await DepositModel.updateOne(
       { validatorIndex: dbDeposit.validatorIndex },

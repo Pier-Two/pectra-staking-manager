@@ -3,7 +3,6 @@ import { generateErrorResponse } from "pec/lib/utils";
 import { ACTIVE_STATUS, INACTIVE_STATUS } from "pec/types/app";
 import type { IResponse } from "pec/types/response";
 import { groupBy, maxBy } from "lodash";
-import { sendEmailNotification } from "pec/lib/services/emailService";
 import { getWithdrawals } from "../beaconchain/getWithdrawals";
 import { SupportedNetworkIds } from "pec/constants/chain";
 
@@ -52,10 +51,11 @@ export const processWithdrawals = async (
       )
         continue;
 
-      await sendEmailNotification(
-        "PECTRA_STAKING_MANAGER_WITHDRAWAL_COMPLETE",
-        currentWithdrawal.email,
-      );
+      // TODO: Fix
+      // await sendEmailNotification(
+      //   "PECTRA_STAKING_MANAGER_WITHDRAWAL_COMPLETE",
+      //   currentWithdrawal.email,
+      // );
 
       await WithdrawalModel.updateOne(
         { validatorIndex },

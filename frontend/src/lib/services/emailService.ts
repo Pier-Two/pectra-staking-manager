@@ -1,6 +1,6 @@
 import hubspotApi from "./hubspot-api";
 import { parseError } from "../utils/parseError";
-import { EmailPayload } from "pec/types/emails";
+import { type EmailPayload } from "pec/types/emails";
 
 /**
  * Creates a contact in HubSpot using the provided email address.
@@ -47,7 +47,7 @@ export const sendEmailNotification = async (
     await hubspotApi.post("/email", emailPayload);
   } catch (error) {
     console.error(
-      `Failed to send email notification with payload ${emailPayload}: ${parseError(error)}`,
+      `Failed to send email notification with payload ${JSON.stringify(emailPayload)}: ${parseError(error)}`,
     );
   }
 };

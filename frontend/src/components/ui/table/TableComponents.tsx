@@ -88,9 +88,7 @@ export const SubmittingTransactionTableComponent = ({
           size="sm"
           className="flex items-center gap-x-1 text-indigo-500 dark:text-indigo-400"
           onClick={() =>
-            openInNewTab(
-              getBlockExplorerTxUrl(statusConfig.txHash as string, chain.id),
-            )
+            openInNewTab(getBlockExplorerTxUrl(statusConfig.txHash!, chain.id))
           }
         >
           {statusConfig.txHash.slice(0, 6)}...

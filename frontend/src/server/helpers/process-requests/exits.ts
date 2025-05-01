@@ -1,7 +1,6 @@
 import { BCValidatorsData } from "pec/lib/api/schemas/beaconchain/validator";
 import { Exit } from "pec/server/database/classes/exit";
 import { ExitModel } from "pec/server/database/models";
-import { sendEmailNotification } from "pec/lib/services/emailService";
 import { ACTIVE_STATUS, INACTIVE_STATUS } from "pec/types/app";
 
 export const checkExitProcessedAndUpdate = async (
@@ -14,10 +13,10 @@ export const checkExitProcessedAndUpdate = async (
       { $set: { status: INACTIVE_STATUS } },
     );
 
-    await sendEmailNotification(
-      "PECTRA_STAKING_MANAGER_WITHDRAWAL_COMPLETE",
-      dbExit.email,
-    );
+    // await sendEmailNotification(
+    //   "PECTRA_STAKING_MANAGER_WITHDRAWAL_COMPLETE",
+    //   dbExit.email,
+    // );
 
     return true;
   }

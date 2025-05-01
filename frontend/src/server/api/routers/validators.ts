@@ -14,9 +14,9 @@ import {
 } from "pec/server/helpers/validators";
 import { getValidators } from "pec/server/helpers/beaconchain/getValidators";
 import { routeHandler } from "pec/server/helpers/route-errors";
-import { IResponse } from "pec/types/response";
+import { type IResponse } from "pec/types/response";
 import { getValidatorsForWithdrawAddress } from "pec/server/helpers/beaconchain/getValidatorForWithdrawAddress";
-import { BCValidatorsData } from "pec/lib/api/schemas/beaconchain/validator";
+import { type BCValidatorsData } from "pec/lib/api/schemas/beaconchain/validator";
 import {
   ConsolidationModel,
   DepositModel,
@@ -104,12 +104,12 @@ const populateStuff = async (
   });
 
   for (const consolidation of consolidations) {
-    let bcSourceValidator =
+    const bcSourceValidator =
       keyedBCValidatorData[consolidation.sourceValidatorIndex];
 
     if (!bcSourceValidator) {
       console.error(
-        `No source validator found for consolidation ${consolidation._id}`,
+        `No source validator found for consolidation ${consolidation._id.toString()}`,
       );
       continue;
     }

@@ -128,8 +128,9 @@ export const DistributionInformation = ({
               disabled={false}
               onClick={() => {
                 // I hate to cast here, but this is type-narrowed properly with the above check, but for some reason typescript is confused
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment
                 const txHash = (stage.transactionStatus as any).txHash;
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
                 openInNewTab(getBlockExplorerTxUrl(txHash, chain.id));
               }}
             />

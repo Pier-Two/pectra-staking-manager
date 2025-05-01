@@ -1,7 +1,6 @@
 import { TYPE_2_PREFIX } from "pec/constants/pectra";
 import { ValidatorUpgrade } from "pec/server/database/classes/validatorUpgrade";
 import { ValidatorUpgradeModel } from "pec/server/database/models";
-import { sendEmailNotification } from "pec/lib/services/emailService";
 import { generateErrorResponse } from "pec/lib/utils";
 import { getWithdrawalAddressPrefixType } from "pec/lib/utils/validators/withdrawalAddress";
 import { IResponse } from "pec/types/response";
@@ -18,10 +17,11 @@ export const checkValidatorUpgradeProcessedAndUpdate = async (
       { $set: { status: "inactive" } },
     );
 
-    await sendEmailNotification(
-      "PECTRA_STAKING_MANAGER_CONSOLIDATION_COMPLETE",
-      dbValidatorUpgrade.email,
-    );
+    // TODO: integrate
+    // await sendEmailNotification(
+    //   "PECTRA_STAKING_MANAGER_CONSOLIDATION_COMPLETE",
+    //   dbValidatorUpgrade.email,
+    // );
 
     return true;
   }

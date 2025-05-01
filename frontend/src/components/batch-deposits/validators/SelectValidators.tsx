@@ -23,8 +23,8 @@ export interface ISelectValidatorsProps {
   deposits: FormDepositData[];
   totalToDistribute: number;
   validators: ValidatorDetails[];
-  errors: FieldErrors<DepositType>;
-  register: UseFormRegister<DepositType>;
+  errors: FieldErrors<FormDepositType>;
+  register: UseFormRegister<FormDepositType>;
   depositExceedsRemaining: boolean;
 }
 

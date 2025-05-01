@@ -4,7 +4,7 @@ import { EmailSchema } from "./email";
 import { ValidatorDataSchema } from "./validator";
 import { SupportedChainIdSchema } from "./network";
 
-export const FormDepositDataSchema = z.object({
+const FormDepositDataSchema = z.object({
   validator: ValidatorDataSchema,
   amount: z.number().min(0, { message: "Please enter an acceptable amount" }),
 });

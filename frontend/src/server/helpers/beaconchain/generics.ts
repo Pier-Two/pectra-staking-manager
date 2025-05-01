@@ -1,9 +1,10 @@
-import { AxiosRequestConfig } from "axios";
-import { SupportedNetworkIds } from "pec/constants/chain";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { type AxiosRequestConfig } from "axios";
+import { type SupportedNetworkIds } from "pec/constants/chain";
 import { getBeaconChainAxios } from "pec/lib/server/axios";
 import { generateErrorResponse } from "pec/lib/utils";
-import { IResponse } from "pec/types/response";
-import { z } from "zod";
+import { type IResponse } from "pec/types/response";
+import { type z } from "zod";
 
 /**
  * Creates a type-safe API client function that calls a Beaconchain endpoint
@@ -33,6 +34,7 @@ export const executeBeaconchainTypesafeRequest = async <
 
     return {
       success: true,
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
       data: parsedData.data.data,
     };
   } catch (error) {

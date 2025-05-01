@@ -44,7 +44,7 @@ export const DepositWorkflow = ({
   const maxTotalRemaining =
     validators.length * MAX_VALIDATOR_BALANCE - totalValidatorBalance;
 
-  const initialValues: DepositType = {
+  const initialValues: FormDepositType = {
     deposits: [],
     totalToDistribute: 0,
     distributionMethod: EDistributionMethod.SPLIT,
@@ -58,8 +58,8 @@ export const DepositWorkflow = ({
     setValue,
     reset,
     formState: { isValid, errors },
-  } = useForm<DepositType>({
-    resolver: zodResolver(DepositSchema(balance, maxTotalRemaining)),
+  } = useForm<FormDepositType>({
+    resolver: zodResolver(FormDepositSchema(balance, maxTotalRemaining)),
     defaultValues: initialValues,
     mode: "onChange",
   });
