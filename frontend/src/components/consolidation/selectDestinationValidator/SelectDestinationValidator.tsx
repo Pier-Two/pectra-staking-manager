@@ -44,7 +44,7 @@ export const SelectDestinationValidator = ({
             <TabsTrigger value="manually">Enter Address</TabsTrigger>
           </TabsList>
         </div>
-        <TabsContent value="validators" asChild>
+        <TabsContent value="validators">
           <ValidatorTable
             data={validators}
             headers={CONSOLIDATION_TABLE_HEADERS}
@@ -56,7 +56,7 @@ export const SelectDestinationValidator = ({
             disablePagination
           />
         </TabsContent>
-        <TabsContent value="manually" asChild>
+        <TabsContent value="manually">
           <ManuallyEnterValidator
             goToSelectSourceValidators={goToSelectSourceValidators}
           />
