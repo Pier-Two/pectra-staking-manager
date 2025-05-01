@@ -8,7 +8,6 @@ export const getBlockExplorerTxUrl = (txHash: string | undefined) => {
   return `https://etherscan.io/tx/${txHash}`;
 };
 
-
 export const labrysUrl = `https://labrys.io/`;
 
 export const pierTwoUrl = `https://piertwo.com/`;
@@ -16,7 +15,7 @@ export const pierTwoUrl = `https://piertwo.com/`;
 /**
  * Open a new tab
  * @param url - The URL to open
- * 
+ *
  * @usage onClick={() => openInNewTab(getBlockExplorerTxUrl(txHash))}
  */
 export const openInNewTab = (url: string | undefined) => {
