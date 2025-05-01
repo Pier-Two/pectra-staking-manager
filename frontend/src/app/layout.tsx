@@ -41,6 +41,10 @@ export const metadata: Metadata = {
   keywords: ["Pectra", "Staking", "Manager", "Ethereum", "Validator"],
   openGraph: {
     siteName: "Pectra Staking Manager",
+    authors: ["https://labrys.io", "https://piertwo.com/"],
+  },
+  twitter: {
+    site: "@Labrys_io",
   },
 };
 
