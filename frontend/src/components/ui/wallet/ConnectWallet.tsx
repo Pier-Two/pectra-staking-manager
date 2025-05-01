@@ -19,6 +19,7 @@ import {
 import { Button } from "../button";
 import { useTheme } from "next-themes";
 import { trackEvent } from "pec/helpers/trackEvent";
+import { PectraSpinner } from "../custom/pectraSpinner";
 
 export const ConnectWalletButton = ({ className }: StyleableComponent) => {
   const router = useRouter();
@@ -43,7 +44,16 @@ export const ConnectWalletButton = ({ className }: StyleableComponent) => {
     setIsMounted(true);
   }, []);
 
-  if (!isMounted) return null;
+  if (!isMounted)
+    return (
+      <Button
+        disabled
+        className="w-[123px] rounded-full border border-primary/30 bg-transparent dark:border-gray-700 dark:bg-gray-950"
+        variant="outline"
+      >
+        <PectraSpinner />
+      </Button>
+    );
 
   return (
     <ConnectButton
