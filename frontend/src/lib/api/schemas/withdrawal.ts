@@ -19,6 +19,7 @@ export type FormWithdrawalType = z.infer<typeof FormWithdrawalSchema>;
 
 export const StoreWithdrawalRequestSchema = z.object({
   validatorIndex: z.number(),
+  balance: z.number(),
   amount: z.number(),
   txHash: z.string(),
   email: EmailSchema,

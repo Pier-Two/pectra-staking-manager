@@ -87,6 +87,7 @@ export const useSubmitConsolidate = () => {
         txHash: upgradeTx.transactionHash,
         email,
         network: chain.id,
+        amount: source.balance,
       });
     } catch (e) {
       console.error("Error saving consolidation to database:", e);

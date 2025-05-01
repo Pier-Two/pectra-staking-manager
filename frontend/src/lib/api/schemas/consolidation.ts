@@ -8,6 +8,7 @@ export const StoreConsolidationSchema = z.object({
   txHash: z.string(),
   email: EmailSchema,
   network: SupportedChainIdSchema,
+  amount: z.number(),
 });
 
 export type StoreConsolidationType = z.infer<typeof StoreConsolidationSchema>;

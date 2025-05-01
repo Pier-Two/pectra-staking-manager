@@ -101,6 +101,7 @@ export const useBatchDeposit = () => {
           deposits: deposits.map((deposit) => ({
             validatorIndex: deposit.validator.validatorIndex,
             txHash: receipt.transactionHash,
+            amount: deposit.amount,
           })),
           network: chain.id,
           email,

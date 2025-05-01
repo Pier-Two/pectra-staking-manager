@@ -6,6 +6,7 @@ import {
 import {
   ConsolidationModel,
   DepositModel,
+  ExitModel,
   ValidatorUpgradeModel,
   WithdrawalModel,
 } from "pec/server/database/models";
@@ -28,7 +29,26 @@ export const storeFlowCompletion = createTRPCRouter({
     .input(StoreWithdrawalRequestSchema)
     .mutation(async ({ input }) =>
       routeHandler(async (): Promise<IResponse<null>> => {
-        const { network, validatorIndex, email, amount, txHash } = input;
+        const { network, validatorIndex, email, amount, txHash, balance } =
+          input;
+
+        if (amount === balance) {
+          await ExitModel.create({
+            email,
+            status: ACTIVE_STATUS,
+            validatorIndex,
+            txHash,
+            networkId: network,
+            amount,
+          });
+
+          await createContact(email);
+
+          return {
+            success: true,
+            data: null,
+          };
+        }
 
         const response = await getWithdrawals([validatorIndex], network);
 
@@ -95,6 +115,7 @@ export const storeFlowCompletion = createTRPCRouter({
           txHash,
           email,
           network,
+          amount,
         },
       }) =>
         routeHandler(async (): Promise<IResponse<null>> => {
@@ -114,6 +135,7 @@ export const storeFlowCompletion = createTRPCRouter({
               txHash,
               email,
               networkId: network,
+              amount,
             });
           }
 

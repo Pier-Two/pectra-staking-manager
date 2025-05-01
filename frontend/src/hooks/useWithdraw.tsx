@@ -73,6 +73,7 @@ export const useSubmitWithdraw = () => {
     // We jump to this state because there is multiple signings
     setStage({ type: "sign-submit-finalise", txHashes });
 
+    // TODO: Integrate exits here, reemove this check
     const filteredWithdrawals = withdrawals.filter(
       (withdrawal) => withdrawal.amount > 0,
     );
@@ -117,6 +118,7 @@ export const useSubmitWithdraw = () => {
         try {
           await saveWithdrawalToDatabase({
             validatorIndex: withdrawal.validator.validatorIndex,
+            balance: withdrawal.validator.balance,
             amount: withdrawal.amount,
             txHash: txHash.transactionHash,
             email,

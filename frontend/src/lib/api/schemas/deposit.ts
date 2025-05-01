@@ -23,7 +23,11 @@ export type FormDepositType = z.infer<ReturnType<typeof FormDepositSchema>>;
 
 export const StoreDatabaseDepositSchema = z.object({
   deposits: z.array(
-    z.object({ validatorIndex: z.number(), txHash: z.string() }),
+    z.object({
+      validatorIndex: z.number(),
+      txHash: z.string(),
+      amount: z.number(),
+    }),
   ),
   network: SupportedChainIdSchema,
   email: EmailSchema,

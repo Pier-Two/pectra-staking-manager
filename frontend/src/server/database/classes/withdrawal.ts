@@ -26,9 +26,6 @@ export class Withdrawal {
   public withdrawalIndex!: number;
 
   @prop({ required: true })
-  public amount!: number;
-
-  @prop({ required: true })
   public withdrawalAddress!: string;
 
   @prop({ required: true })
@@ -36,4 +33,7 @@ export class Withdrawal {
 
   @prop({ required: true, enum: SUPPORTED_NETWORKS_IDS, type: Number })
   public networkId!: SupportedNetworkIds;
+
+  @prop({ required: true })
+  public amount!: number;
 }
