@@ -2,18 +2,20 @@ import { z } from "zod";
 import { EmailSchema } from "./email";
 import { ValidatorDataSchema } from "./validator";
 import { SupportedChainIdSchema } from "./network";
+import { emailSchema } from "pec/components/consolidation/summary/Email";
 
-export const FormWithdrawalSchema = z.object({
-  withdrawals: z.array(
-    z.object({
-      validator: ValidatorDataSchema,
-      amount: z
-        .number()
-        .min(0, { message: "Please enter an acceptable amount" }),
-    }),
-  ),
-  email: EmailSchema,
-});
+export const FormWithdrawalSchema = z
+  .object({
+    withdrawals: z.array(
+      z.object({
+        validator: ValidatorDataSchema,
+        amount: z
+          .number()
+          .min(0, { message: "Please enter an acceptable amount" }),
+      }),
+    ),
+  })
+  .and(emailSchema);
 
 export type FormWithdrawalType = z.infer<typeof FormWithdrawalSchema>;
 

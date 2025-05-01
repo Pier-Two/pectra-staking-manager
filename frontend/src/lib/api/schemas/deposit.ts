@@ -3,6 +3,7 @@ import { z } from "zod";
 import { EmailSchema } from "./email";
 import { ValidatorDataSchema } from "./validator";
 import { SupportedChainIdSchema } from "./network";
+import { emailSchema } from "pec/components/consolidation/summary/Email";
 
 const FormDepositDataSchema = z.object({
   validator: ValidatorDataSchema,
@@ -15,21 +16,22 @@ export const FormDepositSchema = (
   maxTotalToDistribute: number,
   maxTotalRemaining: number,
 ) =>
-  z.object({
-    deposits: z.array(FormDepositDataSchema),
-    totalToDistribute: z
-      .number({ invalid_type_error: "Please enter a valid amount" })
-      .min(0)
-      .refine((val) => val <= maxTotalToDistribute, {
-        message:
-          "Please enter an amount less than or equal to your available balance",
-      })
-      .refine((val) => val <= maxTotalRemaining, {
-        message: "Amount exceeds maximum remaining validator capacity",
-      }),
-    distributionMethod: z.nativeEnum(EDistributionMethod),
-    email: EmailSchema,
-  });
+  z
+    .object({
+      deposits: z.array(FormDepositDataSchema),
+      totalToDistribute: z
+        .number({ invalid_type_error: "Please enter a valid amount" })
+        .min(0)
+        .refine((val) => val <= maxTotalToDistribute, {
+          message:
+            "Please enter an amount less than or equal to your available balance",
+        })
+        .refine((val) => val <= maxTotalRemaining, {
+          message: "Amount exceeds maximum remaining validator capacity",
+        }),
+      distributionMethod: z.nativeEnum(EDistributionMethod),
+    })
+    .and(emailSchema);
 
 export type FormDepositType = z.infer<ReturnType<typeof FormDepositSchema>>;
 
