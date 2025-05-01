@@ -7,7 +7,7 @@ const LoginLayout: FC<ChildrenProp> = (props) => {
   const { children } = props;
 
   return (
-    <div className="flex min-h-screen w-screen flex-col bg-indigo-50 pt-16 dark:bg-gray-950 sm:pt-20">
+    <div className="flex min-h-screen w-screen flex-col pt-16 sm:pt-20">
       <TopBar />
 
       <div className="flex flex-1 justify-center">

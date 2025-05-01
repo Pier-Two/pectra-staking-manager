@@ -14,7 +14,7 @@ export const SharedLayout: FC<LayoutProps> = (props) => {
 
   return (
     <>
-      <div className="flex min-h-screen w-screen flex-col items-center bg-indigo-50 py-20 dark:bg-gray-950">
+      <div className="flex min-h-screen w-screen flex-col items-center">
         <TopBar type="profile" />
         <div
           className={cn(
