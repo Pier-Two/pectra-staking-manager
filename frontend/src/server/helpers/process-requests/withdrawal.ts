@@ -1,4 +1,4 @@
-import { WithdrawalModel } from "pec/lib/database/models";
+import { WithdrawalModel } from "pec/server/database/models";
 import { generateErrorResponse } from "pec/lib/utils";
 import { ACTIVE_STATUS, INACTIVE_STATUS } from "pec/types/app";
 import type { IResponse } from "pec/types/response";

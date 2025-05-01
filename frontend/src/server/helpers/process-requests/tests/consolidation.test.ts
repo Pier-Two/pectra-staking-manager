@@ -3,9 +3,9 @@ import { validatorSummaries } from "pec/server/__mocks__/charts";
 import {
   ConsolidationModel,
   ValidatorSummaryModel,
-} from "pec/lib/database/models";
+} from "pec/server/database/models";
 import { createCaller } from "pec/server/api/root";
-import { Consolidation } from "pec/lib/database/classes/consolidation";
+import { Consolidation } from "pec/server/database/classes/consolidation";
 import { buildMockConsolidation } from "pec/server/__mocks__/database-models";
 import { ACTIVE_STATUS, INACTIVE_STATUS } from "pec/types/app";
 import { getValidators } from "../../beaconchain/getValidators";

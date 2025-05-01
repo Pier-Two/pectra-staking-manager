@@ -8,7 +8,7 @@ import {
   DepositModel,
   ValidatorUpgradeModel,
   WithdrawalModel,
-} from "pec/lib/database/models";
+} from "pec/server/database/models";
 import { StoreWithdrawalRequestSchema } from "pec/lib/api/schemas/withdrawal";
 import { ACTIVE_STATUS } from "pec/types/app";
 import { maxBy } from "lodash";

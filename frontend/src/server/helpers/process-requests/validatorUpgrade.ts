@@ -1,6 +1,6 @@
 import { TYPE_2_PREFIX } from "pec/constants/pectra";
-import { ValidatorUpgrade } from "pec/lib/database/classes/validatorUpgrade";
-import { ValidatorUpgradeModel } from "pec/lib/database/models";
+import { ValidatorUpgrade } from "pec/server/database/classes/validatorUpgrade";
+import { ValidatorUpgradeModel } from "pec/server/database/models";
 import { sendEmailNotification } from "pec/lib/services/emailService";
 import { generateErrorResponse } from "pec/lib/utils";
 import { getWithdrawalAddressPrefixType } from "pec/lib/utils/validators/withdrawalAddress";

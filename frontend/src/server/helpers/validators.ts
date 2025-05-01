@@ -3,7 +3,7 @@ import {
   ConsolidationModel,
   DepositModel,
   WithdrawalModel,
-} from "pec/lib/database/models";
+} from "pec/server/database/models";
 import { getValidatorActiveInfo } from "pec/lib/utils/validators/activity";
 import { getValidatorStatus } from "pec/lib/utils/validators/status";
 import { ACTIVE_STATUS } from "pec/types/app";

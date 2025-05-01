@@ -1,10 +1,10 @@
-import { ConsolidationModel } from "pec/lib/database/models";
+import { ConsolidationModel } from "pec/server/database/models";
 import { generateErrorResponse } from "pec/lib/utils";
 import { ACTIVE_STATUS, INACTIVE_STATUS } from "pec/types/app";
 import type { IResponse } from "pec/types/response";
 import { sendEmailNotification } from "pec/lib/services/emailService";
 import { getValidators } from "../beaconchain/getValidators";
-import { Consolidation } from "pec/lib/database/classes/consolidation";
+import { Consolidation } from "pec/server/database/classes/consolidation";
 import { BCValidatorsData } from "pec/lib/api/schemas/beaconchain/validator";
 import { SupportedNetworkIds } from "pec/constants/chain";
 

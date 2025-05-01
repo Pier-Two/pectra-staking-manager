@@ -1,10 +1,10 @@
 import { CHUNK_SIZE } from "pec/lib/constants";
-import { WithdrawalModel } from "pec/lib/database/models";
+import { WithdrawalModel } from "pec/server/database/models";
 import { generateErrorResponse } from "pec/lib/utils";
 import { ACTIVE_STATUS, INACTIVE_STATUS } from "pec/types/app";
 import type { IResponse } from "pec/types/response";
 import { chunk, groupBy, maxBy } from "lodash";
-import type { Withdrawal } from "pec/lib/database/classes/withdrawal";
+import type { Withdrawal } from "pec/server/database/classes/withdrawal";
 import { sendEmailNotification } from "pec/lib/services/emailService";
 import { getBeaconChainAxios } from "pec/lib/server/axios";
 import { PROCESS_REQUESTS_NETWORK_ID } from "pec/lib/constants/feature-flags";

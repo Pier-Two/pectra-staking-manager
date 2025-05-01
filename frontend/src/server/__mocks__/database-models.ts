@@ -1,7 +1,7 @@
 import { faker } from "@faker-js/faker";
 import { DatabaseDocumentStatuses } from "pec/types/app";
 import { SUPPORTED_NETWORKS_IDS } from "pec/constants/chain";
-import { Consolidation } from "pec/lib/database/classes/consolidation";
+import { Consolidation } from "pec/server/database/classes/consolidation";
 
 // Helper function to generate random txHash
 const generateTxHash = () => {

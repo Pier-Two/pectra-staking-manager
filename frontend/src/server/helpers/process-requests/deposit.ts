@@ -1,6 +1,6 @@
 import { groupBy } from "lodash";
-import type { Deposit } from "pec/lib/database/classes/deposit";
-import { DepositModel } from "pec/lib/database/models";
+import type { Deposit } from "pec/server/database/classes/deposit";
+import { DepositModel } from "pec/server/database/models";
 import { sendEmailNotification } from "pec/lib/services/emailService";
 import { generateErrorResponse } from "pec/lib/utils";
 import { ACTIVE_STATUS, INACTIVE_STATUS } from "pec/types/app";

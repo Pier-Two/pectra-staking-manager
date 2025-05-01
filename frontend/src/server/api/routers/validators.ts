@@ -22,7 +22,7 @@ import {
   DepositModel,
   ExitModel,
   ValidatorUpgradeModel,
-} from "pec/lib/database/models";
+} from "pec/server/database/models";
 import { keyBy, values } from "lodash";
 import { checkValidatorUpgradeProcessedAndUpdate } from "pec/server/helpers/process-requests/validatorUpgrade";
 import { ACTIVE_STATUS } from "pec/types/app";
