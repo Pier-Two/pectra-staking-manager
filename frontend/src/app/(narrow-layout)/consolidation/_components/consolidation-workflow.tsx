@@ -6,7 +6,7 @@ import { SelectSourceValidators } from "pec/components/consolidation/selectSourc
 import { useValidators } from "pec/hooks/useValidators";
 import { useWalletAddress } from "pec/hooks/useWallet";
 import { ValidatorStatus } from "pec/types/validator";
-import { useNewConsolidate } from "pec/hooks/use-new-consolidate";
+import { useNewConsolidate } from "pec/hooks/useNewConsolidate";
 import { ConsolidationSummary } from "pec/components/consolidation/summary/ConsolidationSummary";
 import { SubmitConsolidationRequests } from "pec/components/consolidation/submitRequests/SubmitConsolidationRequests";
 import { Skeleton } from "pec/components/ui/skeleton";
@@ -26,6 +26,8 @@ const ConsolidationWorkflow = () => {
     goToSelectSourceValidators,
     getAvailableSourceValidators,
     reset,
+    email,
+    setEmail,
   } = useNewConsolidate({
     activeValidators,
   });
@@ -78,6 +80,8 @@ const ConsolidationWorkflow = () => {
           goToSubmit={goToSubmit}
           goBack={goBack}
           reset={reset}
+          email={email}
+          setEmail={setEmail}
         />
       )}
 

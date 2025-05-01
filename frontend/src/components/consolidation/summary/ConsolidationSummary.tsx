@@ -17,6 +17,8 @@ interface ConsolidationSummaryProps {
   sourceValidators: ValidatorDetails[];
   upgradeTransactions: number;
   consolidationTransactions: number;
+  email: string;
+  setEmail: (email: string) => void;
 }
 
 export const ConsolidationSummary = ({
@@ -27,12 +29,10 @@ export const ConsolidationSummary = ({
   goBack,
   goToSubmit,
   reset,
+  email,
+  setEmail,
 }: ConsolidationSummaryProps) => {
   const [showEmail, setShowEmail] = useState(false);
-  const [summaryEmail, setSummaryEmail] = useState("");
-  const handleResetDestinationValidator = () => {
-    reset();
-  };
 
   return (
     <div className="space-y-8">
@@ -56,7 +56,7 @@ export const ConsolidationSummary = ({
               label="Change destination"
               icon={<Pencil className="h-4 w-4" />}
               iconPosition={EIconPosition.LEFT}
-              onClick={() => handleResetDestinationValidator()}
+              onClick={() => reset()}
               disabled={false}
             />
           </div>
@@ -94,8 +94,8 @@ export const ConsolidationSummary = ({
           setShowEmail={setShowEmail}
           cardText="Add your email to receive an email when your consolidation is complete."
           cardTitle="Notify me when complete"
-          summaryEmail={summaryEmail}
-          setSummaryEmail={setSummaryEmail}
+          summaryEmail={email}
+          setSummaryEmail={setEmail}
         />
       </div>
 
