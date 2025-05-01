@@ -44,7 +44,7 @@ export const SelectSourceValidators = ({
 
   const newDestinationBalance = useMemo(() => {
     const sourceValidatorsSum = sumBy(sourceValidators, (v) => v.balance);
-    return sourceValidatorsSum + destinationValidator.balance;
+    return (sourceValidatorsSum + destinationValidator.balance) * 10;
   }, [sourceValidators, destinationValidator]);
 
   return (
@@ -132,11 +132,19 @@ export const SelectSourceValidators = ({
         max
       </div>
 
+      {newDestinationBalance > 2048 && (
+        <div className="w-full text-center text-sm text-red-500">
+          The new destination balance is greater than the maximum allowed
+          balance.
+          <br /> Please modify your selection before proceeding.
+        </div>
+      )}
+
       <PrimaryButton
         className="w-full"
         label="Next"
         onClick={goToSummary}
-        disabled={sourceValidators.length === 0}
+        disabled={sourceValidators.length === 0 || newDestinationBalance > 2048}
       />
     </div>
   );
