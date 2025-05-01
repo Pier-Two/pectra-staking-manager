@@ -18,6 +18,7 @@ import {
   useActiveWalletConnectionStatus,
 } from "thirdweb/react";
 import { Button } from "../button";
+import { trackEvent } from "pec/helpers/trackEvent";
 
 export const ConnectWalletButton = ({ className }: StyleableComponent) => {
   const router = useRouter();
@@ -32,6 +33,7 @@ export const ConnectWalletButton = ({ className }: StyleableComponent) => {
   // watch for disconnection and redirect to welcome page
   useEffect(() => {
     if (connectionStatus === "disconnected") {
+      trackEvent("disconnect_wallet");
       router.push("/welcome");
     }
   }, [connectionStatus, router]);
@@ -94,9 +96,10 @@ export const ConnectWalletButton = ({ className }: StyleableComponent) => {
       wallets={wallets}
       connectModal={{
         size: "wide",
-        title: "Login/Sign up",
+        title: "Connect Wallet",
       }}
       onConnect={() => {
+        trackEvent("connect_wallet");
         router.push("/validators-found");
       }}
     />

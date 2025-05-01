@@ -1,4 +1,4 @@
-import { TransactionStatus } from "./withdraw";
+import { type TransactionStatus } from "./withdraw";
 
 export type DepositWorkflowStage =
   | { type: "data-capture" }

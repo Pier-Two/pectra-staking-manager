@@ -1,15 +1,17 @@
 "use client";
 
 import { useWalletAddress } from "pec/hooks/useWallet";
-
 import { useValidators } from "pec/hooks/useValidators";
-
 import { DepositWorkflow } from "pec/components/batch-deposits/DepositWorkflow";
 import { formatEther } from "viem";
 import { useWalletBalance } from "thirdweb/react";
 import { useActiveChainWithDefault } from "pec/hooks/useChain";
 import { client } from "pec/lib/wallet/client";
 import { BatchDepositLoading } from "./batch-deposit-loading";
+
+/**
+ * Wrapper for the deposit workflow so that the page can be a server component
+ */
 export const DepositWorkflowWrapper = () => {
   const walletAddress = useWalletAddress();
   const chain = useActiveChainWithDefault();
