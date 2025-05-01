@@ -7,7 +7,7 @@ import { type IResponse } from "pec/types/response";
 import { type z } from "zod";
 
 /**
- * Parses an axios reesponse using a schema
+ * Parses an axios response using a schema
  * This assumes that the response data is in the format { data: T }
  */
 export const executeTypesafeRequest = async <
@@ -31,7 +31,7 @@ export const executeTypesafeRequest = async <
       data: parsedData.data.data,
     };
   } catch (error) {
-    console.error("Beaconchain Response failed Zod validation", error);
+    console.error("Axios Response failed Zod validation", error);
     return generateErrorResponse(error);
   }
 };

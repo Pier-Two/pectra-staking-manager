@@ -27,9 +27,9 @@ export const storeFlowCompletion = createTRPCRouter({
       noRateLimit: true, // no rate limit since this is hit many times during withdrawal processing
     })
     .input(StoreWithdrawalRequestSchema)
-    .mutation(async ({ input }) =>
-      routeHandler(async (): Promise<IResponse<null>> => {
-        const {
+    .mutation(
+      async ({
+        input: {
           network,
           validatorIndex,
           email,
@@ -37,16 +37,43 @@ export const storeFlowCompletion = createTRPCRouter({
           txHash,
           balance,
           withdrawalAddress,
-        } = input;
+        },
+      }) =>
+        routeHandler(async (): Promise<IResponse<null>> => {
+          if (amount === balance) {
+            await ExitModel.create({
+              email,
+              status: ACTIVE_STATUS,
+              validatorIndex,
+              txHash,
+              networkId: network,
+              amount,
+              withdrawalAddress,
+            });
 
-        if (amount === balance) {
-          await ExitModel.create({
-            email,
-            status: ACTIVE_STATUS,
+            await createContact(email);
+
+            return {
+              success: true,
+              data: null,
+            };
+          }
+
+          const response = await getWithdrawals([validatorIndex], network);
+
+          if (!response.success) return response;
+
+          const lastWithdrawal = maxBy(response.data, "withdrawalindex");
+          const withdrawalIndex = lastWithdrawal?.withdrawalindex ?? 0;
+
+          await WithdrawalModel.create({
             validatorIndex,
-            txHash,
+            email,
+            withdrawalIndex,
+            status: ACTIVE_STATUS,
             networkId: network,
             amount,
+            txHash,
             withdrawalAddress,
           });
 
@@ -56,33 +83,7 @@ export const storeFlowCompletion = createTRPCRouter({
             success: true,
             data: null,
           };
-        }
-
-        const response = await getWithdrawals([validatorIndex], network);
-
-        if (!response.success) return response;
-
-        const lastWithdrawal = maxBy(response.data, "withdrawalindex");
-        const withdrawalIndex = lastWithdrawal?.withdrawalindex ?? 0;
-
-        await WithdrawalModel.create({
-          validatorIndex,
-          email,
-          withdrawalIndex,
-          status: ACTIVE_STATUS,
-          networkId: network,
-          amount,
-          txHash,
-          withdrawalAddress,
-        });
-
-        await createContact(email);
-
-        return {
-          success: true,
-          data: null,
-        };
-      }),
+        }),
     ),
 
   storeDepositRequest: publicProcedure
@@ -91,19 +92,14 @@ export const storeFlowCompletion = createTRPCRouter({
     .input(StoreDatabaseDepositSchema)
     .mutation(async ({ input }) =>
       routeHandler(async (): Promise<IResponse<null>> => {
-        // Each batched deposit request in the array will have the same email
-        const email = input.email;
+        await DepositModel.create({
+          ...input,
+          status: ACTIVE_STATUS,
+          email: input.email,
+          networkId: input.networkId,
+        });
 
-        await DepositModel.create(
-          input.deposits.map((deposit) => ({
-            ...deposit,
-            status: ACTIVE_STATUS,
-            email,
-            networkId: input.network,
-          })),
-        );
-
-        await createContact(email);
+        await createContact(input.email);
 
         return {
           success: true,

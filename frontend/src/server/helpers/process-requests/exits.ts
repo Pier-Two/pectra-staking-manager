@@ -33,19 +33,36 @@ export const checkExitProcessedAndUpdate = async (
   return false;
 };
 
-export const processExits = async (
-  networkId: SupportedNetworkIds,
-): Promise<IResponse> => {
-  const exits = await ExitModel.find({ status: ACTIVE_STATUS });
+interface ProcessExitsParams {
+  networkId: SupportedNetworkIds;
+  exits?: Exit[];
+  bcValidatorDetails?: BCValidatorDetails[];
+}
 
-  const response = await getValidators(
-    exits.map((exit) => exit.validatorIndex),
-    networkId,
+export const processExits = async ({
+  networkId,
+
+  ...overrides
+}: ProcessExitsParams): Promise<IResponse> => {
+  const exits =
+    overrides.exits ?? (await ExitModel.find({ status: ACTIVE_STATUS }));
+
+  let bcValidatorDetails = overrides.bcValidatorDetails;
+  if (!bcValidatorDetails) {
+    const response = await getValidators(
+      exits.map((exit) => exit.validatorIndex),
+      networkId,
+    );
+
+    if (!response.success) return response;
+
+    bcValidatorDetails = response.data;
+  }
+
+  const keyedBCValidatorDetails = keyBy(
+    bcValidatorDetails,
+    (v) => v.validatorindex,
   );
-
-  if (!response.success) return response;
-
-  const keyedBCValidatorDetails = keyBy(response.data, (v) => v.validatorindex);
 
   for (const exit of exits) {
     const bcValidatorDetails = keyedBCValidatorDetails[exit.validatorIndex];

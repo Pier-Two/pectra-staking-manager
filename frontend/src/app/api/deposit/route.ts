@@ -1,9 +1,9 @@
 import { verifySignatureAppRouter } from "@upstash/qstash/nextjs";
 import { MAIN_CHAIN } from "pec/lib/constants/contracts";
-import { processDeposits } from "pec/server/helpers/process-requests/deposit";
+import { processAllDeposits } from "pec/server/helpers/process-requests/deposit";
 
 async function depositHandler(_request: Request) {
-  const result = await processDeposits(MAIN_CHAIN.id);
+  const result = await processAllDeposits(MAIN_CHAIN.id);
   if (result.success) {
     return Response.json({
       success: true,

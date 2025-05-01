@@ -1,5 +1,4 @@
 import { ConsolidationModel } from "pec/server/database/models";
-import { generateErrorResponse } from "pec/lib/utils";
 import { ACTIVE_STATUS, INACTIVE_STATUS } from "pec/types/app";
 import type { IResponse } from "pec/types/response";
 import { sendEmailNotification } from "pec/lib/services/emailService";
