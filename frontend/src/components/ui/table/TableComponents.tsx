@@ -10,6 +10,7 @@ import { cn } from "pec/lib/utils";
 import { ValidatorDetails } from "pec/types/validator";
 import type { TransactionStatus } from "pec/types/withdraw";
 import { displayedEthAmount } from "pec/lib/utils/validators/balance";
+import { useActiveChainWithDefault } from "pec/hooks/useChain";
 
 interface StatusConfig {
   text: string;
@@ -67,6 +68,7 @@ interface SubmittingTransactionTableComponentProps {
 export const SubmittingTransactionTableComponent = ({
   transactionStatus,
 }: SubmittingTransactionTableComponentProps) => {
+  const chain = useActiveChainWithDefault();
   const statusConfig = getStatusConfig(transactionStatus);
   const showLoader =
     statusConfig.text === "Signing transaction..." ||
@@ -86,7 +88,9 @@ export const SubmittingTransactionTableComponent = ({
           size="sm"
           className="flex items-center gap-x-1 text-indigo-500 dark:text-indigo-400"
           onClick={() =>
-            openInNewTab(getBlockExplorerTxUrl(statusConfig.txHash))
+            openInNewTab(
+              getBlockExplorerTxUrl(statusConfig.txHash as string, chain.id),
+            )
           }
         >
           {statusConfig.txHash.slice(0, 6)}...

@@ -29,8 +29,6 @@ export const processExits = async (): Promise<void> => {
   try {
     const exits = await ExitModel.find({ status: ACTIVE_STATUS });
 
-    if (!exits) return;
-
     // for (const exit of exits) {
     //   const response = await getValidators(
     //     [exit.validatorIndex],
