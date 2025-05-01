@@ -3,8 +3,8 @@ import { generateErrorResponse } from "pec/lib/utils";
 import { ACTIVE_STATUS, INACTIVE_STATUS } from "pec/types/app";
 import type { IResponse } from "pec/types/response";
 import { groupBy, maxBy } from "lodash";
-import { getWithdrawals } from "../beaconchain/getWithdrawals";
-import { type SupportedNetworkIds } from "pec/constants/chain";
+import { getWithdrawals } from "../requests/beaconchain/getWithdrawals";
+import { SupportedNetworkIds } from "pec/constants/chain";
 
 export const processWithdrawals = async (
   networkId: SupportedNetworkIds,

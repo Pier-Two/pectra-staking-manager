@@ -4,8 +4,8 @@ import {
   BCValidatorsResponseSchema,
 } from "pec/lib/api/schemas/beaconchain/validator";
 import { type IResponse } from "pec/types/response";
-import { executeBeaconchainTypesafeRequest } from "./generics";
-import { chunkRequest } from "../chunk-request";
+import { executeBeaconChainTypesafeRequest } from "../generics";
+import { chunkRequest } from "../../chunk-request";
 
 /**
  * Fetches validator information from the Beaconchain API
@@ -23,7 +23,7 @@ export const getValidators = async (
     async (validatorIndexes) => {
       const url = `/api/v1/validator/${validatorIndexes.join(",")}`;
 
-      return executeBeaconchainTypesafeRequest(
+      return executeBeaconChainTypesafeRequest(
         BCValidatorsResponseSchema,
         url,
         network,

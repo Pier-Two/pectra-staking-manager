@@ -12,10 +12,10 @@ import {
   populateBeaconchainValidatorResponse,
   prePopulateBeaconchainValidatorResponse,
 } from "pec/server/helpers/validators";
-import { getValidators } from "pec/server/helpers/beaconchain/getValidators";
+import { getValidators } from "pec/server/helpers/requests/beaconchain/getValidators";
 import { routeHandler } from "pec/server/helpers/route-errors";
 import { type IResponse } from "pec/types/response";
-import { getValidatorsForWithdrawAddress } from "pec/server/helpers/beaconchain/getValidatorForWithdrawAddress";
+import { getValidatorsForWithdrawAddress } from "pec/server/helpers/requests/beaconchain/getValidatorForWithdrawAddress";
 import { type BCValidatorsData } from "pec/lib/api/schemas/beaconchain/validator";
 import {
   ConsolidationModel,

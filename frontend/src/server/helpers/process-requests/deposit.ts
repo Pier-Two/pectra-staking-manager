@@ -4,9 +4,9 @@ import { DepositModel } from "pec/server/database/models";
 import { generateErrorResponse } from "pec/lib/utils";
 import { ACTIVE_STATUS, INACTIVE_STATUS } from "pec/types/app";
 import type { IResponse } from "pec/types/response";
-import { getDeposits } from "../beaconchain/getDeposits";
-import { type BCDepositData } from "pec/lib/api/schemas/beaconchain/deposits";
-import { type SupportedNetworkIds } from "pec/constants/chain";
+import { getDeposits } from "../requests/beaconchain/getDeposits";
+import { BCDepositData } from "pec/lib/api/schemas/beaconchain/deposits";
+import { SupportedNetworkIds } from "pec/constants/chain";
 
 const checkDepositProcessedAndUpdate = async (
   dbDeposit: Deposit,

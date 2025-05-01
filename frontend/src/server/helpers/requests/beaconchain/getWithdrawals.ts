@@ -4,8 +4,8 @@ import {
   BCWithdrawalResponseSchema,
 } from "pec/lib/api/schemas/beaconchain/withdrawals";
 import { type IResponse } from "pec/types/response";
-import { executeBeaconchainTypesafeRequest } from "./generics";
-import { chunkRequest } from "../chunk-request";
+import { executeBeaconChainTypesafeRequest } from "../generics";
+import { chunkRequest } from "../../chunk-request";
 
 export const getWithdrawals = async (
   validators: number[],
@@ -16,7 +16,7 @@ export const getWithdrawals = async (
     async (validatorIndexes) => {
       const url = `/api/v1/validator/${validatorIndexes.join(",")}/withdrawals`;
 
-      return executeBeaconchainTypesafeRequest(
+      return executeBeaconChainTypesafeRequest(
         BCWithdrawalResponseSchema,
         url,
         network,

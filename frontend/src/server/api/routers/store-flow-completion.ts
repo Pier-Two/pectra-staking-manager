@@ -16,7 +16,7 @@ import { maxBy } from "lodash";
 import type { IResponse } from "pec/types/response";
 import { createContact } from "pec/lib/services/emailService";
 import { Ratelimit } from "@upstash/ratelimit";
-import { getWithdrawals } from "pec/server/helpers/beaconchain/getWithdrawals";
+import { getWithdrawals } from "pec/server/helpers/requests/beaconchain/getWithdrawals";
 import { StoreDatabaseDepositSchema } from "pec/lib/api/schemas/deposit";
 import { StoreConsolidationSchema } from "pec/lib/api/schemas/consolidation";
 import { routeHandler } from "pec/server/helpers/route-errors";
