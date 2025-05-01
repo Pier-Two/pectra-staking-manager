@@ -1,11 +1,12 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ArrowDownToDot } from "lucide-react";
+import { sumBy } from "lodash";
 import {
   type DepositTableValidatorDetails,
   SUBMITTING_DEPOSIT_COLUMN_HEADERS,
 } from "pec/constants/columnHeaders";
+import { MAX_VALIDATOR_BALANCE } from "pec/constants/deposit";
 import { useBatchDeposit } from "pec/hooks/useBatchDeposit";
 import {
   type DepositData,
@@ -25,8 +26,6 @@ import { DistributionInformation } from "./distribution/DistributionInformation"
 import { DistributionMethod } from "./distribution/DistributionMethod";
 import { SignatureDetails } from "./SignatureDetails";
 import { SelectValidators } from "./validators/SelectValidators";
-import { sumBy } from "lodash";
-import { MAX_VALIDATOR_BALANCE } from "pec/constants/deposit";
 
 export interface IDepositWorkflowProps {
   validators: ValidatorDetails[];
@@ -95,9 +94,10 @@ export const DepositWorkflow = ({
     return remainingBalance < deposit.amount;
   });
 
-  const hasInvalidAmount = watchedDeposits.some((deposit) => {
-    return deposit.amount === 0 || depositExceedsRemaining;
-  });
+  const hasInvalidAmount =
+    watchedDeposits.some((deposit) => {
+      return deposit.amount === 0;
+    }) || depositExceedsRemaining;
 
   const submitButtonDisabled =
     !isValid ||
