@@ -1,5 +1,4 @@
 import { groupBy } from "lodash";
-import { MAIN_CHAIN } from "pec/lib/constants/contracts";
 import type { Deposit } from "pec/lib/database/classes/deposit";
 import { DepositModel } from "pec/lib/database/models";
 import { sendEmailNotification } from "pec/lib/services/emailService";
@@ -8,7 +7,7 @@ import { ACTIVE_STATUS, INACTIVE_STATUS } from "pec/types/app";
 import type { IResponse } from "pec/types/response";
 import { getDeposits } from "../beaconchain/getDeposits";
 import { BCDepositData } from "pec/lib/api/schemas/beaconchain/deposits";
-import { chunkRequest } from "../chunk-request";
+import { SupportedNetworkIds } from "pec/constants/chain";
 
 const checkDepositProcessedAndUpdate = async (
   dbDeposit: Deposit,
@@ -39,7 +38,9 @@ const checkDepositProcessedAndUpdate = async (
   return false;
 };
 
-export const processDeposits = async (): Promise<IResponse> => {
+export const processDeposits = async (
+  networkId: SupportedNetworkIds,
+): Promise<IResponse> => {
   try {
     const deposits = await DepositModel.find({
       status: ACTIVE_STATUS,
@@ -51,9 +52,9 @@ export const processDeposits = async (): Promise<IResponse> => {
         error: "Deposit query failed to execute.",
       };
 
-    const responses = await chunkRequest(
+    const responses = await getDeposits(
       deposits.map((item) => item.validatorIndex),
-      async (validatorIndexes) => getDeposits(validatorIndexes, MAIN_CHAIN.id),
+      networkId,
     );
 
     if (!responses.success) return responses;

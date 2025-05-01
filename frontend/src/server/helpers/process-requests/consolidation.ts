@@ -3,10 +3,10 @@ import { generateErrorResponse } from "pec/lib/utils";
 import { ACTIVE_STATUS, INACTIVE_STATUS } from "pec/types/app";
 import type { IResponse } from "pec/types/response";
 import { sendEmailNotification } from "pec/lib/services/emailService";
-import { MAIN_CHAIN } from "pec/lib/constants/contracts";
 import { getValidators } from "../beaconchain/getValidators";
 import { Consolidation } from "pec/lib/database/classes/consolidation";
 import { BCValidatorsData } from "pec/lib/api/schemas/beaconchain/validator";
+import { SupportedNetworkIds } from "pec/constants/chain";
 
 export const checkConsolidationProcessedAndUpdate = async (
   dbConsolidation: Consolidation,
@@ -31,7 +31,9 @@ export const checkConsolidationProcessedAndUpdate = async (
   return false;
 };
 
-export const processConsolidations = async (): Promise<IResponse> => {
+export const processConsolidations = async (
+  networkId: SupportedNetworkIds,
+): Promise<IResponse> => {
   try {
     const consolidations = await ConsolidationModel.find({
       status: ACTIVE_STATUS,
@@ -47,7 +49,7 @@ export const processConsolidations = async (): Promise<IResponse> => {
     for (const consolidation of consolidations) {
       const response = await getValidators(
         [consolidation.sourceTargetValidatorIndex],
-        MAIN_CHAIN.id,
+        networkId,
       );
       console.log("Consolidation response");
       console.log(response);

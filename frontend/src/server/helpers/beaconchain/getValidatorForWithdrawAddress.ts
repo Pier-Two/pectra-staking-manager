@@ -18,7 +18,7 @@ export const getValidatorsForWithdrawAddress = async (
     network,
     {
       params: {
-        limit: 200,
+        limit: 2000,
       },
     },
   );

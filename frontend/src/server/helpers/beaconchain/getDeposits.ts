@@ -5,16 +5,23 @@ import {
   BCDepositResponse,
   BCDepositResponseSchema,
 } from "pec/lib/api/schemas/beaconchain/deposits";
+import { chunkRequest } from "../chunk-request";
 
 export const getDeposits = async (
   validators: number[],
   network: SupportedNetworkIds,
 ): Promise<IResponse<BCDepositResponse["data"]>> => {
-  const url = `/api/v1/validator/${validators.join(",")}/deposits`;
+  return await chunkRequest(
+    validators,
+    async (validatorIndexes) => {
+      const url = `/api/v1/validator/${validatorIndexes.join(",")}/deposits`;
 
-  return executeBeaconchainTypesafeRequest(
-    BCDepositResponseSchema,
-    url,
-    network,
+      return executeBeaconchainTypesafeRequest(
+        BCDepositResponseSchema,
+        url,
+        network,
+      );
+    },
+    100,
   );
 };

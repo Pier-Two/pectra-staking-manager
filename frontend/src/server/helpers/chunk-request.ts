@@ -6,9 +6,10 @@ import { IResponse } from "pec/types/response";
 export const chunkRequest = async <Arg, Response>(
   data: Arg[],
   method: (args: Arg[]) => Promise<IResponse<Response[]>>,
+  chunkSize: number = CHUNK_SIZE,
 ): Promise<IResponse<Response[]>> => {
   try {
-    const chunkedData = chunk(data, CHUNK_SIZE);
+    const chunkedData = chunk(data, chunkSize);
     const allResponses: Response[] = [];
 
     for (const chunk of chunkedData) {

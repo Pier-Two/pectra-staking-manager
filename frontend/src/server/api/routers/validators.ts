@@ -28,6 +28,7 @@ import { checkValidatorUpgradeProcessedAndUpdate } from "pec/server/helpers/proc
 import { ACTIVE_STATUS } from "pec/types/app";
 import { checkConsolidationProcessedAndUpdate } from "pec/server/helpers/process-requests/consolidation";
 import { checkExitProcessedAndUpdate } from "pec/server/helpers/process-requests/exits";
+import { redisCacheMiddleware } from "../middleware/redis-cache-middleware";
 
 const populateStuff = async (
   bcValidatorData: BCValidatorsData[],

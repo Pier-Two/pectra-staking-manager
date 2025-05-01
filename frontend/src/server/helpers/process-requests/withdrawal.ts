@@ -4,11 +4,12 @@ import { ACTIVE_STATUS, INACTIVE_STATUS } from "pec/types/app";
 import type { IResponse } from "pec/types/response";
 import { groupBy, maxBy } from "lodash";
 import { sendEmailNotification } from "pec/lib/services/emailService";
-import { MAIN_CHAIN } from "pec/lib/constants/contracts";
 import { getWithdrawals } from "../beaconchain/getWithdrawals";
-import { chunkRequest } from "../chunk-request";
+import { SupportedNetworkIds } from "pec/constants/chain";
 
-export const processWithdrawals = async (): Promise<IResponse> => {
+export const processWithdrawals = async (
+  networkId: SupportedNetworkIds,
+): Promise<IResponse> => {
   try {
     const withdrawals = await WithdrawalModel.find({
       status: ACTIVE_STATUS,
@@ -20,10 +21,9 @@ export const processWithdrawals = async (): Promise<IResponse> => {
         error: "Withdrawal query failed to execute.",
       };
 
-    const allWithdrawals = await chunkRequest(
+    const allWithdrawals = await getWithdrawals(
       withdrawals.map((item) => item.validatorIndex),
-      async (validatorIndexes) =>
-        getWithdrawals(validatorIndexes, MAIN_CHAIN.id),
+      networkId,
     );
 
     if (!allWithdrawals.success) return allWithdrawals;

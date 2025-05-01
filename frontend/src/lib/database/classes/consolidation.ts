@@ -30,4 +30,7 @@ export class Consolidation {
 
   @prop({ required: true, enum: SUPPORTED_NETWORKS_IDS })
   public networkId!: SupportedNetworkIds;
+
+  @prop({ required: true })
+  public amount!: number;
 }

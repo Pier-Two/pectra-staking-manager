@@ -43,7 +43,6 @@ type EmailMetadataTypees =
 export const sendEmailNotification = async (
   emailName: EmailNames,
   email: string | undefined,
-  metadata: EmailMetadataTypees,
 ): Promise<void> => {
   if (!email || email.length === 0) return;
 
