@@ -44,7 +44,7 @@ export const SelectSourceValidators = ({
 
   const newDestinationBalance = useMemo(() => {
     const sourceValidatorsSum = sumBy(sourceValidators, (v) => v.balance);
-    return (sourceValidatorsSum + destinationValidator.balance) * 10;
+    return sourceValidatorsSum + destinationValidator.balance;
   }, [sourceValidators, destinationValidator]);
 
   return (
