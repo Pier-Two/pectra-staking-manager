@@ -31,20 +31,9 @@ export const metadata: Metadata = {
   description:
     "Take control of your validators with the Pectra upgrade! Upgrade to Pextra (0x02), and consolidate multiple validators for easier management, perform batch top-ups to the new max value from 32ETH to 2048ETH, perform withdraws, and monitor the adoption of Pectra via our charts.",
   icons: [{ rel: "icon", url: "/favicon.svg" }],
-  authors: [
-    { name: "Labrys", url: "https://labrys.io" },
-    {
-      name: "Pier Two",
-      url: "https://piertwo.com/",
-    },
-  ],
   keywords: ["Pectra", "Staking", "Manager", "Ethereum", "Validator"],
   openGraph: {
     siteName: "Pectra Staking Manager",
-    authors: ["https://labrys.io", "https://piertwo.com/"],
-  },
-  twitter: {
-    site: "@Labrys_io",
   },
 };
 
