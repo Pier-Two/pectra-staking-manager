@@ -23,7 +23,7 @@ export class Consolidation {
   public targetValidatorIndex!: number;
 
   @prop({ required: true })
-  public sourceTargetValidatorIndex!: number;
+  public sourceValidatorIndex!: number;
 
   @prop({ required: true })
   public txHash!: string;

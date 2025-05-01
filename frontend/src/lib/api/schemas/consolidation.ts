@@ -4,7 +4,7 @@ import { EmailSchema } from "./email";
 
 export const StoreConsolidationSchema = z.object({
   targetValidatorIndex: z.number(),
-  sourceTargetValidatorIndex: z.number(),
+  sourceValidatorIndex: z.number(),
   txHash: z.string(),
   email: EmailSchema,
   network: SupportedChainIdSchema,

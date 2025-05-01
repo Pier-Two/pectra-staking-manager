@@ -99,13 +99,13 @@ const populateStuff = async (
     status: ACTIVE_STATUS,
     $or: [
       { targetValidatorIndex: { $in: allValidatorIndexes } },
-      { sourceTargetValidatorIndex: { $in: allValidatorIndexes } },
+      { sourceValidatorIndex: { $in: allValidatorIndexes } },
     ],
   });
 
   for (const consolidation of consolidations) {
     let bcSourceValidator =
-      keyedBCValidatorData[consolidation.sourceTargetValidatorIndex];
+      keyedBCValidatorData[consolidation.sourceValidatorIndex];
 
     if (!bcSourceValidator) {
       console.error(
@@ -121,7 +121,7 @@ const populateStuff = async (
     );
 
     // This would already be exited in most cases, buut just in case
-    mutateValidator(consolidation.sourceTargetValidatorIndex, {
+    mutateValidator(consolidation.sourceValidatorIndex, {
       status: ValidatorStatus.EXITED,
     });
 

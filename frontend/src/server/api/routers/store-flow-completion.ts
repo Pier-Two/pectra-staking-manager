@@ -111,7 +111,7 @@ export const storeFlowCompletion = createTRPCRouter({
       async ({
         input: {
           targetValidatorIndex,
-          sourceTargetValidatorIndex,
+          sourceValidatorIndex,
           txHash,
           email,
           network,
@@ -119,7 +119,7 @@ export const storeFlowCompletion = createTRPCRouter({
         },
       }) =>
         routeHandler(async (): Promise<IResponse<null>> => {
-          if (targetValidatorIndex === sourceTargetValidatorIndex) {
+          if (targetValidatorIndex === sourceValidatorIndex) {
             await ValidatorUpgradeModel.create({
               validatorIndex: targetValidatorIndex,
               email,
@@ -130,7 +130,7 @@ export const storeFlowCompletion = createTRPCRouter({
           } else {
             await ConsolidationModel.create({
               targetValidatorIndex,
-              sourceTargetValidatorIndex,
+              sourceValidatorIndex,
               status: ACTIVE_STATUS,
               txHash,
               email,

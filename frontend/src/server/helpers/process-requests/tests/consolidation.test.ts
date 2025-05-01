@@ -1,19 +1,11 @@
-import { describe, it, expect, vi, Mock } from "vitest";
-import { validatorSummaries } from "pec/server/__mocks__/charts";
-import {
-  ConsolidationModel,
-  ValidatorSummaryModel,
-} from "pec/server/database/models";
-import { createCaller } from "pec/server/api/root";
-import { Consolidation } from "pec/server/database/classes/consolidation";
+import { describe, it, vi, Mock } from "vitest";
+import { ConsolidationModel } from "pec/server/database/models";
 import { buildMockConsolidation } from "pec/server/__mocks__/database-models";
-import { ACTIVE_STATUS, INACTIVE_STATUS } from "pec/types/app";
+import { ACTIVE_STATUS } from "pec/types/app";
 import { getValidators } from "../../beaconchain/getValidators";
 import { processConsolidations } from "../consolidation";
-
-const mockCtx = {
-  headers: new Headers(),
-};
+import { MAIN_CHAIN } from "pec/lib/constants/contracts";
+import { buildMockBCValidatorsData } from "pec/server/__mocks__/validators";
 
 vi.mock("../../beaconchain/getValidators", () => ({
   getValidators: vi.fn(),
@@ -22,7 +14,7 @@ vi.mock("../../beaconchain/getValidators", () => ({
 type MockedGetValidators = Mock<typeof getValidators>;
 
 describe("processConsolidations", () => {
-  it("should return the correct data", async () => {
+  it("Should update the database record and send an email wheen the consolidation is processed", async () => {
     // const result = vi.fn<typeof getValidators>(getValidators);
 
     // getValidators.mockReturnValue(
@@ -32,23 +24,26 @@ describe("processConsolidations", () => {
     //   }),
     // );
     // Define what the mock should return
+    //
+    const sourceValidatorIndex = 100;
+
+    const consolidations = buildMockConsolidation({
+      status: ACTIVE_STATUS,
+      sourceValidatorIndex: sourceValidatorIndex,
+    });
+
+    await ConsolidationModel.insertMany(consolidations);
+
     (getValidators as MockedGetValidators).mockResolvedValue({
       success: true,
       data: [
-        { validatorId: "123", status: "active" },
-        { validatorId: "456", status: "inactive" },
-      ] as any,
+        buildMockBCValidatorsData({
+          status: "exited",
+          validatorindex: sourceValidatorIndex,
+        }),
+      ],
     });
 
-    console.log(await getValidators([], 1));
-
-    const consolidations = buildMockConsolidation({ status: ACTIVE_STATUS });
-    await ConsolidationModel.insertMany(consolidations);
-    const returned = await ConsolidationModel.find();
-    console.log("Consolidations: ", returned);
-    const caller = createCaller(mockCtx);
-    await processConsolidations();
-    // const result = await calle;
-    // expect(result).toBeDefined();
+    await processConsolidations(MAIN_CHAIN.id);
   });
 });

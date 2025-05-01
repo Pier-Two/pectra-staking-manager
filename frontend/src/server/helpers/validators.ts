@@ -26,10 +26,8 @@ export const prePopulateBeaconchainValidatorResponse = (
     numberOfWithdrawals: rawValidatorDetails.total_withdrawals,
     activeSince,
     activeDuration,
-    consolidationTransaction: undefined,
-    depositTransaction: undefined,
-    upgradeSubmitted: false,
     pendingRequests: [],
+    pendingUpgrade: false,
   };
 };
 
@@ -47,7 +45,7 @@ export const populateBeaconchainValidatorResponse = async (
       }),
       await ConsolidationModel.findOne({
         targetValidatorIndex: validatorDetails.validatorIndex,
-        sourceTargetValidatorIndex: validatorDetails.validatorIndex,
+        sourceValidatorIndex: validatorDetails.validatorIndex,
         status: ACTIVE_STATUS,
       }),
       // TODO make this exclusive OR?
@@ -57,7 +55,7 @@ export const populateBeaconchainValidatorResponse = async (
         $or: [
           { targetValidatorIndex: Number(validatorDetails.validatorIndex) },
           {
-            sourceTargetValidatorIndex: Number(validatorDetails.validatorIndex),
+            sourceValidatorIndex: Number(validatorDetails.validatorIndex),
           },
         ],
       }),
@@ -67,29 +65,6 @@ export const populateBeaconchainValidatorResponse = async (
       }),
     ],
   );
-
-  // if (withdrawTx) validatorDetails.withdrawalTransactions = withdrawTx;
-
-  if (upgradeTx) validatorDetails.upgradeSubmitted = true;
-
-  // TODO: Doesn't capture that there might be 2 consolidations for an address; 1 to upgrade, 2 to consolidate
-  if (consolidationTx) {
-    validatorDetails.consolidationTransaction = {
-      hash: consolidationTx.txHash,
-      status: TransactionStatus.SUBMITTED,
-      isConsolidatedValidator:
-        rawValidatorDetails.validatorindex ===
-        consolidationTx?.targetValidatorIndex,
-    };
-  }
-
-  if (depositTx) {
-    validatorDetails.depositTransaction = {
-      hash: depositTx.txHash,
-      status: TransactionStatus.SUBMITTED,
-    };
-    validatorDetails.hasPendingDeposit = true;
-  }
 
   return validatorDetails;
 };

@@ -40,7 +40,10 @@ export const buildMockBCValidatorsData = (
     pubkey: generatePublicKey(),
     slashed: faker.datatype.boolean(),
     status: faker.helpers.arrayElement(VALIDATOR_LIFECYCLE_STATUSES),
-    validatorindex: faker.number.int({ min: 1, max: 1000000 }),
+    validatorindex: faker.number.int({
+      min: 10000000,
+      max: 20000000,
+    }),
     withdrawableepoch: faker.number.int({ min: 200, max: 1000 }),
     withdrawalcredentials: generateWithdrawalAddress(),
     total_withdrawals: faker.number.int({ min: 0, max: 100 }),
@@ -61,7 +64,10 @@ export const buildMockValidatorDetails = (
     numberOfWithdrawals: faker.number.int({ min: 0, max: 100 }),
     publicKey: generatePublicKey(),
     status: faker.helpers.arrayElement(Object.values(ValidatorStatus)),
-    validatorIndex: faker.number.int({ min: 1, max: 1000000 }),
+    validatorIndex: faker.number.int({
+      min: 10000000,
+      max: 20000000,
+    }),
     withdrawalAddress: generateWithdrawalAddress(),
     pendingUpgrade: faker.datatype.boolean(),
     ...overrides,

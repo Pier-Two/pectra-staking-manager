@@ -15,7 +15,7 @@ export const checkConsolidationProcessedAndUpdate = async (
   if (bcValidatorDetails.status === "exited") {
     await ConsolidationModel.updateOne(
       {
-        sourceTargetValidatorIndex: dbConsolidation.sourceTargetValidatorIndex,
+        sourceValidatorIndex: dbConsolidation.sourceValidatorIndex,
       },
       { $set: { status: INACTIVE_STATUS } },
     );
@@ -48,11 +48,9 @@ export const processConsolidations = async (
     // TODO: This can be better and make a single DB call
     for (const consolidation of consolidations) {
       const response = await getValidators(
-        [consolidation.sourceTargetValidatorIndex],
+        [consolidation.sourceValidatorIndex],
         networkId,
       );
-      console.log("Consolidation response");
-      console.log(response);
 
       if (!response.success) return response;
 
@@ -62,7 +60,7 @@ export const processConsolidations = async (
 
       if (!consolidationDataResponse) {
         console.error(
-          `No data found for validator index ${consolidation.sourceTargetValidatorIndex}`,
+          `No data found for validator index ${consolidation.sourceValidatorIndex}`,
         );
 
         continue;

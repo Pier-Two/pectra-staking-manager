@@ -2,7 +2,6 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { sumBy } from "lodash";
-import { ArrowUpFromDot } from "lucide-react";
 import Image from "next/image";
 import { ValidatorHeader } from "pec/components/batch-deposits/validators/ValidatorHeader";
 import { Email } from "pec/components/consolidation/summary/Email";
@@ -17,14 +16,14 @@ import {
 import { useValidators } from "pec/hooks/useValidators";
 import { useWalletAddress } from "pec/hooks/useWallet";
 import { useSubmitWithdraw } from "pec/hooks/useWithdraw";
-import {
-  WithdrawalFormSchema,
-  type WithdrawalFormType,
-} from "pec/lib/api/schemas/withdrawal";
 import { formatAddressToShortenedString } from "pec/lib/utils/address";
 import { type FC, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import WithdrawalLoading from "./withdraw-loading";
+import {
+  FormWithdrawalSchema,
+  FormWithdrawalType,
+} from "pec/lib/api/schemas/withdrawal";
 
 const Withdrawal: FC = () => {
   const walletAddress = useWalletAddress();
@@ -41,8 +40,8 @@ const Withdrawal: FC = () => {
     watch,
     register,
     formState: { isValid, errors },
-  } = useForm<WithdrawalFormType>({
-    resolver: zodResolver(WithdrawalFormSchema),
+  } = useForm<FormWithdrawalType>({
+    resolver: zodResolver(FormWithdrawalSchema),
     defaultValues: { withdrawals: [], email: "" },
     mode: "onChange",
   });
@@ -83,7 +82,7 @@ const Withdrawal: FC = () => {
     setStage({ type: "data-capture" });
   };
 
-  const onSubmit = async (data: WithdrawalFormType) => {
+  const onSubmit = async (data: FormWithdrawalType) => {
     await submitWithdrawals(data.withdrawals, data.email ?? "");
   };
 

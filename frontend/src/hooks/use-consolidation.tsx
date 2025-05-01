@@ -83,7 +83,7 @@ export const useSubmitConsolidate = () => {
     try {
       await saveConsolidationToDatabase({
         targetValidatorIndex: destination.validatorIndex,
-        sourceTargetValidatorIndex: source.validatorIndex,
+        sourceValidatorIndex: source.validatorIndex,
         txHash: upgradeTx.transactionHash,
         email,
         network: chain.id,

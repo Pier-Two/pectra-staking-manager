@@ -15,10 +15,18 @@ export const buildMockConsolidation = (
   return {
     email: faker.internet.email(),
     status: faker.helpers.arrayElement(Object.values(DatabaseDocumentStatuses)),
-    targetValidatorIndex: faker.number.int({ min: 1, max: 1000000 }),
-    sourceTargetValidatorIndex: faker.number.int({ min: 1, max: 1000000 }),
+    // Ensure these don't overlap and are large so we can pass known values in the tests
+    targetValidatorIndex: faker.number.int({
+      min: 10000000,
+      max: 20000000,
+    }),
+    sourceValidatorIndex: faker.number.int({
+      min: 20000000,
+      max: 30000000,
+    }),
     txHash: generateTxHash(),
     networkId: faker.helpers.arrayElement(SUPPORTED_NETWORKS_IDS),
+    amount: faker.number.int({ min: 1, max: 1000000 }),
     ...overrides,
   };
 };
