@@ -156,12 +156,11 @@ export const useNewConsolidate = ({ activeValidators }: UseConsolidate) => {
 
     setStage(updatedStage);
 
-    // TODO: EMAIL
     const result = await consolidate(
       updatedStage.destinationValidator,
       updatedStage.transactions.transactions,
       updateTransactionStatus,
-      "",
+      email,
     );
 
     if (!result) goBack();
