@@ -1,5 +1,5 @@
 import { TRPCError } from "@trpc/server";
-import { IResponse } from "pec/types/response";
+import { type IResponse } from "pec/types/response";
 
 // Helper that maps our internal IResponse type to TRPCError for consistency
 export const routeHandler = async <T>(

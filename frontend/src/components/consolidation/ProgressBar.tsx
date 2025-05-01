@@ -1,6 +1,6 @@
 import {
   CONSOLIDATION_STEPS,
-  ConsolidationStep,
+  type ConsolidationStep,
 } from "pec/types/consolidation";
 import type { FC } from "react";
 import { SecondaryButton } from "../ui/custom/SecondaryButton";

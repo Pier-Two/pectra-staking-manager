@@ -1,5 +1,5 @@
-import { SubmittingConsolidationValidatorDetails } from "pec/constants/columnHeaders";
-import { ValidatorDetails } from "pec/types/validator";
+import { type SubmittingConsolidationValidatorDetails } from "pec/constants/columnHeaders";
+import { type ValidatorDetails } from "pec/types/validator";
 
 export const needsUpgradeTx = (v: ValidatorDetails): boolean => {
   return !v.withdrawalAddress.startsWith("0x02");

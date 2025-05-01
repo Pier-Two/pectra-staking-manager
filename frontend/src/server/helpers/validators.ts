@@ -1,4 +1,4 @@
-import { BCValidatorsData } from "pec/lib/api/schemas/beaconchain/validator";
+import { type BCValidatorsData } from "pec/lib/api/schemas/beaconchain/validator";
 import {
   ConsolidationModel,
   DepositModel,
@@ -7,7 +7,7 @@ import {
 import { getValidatorActiveInfo } from "pec/lib/utils/validators/activity";
 import { getValidatorStatus } from "pec/lib/utils/validators/status";
 import { ACTIVE_STATUS } from "pec/types/app";
-import { TransactionStatus, ValidatorDetails } from "pec/types/validator";
+import { TransactionStatus, type ValidatorDetails } from "pec/types/validator";
 
 export const prePopulateBeaconchainValidatorResponse = (
   rawValidatorDetails: BCValidatorsData,

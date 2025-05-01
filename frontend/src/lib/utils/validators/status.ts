@@ -1,5 +1,5 @@
 import {
-  ValidatorDetails,
+  type ValidatorDetails,
   type ValidatorLifecycleStatus,
   ValidatorStatus,
 } from "pec/types/validator";

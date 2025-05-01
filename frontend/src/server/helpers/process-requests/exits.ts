@@ -1,5 +1,5 @@
-import { BCValidatorsData } from "pec/lib/api/schemas/beaconchain/validator";
-import { Exit } from "pec/server/database/classes/exit";
+import { type BCValidatorsData } from "pec/lib/api/schemas/beaconchain/validator";
+import { type Exit } from "pec/server/database/classes/exit";
 import { ExitModel } from "pec/server/database/models";
 import { ACTIVE_STATUS, INACTIVE_STATUS } from "pec/types/app";
 

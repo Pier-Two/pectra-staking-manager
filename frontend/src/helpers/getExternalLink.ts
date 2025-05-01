@@ -1,4 +1,4 @@
-import { HOODI_CHAIN_DETAILS, SupportedNetworkIds } from "pec/constants/chain";
+import { HOODI_CHAIN_DETAILS, type SupportedNetworkIds } from "pec/constants/chain";
 
 /**
  * Get the block explorer transaction URL

@@ -32,9 +32,12 @@ export const getValidators = async (
           network,
         );
 
-        if ("data" in response) {
+        // if successful then we need to rewrite it to be an array
+        if (response.success) {
           return { success: true, data: [response.data] };
         }
+
+        // otherwise return the error (should this be thrown?)
         return response;
       }
 
@@ -46,9 +49,6 @@ export const getValidators = async (
         network,
       );
 
-      if ("data" in response) {
-        return { success: true, data: response.data };
-      }
       return response;
     },
     100,

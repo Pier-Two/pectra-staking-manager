@@ -1,10 +1,10 @@
-import { SupportedNetworkIds } from "pec/constants/chain";
+import { type SupportedNetworkIds } from "pec/constants/chain";
 import { executeBeaconchainTypesafeRequest } from "./generics";
 import {
-  BCValidatorsForWithdrawAddressResponse,
+  type BCValidatorsForWithdrawAddressResponse,
   BCValidatorsForWithdrawAddressResponseSchema,
 } from "pec/lib/api/schemas/beaconchain/validator";
-import { IResponse } from "pec/types/response";
+import { type IResponse } from "pec/types/response";
 
 export const getValidatorsForWithdrawAddress = async (
   withdrawAddress: string,

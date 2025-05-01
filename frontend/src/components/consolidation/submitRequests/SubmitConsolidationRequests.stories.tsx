@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { MOCK_VALIDATORS } from "pec/server/__mocks__/validators";
 import { SubmitConsolidationRequests } from "./SubmitConsolidationRequests";
-import { SubmittingConsolidationValidatorDetails } from "pec/constants/columnHeaders";
+import { type SubmittingConsolidationValidatorDetails } from "pec/constants/columnHeaders";
 
 // More on how to set up stories at: https://storybook.js.org/docs/writing-stories#default-export
 const meta = {
