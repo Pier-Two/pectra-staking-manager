@@ -1,8 +1,14 @@
 import { ManuallyEnterValidator } from "./ManuallyEnterValidator";
 import { SecondaryButton } from "pec/components/ui/custom/SecondaryButton";
 import { ValidatorTable } from "pec/components/ui/table/ValidatorTable";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "pec/components/ui/tabs";
 import { CONSOLIDATION_TABLE_HEADERS } from "pec/constants/columnHeaders";
-import { ValidatorDetails } from "pec/types/validator";
+import { type ValidatorDetails } from "pec/types/validator";
 import { useState } from "react";
 
 interface SelectDestinationValidatorProps {
@@ -17,6 +23,8 @@ export const SelectDestinationValidator = ({
   const [manuallySettingValidator, setManuallySettingValidator] =
     useState(false);
 
+  const [selectedTab, setSelectedTab] = useState("validators");
+
   return (
     <div className="space-y-6">
       <div className="text-2xl font-medium">Destination Validator</div>
@@ -30,10 +38,13 @@ export const SelectDestinationValidator = ({
         the source validator.
       </div>
 
-      <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
-        <div className="text-md font-medium">Select destination validator</div>
+      <Tabs value={selectedTab} onValueChange={setSelectedTab}>
+        <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
+          <div className="text-md font-medium">
+            Select destination validator
+          </div>
 
-        <SecondaryButton
+          {/* <SecondaryButton
           onClick={() => {
             setManuallySettingValidator(!manuallySettingValidator);
           }}
@@ -42,24 +53,40 @@ export const SelectDestinationValidator = ({
               ? "Select from your Validators"
               : "Enter Destination Validator Address"
           }
-        />
-      </div>
-      {manuallySettingValidator ? (
-        <ManuallyEnterValidator
-          goToSelectSourceValidators={goToSelectSourceValidators}
-        />
-      ) : (
-        <ValidatorTable
-          data={validators}
-          headers={CONSOLIDATION_TABLE_HEADERS}
-          selectableRows={{
-            onClick: (row) => goToSelectSourceValidators(row),
-            isSelected: () => false,
-            showCheckIcons: false,
-          }}
-          disablePagination
-        />
-      )}
+        /> */}
+          <TabsList>
+            <TabsTrigger value="validators">Select from Validators</TabsTrigger>
+            <TabsTrigger value="manually">Enter Address</TabsTrigger>
+          </TabsList>
+        </div>
+        {/* {manuallySettingValidator ? (
+          <ManuallyEnterValidator
+            goToSelectSourceValidators={goToSelectSourceValidators}
+          />
+        ) : (
+          <ValidatorTable
+            data={validators}
+            headers={CONSOLIDATION_TABLE_HEADERS}
+            selectableRows={{
+              onClick: (row) => goToSelectSourceValidators(row),
+              isSelected: () => false,
+              showCheckIcons: false,
+            }}
+            disablePagination
+          />
+        )} */}
+        <TabsContent value="validators">
+          <ValidatorTable
+            data={validators}
+            headers={CONSOLIDATION_TABLE_HEADERS}
+          />
+        </TabsContent>
+        <TabsContent value="manually">
+          <ManuallyEnterValidator
+            goToSelectSourceValidators={goToSelectSourceValidators}
+          />
+        </TabsContent>
+      </Tabs>
     </div>
   );
 };

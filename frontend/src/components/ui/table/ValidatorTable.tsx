@@ -71,12 +71,7 @@ export const ValidatorTable = <T extends TableValidatorDetails>({
     <EnterAnimation>
       <div className="flex flex-col">
         {!disableSearch && (
-          <div className="mt-4">
-            <SearchFilter
-              searchTerm={searchTerm}
-              setSearchTerm={setSearchTerm}
-            />
-          </div>
+          <SearchFilter searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
         )}
         {children?.({ setCurrentPage })}
         <table className="table w-full table-auto border-separate border-spacing-y-2">
