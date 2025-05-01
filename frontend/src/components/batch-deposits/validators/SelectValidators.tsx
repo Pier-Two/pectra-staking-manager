@@ -84,8 +84,7 @@ export const SelectValidators = ({
       const value = depositIndex === -1 ? 0 : undefined;
       const isSelected = depositIndex !== -1;
       const depositAmount = deposits[depositIndex]?.amount ?? 0;
-      const remainingBalance =
-        MAX_VALIDATOR_BALANCE - Number(validator.balance);
+      const remainingBalance = MAX_VALIDATOR_BALANCE - validator.balance;
       const invalidAmount =
         (depositAmount === 0 && isSelected) || remainingBalance < depositAmount;
 
@@ -99,7 +98,7 @@ export const SelectValidators = ({
               setValueAs: (value: string) => setValueHandler(value),
             }),
             onClick: (e: React.MouseEvent<HTMLInputElement>) => {
-              if (depositIndex === -1) {
+              if (!isSelected) {
                 handleValidatorSelect(validator);
               }
               e.stopPropagation();
@@ -126,7 +125,7 @@ export const SelectValidators = ({
   );
 
   return (
-    <div>
+    <>
       <ValidatorHeader
         selectedCount={deposits.length}
         totalCount={validators?.length ?? 0}
@@ -140,8 +139,8 @@ export const SelectValidators = ({
           balance: (validator) => (
             <DisplayAmount amount={validator.balance}>
               <div className="mt-1 font-inter text-xs font-light text-piertwo-text">
-                Ξ
-                {(MAX_VALIDATOR_BALANCE - Number(validator.balance)).toFixed(2)}{" "}
+                <span className="hidden md:contents">Ξ</span>
+                {(MAX_VALIDATOR_BALANCE - validator.balance).toFixed(2)}{" "}
                 remaining
               </div>
             </DisplayAmount>
@@ -162,6 +161,6 @@ export const SelectValidators = ({
           or adjust Total Amount
         </p>
       )}
-    </div>
+    </>
   );
 };

@@ -154,7 +154,7 @@ export const DisplayAmount = ({
 }: DisplayAmountProps) => {
   return (
     <div className={cn("text-sm font-semibold", className)}>
-      <span className="hidden md:contents"> Ξ</span>{" "}
+      <span className="hidden md:contents">Ξ</span>{" "}
       {displayedEthAmount(amount, opts?.decimals)}
       {children}
     </div>
