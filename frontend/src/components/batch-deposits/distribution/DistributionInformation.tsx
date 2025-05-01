@@ -106,7 +106,7 @@ export const DistributionInformation = ({
         (stage.transactionStatus.status === "submitted" ||
           stage.transactionStatus.status === "finalised") && (
           <>
-            <div className="rounded-md bg-green-100 p-2 text-[13px] font-570 text-green-500">
+            <div className="rounded-md bg-green-500/[7%] p-2 text-[13px] font-570 text-green-500">
               Your transactions{" "}
               {stage.transactionStatus.status === "submitted"
                 ? "have been submitted successfully and will be processed shortly. It is safe to leave this page."
