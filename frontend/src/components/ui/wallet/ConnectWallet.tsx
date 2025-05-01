@@ -5,7 +5,6 @@ import { clsx } from "clsx";
 import { ChevronDown } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { SUPPORTED_CHAINS } from "pec/constants/chain";
-import { useTheme } from "pec/hooks/useTheme";
 import { useWalletAddress } from "pec/hooks/useWallet";
 import { client, wallets } from "pec/lib/wallet/client";
 import type { StyleableComponent } from "pec/types/components";
@@ -18,11 +17,12 @@ import {
   useActiveWalletConnectionStatus,
 } from "thirdweb/react";
 import { Button } from "../button";
+import { useTheme } from "next-themes";
 import { trackEvent } from "pec/helpers/trackEvent";
 
 export const ConnectWalletButton = ({ className }: StyleableComponent) => {
   const router = useRouter();
-  const { darkMode } = useTheme();
+  const { resolvedTheme: theme } = useTheme();
   const address = useWalletAddress();
   const detailsModal = useWalletDetailsModal();
   const [isMounted, setIsMounted] = useState(false);
@@ -54,10 +54,10 @@ export const ConnectWalletButton = ({ className }: StyleableComponent) => {
           className,
         ),
         style: {
-          border: `1px solid ${darkMode ? "#374151" : "transparent"}`,
+          border: `1px solid ${theme === "dark" ? "#374151" : "transparent"}`,
         },
       }}
-      theme={darkMode ? "dark" : "light"}
+      theme={theme === "dark" ? "dark" : "light"}
       // Details Button ---- Using a custom Component because matching the mocked styling with className Prop is not possible
       detailsButton={{
         render: () => {
@@ -68,7 +68,7 @@ export const ConnectWalletButton = ({ className }: StyleableComponent) => {
               onClick={() => {
                 detailsModal.open({
                   client,
-                  theme: darkMode ? "dark" : "light",
+                  theme: theme === "dark" ? "dark" : "light",
                 });
               }}
             >

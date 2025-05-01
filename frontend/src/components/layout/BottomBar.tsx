@@ -1,10 +1,11 @@
 "use client";
 
+import { useTheme } from "next-themes";
 import Image from "next/image";
 import Link from "next/link";
 import { logoPaths } from "pec/constants/logo";
 import { labrysUrl, pierTwoUrl } from "pec/helpers/getExternalLink";
-import { useTheme } from "pec/hooks/useTheme";
+
 import { cn } from "pec/lib/utils";
 import { EThemeMode } from "pec/types/theme";
 import type { FC } from "react";
@@ -22,8 +23,9 @@ export const RenderLogo = ({
   width,
   height,
 }: RenderLogoProps) => {
-  const { darkMode } = useTheme();
-  const mode: EThemeMode = darkMode ? EThemeMode.DARK : EThemeMode.LIGHT;
+  const { resolvedTheme: theme } = useTheme();
+  const mode: EThemeMode =
+    theme === "dark" ? EThemeMode.DARK : EThemeMode.LIGHT;
   const currentLogo = logoPaths[logo];
   if (!currentLogo) return null;
 
