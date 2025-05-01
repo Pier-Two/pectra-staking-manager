@@ -1,5 +1,4 @@
 import { ManuallyEnterValidator } from "./ManuallyEnterValidator";
-import { SecondaryButton } from "pec/components/ui/custom/SecondaryButton";
 import { ValidatorTable } from "pec/components/ui/table/ValidatorTable";
 import {
   Tabs,
@@ -20,9 +19,6 @@ export const SelectDestinationValidator = ({
   validators,
   goToSelectSourceValidators,
 }: SelectDestinationValidatorProps) => {
-  const [manuallySettingValidator, setManuallySettingValidator] =
-    useState(false);
-
   const [selectedTab, setSelectedTab] = useState("validators");
 
   return (
@@ -43,27 +39,12 @@ export const SelectDestinationValidator = ({
           <div className="text-md font-medium">
             Select destination validator
           </div>
-
-          {/* <SecondaryButton
-          onClick={() => {
-            setManuallySettingValidator(!manuallySettingValidator);
-          }}
-          label={
-            manuallySettingValidator
-              ? "Select from your Validators"
-              : "Enter Destination Validator Address"
-          }
-        /> */}
           <TabsList>
             <TabsTrigger value="validators">Select from Validators</TabsTrigger>
             <TabsTrigger value="manually">Enter Address</TabsTrigger>
           </TabsList>
         </div>
-        {/* {manuallySettingValidator ? (
-          <ManuallyEnterValidator
-            goToSelectSourceValidators={goToSelectSourceValidators}
-          />
-        ) : (
+        <TabsContent value="validators" asChild>
           <ValidatorTable
             data={validators}
             headers={CONSOLIDATION_TABLE_HEADERS}
@@ -74,14 +55,8 @@ export const SelectDestinationValidator = ({
             }}
             disablePagination
           />
-        )} */}
-        <TabsContent value="validators">
-          <ValidatorTable
-            data={validators}
-            headers={CONSOLIDATION_TABLE_HEADERS}
-          />
         </TabsContent>
-        <TabsContent value="manually">
+        <TabsContent value="manually" asChild>
           <ManuallyEnterValidator
             goToSelectSourceValidators={goToSelectSourceValidators}
           />
