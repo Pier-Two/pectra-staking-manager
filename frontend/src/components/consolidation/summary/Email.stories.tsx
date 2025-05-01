@@ -24,7 +24,8 @@ export const Primary: Story = {
     showEmail: true,
     setShowEmail: () => {},
     cardText: "Notify me when complete",
-    cardTitle: "Add your email to receive an email when your consolidation is complete",
+    cardTitle:
+      "Add your email to receive an email when your consolidation is complete",
     summaryEmail: "test@test.com",
     setSummaryEmail: () => {},
   },

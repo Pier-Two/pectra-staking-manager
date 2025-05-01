@@ -64,7 +64,7 @@ const buildChartKey = (date: Date, filter: "days" | "months" | "years") => {
   const day = date.getUTCDate().toString().padStart(2, "0");
   const month = (date.getUTCMonth() + 1).toString().padStart(2, "0");
   const year = date.getUTCFullYear().toString().slice(-2);
-  
+
   if (filter === "days") return `${day}/${month}/${year}`;
   if (filter === "years") return `${year}`;
   return `${month}/${year}`;

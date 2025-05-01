@@ -1,6 +1,11 @@
 import { CirclePlus, Search } from "lucide-react";
 import { Checkbox } from "pec/components/ui/checkbox";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "pec/components/ui/dropdown-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "pec/components/ui/dropdown-menu";
 import { Input } from "pec/components/ui/input";
 import { Separator } from "pec/components/ui/separator";
 import { SearchFilter } from "pec/components/ui/table/SearchFilter";
@@ -78,14 +83,14 @@ export const TableFilters: FC<ITableFiltersProps> = (props) => {
           <DropdownMenuContent
             side="bottom"
             align="start"
-            className="bg-white dark:bg-black w-[200px] max-w-[90vw] border-indigo-200 dark:border-gray-500 rounded-xl p-2"
+            className="w-[200px] max-w-[90vw] rounded-xl border-indigo-200 bg-white p-2 dark:border-gray-500 dark:bg-black"
           >
             {/* Dropdown Header */}
-            <div className="w-full flex items-center px-2 border border-indigo-200 dark:border-gray-600 rounded-xl mb-2">
-              <Search className="h-4 w-4 text-gray-400 dark:text-gray-400 rounded-full" />
+            <div className="mb-2 flex w-full items-center rounded-xl border border-indigo-200 px-2 dark:border-gray-600">
+              <Search className="h-4 w-4 rounded-full text-gray-400 dark:text-gray-400" />
               <Input
                 placeholder="Search"
-                className="border-none bg-white text-gray-500 pl-1 dark:text-white dark:bg-black placeholder:text-gray-400 dark:placeholder:text-gray-600"
+                className="border-none bg-white pl-1 text-gray-500 placeholder:text-gray-400 dark:bg-black dark:text-white dark:placeholder:text-gray-600"
                 value={searchTerm}
                 onChange={(e) => {
                   onSearchChange(e.target.value);
@@ -99,10 +104,10 @@ export const TableFilters: FC<ITableFiltersProps> = (props) => {
               <DropdownMenuItem key={item.value} asChild>
                 <div
                   className={cn(
-                    "cursor-pointer bg-white px-2 font-normal justify-between items-center rounded-md w-full dark:bg-black my-2 text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-900",
+                    "my-2 w-full cursor-pointer items-center justify-between rounded-md bg-white px-2 font-normal text-gray-500 hover:bg-gray-50 dark:bg-black dark:text-gray-400 dark:hover:bg-gray-900",
                     {
                       "text-indigo-500 dark:text-indigo-200": item.isSelected,
-                    }
+                    },
                   )}
                   onClick={item.onClick}
                 >

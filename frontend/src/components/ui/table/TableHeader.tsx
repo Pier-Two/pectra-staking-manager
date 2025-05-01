@@ -42,7 +42,7 @@ export const TableHeader = <T = ValidatorDetails,>({
             <th
               key={header.sortKey as string}
               className={cn(
-                "text-piertwo-text px-4 py-2 text-left font-inter text-sm font-medium",
+                "px-4 py-2 text-left font-inter text-sm font-medium text-piertwo-text",
                 { "cursor-pointer": !disableSort },
               )}
               onClick={() => onSort(header.sortKey)}
@@ -66,7 +66,7 @@ export const TableHeader = <T = ValidatorDetails,>({
               <th
                 key={header.sortKey as string}
                 className={cn(
-                  "text-piertwo-text px-4 py-2 text-left font-inter text-sm font-medium",
+                  "px-4 py-2 text-left font-inter text-sm font-medium text-piertwo-text",
                   { "cursor-pointer": !disableSort },
                 )}
                 onClick={() => onSort(header.sortKey)}

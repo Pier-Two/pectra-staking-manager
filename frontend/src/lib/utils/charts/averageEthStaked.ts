@@ -24,7 +24,7 @@ export const constructAverageEthStakedChartData = (
     "left",
     "avgStaked",
   );
-  
+
   const xAxis = buildXAxis(filter);
 
   return {
