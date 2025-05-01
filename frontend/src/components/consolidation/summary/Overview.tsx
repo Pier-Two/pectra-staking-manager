@@ -1,9 +1,6 @@
 "use client";
 
-import { sumBy } from "lodash";
 import { Info } from "lucide-react";
-import { formatEther, parseEther } from "viem";
-
 import { PectraSpinner } from "pec/components/ui/custom/pectraSpinner";
 import { Separator } from "pec/components/ui/separator";
 import {
@@ -13,8 +10,10 @@ import {
   TooltipTrigger,
 } from "pec/components/ui/tooltip";
 import { useConsolidationFee } from "pec/hooks/use-consolidation";
+import { formatEther, parseEther } from "viem";
 import { displayedEthAmount } from "pec/lib/utils/validators/balance";
 import { ValidatorDetails } from "pec/types/validator";
+import { sumBy } from "lodash";
 
 interface OverviewProps {
   sourceValidators: ValidatorDetails[];

@@ -1,9 +1,11 @@
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { storybookTest } from "@storybook/experimental-addon-test/vitest-plugin";
 import swc from "unplugin-swc";
-import tsconfigPaths from "vite-tsconfig-paths";
+
 import { defineConfig } from "vitest/config";
+import tsconfigPaths from "vite-tsconfig-paths";
+
+import { storybookTest } from "@storybook/experimental-addon-test/vitest-plugin";
 
 const dirname =
   typeof __dirname !== "undefined"

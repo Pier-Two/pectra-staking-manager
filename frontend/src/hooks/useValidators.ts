@@ -1,14 +1,12 @@
-import { useMemo } from "react";
-import { groupBy } from "lodash";
-
-import { TYPE_2_PREFIX } from "pec/constants/pectra";
-import { validatorIsActive } from "pec/lib/utils/validators/status";
-import { groupValidatorsByWithdrawalPrefix } from "pec/lib/utils/validators/withdrawalAddress";
 import { api } from "pec/trpc/react";
-import { ValidatorStatus } from "pec/types/validator";
-
-import { useActiveChainWithDefault } from "./useChain";
 import { useWalletAddress } from "./useWallet";
+import { useActiveChainWithDefault } from "./useChain";
+import { groupBy } from "lodash";
+import { useMemo } from "react";
+import { validatorIsActive } from "pec/lib/utils/validators/status";
+import { ValidatorStatus } from "pec/types/validator";
+import { groupValidatorsByWithdrawalPrefix } from "pec/lib/utils/validators/withdrawalAddress";
+import { TYPE_2_PREFIX } from "pec/constants/pectra";
 
 export const useValidators = () => {
   const walletAddress = useWalletAddress();

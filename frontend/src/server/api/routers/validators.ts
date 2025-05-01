@@ -1,26 +1,24 @@
 import { z } from "zod";
-
+import { createTRPCRouter, publicProcedure } from "pec/server/api/trpc";
 import type {
   BeaconChainAllValidatorsResponse,
   BeaconChainValidatorArrayDetailsResponse,
   BeaconChainValidatorDetailsResponse,
   BeaconChainValidatorPerformanceResponse,
 } from "pec/types/api";
-import type { IResponse } from "pec/types/response";
-import { EmailSchema } from "pec/lib/api/schemas/email";
+import { type ValidatorDetails } from "pec/types/validator";
+import { ConsolidationModel } from "pec/lib/database/models";
+import { ACTIVE_STATUS } from "pec/types/app";
 import { SupportedChainIdSchema } from "pec/lib/api/schemas/network";
+import { getBeaconChainAxios } from "pec/lib/server/axios";
+import { createContact } from "pec/lib/services/emailService";
 import {
   PERFORMANCE_FILTERS,
   VALIDATOR_PERFORMANCE_FILTER_TO_BEACONCHAIN,
 } from "pec/lib/constants/validators/performance";
-import { ConsolidationModel } from "pec/lib/database/models";
-import { getBeaconChainAxios } from "pec/lib/server/axios";
-import { createContact } from "pec/lib/services/emailService";
-import { createTRPCRouter, publicProcedure } from "pec/server/api/trpc";
 import { populateBeaconchainValidatorDetails } from "pec/server/helpers/validators";
-import { ACTIVE_STATUS } from "pec/types/app";
-import { type ValidatorDetails } from "pec/types/validator";
-
+import type { IResponse } from "pec/types/response";
+import { EmailSchema } from "pec/lib/api/schemas/email";
 import { redisCacheMiddleware } from "../middleware/redis-cache-middleware";
 
 export const validatorRouter = createTRPCRouter({

@@ -1,7 +1,5 @@
-import { useMemo, useState } from "react";
-
 import type { ValidatorStatus } from "pec/types/validator";
-
+import { useMemo, useState } from "react";
 import { useSearch } from "./useSearch";
 import { useValidators } from "./useValidators";
 

@@ -1,5 +1,4 @@
 import { groupBy } from "lodash";
-
 import { TYPE_2_PREFIX } from "pec/constants/pectra";
 import { validatorIsActive } from "pec/lib/utils/validators/status";
 import { groupValidatorsByWithdrawalPrefix } from "pec/lib/utils/validators/withdrawalAddress";

@@ -3,7 +3,6 @@
  * for Docker builds.
  */
 import { type NextConfig } from "next";
-
 import "./src/env.js";
 
 /** @type {import("next").NextConfig} */

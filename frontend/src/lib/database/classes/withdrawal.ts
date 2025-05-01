@@ -1,8 +1,6 @@
 import { modelOptions, prop } from "@typegoose/typegoose";
-
 import { DatabaseWithdrawalType } from "pec/lib/api/schemas/database/withdrawal";
 import { DatabaseDocumentStatuses } from "pec/types/app";
-
 @modelOptions({
   schemaOptions: {
     timestamps: true,

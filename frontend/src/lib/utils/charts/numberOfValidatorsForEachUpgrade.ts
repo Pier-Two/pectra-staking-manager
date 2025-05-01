@@ -3,7 +3,6 @@ import type {
   IChartData,
   IGroupedValidatorStatistics,
 } from "pec/types/chart";
-
 import { buildChartData, buildXAxis, buildYAxis } from ".";
 
 export const constructNumberOfValidatorsForEachUpgradeChartData = (
@@ -11,13 +10,7 @@ export const constructNumberOfValidatorsForEachUpgradeChartData = (
   filter: "days" | "months" | "years",
 ): IChart => {
   const chartData = buildChartData(groupedValidatorStatistics, "count", filter);
-  const yAxis = buildYAxis(
-    chartData,
-    "Number of validators",
-    false,
-    "left",
-    "count",
-  );
+  const yAxis = buildYAxis(chartData, "Number of validators", false, "left", "count");
   const xAxis = buildXAxis(filter);
   const percentageUptake = getPercentageUptake(chartData);
 

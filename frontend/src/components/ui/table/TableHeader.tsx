@@ -1,5 +1,4 @@
 import { ChevronDown, ChevronsLeftRight, ChevronUp } from "lucide-react";
-
 import { cn } from "pec/lib/utils";
 import { ValidatorDetails } from "pec/types/validator";
 import {
@@ -43,7 +42,7 @@ export const TableHeader = <T = ValidatorDetails,>({
             <th
               key={header.sortKey as string}
               className={cn(
-                "px-4 py-2 text-left font-inter text-sm font-medium text-piertwo-text",
+                "text-piertwo-text px-4 py-2 text-left font-inter text-sm font-medium",
                 { "cursor-pointer": !disableSort },
               )}
               onClick={() => onSort(header.sortKey)}
@@ -67,7 +66,7 @@ export const TableHeader = <T = ValidatorDetails,>({
               <th
                 key={header.sortKey as string}
                 className={cn(
-                  "px-4 py-2 text-left font-inter text-sm font-medium text-piertwo-text",
+                  "text-piertwo-text px-4 py-2 text-left font-inter text-sm font-medium",
                   { "cursor-pointer": !disableSort },
                 )}
                 onClick={() => onSort(header.sortKey)}

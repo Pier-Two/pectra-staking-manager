@@ -3,7 +3,6 @@ import type {
   IChartData,
   IGroupedValidatorStatistics,
 } from "pec/types/chart";
-
 import { buildChartData, buildXAxis, buildYAxis } from ".";
 
 export const constructAverageEthStakedChartData = (
@@ -25,7 +24,7 @@ export const constructAverageEthStakedChartData = (
     "left",
     "avgStaked",
   );
-
+  
   const xAxis = buildXAxis(filter);
 
   return {

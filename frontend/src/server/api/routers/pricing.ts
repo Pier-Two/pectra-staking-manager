@@ -1,12 +1,9 @@
-import { TRPCError } from "@trpc/server";
 import { z } from "zod";
-
+import { createTRPCRouter, publicProcedure } from "pec/server/api/trpc";
 import type { CoinMarketCapPriceResponse } from "pec/types/api";
 import { CoinMarketCapAxios } from "pec/lib/server/axios";
-import { createTRPCRouter, publicProcedure } from "pec/server/api/trpc";
-
+import { TRPCError } from "@trpc/server";
 import { redisCacheMiddleware } from "../middleware/redis-cache-middleware";
-
 export const pricingRouter = createTRPCRouter({
   getCurrentEthPrice: publicProcedure
     .input(

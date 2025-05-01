@@ -1,12 +1,10 @@
 "use client";
 
+import { useValidators } from "pec/hooks/useValidators";
+import { MyValidatorsCard } from "./MyValidatorsCard";
+import { displayedEthAmount } from "pec/lib/utils/validators/balance";
 import { Skeleton } from "pec/components/ui/skeleton";
 import { dashboardAnimationDelays } from "pec/constants/animationDelays";
-import { useValidators } from "pec/hooks/useValidators";
-import { displayedEthAmount } from "pec/lib/utils/validators/balance";
-
-import { MyValidatorsCard } from "./MyValidatorsCard";
-
 export const TotalStake = () => {
   const { data: validators, isSuccess: isValidatorsSuccessful } =
     useValidators();

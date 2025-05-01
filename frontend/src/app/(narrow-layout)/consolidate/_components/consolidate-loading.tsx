@@ -1,6 +1,5 @@
 import type { FC } from "react";
 import { Merge } from "lucide-react";
-
 import { Skeleton } from "pec/components/ui/skeleton";
 
 export const ConsolidateLoading: FC = () => {

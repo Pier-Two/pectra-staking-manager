@@ -1,14 +1,13 @@
-import type { z } from "zod";
-
-import type {
-  TransactionSchema,
-  ValidatorDataSchema,
-} from "pec/lib/api/schemas/validator";
 import {
   TYPE_0_PREFIX,
   TYPE_1_PREFIX,
   TYPE_2_PREFIX,
 } from "pec/constants/pectra";
+import type {
+  TransactionSchema,
+  ValidatorDataSchema,
+} from "pec/lib/api/schemas/validator";
+import type { z } from "zod";
 
 export type ValidatorDetails = z.infer<typeof ValidatorDataSchema>;
 

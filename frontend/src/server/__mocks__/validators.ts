@@ -1,5 +1,4 @@
-import type { ValidatorDetails } from "pec/types/validator";
-import { ValidatorStatus } from "pec/types/validator";
+import { ValidatorStatus, type ValidatorDetails } from "pec/types/validator";
 
 export const MOCK_VALIDATORS: ValidatorDetails[] = [
   {

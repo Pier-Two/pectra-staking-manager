@@ -3,13 +3,13 @@
 import { ProgressBar } from "pec/components/consolidation/ProgressBar";
 import { SelectDestinationValidator } from "pec/components/consolidation/selectDestinationValidator/SelectDestinationValidator";
 import { SelectSourceValidators } from "pec/components/consolidation/selectSourceValidators/SelectSourceValidators";
-import { SubmitConsolidationRequests } from "pec/components/consolidation/submitRequests/SubmitConsolidationRequests";
-import { ConsolidationSummary } from "pec/components/consolidation/summary/ConsolidationSummary";
-import { Skeleton } from "pec/components/ui/skeleton";
-import { useNewConsolidate } from "pec/hooks/useNewConsolidate";
 import { useValidators } from "pec/hooks/useValidators";
 import { useWalletAddress } from "pec/hooks/useWallet";
 import { ValidatorStatus } from "pec/types/validator";
+import { useNewConsolidate } from "pec/hooks/useNewConsolidate";
+import { ConsolidationSummary } from "pec/components/consolidation/summary/ConsolidationSummary";
+import { SubmitConsolidationRequests } from "pec/components/consolidation/submitRequests/SubmitConsolidationRequests";
+import { Skeleton } from "pec/components/ui/skeleton";
 
 const ConsolidationWorkflow = () => {
   const walletAddress = useWalletAddress();

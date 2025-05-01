@@ -1,6 +1,5 @@
-import { headers } from "next/headers";
 import axios from "axios";
-
+import { headers } from "next/headers";
 import { env } from "pec/env";
 import { ValidatorSummaryModel } from "pec/lib/database/models";
 import {

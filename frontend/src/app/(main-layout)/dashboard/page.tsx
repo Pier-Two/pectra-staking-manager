@@ -1,10 +1,9 @@
-import type { Metadata } from "next";
-
 import { ToolCard } from "pec/components/dashboard/tools/ToolCard";
 import { ActiveValidators } from "pec/components/dashboard/validators/ActiveValidators";
-import { TotalDailyIncome } from "pec/components/dashboard/validators/TotalDailyIncome";
 import { TotalStake } from "pec/components/dashboard/validators/TotalStake";
+import { TotalDailyIncome } from "pec/components/dashboard/validators/TotalDailyIncome";
 import { DashboardValidatorTable } from "pec/components/dashboard/validatorTable/ValidatorTable";
+import type { Metadata } from "next";
 import { title } from "pec/constants/metadata";
 
 export const metadata: Metadata = {

@@ -1,16 +1,14 @@
-import { useState } from "react";
 import { Pencil } from "lucide-react";
-
 import { PrimaryButton } from "pec/components/ui/custom/PrimaryButton";
 import { SecondaryButton } from "pec/components/ui/custom/SecondaryButton";
 import { ValidatorCard } from "pec/components/validators/cards/ValidatorCard";
 import { DetectedValidators } from "pec/components/validators/DetectedValidators";
 import { useConsolidationStore } from "pec/hooks/use-consolidation-store";
 import { EIconPosition } from "pec/types/components";
-import { ValidatorDetails } from "pec/types/validator";
-
+import { useState } from "react";
 import { Email } from "./Email";
 import { Overview } from "./Overview";
+import { ValidatorDetails } from "pec/types/validator";
 
 interface ConsolidationSummaryProps {
   goBack: () => void;

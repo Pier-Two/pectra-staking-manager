@@ -1,7 +1,5 @@
 import { useId } from "react";
-
 import { cn } from "pec/lib/utils";
-
 export const PectraSpinner = ({ className }: { className?: string }) => {
   const uniqueId = useId();
   const gradientId = `gradient-${uniqueId}`;

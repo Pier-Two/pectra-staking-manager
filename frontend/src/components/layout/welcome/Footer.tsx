@@ -1,13 +1,11 @@
 "use client";
 
-import type { FC } from "react";
-import Link from "next/link";
-
 import { EnterAnimation } from "pec/app/(login-layout)/welcome/_components/enter-animation";
 import { welcomeAnimationDelays } from "pec/constants/animationDelays";
-import { labrysUrl, pierTwoUrl } from "pec/helpers/getExternalLink";
-
+import type { FC } from "react";
 import { RenderLogo } from "../BottomBar";
+import Link from "next/link";
+import { labrysUrl, pierTwoUrl } from "pec/helpers/getExternalLink";
 
 export const Footer: FC = () => {
   return (

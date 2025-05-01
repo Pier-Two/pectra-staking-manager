@@ -1,15 +1,12 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-
-import OvalBlur from "pec/components/layout/welcome/oval-blur";
+import { useWalletAddress } from "pec/hooks/useWallet";
 import { PrimaryButton } from "pec/components/ui/custom/PrimaryButton";
 import { ConnectWalletButton } from "pec/components/ui/wallet/ConnectWallet";
-import { welcomeAnimationDelays } from "pec/constants/animationDelays";
-import { useWalletAddress } from "pec/hooks/useWallet";
-
+import OvalBlur from "pec/components/layout/welcome/oval-blur";
 import { EnterAnimation } from "./enter-animation";
-
+import { welcomeAnimationDelays } from "pec/constants/animationDelays";
 export const EnterSiteButton = () => {
   const router = useRouter();
   const walletAddress = useWalletAddress();

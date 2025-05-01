@@ -1,11 +1,10 @@
 "use client";
 
 import type { FC } from "react";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { ChevronRight, Circle } from "lucide-react";
-
+import Image from "next/image";
 import type { IChartLink } from "pec/types/welcome";
+import { Circle, ChevronRight } from "lucide-react";
 
 export const ChartLink: FC<IChartLink> = (props) => {
   const { numberOfUpgrades, upgradePercentage } = props;
@@ -17,7 +16,7 @@ export const ChartLink: FC<IChartLink> = (props) => {
 
   return (
     <div
-      className="flex w-full flex-row items-center justify-between rounded-xl border border-gray-300 bg-white p-4 hover:cursor-pointer hover:bg-gray-100 dark:border-gray-800 dark:bg-black dark:hover:bg-gray-900"
+      className="flex w-full flex-row items-center justify-between rounded-xl bg-white p-4 dark:bg-black border border-gray-300 dark:border-gray-800 hover:cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-900"
       onClick={handleChartNavigation}
     >
       <div className="flex flex-row gap-4">

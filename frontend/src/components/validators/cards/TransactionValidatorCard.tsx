@@ -1,8 +1,5 @@
-import { type FC } from "react";
-import Image from "next/image";
 import { CircleCheck, ExternalLink } from "lucide-react";
-
-import type { ValidatorDetails } from "pec/types/validator";
+import Image from "next/image";
 import { Button } from "pec/components/ui/button";
 import {
   getBlockExplorerTxUrl,
@@ -10,8 +7,9 @@ import {
 } from "pec/helpers/getExternalLink";
 import { useConsolidationStore } from "pec/hooks/use-consolidation-store";
 import { cn } from "pec/lib/utils";
+import type { ValidatorDetails } from "pec/types/validator";
 import { TransactionStatus } from "pec/types/validator";
-
+import { type FC } from "react";
 import { PectraSpinner } from "../../ui/custom/pectraSpinner";
 
 export interface ITransactionValidatorCard {

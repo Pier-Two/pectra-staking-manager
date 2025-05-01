@@ -1,9 +1,7 @@
 "use client";
 
-import Image from "next/image";
 import { ChevronDown } from "lucide-react";
-import { useActiveAccount } from "thirdweb/react";
-
+import Image from "next/image";
 import {
   Sidebar,
   SidebarContent,
@@ -11,11 +9,8 @@ import {
   SidebarGroup,
   SidebarHeader,
 } from "pec/components/ui/sidebar";
-import { useValidators } from "pec/hooks/useValidators";
-
-import DarkMode from "./dark-mode";
+import { useActiveAccount } from "thirdweb/react";
 import { cardPresets } from "./dashboard/tools/ToolCard";
-import { PectraSpinner } from "./ui/custom/pectraSpinner";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -23,6 +18,9 @@ import {
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import { ConnectWalletButton } from "./ui/wallet/ConnectWallet";
+import { useValidators } from "pec/hooks/useValidators";
+import { PectraSpinner } from "./ui/custom/pectraSpinner";
+import DarkMode from "./dark-mode";
 
 const links = [
   {

@@ -1,7 +1,6 @@
-import type { FC } from "react";
-
-import type { IDistributionOptionProps } from "pec/types/batch-deposits";
 import { cn } from "pec/lib/utils";
+import type { IDistributionOptionProps } from "pec/types/batch-deposits";
+import type { FC } from "react";
 
 export const DistributionOption: FC<IDistributionOptionProps> = ({
   option,
@@ -29,7 +28,9 @@ export const DistributionOption: FC<IDistributionOptionProps> = ({
         </div>
         <div className="flex min-w-0 flex-1 flex-col gap-2">
           <div className="text-base font-medium">{option.title}</div>
-          <div className="text-sm text-piertwo-text">{option.description}</div>
+          <div className="text-sm text-piertwo-text">
+            {option.description}
+          </div>
         </div>
       </div>
     </div>

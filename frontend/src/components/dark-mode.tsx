@@ -2,9 +2,7 @@
 
 import clsx from "clsx";
 import { Moon, Sun } from "lucide-react";
-
 import { useTheme } from "pec/hooks/useTheme";
-
 import { Button } from "./ui/button";
 
 const DarkMode = () => {

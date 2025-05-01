@@ -1,5 +1,5 @@
-import { sendGAEvent } from "@next/third-parties/google";
 import { track } from "@vercel/analytics/react";
+import { sendGAEvent } from "@next/third-parties/google";
 
 /**
  * Track an event with Vercel Analytics and Google Analytics

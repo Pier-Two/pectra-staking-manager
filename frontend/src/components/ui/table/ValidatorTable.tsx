@@ -1,21 +1,19 @@
-import { type ReactNode } from "react";
-
-import { EnterAnimation } from "pec/app/(login-layout)/welcome/_components/enter-animation";
-import { TableNoResults } from "pec/components/dashboard/validatorTable/TableNoResults";
-import { ValidatorRow } from "pec/components/ui/table/ValidatorRow";
-import { usePagination } from "pec/hooks/use-pagination";
-import { useValidatorSorting } from "pec/hooks/use-validator-sorting";
-import { useSearch } from "pec/hooks/useSearch";
 import {
   type IHeaderConfig,
   type TableValidatorDetails,
 } from "pec/types/validatorTable";
-
-import { type ValidatorCardWrapperProps } from "../custom/validator-card-wrapper";
-import { TableCell, TableRow } from "../table";
-import { SearchFilter } from "./SearchFilter";
 import { TableHeader } from "./TableHeader";
+import { useValidatorSorting } from "pec/hooks/use-validator-sorting";
+import { TableNoResults } from "pec/components/dashboard/validatorTable/TableNoResults";
+import { ValidatorRow } from "pec/components/ui/table/ValidatorRow";
+import { usePagination } from "pec/hooks/use-pagination";
+import { type ReactNode } from "react";
 import { TablePagination } from "./TablePagination";
+import { type ValidatorCardWrapperProps } from "../custom/validator-card-wrapper";
+import { useSearch } from "pec/hooks/useSearch";
+import { SearchFilter } from "./SearchFilter";
+import { TableRow, TableCell } from "../table";
+import { EnterAnimation } from "pec/app/(login-layout)/welcome/_components/enter-animation";
 
 interface ValidatorTableProps<T extends TableValidatorDetails> {
   data: T[];

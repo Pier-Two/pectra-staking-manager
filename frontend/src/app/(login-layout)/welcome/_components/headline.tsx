@@ -1,7 +1,6 @@
 "use client";
 
 import { motion } from "motion/react";
-
 import { welcomeAnimationDelays } from "pec/constants/animationDelays";
 
 const AnimatedText = ({

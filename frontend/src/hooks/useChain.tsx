@@ -1,8 +1,7 @@
-import { type ChainOptions } from "thirdweb/chains";
 import { useActiveWalletChain } from "thirdweb/react";
-
-import { SUPPORTED_NETWORKS_IDS } from "pec/constants/chain";
 import { MAIN_CHAIN } from "pec/lib/constants/contracts";
+import { type ChainOptions } from "thirdweb/chains";
+import { SUPPORTED_NETWORKS_IDS } from "pec/constants/chain";
 
 export const useActiveChainWithDefault = (): Readonly<
   ChainOptions & {

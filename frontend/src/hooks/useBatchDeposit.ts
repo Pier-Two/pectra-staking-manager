@@ -1,21 +1,19 @@
-import { useEffect, useState } from "react";
-import { prepareContractCall, sendTransaction, waitForReceipt } from "thirdweb";
-import { useActiveAccount } from "thirdweb/react";
-import { parseEther } from "viem";
-
 import { toast } from "pec/components/ui/Toast";
 import { SIGNATURE_BYTE_LENGTH } from "pec/constants/deposit";
-import { trackEvent } from "pec/helpers/trackEvent";
 import { type DepositData } from "pec/lib/api/schemas/deposit";
 import { generateByteString } from "pec/lib/utils/bytes";
 import { parseError } from "pec/lib/utils/parseError";
 import { client } from "pec/lib/wallet/client";
 import { api } from "pec/trpc/react";
 import { type DepositWorkflowStage } from "pec/types/batch-deposits";
-import { ValidatorStatus } from "pec/types/validator";
-
+import { useEffect, useState } from "react";
+import { prepareContractCall, sendTransaction, waitForReceipt } from "thirdweb";
+import { useActiveAccount } from "thirdweb/react";
+import { parseEther } from "viem";
 import { useActiveChainWithDefault } from "./useChain";
 import { useContracts } from "./useContracts";
+import { ValidatorStatus } from "pec/types/validator";
+import { trackEvent } from "pec/helpers/trackEvent";
 
 interface BatchDepositRequest {
   pubKey: `0x${string}`;

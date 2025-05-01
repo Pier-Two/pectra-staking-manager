@@ -1,25 +1,23 @@
-import { useState } from "react";
 import { CircleMinus, CirclePlay, CirclePlus } from "lucide-react";
-import { FaCircleCheck, FaCircleMinus, FaCirclePlus } from "react-icons/fa6";
-
-import type { ValidatorCardWrapperProps } from "pec/components/ui/custom/validator-card-wrapper";
-import {
-  ValidatorCardBorderStyles,
-  ValidatorCardWrapper,
-} from "pec/components/ui/custom/validator-card-wrapper";
-import { cn } from "pec/lib/utils";
 import { ValidatorStatus } from "pec/types/validator";
 import {
   type IHeaderConfig,
   type TableValidatorDetails,
 } from "pec/types/validatorTable";
-
+import {
+  ValidatorCardBorderStyles,
+  ValidatorCardWrapper,
+  type ValidatorCardWrapperProps,
+} from "pec/components/ui/custom/validator-card-wrapper";
+import { cn } from "pec/lib/utils";
+import { useState } from "react";
 import {
   DisplayAmount,
   SubmittingTransactionTableComponent,
   ValidatorIndex,
   WithdrawalAddress,
 } from "./TableComponents";
+import { FaCircleCheck, FaCircleMinus, FaCirclePlus } from "react-icons/fa6";
 
 export interface IValidatorRowProps<T extends TableValidatorDetails> {
   wrapperProps?: Omit<

@@ -1,5 +1,4 @@
 import type { IChart, IGroupedValidatorStatistics } from "pec/types/chart";
-
 import { buildChartData, buildXAxis, buildYAxis } from ".";
 
 export const constructTotalEthStakedChartData = (
@@ -11,13 +10,7 @@ export const constructTotalEthStakedChartData = (
     "totalStaked",
     filter,
   );
-  const yAxis = buildYAxis(
-    chartData,
-    "Total ETH Staked",
-    false,
-    "left",
-    "totalStaked",
-  );
+  const yAxis = buildYAxis(chartData, "Total ETH Staked", false, "left", "totalStaked");
   const xAxis = buildXAxis(filter);
 
   return {

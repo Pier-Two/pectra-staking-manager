@@ -1,6 +1,5 @@
-import type { FC } from "react";
-
 import { Skeleton } from "pec/components/ui/skeleton";
+import type { FC } from "react";
 
 const WithdrawalLoading: FC = () => {
   return (

@@ -1,5 +1,4 @@
 import { groupBy } from "lodash";
-
 import {
   ValidatorDetails,
   WithdrawalAddressPrefixType,

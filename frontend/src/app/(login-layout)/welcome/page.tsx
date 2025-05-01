@@ -1,16 +1,13 @@
-import type { FC } from "react";
-import { Suspense } from "react";
-
 import { ChartPrefetch } from "pec/components/charts/ChartPrefetch";
 import { ChartSkeleton } from "pec/components/charts/ChartSkeleton";
 import { Footer } from "pec/components/layout/welcome/Footer";
 import { Information } from "pec/components/layout/welcome/Information";
 import { PectraLink } from "pec/components/layout/welcome/PectraLink";
-import { welcomeAnimationDelays } from "pec/constants/animationDelays";
-
-import { EnterAnimation } from "./_components/enter-animation";
+import { Suspense, type FC } from "react";
 import { EnterSiteButton } from "./_components/enter-site-button";
 import { Headline } from "./_components/headline";
+import { EnterAnimation } from "./_components/enter-animation";
+import { welcomeAnimationDelays } from "pec/constants/animationDelays";
 
 const Welcome: FC = () => {
   return (

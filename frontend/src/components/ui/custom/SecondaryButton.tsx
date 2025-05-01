@@ -1,9 +1,6 @@
-import type { FC } from "react";
 import clsx from "clsx";
-
-import type { ICustomButton } from "pec/types/components";
-import { EIconPosition } from "pec/types/components";
-
+import { EIconPosition, type ICustomButton } from "pec/types/components";
+import type { FC } from "react";
 import { Button } from "../button";
 
 export const SecondaryButton: FC<ICustomButton> = (props) => {
@@ -12,7 +9,7 @@ export const SecondaryButton: FC<ICustomButton> = (props) => {
     <Button
       variant="ghost"
       className={clsx(
-        "text-wrap rounded-full border border-primary/30 text-xs text-piertwoDark-text hover:bg-indigo-100 dark:border-gray-800 dark:bg-black dark:text-white dark:hover:bg-gray-900",
+        "text-piertwoDark-text text-wrap rounded-full border border-primary/30 text-xs dark:text-white hover:bg-indigo-100 dark:border-gray-800 dark:bg-black dark:hover:bg-gray-900",
         className,
       )}
       onClick={onClick}

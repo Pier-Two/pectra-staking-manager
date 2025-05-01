@@ -1,20 +1,18 @@
-import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { toast } from "pec/components/ui/Toast";
+import { type WithdrawalFormType } from "pec/lib/api/schemas/withdrawal";
+import { client } from "pec/lib/wallet/client";
+import { api } from "pec/trpc/react";
+import type { TxHashRecord, WithdrawWorkflowStages } from "pec/types/withdraw";
 import { eth_call, waitForReceipt } from "thirdweb";
 import { useActiveAccount } from "thirdweb/react";
 import { useImmer } from "use-immer";
 import { encodePacked, fromHex, parseGwei } from "viem";
-
-import type { TxHashRecord, WithdrawWorkflowStages } from "pec/types/withdraw";
-import { toast } from "pec/components/ui/Toast";
-import { trackEvent } from "pec/helpers/trackEvent";
-import { type WithdrawalFormType } from "pec/lib/api/schemas/withdrawal";
-import { client } from "pec/lib/wallet/client";
-import { api } from "pec/trpc/react";
-
 import { useActiveChainWithDefault } from "./useChain";
 import { useContracts } from "./useContracts";
 import { useRpcClient } from "./useRpcClient";
+import { trackEvent } from "pec/helpers/trackEvent";
+import { useEffect } from "react";
 
 export const useWithdraw = () => {
   const rpcClient = useRpcClient();

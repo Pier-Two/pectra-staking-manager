@@ -1,5 +1,4 @@
 import { verifySignatureAppRouter } from "@upstash/qstash/nextjs";
-
 import { processWithdrawals } from "./processWithdrawal";
 
 async function withdrawalHandler(_request: Request) {

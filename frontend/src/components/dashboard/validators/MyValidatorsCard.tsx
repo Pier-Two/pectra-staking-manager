@@ -1,7 +1,6 @@
 import { type ReactNode } from "react";
-
-import { EnterAnimation } from "pec/app/(login-layout)/welcome/_components/enter-animation";
 import { Skeleton } from "pec/components/ui/skeleton";
+import { EnterAnimation } from "pec/app/(login-layout)/welcome/_components/enter-animation";
 
 type MyValidatorsCardProps = {
   title: string | null;

@@ -1,18 +1,15 @@
 "use client";
 
-import type { FC } from "react";
-import { useState } from "react";
-import Image from "next/image";
 import { ChevronsLeftRight } from "lucide-react";
-import { AnimatePresence, motion } from "motion/react";
-
-import { CONSOLIDATION_TABLE_HEADERS } from "pec/constants/columnHeaders";
-import { displayedEthAmount } from "pec/lib/utils/validators/balance";
-import { validatorIsActive } from "pec/lib/utils/validators/status";
+import Image from "next/image";
 import { type IDetectedValidators } from "pec/types/validator";
-
+import { useState, type FC } from "react";
+import { validatorIsActive } from "pec/lib/utils/validators/status";
+import { displayedEthAmount } from "pec/lib/utils/validators/balance";
 import { ValidatorCardWrapper } from "../ui/custom/validator-card-wrapper";
 import { ValidatorTable } from "../ui/table/ValidatorTable";
+import { CONSOLIDATION_TABLE_HEADERS } from "pec/constants/columnHeaders";
+import { AnimatePresence, motion } from "motion/react";
 
 export const DetectedValidators: FC<IDetectedValidators> = (props) => {
   const { cardTitle, validators } = props;

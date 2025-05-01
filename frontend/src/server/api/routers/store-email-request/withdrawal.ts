@@ -1,16 +1,15 @@
 import { type AxiosResponse } from "axios";
-import { chunk, groupBy, maxBy } from "lodash";
-import { z } from "zod";
-
-import type { Withdrawal } from "pec/lib/database/classes/withdrawal";
-import type { IResponse } from "pec/types/response";
 import { BEACONCHAIN_OK_STATUS, CHUNK_SIZE } from "pec/lib/constants";
-import { MAIN_CHAIN } from "pec/lib/constants/contracts";
 import { WithdrawalModel } from "pec/lib/database/models";
-import { getBeaconChainAxios } from "pec/lib/server/axios";
-import { sendEmailNotification } from "pec/lib/services/emailService";
 import { generateErrorResponse } from "pec/lib/utils";
 import { ACTIVE_STATUS, INACTIVE_STATUS } from "pec/types/app";
+import type { IResponse } from "pec/types/response";
+import { chunk, groupBy, maxBy } from "lodash";
+import type { Withdrawal } from "pec/lib/database/classes/withdrawal";
+import { z } from "zod";
+import { sendEmailNotification } from "pec/lib/services/emailService";
+import { getBeaconChainAxios } from "pec/lib/server/axios";
+import { MAIN_CHAIN } from "pec/lib/constants/contracts";
 
 const WithdrawalDataSchema = z.object({
   epoch: z.number(),

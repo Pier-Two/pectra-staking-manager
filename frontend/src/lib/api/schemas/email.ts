@@ -1,6 +1,5 @@
-import { z } from "zod";
-
 import { EMAIL_NAMES } from "pec/constants/email";
+import { z } from "zod";
 
 export const SendEmailNotificationSchema = z.object({
   emailName: z.enum(EMAIL_NAMES),

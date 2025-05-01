@@ -1,5 +1,4 @@
 import { redis } from "pec/lib/utils/redis";
-
 import { createTRPCMiddleware } from "../trpc";
 
 // Cache middleware for tRPC procedures

@@ -1,14 +1,11 @@
 "use client";
 
 import Image from "next/image";
-
+import { MyValidatorsCard } from "./MyValidatorsCard";
+import { ValidatorStatus } from "pec/types/validator";
+import { useValidators } from "pec/hooks/useValidators";
 import { Skeleton } from "pec/components/ui/skeleton";
 import { dashboardAnimationDelays } from "pec/constants/animationDelays";
-import { useValidators } from "pec/hooks/useValidators";
-import { ValidatorStatus } from "pec/types/validator";
-
-import { MyValidatorsCard } from "./MyValidatorsCard";
-
 export const ActiveValidators = () => {
   const { data: validators, groupedValidators } = useValidators();
 

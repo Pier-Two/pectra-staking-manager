@@ -1,7 +1,8 @@
+import {
+  SUPPORTED_NETWORKS_IDS,
+  type SupportedNetworkIds,
+} from "pec/constants/chain";
 import { z } from "zod";
-
-import type { SupportedNetworkIds } from "pec/constants/chain";
-import { SUPPORTED_NETWORKS_IDS } from "pec/constants/chain";
 
 export const SupportedChainIdSchema = z
   .number()

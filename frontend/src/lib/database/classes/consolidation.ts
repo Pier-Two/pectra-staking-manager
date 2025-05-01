@@ -1,8 +1,6 @@
 import { modelOptions, prop } from "@typegoose/typegoose";
-
 import { DatabaseConsolidationType } from "pec/lib/api/schemas/database/consolidation";
 import { DatabaseDocumentStatuses } from "pec/types/app";
-
 @modelOptions({
   schemaOptions: {
     timestamps: true,

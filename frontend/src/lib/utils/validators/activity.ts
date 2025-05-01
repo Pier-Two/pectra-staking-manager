@@ -1,5 +1,4 @@
 import { EPOCH_DURATION_MS, GENESIS_TIMESTAMP } from "pec/constants/api";
-
 import { formatDate, getValidatorDurationString } from "../date";
 
 export const getValidatorActiveInfo = (

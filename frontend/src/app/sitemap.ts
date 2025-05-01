@@ -1,5 +1,4 @@
 import type { MetadataRoute } from "next";
-
 import { siteConfig } from "pec/constants/site";
 
 export default function sitemap(): MetadataRoute.Sitemap {

@@ -1,13 +1,10 @@
 import type { FC } from "react";
-
+import { GradientShield } from "./gradient-shield";
 import {
   EnterAnimation,
   EnterAnimationParagraph,
 } from "pec/app/(login-layout)/welcome/_components/enter-animation";
 import { welcomeAnimationDelays } from "pec/constants/animationDelays";
-
-import { GradientShield } from "./gradient-shield";
-
 const benefits = [
   {
     title: "Auto-compounding interest",

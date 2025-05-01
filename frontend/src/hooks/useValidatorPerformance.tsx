@@ -1,7 +1,6 @@
 import { api } from "pec/trpc/react";
-
-import { useActiveChainWithDefault } from "./useChain";
 import { useWalletAddress } from "./useWallet";
+import { useActiveChainWithDefault } from "./useChain";
 
 export const useValidatorPerformance = (
   filter: "daily" | "weekly" | "monthly" | "yearly" | "overall",

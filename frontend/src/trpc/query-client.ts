@@ -1,12 +1,11 @@
-import type { TRPCClientError } from "@trpc/client";
 import {
   defaultShouldDehydrateQuery,
   QueryClient,
 } from "@tanstack/react-query";
+import type { TRPCClientError } from "@trpc/client";
+import type { AppRouter } from "pec/server/api/root";
 import { toast } from "sonner";
 import SuperJSON from "superjson";
-
-import type { AppRouter } from "pec/server/api/root";
 
 export const createQueryClient = () =>
   new QueryClient({

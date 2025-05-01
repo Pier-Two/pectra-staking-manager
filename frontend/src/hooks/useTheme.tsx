@@ -1,7 +1,6 @@
 "use client";
 
 import { useContext } from "react";
-
 import { ThemeContext } from "pec/contexts/ThemeContext";
 
 export const useTheme = () => {

@@ -1,9 +1,6 @@
 "use client";
-
-import type { Transition } from "motion/react";
-import { motion } from "motion/react";
-
 import { cn } from "pec/lib/utils";
+import { motion, type Transition } from "motion/react";
 
 export type GlowEffectProps = {
   className?: string;

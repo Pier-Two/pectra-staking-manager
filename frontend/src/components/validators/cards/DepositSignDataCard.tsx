@@ -1,5 +1,4 @@
 import { Check } from "lucide-react";
-
 import { PectraSpinner } from "pec/components/ui/custom/pectraSpinner";
 import { TransactionStatus } from "pec/types/withdraw";
 

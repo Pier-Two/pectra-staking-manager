@@ -7,11 +7,10 @@
  * need to use are documented accordingly near the end.
  */
 import { initTRPC, TRPCError } from "@trpc/server";
-import { Ratelimit } from "@upstash/ratelimit";
+import { connect } from "pec/lib/database/models";
 import superjson from "superjson";
 import { ZodError } from "zod";
-
-import { connect } from "pec/lib/database/models";
+import { Ratelimit } from "@upstash/ratelimit";
 import { redis } from "pec/lib/utils/redis";
 
 /**

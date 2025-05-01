@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from "@storybook/react";
-
 import { Email } from "./Email";
 
 // More on how to set up stories at: https://storybook.js.org/docs/writing-stories#default-export
@@ -25,8 +24,7 @@ export const Primary: Story = {
     showEmail: true,
     setShowEmail: () => {},
     cardText: "Notify me when complete",
-    cardTitle:
-      "Add your email to receive an email when your consolidation is complete",
+    cardTitle: "Add your email to receive an email when your consolidation is complete",
     summaryEmail: "test@test.com",
     setSummaryEmail: () => {},
   },

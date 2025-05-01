@@ -1,8 +1,7 @@
-import { useMemo, useState } from "react";
 import { orderBy } from "lodash";
-
 import { ValidatorDetails } from "pec/types/validator";
 import { ESortDirection, SortConfig } from "pec/types/validatorTable";
+import { useMemo, useState } from "react";
 
 export interface UseValidatorSorting<Data> {
   validators: Data[];

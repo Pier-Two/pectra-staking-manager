@@ -3,9 +3,8 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 
 import axios from "axios";
-import { z } from "zod";
-
 import { type IError } from "pec/types/response";
+import { z } from "zod";
 
 export const parseError = (
   error: unknown,

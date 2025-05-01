@@ -1,5 +1,4 @@
 import { z } from "zod";
-
 import { DatabaseDocumentStatuses } from "pec/types/app";
 
 export const DatabaseConsolidationSchema = z.object({

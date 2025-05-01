@@ -1,15 +1,13 @@
-import type { AxiosResponse } from "axios";
-import axios from "axios";
-import { z } from "zod";
-
-import type { IResponse } from "pec/types/response";
+import axios, { type AxiosResponse } from "axios";
 import { getBeaconChainURL } from "pec/constants/beaconchain";
-import { env } from "pec/env";
-import { BEACONCHAIN_OK_STATUS } from "pec/lib/constants";
 import { ConsolidationModel } from "pec/lib/database/models";
-import { sendEmailNotification } from "pec/lib/services/emailService";
 import { generateErrorResponse } from "pec/lib/utils";
 import { ACTIVE_STATUS, INACTIVE_STATUS } from "pec/types/app";
+import type { IResponse } from "pec/types/response";
+import { env } from "pec/env";
+import { z } from "zod";
+import { BEACONCHAIN_OK_STATUS } from "pec/lib/constants";
+import { sendEmailNotification } from "pec/lib/services/emailService";
 
 const ConsolidationDataSchema = z.object({
   activationeligibilityepoch: z.number(),

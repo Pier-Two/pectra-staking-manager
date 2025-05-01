@@ -1,7 +1,5 @@
-import { z } from "zod";
-
 import { TransactionStatus, ValidatorStatus } from "pec/types/validator";
-
+import { z } from "zod";
 import { DatabaseWithdrawalSchema } from "./database/withdrawal";
 
 const InProgressSchema = z.object({

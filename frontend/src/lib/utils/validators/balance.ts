@@ -1,6 +1,5 @@
-import { formatEther } from "viem";
-
 import { DECIMAL_PLACES_ETH } from "pec/lib/constants";
+import { formatEther } from "viem";
 
 // This function takes in an amount either as a number or bigint and returns a string
 // Representing the amount in ETH with the appropriate number of decimal places and in a human readable format

@@ -1,7 +1,5 @@
-import { z } from "zod";
-
 import { EDistributionMethod } from "pec/types/batch-deposits";
-
+import { z } from "zod";
 import { EmailSchema } from "./email";
 import { ValidatorDataSchema } from "./validator";
 

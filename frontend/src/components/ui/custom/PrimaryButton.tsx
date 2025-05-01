@@ -1,11 +1,8 @@
 "use client";
 
-import type { FC } from "react";
 import clsx from "clsx";
-
-import type { ICustomButton } from "pec/types/components";
-import { EIconPosition } from "pec/types/components";
-
+import { EIconPosition, type ICustomButton } from "pec/types/components";
+import type { FC } from "react";
 import { Button } from "../button";
 
 export const PrimaryButton: FC<ICustomButton> = (props) => {

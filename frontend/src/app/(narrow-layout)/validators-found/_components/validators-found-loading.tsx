@@ -1,7 +1,6 @@
 "use client";
 
 import { motion } from "motion/react";
-
 import { PectraSpinner } from "pec/components/ui/custom/pectraSpinner";
 import { ConnectedAddress } from "pec/components/validators/ConnectedAddress";
 import { useWalletAddress } from "pec/hooks/useWallet";

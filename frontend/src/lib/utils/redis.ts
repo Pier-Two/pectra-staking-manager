@@ -1,5 +1,4 @@
 import { Redis } from "@upstash/redis";
-
 import { env } from "pec/env";
 
 export const redis = new Redis({

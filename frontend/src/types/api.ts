@@ -1,5 +1,4 @@
 import type { ValidatorLifecycleStatus } from "./validator";
-
 interface BeaconChainAllValidators {
   publickey: string;
   valid_signature: boolean;

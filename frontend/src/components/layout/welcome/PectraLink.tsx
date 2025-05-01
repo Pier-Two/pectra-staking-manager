@@ -1,13 +1,11 @@
 "use client";
 
-import type { FC } from "react";
 import { ChevronRight } from "lucide-react";
 import { motion } from "motion/react";
-
 import { Button } from "pec/components/ui/button";
 import { GlowEffect } from "pec/components/ui/glow-effect";
+import type { FC } from "react";
 import { welcomeAnimationDelays } from "pec/constants/animationDelays";
-
 export const PectraLink: FC = () => {
   return (
     <motion.div

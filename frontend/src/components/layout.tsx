@@ -1,9 +1,8 @@
-import { type FC } from "react";
-
 import { BottomBar } from "pec/components/layout/BottomBar";
 import { TopBar } from "pec/components/layout/TopBar";
 import { ThemeProvider } from "pec/contexts/ThemeContext";
 import { cn } from "pec/lib/utils";
+import { type FC } from "react";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -16,7 +15,7 @@ export const SharedLayout: FC<LayoutProps> = (props) => {
 
   return (
     <ThemeProvider>
-      <div className="flex min-h-screen w-screen flex-col items-center bg-indigo-50 py-20 dark:bg-gray-950">
+      <div className="flex py-20 min-h-screen w-screen flex-col items-center bg-indigo-50 dark:bg-gray-950">
         <TopBar type="profile" />
         <div
           className={cn(
