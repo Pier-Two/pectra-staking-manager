@@ -7,6 +7,7 @@ import { getValidators } from "../requests/beaconchain/getValidators";
 import { type Consolidation } from "pec/server/database/classes/consolidation";
 import { type BCValidatorsData } from "pec/lib/api/schemas/beaconchain/validator";
 import { type SupportedNetworkIds } from "pec/constants/chain";
+import { keyBy } from "lodash";
 
 export const checkConsolidationProcessedAndUpdate = async (
   dbConsolidation: Consolidation,
@@ -37,49 +38,45 @@ export const checkConsolidationProcessedAndUpdate = async (
 export const processConsolidations = async (
   networkId: SupportedNetworkIds,
 ): Promise<IResponse> => {
-  try {
-    const consolidations = await ConsolidationModel.find({
-      status: ACTIVE_STATUS,
-    });
+  const consolidations = await ConsolidationModel.find({
+    status: ACTIVE_STATUS,
+  });
 
-    if (!consolidations)
-      return {
-        success: false,
-        error: "Consolidation query failed to execute.",
-      };
+  if (!consolidations)
+    return {
+      success: false,
+      error: "Consolidation query failed to execute.",
+    };
 
-    // TODO: This can be better and make a single DB call
-    for (const consolidation of consolidations) {
-      const response = await getValidators(
-        [consolidation.sourceValidatorIndex],
-        networkId,
+  const response = await getValidators(
+    consolidations.map((consolidation) => consolidation.sourceValidatorIndex),
+    networkId,
+  );
+
+  if (!response.success) return response;
+
+  const keyedBCValidatorDetails = keyBy(response.data, (v) => v.validatorindex);
+
+  for (const consolidation of consolidations) {
+    const bcValidatorDetails =
+      keyedBCValidatorDetails[consolidation.sourceValidatorIndex];
+
+    if (!bcValidatorDetails) {
+      console.error(
+        `No data found when processing consolidations for validator index ${consolidation.sourceValidatorIndex}`,
       );
 
-      if (!response.success) return response;
-
-      const consolidationData = response.data;
-
-      const [consolidationDataResponse] = consolidationData;
-
-      if (!consolidationDataResponse) {
-        console.error(
-          `No data found for validator index ${consolidation.sourceValidatorIndex}`,
-        );
-
-        continue;
-      }
-
-      await checkConsolidationProcessedAndUpdate(
-        consolidation,
-        consolidationDataResponse,
-      );
+      continue;
     }
 
-    return {
-      success: true,
-      data: null,
-    };
-  } catch (error) {
-    return generateErrorResponse(error);
+    await checkConsolidationProcessedAndUpdate(
+      consolidation,
+      bcValidatorDetails,
+    );
   }
+
+  return {
+    success: true,
+    data: null,
+  };
 };

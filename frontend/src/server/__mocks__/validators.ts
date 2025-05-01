@@ -17,13 +17,17 @@ const generatePendingRequest = () => {
 
 // Helper function to generate a public key in the required format
 const generatePublicKey = () => {
-  return `0x${faker.string.hexadecimal({ length: 64 }).slice(2)}`;
+  return `0x${faker.string.hexadecimal({ length: 64, casing: "lower", prefix: "" })}`;
+};
+
+export const generateAddress = () => {
+  return `0x${faker.string.hexadecimal({ length: 40, casing: "lower", prefix: "" })}`;
 };
 
 // Helper function to generate a withdrawal address in the required format
-const generateWithdrawalAddress = () => {
+export const generateWithdrawalCredentials = () => {
   const prefix = faker.helpers.arrayElement(["00", "01", "02"]);
-  return `0x${prefix}${faker.string.hexadecimal({ length: 40 }).slice(2)}`;
+  return `0x${prefix}${faker.string.hexadecimal({ length: 40, casing: "lower", prefix: "" })}`;
 };
 
 export const buildMockBCValidatorsData = (
@@ -45,7 +49,7 @@ export const buildMockBCValidatorsData = (
       max: 20000000,
     }),
     withdrawableepoch: faker.number.int({ min: 200, max: 1000 }),
-    withdrawalcredentials: generateWithdrawalAddress(),
+    withdrawalcredentials: generateWithdrawalCredentials(),
     total_withdrawals: faker.number.int({ min: 0, max: 100 }),
     ...overrides,
   };
@@ -68,7 +72,7 @@ export const buildMockValidatorDetails = (
       min: 10000000,
       max: 20000000,
     }),
-    withdrawalAddress: generateWithdrawalAddress(),
+    withdrawalAddress: generateWithdrawalCredentials(),
     pendingUpgrade: faker.datatype.boolean(),
     ...overrides,
   };

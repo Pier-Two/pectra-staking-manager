@@ -1,12 +1,12 @@
 import { beforeEach, describe, expect, it, vi, type Mock } from "vitest";
-import { ConsolidationModel } from "pec/server/database/models";
-import { buildMockConsolidation } from "pec/server/__mocks__/database-models";
+import { ExitModel } from "pec/server/database/models";
+import { buildMockExit } from "pec/server/__mocks__/database-models";
 import { ACTIVE_STATUS, INACTIVE_STATUS } from "pec/types/app";
 import { getValidators } from "pec/server/helpers/requests/beaconchain/getValidators";
-import { processConsolidations } from "../consolidation";
 import { MAIN_CHAIN } from "pec/lib/constants/contracts";
 import { buildMockBCValidatorsData } from "pec/server/__mocks__/validators";
 import { sendEmailNotification } from "pec/lib/services/emailService";
+import { processExits } from "../exits";
 
 vi.mock("pec/server/helpers/requests/beaconchain/getValidators", () => ({
   getValidators: vi.fn(),
@@ -21,59 +21,56 @@ const mockedSendEmailNotification = sendEmailNotification as Mock<
   typeof sendEmailNotification
 >;
 
-describe("processConsolidations", () => {
-  const sourceValidatorIndex = 100;
+describe("processExits", () => {
+  const validatorIndex = 100;
 
   beforeEach(() => {
     mockedGetValidators.mockClear();
     mockedSendEmailNotification.mockClear();
   });
 
-  it("Should update the database record and send an email wheen the consolidation is processed", async () => {
+  it("Should update the database record and send an email when the exit is processed", async () => {
     const knownEmail = "email@email.email";
-    const processedConsolidation = buildMockConsolidation({
+    const processedExit = buildMockExit({
       status: ACTIVE_STATUS,
-      sourceValidatorIndex: sourceValidatorIndex,
       email: knownEmail,
+      validatorIndex,
     });
-    const unprocessedConsolidation = buildMockConsolidation({
+    const unprocessedExit = buildMockExit({
       status: ACTIVE_STATUS,
-      sourceValidatorIndex: 200,
     });
 
-    await ConsolidationModel.insertMany([
-      processedConsolidation,
-      unprocessedConsolidation,
-    ]);
+    await ExitModel.insertMany([processedExit, unprocessedExit]);
 
     mockedGetValidators.mockResolvedValueOnce({
       success: true,
       data: [
         buildMockBCValidatorsData({
           status: "exited",
-          validatorindex: sourceValidatorIndex,
+          validatorindex: validatorIndex,
         }),
         buildMockBCValidatorsData({
           status: "active_exiting",
-          validatorindex: unprocessedConsolidation.sourceValidatorIndex,
+          validatorindex: unprocessedExit.validatorIndex,
         }),
       ],
     });
 
-    await processConsolidations(MAIN_CHAIN.id);
+    await processExits(MAIN_CHAIN.id);
 
-    const updatedConsolidation = await ConsolidationModel.findOne({
-      sourceValidatorIndex,
+    const updatedExit = await ExitModel.findOne({
+      validatorIndex,
     });
 
-    expect(updatedConsolidation?.status).eq(INACTIVE_STATUS);
+    expect(updatedExit?.status).eq(INACTIVE_STATUS);
 
     expect(mockedSendEmailNotification).toHaveBeenCalledOnce();
     expect(mockedSendEmailNotification).toBeCalledWith({
-      emailName: "PECTRA_STAKING_MANAGER_CONSOLIDATION_COMPLETE",
+      emailName: "PECTRA_STAKING_MANAGER_WITHDRAWAL_COMPLETE",
       metadata: {
+        amount: processedExit.amount,
         emailAddress: knownEmail,
-        targetValidatorIndex: processedConsolidation.targetValidatorIndex,
+        withdrawalAddress: processedExit.withdrawalAddress,
       },
     });
   });
