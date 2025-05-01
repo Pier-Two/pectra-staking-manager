@@ -78,7 +78,12 @@ export const AreaChartComponent: FC<IAreaChart> = ({ chart, isFullscreen }) => {
     >
       <AreaChart
         data={chartData}
-        margin={{ top: 10, right: 50, left: 10, bottom: isFullscreen ? 200 : 10 }}
+        margin={{
+          top: 10,
+          right: 50,
+          left: 10,
+          bottom: isFullscreen ? 200 : 10,
+        }}
         width={
           typeof window !== "undefined"
             ? isFullscreen

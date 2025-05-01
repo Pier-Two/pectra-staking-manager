@@ -1,4 +1,3 @@
-import { HOODI_CHAIN_ID } from "@piertwo/contracts/constants/networks";
 import { HOODI_CHAIN_DETAILS, SupportedNetworkIds } from "pec/constants/chain";
 
 /**
@@ -28,4 +27,3 @@ export const openInNewTab = (url: string | undefined) => {
   if (!url) return;
   window.open(url, "_blank", "noopener,noreferrer");
 };
-
