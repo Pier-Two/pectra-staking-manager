@@ -3,12 +3,11 @@ import { PrimaryButton } from "pec/components/ui/custom/PrimaryButton";
 import { SecondaryButton } from "pec/components/ui/custom/SecondaryButton";
 import { ValidatorCard } from "pec/components/validators/cards/ValidatorCard";
 import { DetectedValidators } from "pec/components/validators/DetectedValidators";
-import { useConsolidationStore } from "pec/hooks/use-consolidation-store";
 import { EIconPosition } from "pec/types/components";
 import { useState } from "react";
 import { Email } from "./Email";
 import { Overview } from "./Overview";
-import { ValidatorDetails } from "pec/types/validator";
+import { type ValidatorDetails } from "pec/types/validator";
 
 interface ConsolidationSummaryProps {
   goBack: () => void;
@@ -29,9 +28,8 @@ export const ConsolidationSummary = ({
   goToSubmit,
   reset,
 }: ConsolidationSummaryProps) => {
-  const { summaryEmail, setSummaryEmail } = useConsolidationStore();
   const [showEmail, setShowEmail] = useState(false);
-
+  const [summaryEmail, setSummaryEmail] = useState("");
   const handleResetDestinationValidator = () => {
     reset();
   };
