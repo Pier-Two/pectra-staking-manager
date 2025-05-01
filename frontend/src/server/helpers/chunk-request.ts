@@ -1,7 +1,7 @@
 import { chunk } from "lodash";
 import { CHUNK_SIZE } from "pec/lib/constants";
 import { generateErrorResponse } from "pec/lib/utils";
-import { IResponse } from "pec/types/response";
+import { type IResponse } from "pec/types/response";
 
 export const chunkRequest = async <Arg, Response>(
   data: Arg[],

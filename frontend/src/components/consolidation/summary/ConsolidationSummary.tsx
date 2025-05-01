@@ -8,7 +8,7 @@ import { EIconPosition } from "pec/types/components";
 import { useState } from "react";
 import { Email } from "./Email";
 import { Overview } from "./Overview";
-import { ValidatorDetails } from "pec/types/validator";
+import { type ValidatorDetails } from "pec/types/validator";
 
 interface ConsolidationSummaryProps {
   goBack: () => void;

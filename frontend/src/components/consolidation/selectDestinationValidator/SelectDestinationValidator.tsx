@@ -2,7 +2,7 @@ import { ManuallyEnterValidator } from "./ManuallyEnterValidator";
 import { SecondaryButton } from "pec/components/ui/custom/SecondaryButton";
 import { ValidatorTable } from "pec/components/ui/table/ValidatorTable";
 import { CONSOLIDATION_TABLE_HEADERS } from "pec/constants/columnHeaders";
-import { ValidatorDetails } from "pec/types/validator";
+import { type ValidatorDetails } from "pec/types/validator";
 import { useState } from "react";
 
 interface SelectDestinationValidatorProps {

@@ -1,8 +1,8 @@
-import { SupportedNetworkIds } from "pec/constants/chain";
-import { IResponse } from "pec/types/response";
+import { type SupportedNetworkIds } from "pec/constants/chain";
+import { type IResponse } from "pec/types/response";
 import { executeBeaconchainTypesafeRequest } from "./generics";
 import {
-  BCDepositResponse,
+  type BCDepositResponse,
   BCDepositResponseSchema,
 } from "pec/lib/api/schemas/beaconchain/deposits";
 import { chunkRequest } from "../chunk-request";

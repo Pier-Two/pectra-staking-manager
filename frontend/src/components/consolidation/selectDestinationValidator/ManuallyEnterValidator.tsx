@@ -16,7 +16,7 @@ import { useActiveChainWithDefault } from "pec/hooks/useChain";
 import { api } from "pec/trpc/react";
 import { displayedEthAmount } from "pec/lib/utils/validators/balance";
 import { PrimaryButton } from "pec/components/ui/custom/PrimaryButton";
-import { ValidatorDetails } from "pec/types/validator";
+import { type ValidatorDetails } from "pec/types/validator";
 
 interface ManuallyEnterValidatorProps {
   goToSelectSourceValidators: (validator: ValidatorDetails) => void;

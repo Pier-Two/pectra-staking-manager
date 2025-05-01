@@ -1,9 +1,9 @@
 import { TYPE_2_PREFIX } from "pec/constants/pectra";
-import { ValidatorUpgrade } from "pec/server/database/classes/validatorUpgrade";
+import { type ValidatorUpgrade } from "pec/server/database/classes/validatorUpgrade";
 import { ValidatorUpgradeModel } from "pec/server/database/models";
 import { generateErrorResponse } from "pec/lib/utils";
 import { getWithdrawalAddressPrefixType } from "pec/lib/utils/validators/withdrawalAddress";
-import { IResponse } from "pec/types/response";
+import { type IResponse } from "pec/types/response";
 
 export const checkValidatorUpgradeProcessedAndUpdate = async (
   dbValidatorUpgrade: ValidatorUpgrade,

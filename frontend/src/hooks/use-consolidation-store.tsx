@@ -1,6 +1,6 @@
 "use client";
 
-import { ConsolidationStep } from "pec/types/consolidation";
+import { type ConsolidationStep } from "pec/types/consolidation";
 import type {
   Transaction,
   TransactionStatus,

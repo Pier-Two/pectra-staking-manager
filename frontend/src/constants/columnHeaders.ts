@@ -3,7 +3,7 @@ import type {
   IHeaderConfig,
   TableValidatorDetails,
 } from "pec/types/validatorTable";
-import { TransactionStatus } from "pec/types/withdraw";
+import { type TransactionStatus } from "pec/types/withdraw";
 
 export type WithdrawalTableValidatorDetails = TableValidatorDetails & {
   withdrawalAmount: number;

@@ -1,10 +1,10 @@
 import { ChevronDown, ChevronsLeftRight, ChevronUp } from "lucide-react";
 import { cn } from "pec/lib/utils";
-import { ValidatorDetails } from "pec/types/validator";
+import { type ValidatorDetails } from "pec/types/validator";
 import {
   ESortDirection,
-  IHeaderConfig,
-  SortConfig,
+  type IHeaderConfig,
+  type SortConfig,
 } from "pec/types/validatorTable";
 
 export interface ITableHeadersRowProps<T = ValidatorDetails> {

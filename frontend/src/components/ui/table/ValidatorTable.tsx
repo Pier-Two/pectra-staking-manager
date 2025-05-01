@@ -12,7 +12,6 @@ import { TablePagination } from "./TablePagination";
 import { type ValidatorCardWrapperProps } from "../custom/validator-card-wrapper";
 import { useSearch } from "pec/hooks/useSearch";
 import { SearchFilter } from "./SearchFilter";
-import { TableRow, TableCell } from "../table";
 import { EnterAnimation } from "pec/app/(login-layout)/welcome/_components/enter-animation";
 
 interface ValidatorTableProps<T extends TableValidatorDetails> {

@@ -1,4 +1,4 @@
-import { describe, it, vi, Mock } from "vitest";
+import { describe, it, vi, type Mock } from "vitest";
 import { ConsolidationModel } from "pec/server/database/models";
 import { buildMockConsolidation } from "pec/server/__mocks__/database-models";
 import { ACTIVE_STATUS } from "pec/types/app";

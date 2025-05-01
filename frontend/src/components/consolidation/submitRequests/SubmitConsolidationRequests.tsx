@@ -1,12 +1,12 @@
 import { useRouter } from "next/navigation";
-import { ValidatorDetails } from "pec/types/validator";
+import { type ValidatorDetails } from "pec/types/validator";
 import { ArrowRightIcon, CircleCheck, OctagonMinus } from "lucide-react";
 import { PrimaryButton } from "pec/components/ui/custom/PrimaryButton";
 import { EIconPosition } from "pec/types/components";
 import { ValidatorTable } from "pec/components/ui/table/ValidatorTable";
 import {
   SUBMITTING_CONSOLIDATION_TABLE_HEADERS,
-  SubmittingConsolidationValidatorDetails,
+  type SubmittingConsolidationValidatorDetails,
 } from "pec/constants/columnHeaders";
 import { ValidatorCardWrapper } from "pec/components/ui/custom/validator-card-wrapper";
 import { ValidatorIndex } from "pec/components/ui/table/TableComponents";

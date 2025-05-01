@@ -1,6 +1,5 @@
 "use client";
 
-import clsx from "clsx";
 import { Moon, Sun } from "lucide-react";
 import { Button } from "./ui/button";
 import { useTheme } from "next-themes";

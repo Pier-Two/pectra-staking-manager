@@ -1,9 +1,9 @@
-import { SupportedNetworkIds } from "pec/constants/chain";
+import { type SupportedNetworkIds } from "pec/constants/chain";
 import {
-  BCValidatorsResponse,
+  type BCValidatorsResponse,
   BCValidatorsResponseSchema,
 } from "pec/lib/api/schemas/beaconchain/validator";
-import { IResponse } from "pec/types/response";
+import { type IResponse } from "pec/types/response";
 import { executeBeaconchainTypesafeRequest } from "./generics";
 import { chunkRequest } from "../chunk-request";
 

@@ -1,7 +1,7 @@
 import {
-  TYPE_0_PREFIX,
-  TYPE_1_PREFIX,
-  TYPE_2_PREFIX,
+  type TYPE_0_PREFIX,
+  type TYPE_1_PREFIX,
+  type TYPE_2_PREFIX,
 } from "pec/constants/pectra";
 import type {
   TransactionSchema,

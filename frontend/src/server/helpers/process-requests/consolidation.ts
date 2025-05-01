@@ -4,9 +4,9 @@ import { ACTIVE_STATUS, INACTIVE_STATUS } from "pec/types/app";
 import type { IResponse } from "pec/types/response";
 import { sendEmailNotification } from "pec/lib/services/emailService";
 import { getValidators } from "../beaconchain/getValidators";
-import { Consolidation } from "pec/server/database/classes/consolidation";
-import { BCValidatorsData } from "pec/lib/api/schemas/beaconchain/validator";
-import { SupportedNetworkIds } from "pec/constants/chain";
+import { type Consolidation } from "pec/server/database/classes/consolidation";
+import { type BCValidatorsData } from "pec/lib/api/schemas/beaconchain/validator";
+import { type SupportedNetworkIds } from "pec/constants/chain";
 
 export const checkConsolidationProcessedAndUpdate = async (
   dbConsolidation: Consolidation,

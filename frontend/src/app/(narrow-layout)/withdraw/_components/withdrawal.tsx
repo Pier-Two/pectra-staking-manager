@@ -22,7 +22,7 @@ import { useFieldArray, useForm } from "react-hook-form";
 import WithdrawalLoading from "./withdraw-loading";
 import {
   FormWithdrawalSchema,
-  FormWithdrawalType,
+  type FormWithdrawalType,
 } from "pec/lib/api/schemas/withdrawal";
 
 const Withdrawal: FC = () => {

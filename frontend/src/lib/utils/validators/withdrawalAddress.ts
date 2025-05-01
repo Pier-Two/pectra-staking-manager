@@ -1,7 +1,7 @@
 import { groupBy } from "lodash";
 import {
-  ValidatorDetails,
-  WithdrawalAddressPrefixType,
+  type ValidatorDetails,
+  type WithdrawalAddressPrefixType,
 } from "pec/types/validator";
 
 export const groupValidatorsByWithdrawalPrefix = (
