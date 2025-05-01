@@ -12,6 +12,7 @@ import { TRPCReactProvider } from "pec/trpc/react";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { Author } from "next/dist/lib/metadata/types/metadata-types";
 
 const sans = localFont({
   src: "../fonts/Saans-TRIAL-VF.woff2",
@@ -30,6 +31,17 @@ export const metadata: Metadata = {
   description:
     "Take control of your validators with the Pectra upgrade! Upgrade to Pextra (0x02), and consolidate multiple validators for easier management, perform batch top-ups to the new max value from 32ETH to 2048ETH, perform withdraws, and monitor the adoption of Pectra via our charts.",
   icons: [{ rel: "icon", url: "/favicon.svg" }],
+  authors: [
+    { name: "Labrys", url: "https://labrys.io" },
+    {
+      name: "Pier Two",
+      url: "https://piertwo.com/",
+    },
+  ],
+  keywords: ["Pectra", "Staking", "Manager", "Ethereum", "Validator"],
+  openGraph: {
+    siteName: "Pectra Staking Manager",
+  },
 };
 
 export default function RootLayout({
