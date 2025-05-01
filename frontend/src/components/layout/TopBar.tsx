@@ -27,16 +27,12 @@ export const TopBar: FC<ITopBar> = (props) => {
     router.push("/welcome");
   };
 
-  const handleDashboardNavigation = () => {
-    router.push("/dashboard");
-  };
-
   const handleChartsNavigation = () => {
     router.push("/charts");
   };
 
   const handleValidatorsNavigation = () => {
-    router.push("/validators-found");
+    router.push("/dashboard");
   };
 
   return (
@@ -101,16 +97,6 @@ export const TopBar: FC<ITopBar> = (props) => {
           </div>
 
           <Tools />
-
-          <div
-            className={cn(
-              "font-inter transition-colors duration-200 hover:cursor-pointer hover:text-zinc-500 dark:text-zinc-50 dark:hover:text-zinc-400",
-              pathname === "/dashboard" && "text-zinc-500 dark:text-zinc-400",
-            )}
-            onClick={handleDashboardNavigation}
-          >
-            Dashboard
-          </div>
           <div
             className={cn(
               "font-inter transition-colors duration-200 hover:cursor-pointer hover:text-zinc-500 dark:text-zinc-50 dark:hover:text-zinc-400",
