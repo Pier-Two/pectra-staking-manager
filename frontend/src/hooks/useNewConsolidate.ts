@@ -7,7 +7,9 @@ import { type ValidatorDetails } from "pec/types/validator";
 import { useImmer } from "use-immer";
 import { useSubmitConsolidate } from "./use-consolidation";
 import { getRequiredConsolidationTransactions } from "pec/lib/utils/validators/consolidate";
-import { TransactionStatus } from "pec/types/withdraw";
+import type { TransactionStatus } from "pec/types/withdraw";
+import { trackEvent } from "pec/helpers/trackEvent";
+import { useEffect } from "react";
 
 interface UseConsolidate {
   activeValidators: ValidatorDetails[];
@@ -19,6 +21,15 @@ export const useNewConsolidate = ({ activeValidators }: UseConsolidate) => {
   const [stage, setStage] = useImmer<ConsolidationWorkflowStages>({
     stage: "destination",
   });
+
+  /**
+   * Watch for changes in the stage and track events
+   */
+  useEffect(() => {
+    trackEvent(`consolidation_stage_changed`, {
+      stage: stage.stage,
+    });
+  }, [stage]);
 
   const reset = () => {
     setStage({ stage: "destination" });
