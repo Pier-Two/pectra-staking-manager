@@ -246,6 +246,11 @@ export const validatorRouter = createTRPCRouter({
       routeHandler(async (): Promise<IResponse<ValidatorDetails>> => {
         const validatorResponse = await getValidators([searchTerm], network);
 
+        console.log(
+          "[getValidatorDetails] Validator response:",
+          validatorResponse,
+        );
+
         if (!validatorResponse.success) return validatorResponse;
         const [validator] = validatorResponse.data;
 

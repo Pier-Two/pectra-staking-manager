@@ -25,6 +25,10 @@ export const BCValidatorsResponseSchema = buildBeaconchainResponseSchema(
   z.array(BCValidatorsDataSchema),
 );
 
+export const BCValidatorResponseSchema = buildBeaconchainResponseSchema(
+  BCValidatorsDataSchema,
+);
+
 export type BCValidatorsResponse = z.infer<typeof BCValidatorsResponseSchema>;
 
 export const BCValidatorsForWithdrawAddressSchema = z.array(
