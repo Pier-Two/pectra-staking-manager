@@ -34,16 +34,24 @@ export const SelectDestinationValidator = ({
         the source validator.
       </div>
 
-      <Tabs value={selectedTab} onValueChange={setSelectedTab}>
-        <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
-          <div className="text-md font-medium">
-            Select destination validator
-          </div>
-          <TabsList>
-            <TabsTrigger value="validators">Select from Validators</TabsTrigger>
-            <TabsTrigger value="manually">Enter Address</TabsTrigger>
-          </TabsList>
+      <Tabs
+        value={selectedTab}
+        onValueChange={setSelectedTab}
+        className="flex flex-col gap-6"
+      >
+        <div className="text-base font-medium">
+          Select destination validator
         </div>
+
+        <TabsList className="w-full">
+          <TabsTrigger value="validators" className="flex-1">
+            Select from Validators
+          </TabsTrigger>
+          <TabsTrigger value="manually" className="flex-1">
+            Enter Address
+          </TabsTrigger>
+        </TabsList>
+
         <TabsContent value="validators">
           <ValidatorTable
             data={validators}
