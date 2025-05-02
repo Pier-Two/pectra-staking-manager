@@ -7,6 +7,7 @@ import { getValidators } from "../requests/beaconchain/getValidators";
 import { SupportedNetworkIds } from "pec/constants/chain";
 import { IResponse } from "pec/types/response";
 import { keyBy } from "lodash";
+import { logger } from "../logger";
 
 interface ProcessAllExitsParams {
   networkId: SupportedNetworkIds;
@@ -51,7 +52,7 @@ const processProvidedExits = async (
     const bcValidatorDetails = keyedBCValidatorDetails[exit.validatorIndex];
 
     if (!bcValidatorDetails) {
-      console.error(`No data found for validator index ${exit.validatorIndex}`);
+      logger.error(`No data found for validator index ${exit.validatorIndex}`);
 
       continue;
     }
@@ -70,6 +71,10 @@ const checkExitProcessedAndUpdate = async (
   bcValidatorDetails: BCValidatorDetails,
 ): Promise<boolean> => {
   if (bcValidatorDetails.status === "exited") {
+    logger.info(
+      `Exit for validator index ${dbExit.validatorIndex} has been processed`,
+    );
+
     await ExitModel.updateOne(
       { validatorIndex: dbExit.validatorIndex },
       { $set: { status: INACTIVE_STATUS } },

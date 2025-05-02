@@ -9,6 +9,7 @@ import { sendEmailNotification } from "pec/lib/services/emailService";
 import { getMinimumProcessDelay } from "./common";
 import { QNPendingPartialWithdrawalType } from "pec/lib/api/schemas/quicknode/pendingPartialWithdrawals";
 import { DocumentWithId } from "pec/types/database";
+import { logger } from "../logger";
 
 interface ProcessPartialWithdrawalsParams {
   networkId: SupportedNetworkIds;
@@ -74,6 +75,9 @@ const processProvidedPartialWithdrawals = async (
       const withdrawalsToProcess = storedWithdrawals.slice(0, processedCount);
 
       for (const withdrawal of withdrawalsToProcess) {
+        logger.info(
+          `Withdrawal for validator index ${withdrawal.validatorIndex} has been processed`,
+        );
         await WithdrawalModel.updateOne(
           {
             _id: withdrawal._id,

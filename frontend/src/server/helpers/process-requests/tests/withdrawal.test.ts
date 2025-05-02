@@ -8,7 +8,6 @@ import { buildMockQNPendingPartialWithdrawal } from "pec/server/__mocks__/quickn
 import { getPendingPartialWithdrawals } from "../../requests/quicknode/getPendingPartialWithdrawals";
 import { processPartialWithdrawals } from "../withdrawal";
 import { range } from "lodash";
-import { faker } from "@faker-js/faker";
 
 vi.mock(
   "pec/server/helpers/requests/quicknode/getPendingPartialWithdrawals",

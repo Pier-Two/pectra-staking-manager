@@ -44,7 +44,7 @@ export const buildMockBCValidatorsData = (
     effectivebalance: faker.number.int({ min: 1000, max: 50000 }),
     exitepoch: faker.number.int({ min: 100, max: 500 }),
     lastattestationslot: faker.number.int({ min: 1, max: 10000 }),
-    name: faker.name.firstName() + " Validator",
+    name: faker.person.firstName() + " Validator",
     pubkey: generatePublicKey(),
     slashed: faker.datatype.boolean(),
     status: faker.helpers.arrayElement(VALIDATOR_LIFECYCLE_STATUSES),

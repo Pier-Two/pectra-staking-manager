@@ -7,6 +7,7 @@ import { type Consolidation } from "pec/server/database/classes/consolidation";
 import { type BCValidatorDetails } from "pec/lib/api/schemas/beaconchain/validator";
 import { type SupportedNetworkIds } from "pec/constants/chain";
 import { keyBy } from "lodash";
+import { logger } from "../logger";
 
 interface ProcessConsolidationsParams {
   networkId: SupportedNetworkIds;
@@ -77,6 +78,10 @@ export const checkConsolidationProcessedAndUpdate = async (
   bcValidatorDetails: BCValidatorDetails,
 ): Promise<boolean> => {
   if (bcValidatorDetails.status === "exited") {
+    logger.info(
+      `Consolidation for validator index ${dbConsolidation.sourceValidatorIndex} is complete.`,
+    );
+
     await ConsolidationModel.updateOne(
       {
         sourceValidatorIndex: dbConsolidation.sourceValidatorIndex,

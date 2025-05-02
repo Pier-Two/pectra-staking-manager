@@ -9,6 +9,7 @@ import { SupportedNetworkIds } from "pec/constants/chain";
 import { keyBy } from "lodash";
 import { BCValidatorDetails } from "pec/lib/api/schemas/beaconchain/validator";
 import { sendEmailNotification } from "pec/lib/services/emailService";
+import { logger } from "../logger";
 
 interface ProcessAllValidatorUpgradesParams {
   networkId: SupportedNetworkIds;
@@ -91,6 +92,9 @@ export const checkValidatorUpgradeProcessedAndUpdate = async (
     getWithdrawalAddressPrefixType(bcValidatorDetails.withdrawalcredentials) ===
     TYPE_2_PREFIX
   ) {
+    logger.info(
+      `Validator upgrade for validator index ${dbValidatorUpgrade.validatorIndex} is complete.`,
+    );
     await ValidatorUpgradeModel.updateOne(
       {
         validatorIndex: dbValidatorUpgrade.validatorIndex,
