@@ -1,158 +1,19 @@
 import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "pec/server/api/trpc";
 import type { BeaconChainValidatorPerformanceResponse } from "pec/types/api";
-import { ValidatorStatus, type ValidatorDetails } from "pec/types/validator";
+import { type ValidatorDetails } from "pec/types/validator";
 import { SupportedChainIdSchema } from "pec/lib/api/schemas/network";
 import { getBeaconChainAxios } from "pec/lib/server/axios";
 import {
   PERFORMANCE_FILTERS,
   VALIDATOR_PERFORMANCE_FILTER_TO_BEACONCHAIN,
 } from "pec/lib/constants/validators/performance";
-import {
-  populateBeaconchainValidatorResponse,
-  prePopulateBeaconchainValidatorResponse,
-} from "pec/server/helpers/validators";
+import { populateBeaconchainValidatorResponse } from "pec/server/helpers/validators";
 import { getValidators } from "pec/server/helpers/requests/beaconchain/getValidators";
 import { routeHandler } from "pec/server/helpers/route-errors";
 import { type IResponse } from "pec/types/response";
 import { getValidatorsForWithdrawAddress } from "pec/server/helpers/requests/beaconchain/getValidatorForWithdrawAddress";
-import { type BCValidatorDetails } from "pec/lib/api/schemas/beaconchain/validator";
-import {
-  ConsolidationModel,
-  DepositModel,
-  ExitModel,
-  ValidatorUpgradeModel,
-} from "pec/server/database/models";
-import { keyBy, values } from "lodash";
-import { checkValidatorUpgradeProcessedAndUpdate } from "pec/server/helpers/process-requests/validatorUpgrade";
-import { ACTIVE_STATUS } from "pec/types/app";
-import { checkConsolidationProcessedAndUpdate } from "pec/server/helpers/process-requests/consolidation";
-import { checkExitProcessedAndUpdate } from "pec/server/helpers/process-requests/exits";
 import { redisCacheMiddleware } from "../middleware/redis-cache-middleware";
-
-const populateStuff = async (
-  bcValidatorData: BCValidatorDetails[],
-): Promise<ValidatorDetails[]> => {
-  const validatorDetails = bcValidatorData.map(
-    prePopulateBeaconchainValidatorResponse,
-  );
-
-  const keyedBCValidatorData = keyBy(bcValidatorData, (v) => v.validatorindex);
-  const keyedValidatorDetails = keyBy(
-    validatorDetails,
-    (v) => v.validatorIndex,
-  );
-
-  const mutateValidator = (
-    validatorIndex: number,
-    fields: Partial<ValidatorDetails>,
-  ) => {
-    const validator = keyedValidatorDetails[validatorIndex];
-
-    if (!validator) {
-      console.error(
-        `Validator with validatorIndex ${validatorIndex} not found in validator details`,
-      );
-      return;
-    }
-
-    Object.assign(validator, fields);
-  };
-
-  const allValidatorIndexes = validatorDetails.map((v) => v.validatorIndex);
-
-  const exits = await ExitModel.find({
-    validatorIndex: { $in: allValidatorIndexes },
-    status: ACTIVE_STATUS,
-  });
-
-  for (const exit of exits) {
-    const bcValidatorData = keyedBCValidatorData[exit.validatorIndex]!;
-
-    await checkExitProcessedAndUpdate(exit, bcValidatorData);
-
-    // We don't need to do this, the Beaconchain response should set this correctly but why not do this as a just incase.
-    mutateValidator(exit.validatorIndex, {
-      status: ValidatorStatus.EXITED,
-    });
-  }
-
-  const validatorUpgrades = await ValidatorUpgradeModel.find({
-    validatorIndex: { $in: allValidatorIndexes },
-    status: ACTIVE_STATUS,
-  });
-
-  for (const upgrade of validatorUpgrades) {
-    const validator = keyedValidatorDetails[upgrade.validatorIndex]!;
-
-    const isProcessed = await checkValidatorUpgradeProcessedAndUpdate(
-      upgrade,
-      validator.withdrawalAddress,
-    );
-
-    if (!isProcessed) {
-      validator.pendingUpgrade = true;
-    }
-  }
-
-  const consolidations = await ConsolidationModel.find({
-    status: ACTIVE_STATUS,
-    $or: [
-      { targetValidatorIndex: { $in: allValidatorIndexes } },
-      { sourceValidatorIndex: { $in: allValidatorIndexes } },
-    ],
-  });
-
-  for (const consolidation of consolidations) {
-    const bcSourceValidator =
-      keyedBCValidatorData[consolidation.sourceValidatorIndex];
-
-    if (!bcSourceValidator) {
-      console.error(
-        `No source validator found for consolidation ${consolidation._id.toString()}`,
-      );
-      continue;
-    }
-
-    // This should definitely exist for the user, but just incase
-    const isProcessed = await checkConsolidationProcessedAndUpdate(
-      consolidation,
-      bcSourceValidator,
-    );
-
-    // This would already be exited in most cases, buut just in case
-    mutateValidator(consolidation.sourceValidatorIndex, {
-      status: ValidatorStatus.EXITED,
-    });
-
-    if (!isProcessed) {
-      const targetValidatorDetails =
-        keyedValidatorDetails[consolidation.targetValidatorIndex];
-
-      // If the current user owns the target validator, we need to modify the target validator to include the pending consolidation request
-      if (targetValidatorDetails) {
-        mutateValidator(consolidation.targetValidatorIndex, {
-          pendingRequests: [
-            ...targetValidatorDetails.pendingRequests,
-            { type: "consolidation", amount: bcSourceValidator.balance },
-          ],
-        });
-      }
-    }
-  }
-
-  const deposits = await DepositModel.find({
-    validatorIndex: { $in: allValidatorIndexes },
-    status: ACTIVE_STATUS,
-  });
-
-  if (deposits.length) {
-    // const bcDeposits =
-  }
-
-  // Use the keyed object here because that is what we mutate throughout the function
-  return values(keyedValidatorDetails);
-};
 
 export const validatorRouter = createTRPCRouter({
   getValidators: publicProcedure

@@ -8,14 +8,15 @@ import { Withdrawal } from "pec/server/database/classes/withdrawal";
 import { sendEmailNotification } from "pec/lib/services/emailService";
 import { getMinimumProcessDelay } from "./common";
 import { QNPendingPartialWithdrawalType } from "pec/lib/api/schemas/quicknode/pendingPartialWithdrawals";
+import { DocumentWithId } from "pec/types/database";
 
 interface ProcessPartialWithdrawalsParams {
   networkId: SupportedNetworkIds;
-  withdrawals?: Withdrawal[];
+  withdrawals?: DocumentWithId<Withdrawal>[];
   qnPendingPartialWithdrawals?: QNPendingPartialWithdrawalType[];
 }
 
-export const providedPartialWithdrawals = async ({
+export const processPartialWithdrawals = async ({
   networkId,
 
   ...overrides
@@ -25,7 +26,7 @@ export const providedPartialWithdrawals = async ({
     (await WithdrawalModel.find({
       status: ACTIVE_STATUS,
       createdAt: { $lt: getMinimumProcessDelay() },
-    }).sort({ createdAt: -1 }));
+    }).sort({ createdAt: 1 }));
 
   let allWithdrawals = overrides.qnPendingPartialWithdrawals;
 
@@ -45,10 +46,10 @@ export const providedPartialWithdrawals = async ({
 // If the amount of pending is less than the amount of stored withdrawals, then the difference is the amount of withdrawals that have been processed. We then mark withdrawals as processed starting from the oldest.
 //
 //
-// @param withdrawals Subset of withdrawals that we only check against. The provided withdrawals override param MUST be ordered by date descending and have filtered out documents that have been created before the MINIMUM_PROCESS_DELAY
+// @param withdrawals Withdrawals that we are processing. The provided withdrawals override param MUST be ordered by date ascending and have filtered out documents that have been created before the MINIMUM_PROCESS_DELAY
 // @param allPartialWithdrawals Support passing an override array, when we process a user's partial withdrawals we fetch this data earlier
-export const processProvidedPartialWithdrawals = async (
-  dbWithdrawals: Withdrawal[],
+const processProvidedPartialWithdrawals = async (
+  dbWithdrawals: DocumentWithId<Withdrawal>[],
   qnPendingPartialWithdrawals: QNPendingPartialWithdrawalType[],
 ): Promise<IResponse> => {
   const groupedQNPendingWithdrawals = groupBy(
@@ -70,12 +71,12 @@ export const processProvidedPartialWithdrawals = async (
     const processedCount = storedCount - pendingCount;
 
     if (processedCount > 0) {
-      const withdrawalsToProcess = storedWithdrawals.slice(processedCount);
+      const withdrawalsToProcess = storedWithdrawals.slice(0, processedCount);
 
       for (const withdrawal of withdrawalsToProcess) {
         await WithdrawalModel.updateOne(
           {
-            validatorIndex: withdrawal.validatorIndex,
+            _id: withdrawal._id,
           },
           { $set: { status: INACTIVE_STATUS } },
         );

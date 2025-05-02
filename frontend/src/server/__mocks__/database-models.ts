@@ -5,6 +5,11 @@ import { type Consolidation } from "pec/server/database/classes/consolidation";
 import { Exit } from "../database/classes/exit";
 import { generateAddress } from "./validators";
 import { ValidatorUpgrade } from "../database/classes/validatorUpgrade";
+import { Deposit } from "../database/classes/deposit";
+import { Withdrawal } from "../database/classes/withdrawal";
+import { HydratedDocument } from "mongoose";
+import { ObjectId } from "mongodb";
+import { DocumentWithId } from "pec/types/database";
 
 // Helper function to generate random txHash
 const generateTxHash = () => {
@@ -55,6 +60,47 @@ export const buildMockValidatorUpgrade = (
     validatorIndex: faker.number.int({ min: 1, max: 1000000 }),
     txHash: generateTxHash(),
     networkId: faker.helpers.arrayElement(SUPPORTED_NETWORKS_IDS),
+    ...overrides,
+  };
+};
+
+export const buildMockDeposit = (
+  overrides: Partial<DocumentWithId<Deposit>> = {},
+): DocumentWithId<Deposit> => {
+  return {
+    _id: new ObjectId(faker.string.hexadecimal({ length: 24, prefix: "" })),
+    email: faker.internet.email(),
+    status: faker.helpers.arrayElement(Object.values(DatabaseDocumentStatuses)),
+    deposits: [
+      {
+        publicKey: faker.string.hexadecimal({ length: 96, prefix: "0x" }),
+        validatorIndex: faker.number.int({ min: 1, max: 1000000 }),
+        amount: faker.number.int({ min: 1, max: 1000000 }),
+      },
+    ],
+    txHash: generateTxHash(),
+    networkId: faker.helpers.arrayElement(SUPPORTED_NETWORKS_IDS),
+    createdAt: faker.date.past(),
+    updatedAt: faker.date.past(),
+    ...overrides,
+  };
+};
+
+export const buildMockWithdrawal = (
+  overrides: Partial<DocumentWithId<Withdrawal>> = {},
+): DocumentWithId<Withdrawal> => {
+  return {
+    _id: new ObjectId(faker.string.hexadecimal({ length: 24, prefix: "" })),
+    email: faker.internet.email(),
+    status: faker.helpers.arrayElement(Object.values(DatabaseDocumentStatuses)),
+    txHash: generateTxHash(),
+    networkId: faker.helpers.arrayElement(SUPPORTED_NETWORKS_IDS),
+    amount: faker.number.int({ min: 1, max: 1000000 }),
+    validatorIndex: faker.number.int({ min: 1000000, max: 2000000 }),
+    withdrawalAddress: generateAddress(),
+    withdrawalIndex: faker.number.int({ min: 1, max: 1000000 }),
+    createdAt: faker.date.past(),
+    updatedAt: faker.date.past(),
     ...overrides,
   };
 };

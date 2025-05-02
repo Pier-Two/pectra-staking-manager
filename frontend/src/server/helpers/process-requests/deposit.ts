@@ -1,4 +1,4 @@
-import { keyBy, sumBy } from "lodash";
+import { groupBy, sumBy } from "lodash";
 import type { Deposit } from "pec/server/database/classes/deposit";
 import { DepositModel } from "pec/server/database/models";
 import { ACTIVE_STATUS, INACTIVE_STATUS } from "pec/types/app";
@@ -7,6 +7,7 @@ import { SupportedNetworkIds } from "pec/constants/chain";
 import { getPendingDeposits } from "../requests/quicknode/getPendingDeposits";
 import { QNPendingDepositsType } from "pec/lib/api/schemas/quicknode/pendingDeposits";
 import { sendEmailNotification } from "pec/lib/services/emailService";
+import { getMinimumProcessDelay } from "./common";
 
 interface ProcessDepositsParams {
   networkId: SupportedNetworkIds;
@@ -24,6 +25,7 @@ export const processDeposits = async ({
     overrides?.deposits ??
     (await DepositModel.find({
       status: ACTIVE_STATUS,
+      createdAt: { $lt: getMinimumProcessDelay() },
     }));
 
   let qnPendingDeposits = overrides?.qnPendingDeposits;
@@ -40,19 +42,16 @@ export const processDeposits = async ({
 };
 
 // Checks if any of the deposits in the Deposit document aren't in the array of pending deposits, meaning it's been processed.
-// If so, update the status to INACTIVE_STATUS and send an email notification
+// There is an edge-case here where the user submits multiple deposits with the same public key and amount. In this case we only process 1 at a time (because we delete the object). That seems fine because on next run of this it will process the next one.
+//
+// @param Deposits Deposits that we are processing. The provided deposits override param MUST be ordered by date descending and have filtered out documents that have been created before the MINIMUM_PROCESS_DELAY
 const processProvidedDeposits = async (
   deposits: Deposit[],
   qnPendingDeposits: QNPendingDepositsType[],
 ): Promise<IResponse> => {
-  const groupedQNDeposits = keyBy(qnPendingDeposits, (v) =>
+  const groupedQNDeposits = groupBy(qnPendingDeposits, (v) =>
     getDepositsKey(v.pubkey, v.amount),
   );
-
-  // TODO: bit lost here on if we need to do the double grouping thingo
-  // const groupedDBDeposits = keyBy(deposits, (v) =>
-  //   getDepositsKey(v.publicKey, v.amount),
-  // );
 
   for (const dbDeposit of deposits) {
     for (const deposit of dbDeposit.deposits) {
@@ -76,6 +75,9 @@ const processProvidedDeposits = async (
             totalAmount,
           },
         });
+
+        // Remove the deposit from the grouped deposits
+        delete groupedQNDeposits[depositKey];
       }
     }
   }

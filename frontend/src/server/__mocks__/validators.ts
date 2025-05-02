@@ -17,7 +17,7 @@ const generatePendingRequest = () => {
 };
 
 // Helper function to generate a public key in the required format
-const generatePublicKey = () => {
+export const generatePublicKey = () => {
   return `0x${faker.string.hexadecimal({ length: 64, casing: "lower", prefix: "" })}`;
 };
 

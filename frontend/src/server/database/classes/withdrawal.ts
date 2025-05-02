@@ -36,4 +36,7 @@ export class Withdrawal {
 
   @prop({ required: true })
   public amount!: number;
+
+  public createdAt!: Date;
+  public updatedAt!: Date;
 }
