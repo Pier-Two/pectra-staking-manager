@@ -5,13 +5,10 @@ import { usePathname, useRouter } from "next/navigation";
 import { ConnectWalletButton } from "pec/components/ui/wallet/ConnectWallet";
 import { cn } from "pec/lib/utils";
 import type { FC } from "react";
-
-import { useValidators } from "pec/hooks/useValidators";
-import { ValidatorStatus } from "pec/types/validator";
 import DarkMode from "../dark-mode";
-import { PectraSpinner } from "../ui/custom/pectraSpinner";
 import { SidebarTrigger } from "../ui/sidebar";
 import { Tools } from "./Tools";
+import { ValidatorCount } from "../ui/custom/ValidatorCount";
 
 export interface ITopBar {
   type?: "profile" | "wallet_connect";
@@ -21,7 +18,6 @@ export const TopBar: FC<ITopBar> = (props) => {
   const { type } = props;
   const router = useRouter();
   const pathname = usePathname();
-  const { groupedValidators, isLoading: validatorsLoading } = useValidators();
 
   const handleWelcomeNavigation = () => {
     router.push("/welcome");
@@ -75,25 +71,7 @@ export const TopBar: FC<ITopBar> = (props) => {
             >
               My Validators
             </div>
-
-            {validatorsLoading ? (
-              <PectraSpinner />
-            ) : (
-              <div className="relative flex h-6 w-6 items-center justify-center bg-transparent">
-                <div
-                  className="absolute inset-0 rounded-[3px] p-[1px]"
-                  style={{
-                    background:
-                      "linear-gradient(130.54deg, #00FFA7 11.34%, #5164DC 31.73%, #313C86 59.22%, rgba(113, 255, 224, 0.8) 100%)",
-                    mask: "linear-gradient(white 0 0) content-box, linear-gradient(white 0 0)",
-                    maskComposite: "exclude",
-                  }}
-                />
-                <p className="relative font-inter text-sm font-medium text-black dark:text-zinc-50">
-                  {groupedValidators[ValidatorStatus.ACTIVE]?.length ?? 0}
-                </p>
-              </div>
-            )}
+            <ValidatorCount />
           </div>
 
           <Tools />

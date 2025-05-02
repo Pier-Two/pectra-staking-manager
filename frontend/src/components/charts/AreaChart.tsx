@@ -50,7 +50,7 @@ export const AreaChartComponent: FC<IAreaChart> = ({ chart, isFullscreen }) => {
 
   const axisTextStyle = {
     stroke: theme === "dark" ? "#e3e3e3" : "#a1a1a1",
-    fontSize: "11px",
+    fontSize: window.innerWidth < 500 ? "7px" : "11px",
     fontWeight: 180,
   };
 
@@ -72,7 +72,7 @@ export const AreaChartComponent: FC<IAreaChart> = ({ chart, isFullscreen }) => {
   return (
     <ChartContainer
       className={cn(
-        "mx-auto w-full max-w-[800px]",
+        "mx-auto mb-8 w-full max-w-[800px]",
         isFullscreen && "max-w-none",
       )}
       config={chartConfig}
@@ -218,7 +218,7 @@ export const AreaChartComponent: FC<IAreaChart> = ({ chart, isFullscreen }) => {
 
         {legend && (
           <ChartLegend
-            className={`${showXLabel ? "mt-4" : ""}`}
+            className={cn(showXLabel ? "mt-4" : "", "ml-8")}
             content={<ChartLegendContent />}
           />
         )}
