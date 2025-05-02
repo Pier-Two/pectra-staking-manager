@@ -50,6 +50,7 @@ export const Connector: FC<IConnector> = ({
       <DetectedValidators
         cardTitle="validators detected"
         validators={validators}
+        layoutId={"validators-found-detected-validators"}
       />
       <EnterAnimation>
         <ValidatorInformation validators={validators} />

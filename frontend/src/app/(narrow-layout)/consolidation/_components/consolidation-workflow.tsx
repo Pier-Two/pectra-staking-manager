@@ -10,6 +10,10 @@ import { useNewConsolidate } from "pec/hooks/useNewConsolidate";
 import { ConsolidationSummary } from "pec/components/consolidation/summary/ConsolidationSummary";
 import { SubmitConsolidationRequests } from "pec/components/consolidation/submitRequests/SubmitConsolidationRequests";
 import { Skeleton } from "pec/components/ui/skeleton";
+import {
+  StageAnimationParent,
+  StageAnimationStep,
+} from "pec/components/stage-animation";
 
 const ConsolidationWorkflow = () => {
   const walletAddress = useWalletAddress();
@@ -49,48 +53,62 @@ const ConsolidationWorkflow = () => {
     <div className="flex w-full flex-col gap-6">
       <ProgressBar progress={stage.stage} backHandler={goBack} />
 
-      {stage.stage === "destination" && (
-        <SelectDestinationValidator
-          validators={activeValidators}
-          goToSelectSourceValidators={goToSelectSourceValidators}
-        />
-      )}
+      <StageAnimationParent
+        stage={stage.stage}
+        stageOrder={["destination", "source", "summary", "submit"]}
+        stepClassName="w-full"
+      >
+        {stage.stage === "destination" && (
+          <StageAnimationStep key="destination">
+            <SelectDestinationValidator
+              validators={activeValidators}
+              goToSelectSourceValidators={goToSelectSourceValidators}
+            />
+          </StageAnimationStep>
+        )}
 
-      {stage.stage === "source" && (
-        <SelectSourceValidators
-          sourceValidators={stage.sourceValidator}
-          destinationValidator={stage.destinationValidator}
-          goToSummary={goToSummary}
-          setSourceValidators={setSourceValidator}
-          availableSourceValidators={getAvailableSourceValidators()}
-          goBack={goBack}
-        />
-      )}
+        {stage.stage === "source" && (
+          <StageAnimationStep key="source">
+            <SelectSourceValidators
+              sourceValidators={stage.sourceValidator}
+              destinationValidator={stage.destinationValidator}
+              goToSummary={goToSummary}
+              setSourceValidators={setSourceValidator}
+              availableSourceValidators={getAvailableSourceValidators()}
+              goBack={goBack}
+            />
+          </StageAnimationStep>
+        )}
 
-      {stage.stage === "summary" && (
-        <ConsolidationSummary
-          sourceValidators={stage.sourceValidator}
-          destinationValidator={stage.destinationValidator}
-          upgradeTransactions={stage.transactions.upgradeTransactions}
-          consolidationTransactions={
-            stage.transactions.consolidationTransactions
-          }
-          goToSubmit={goToSubmit}
-          goBack={goBack}
-          reset={reset}
-        />
-      )}
+        {stage.stage === "summary" && (
+          <StageAnimationStep key="summary">
+            <ConsolidationSummary
+              sourceValidators={stage.sourceValidator}
+              destinationValidator={stage.destinationValidator}
+              upgradeTransactions={stage.transactions.upgradeTransactions}
+              consolidationTransactions={
+                stage.transactions.consolidationTransactions
+              }
+              goToSubmit={goToSubmit}
+              goBack={goBack}
+              reset={reset}
+            />
+          </StageAnimationStep>
+        )}
 
-      {stage.stage === "submit" && (
-        <SubmitConsolidationRequests
-          destination={stage.destinationValidator}
-          transactions={stage.transactions.transactions}
-          upgradeTransactions={stage.transactions.upgradeTransactions}
-          consolidationTransactions={
-            stage.transactions.consolidationTransactions
-          }
-        />
-      )}
+        {stage.stage === "submit" && (
+          <StageAnimationStep key="submit">
+            <SubmitConsolidationRequests
+              destination={stage.destinationValidator}
+              transactions={stage.transactions.transactions}
+              upgradeTransactions={stage.transactions.upgradeTransactions}
+              consolidationTransactions={
+                stage.transactions.consolidationTransactions
+              }
+            />
+          </StageAnimationStep>
+        )}
+      </StageAnimationParent>
     </div>
   );
 };
