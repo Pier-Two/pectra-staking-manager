@@ -28,16 +28,18 @@ export const getAndPopulateValidators = async (
   if (!bcValidatorsForWithdrawAddress.success)
     return bcValidatorsForWithdrawAddress;
 
-  const allValidatorIndexes = bcValidatorsForWithdrawAddress.data.map(
-    (validator) => validator.validatorindex,
-  );
-
   const bcValidatorDetails = await getValidators(
-    allValidatorIndexes,
+    bcValidatorsForWithdrawAddress.data.map(
+      (validator) => validator.validatorindex,
+    ),
     networkId,
   );
 
   if (!bcValidatorDetails.success) return bcValidatorDetails;
+
+  const allValidatorIndexes = bcValidatorDetails.data.map(
+    (validator) => validator.validatorindex,
+  );
 
   const validatorDetails = bcValidatorDetails.data.map(
     prePopulateBeaconchainValidatorResponse,
