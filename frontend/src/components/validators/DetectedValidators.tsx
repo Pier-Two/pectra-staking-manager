@@ -36,6 +36,7 @@ export const DetectedValidators: FC<IDetectedValidators> = (props) => {
     >
       <motion.div layoutId={layoutId}>
         <ValidatorCardWrapper
+          className="bg-white dark:bg-gray-900"
           isSelected={showValidators}
           onClick={() => setShowValidators(!showValidators)}
         >
