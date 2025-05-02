@@ -21,6 +21,7 @@ export const prePopulateBeaconchainValidatorResponse = (
     publicKey: rawValidatorDetails.pubkey,
     withdrawalAddress: rawValidatorDetails.withdrawalcredentials,
     balance: rawValidatorDetails.balance / 10 ** 9,
+    pendingBalance: rawValidatorDetails.balance / 10 ** 9,
     effectiveBalance: rawValidatorDetails.effectivebalance / 10 ** 9,
     status: getValidatorStatus(rawValidatorDetails.status),
     numberOfWithdrawals: rawValidatorDetails.total_withdrawals,

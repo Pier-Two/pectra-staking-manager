@@ -13,8 +13,8 @@ import { getValidators } from "pec/server/helpers/requests/beaconchain/getValida
 import { routeHandler } from "pec/server/helpers/route-errors";
 import { type IResponse } from "pec/types/response";
 import { getValidatorsForWithdrawAddress } from "pec/server/helpers/requests/beaconchain/getValidatorForWithdrawAddress";
-import { redisCacheMiddleware } from "../middleware/redis-cache-middleware";
 import { getAndPopulateValidatorDetails } from "pec/server/helpers/validators/getAndPopulateValidatorDetails";
+import { redisCacheMiddleware } from "../middleware/redis-cache-middleware";
 
 export const validatorRouter = createTRPCRouter({
   getValidators: publicProcedure

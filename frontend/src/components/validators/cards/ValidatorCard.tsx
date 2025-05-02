@@ -2,7 +2,7 @@ import { ValidatorCardWrapper } from "pec/components/ui/custom/validator-card-wr
 import {
   DisplayAmount,
   ValidatorIndex,
-  WithdrawalAddress,
+  WithdrawalCredentials,
 } from "pec/components/ui/table/TableComponents";
 import { type ValidatorDetails } from "pec/types/validator";
 import type { FC } from "react";
@@ -18,7 +18,7 @@ export const ValidatorCard: FC<IValidatorCard> = (props) => {
   return (
     <ValidatorCardWrapper onClick={onClick} isSelected>
       <ValidatorIndex validator={validator} />
-      <WithdrawalAddress validator={validator} />
+      <WithdrawalCredentials validator={validator} />
       <DisplayAmount amount={validator.balance} />
     </ValidatorCardWrapper>
   );

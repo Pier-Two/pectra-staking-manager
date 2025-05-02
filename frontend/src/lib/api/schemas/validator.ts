@@ -44,6 +44,7 @@ export const ValidatorDataSchema = z.object({
   activeDuration: z.string(),
   activeSince: z.string(),
   balance: z.number(),
+  pendingBalance: z.number(),
   pendingRequests: z.array(PendingRequestsSchema),
   effectiveBalance: z.number(),
   numberOfWithdrawals: z.number(),

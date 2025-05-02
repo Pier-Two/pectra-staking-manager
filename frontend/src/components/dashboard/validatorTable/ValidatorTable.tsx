@@ -5,6 +5,7 @@ import { DASHBOARD_VALIDATOR_COLUMN_HEADERS } from "pec/constants/columnHeaders"
 import { useDashboardValidatorTable } from "pec/hooks/useDashboardValidatorTable";
 import { ValidatorRowEndContent } from "./TableComponents";
 import { TableFilters } from "./TableFilters";
+import { DisplayAmount } from "pec/components/ui/table/TableComponents";
 
 export const DashboardValidatorTable = () => {
   const {
@@ -30,6 +31,14 @@ export const DashboardValidatorTable = () => {
       // We disable search here because we have a custom search component here
       disableSearch
       isLoading={isLoading}
+      renderOverrides={{
+        pendingBalance: (v) => (
+          <DisplayAmount
+            amount={v.pendingBalance}
+            className="text-gray-500 dark:text-gray-500"
+          />
+        ),
+      }}
     >
       {({ setCurrentPage }) => (
         <TableFilters

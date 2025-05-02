@@ -15,7 +15,7 @@ import {
   DisplayAmount,
   SubmittingTransactionTableComponent,
   ValidatorIndex,
-  WithdrawalAddress,
+  WithdrawalCredentials,
 } from "./TableComponents";
 import { FaCircleCheck, FaCircleMinus, FaCirclePlus } from "react-icons/fa6";
 
@@ -69,7 +69,7 @@ export const ValidatorRow = <T extends TableValidatorDetails>({
         );
 
       case "withdrawalAddress":
-        return <WithdrawalAddress validator={validator} />;
+        return <WithdrawalCredentials validator={validator} />;
 
       case "status":
         return (

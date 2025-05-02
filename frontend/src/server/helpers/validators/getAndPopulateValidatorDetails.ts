@@ -25,7 +25,6 @@ export const getAndPopulateValidatorDetails = async (
   address: string,
   networkId: SupportedNetworkIds,
 ): Promise<IResponse<ValidatorDetails[]>> => {
-  getLogger().info("hey");
   const bcValidatorsForWithdrawAddress = await getValidatorsForWithdrawAddress(
     address,
     networkId,
@@ -132,6 +131,7 @@ export const getAndPopulateValidatorDetails = async (
           ...targetValidator.pendingRequests,
           { type: "consolidation", amount: consolidation.amount },
         ],
+        pendingBalance: targetValidator.pendingBalance + consolidation.amount,
       });
     }
   }
@@ -196,6 +196,7 @@ const calculatePendingDepositsForValidators = async (
       publicKey,
       validatorIndex,
       pendingRequests,
+      pendingBalance,
     } of validatorDetails) {
       const pendingDeposits = groupedPendingDeposits[publicKey] ?? [];
 
@@ -205,6 +206,7 @@ const calculatePendingDepositsForValidators = async (
             ...pendingRequests,
             { type: "deposits", amount: pendingDeposit.amount },
           ],
+          pendingBalance: pendingBalance + pendingDeposit.amount,
         });
       }
     }
@@ -250,6 +252,7 @@ export const calculatePendingWithdrawalsForValidators = async (
       publicKey,
       validatorIndex,
       pendingRequests,
+      balance,
     } of validatorDetails) {
       const pendingWithdrawals =
         groupedPendingPartialWithdrawals[publicKey] ?? [];
@@ -260,6 +263,7 @@ export const calculatePendingWithdrawalsForValidators = async (
             ...pendingRequests,
             { type: "withdrawals", amount: pendingWithdrawal.amount },
           ],
+          balance: balance - pendingWithdrawal.amount,
         });
       }
     }
