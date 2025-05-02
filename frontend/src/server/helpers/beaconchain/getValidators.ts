@@ -34,6 +34,15 @@ export const getValidators = async (
 
         // if successful then we need to rewrite it to be an array
         if (response.success) {
+          // check if the response is an array
+          // this is returned when the validator is not found
+          if (Array.isArray(response.data)) {
+            return {
+              success: false,
+              error: "Validator not found",
+            };
+          }
+
           return { success: true, data: [response.data] };
         }
 

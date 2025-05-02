@@ -26,7 +26,7 @@ export const BCValidatorsResponseSchema = buildBeaconchainResponseSchema(
 );
 
 export const BCValidatorResponseSchema = buildBeaconchainResponseSchema(
-  BCValidatorsDataSchema,
+  z.union([BCValidatorsDataSchema, z.array(z.null()).length(0)]),
 );
 
 export type BCValidatorsResponse = z.infer<typeof BCValidatorsResponseSchema>;

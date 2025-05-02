@@ -45,6 +45,7 @@ export const ManuallyEnterValidator = ({
     data: validator, // typeof validator === "string" is true if theres an error
     isLoading: isLoadingValidator,
     isError: isErrorGettingValidator,
+    error: validatorError,
   } = api.validators.getValidatorDetails.useQuery(
     {
       searchTerm: searchTerm!,
@@ -122,9 +123,7 @@ export const ManuallyEnterValidator = ({
                 )}
 
                 {(isErrorGettingValidator || typeof validator === "string") && (
-                  <div className="text-red-500">
-                    Error loading validator data. Please try again.
-                  </div>
+                  <div className="text-red-500">{validatorError?.message}</div>
                 )}
 
                 {validator && typeof validator !== "string" && (
