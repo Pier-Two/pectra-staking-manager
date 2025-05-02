@@ -124,18 +124,22 @@ describe("processDeposits", { concurrent: false }, () => {
 
     mockedGetPendingDeposits.mockResolvedValueOnce({
       success: true,
-      data: [],
+      data: [
+        buildMockQNPendingDeposit({
+          pubkey: publicKey,
+          amount,
+        }),
+      ],
     });
 
     await processDeposits({ networkId: MAIN_CHAIN.id });
-    const deposits = await DepositModel.find({});
-    console.log(deposits);
 
     const updatedWithdrawal = await DepositModel.findOne({
       _id: firstMockDeposit._id,
     })!;
 
     expect(updatedWithdrawal!.status).eq(INACTIVE_STATUS);
+    expect(mockedSendEmailNotification).toHaveBeenCalledOnce();
 
     const updatedSecondWithdrawal = await DepositModel.findOne({
       _id: secondMockDeposit._id,
