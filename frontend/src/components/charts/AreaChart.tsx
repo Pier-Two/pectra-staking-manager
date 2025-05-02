@@ -83,7 +83,7 @@ export const AreaChartComponent: FC<IAreaChart> = ({ chart, isFullscreen }) => {
           top: 4,
           right: window.innerWidth < 700 ? 25 : 50,
           left: window.innerWidth < 700 ? 0 : 10,
-          bottom: isFullscreen ? 200 : -10,
+          bottom: isFullscreen ? 200 : -6,
         }}
         width={
           typeof window !== "undefined"
