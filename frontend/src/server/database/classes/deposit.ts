@@ -6,11 +6,16 @@ import {
 } from "pec/constants/chain";
 import { StoreDatabaseDepositType } from "pec/lib/api/schemas/deposit";
 
-// Interface for the deposit entry
-interface DepositEntry {
-  publicKey: string;
-  validatorIndex: number;
-  amount: number;
+// Define DepositEntry as a class
+class DepositEntry {
+  @prop({ required: true })
+  public publicKey!: string;
+
+  @prop({ required: true })
+  public validatorIndex!: number;
+
+  @prop({ required: true })
+  public amount!: number;
 }
 
 @modelOptions({
@@ -24,7 +29,7 @@ export class Deposit implements StoreDatabaseDepositType {
   @prop({ required: true, type: String })
   public status!: (typeof DatabaseDocumentStatuses)[number];
 
-  @prop({ required: true, type: () => [Object] })
+  @prop({ required: true, type: () => [DepositEntry] })
   public deposits!: DepositEntry[];
 
   @prop({ required: true })

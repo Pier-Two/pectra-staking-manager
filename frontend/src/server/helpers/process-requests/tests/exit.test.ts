@@ -56,7 +56,7 @@ describe("processExits", () => {
       ],
     });
 
-    await processExits(MAIN_CHAIN.id);
+    await processExits({ networkId: MAIN_CHAIN.id });
 
     const updatedExit = await ExitModel.findOne({
       validatorIndex,

@@ -1,9 +1,9 @@
 import { verifySignatureAppRouter } from "@upstash/qstash/nextjs";
 import { MAIN_CHAIN } from "pec/lib/constants/contracts";
-import { processPartialWithdrawals } from "pec/server/helpers/process-requests/withdrawal";
+import { processProvidedPartialWithdrawals } from "pec/server/helpers/process-requests/withdrawal";
 
 async function withdrawalHandler(_request: Request) {
-  const result = await processPartialWithdrawals(MAIN_CHAIN.id);
+  const result = await processProvidedPartialWithdrawals(MAIN_CHAIN.id);
   if (result.success) {
     return Response.json({
       success: true,

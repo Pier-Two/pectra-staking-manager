@@ -9,7 +9,7 @@ import {
   generateWithdrawalCredentials,
 } from "pec/server/__mocks__/validators";
 import { sendEmailNotification } from "pec/lib/services/emailService";
-import { TYPE_2_PREFIX } from "pec/constants/pectra";
+import { TYPE_1_PREFIX, TYPE_2_PREFIX } from "pec/constants/pectra";
 import { processValidatorUpgrades } from "../validatorUpgrade";
 
 vi.mock("pec/server/helpers/requests/beaconchain/getValidators", () => ({
@@ -60,11 +60,12 @@ describe("process validator upgrades", () => {
         buildMockBCValidatorsData({
           status: "active_exiting",
           validatorindex: unprocessValidatorUpgrade.validatorIndex,
+          withdrawalcredentials: generateWithdrawalCredentials(TYPE_1_PREFIX),
         }),
       ],
     });
 
-    await processValidatorUpgrades(MAIN_CHAIN.id);
+    await processValidatorUpgrades({ networkId: MAIN_CHAIN.id });
 
     const updatedValidatorUpgrade = await ValidatorUpgradeModel.findOne({
       validatorIndex,

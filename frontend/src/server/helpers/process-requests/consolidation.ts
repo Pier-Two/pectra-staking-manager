@@ -8,6 +8,70 @@ import { type BCValidatorDetails } from "pec/lib/api/schemas/beaconchain/validat
 import { type SupportedNetworkIds } from "pec/constants/chain";
 import { keyBy } from "lodash";
 
+interface ProcessConsolidationsParams {
+  networkId: SupportedNetworkIds;
+  consolidations?: Consolidation[];
+  bcValidatorDetails?: BCValidatorDetails[];
+}
+
+export const processConsolidations = async ({
+  networkId,
+
+  ...overrides
+}: ProcessConsolidationsParams): Promise<IResponse> => {
+  const consolidations =
+    overrides?.consolidations ??
+    (await ConsolidationModel.find({ status: ACTIVE_STATUS }));
+
+  let bcValidatorDetails = overrides?.bcValidatorDetails;
+
+  if (!bcValidatorDetails) {
+    const getValidatorsResponse = await getValidators(
+      consolidations.map((consolidation) => consolidation.sourceValidatorIndex),
+      networkId,
+    );
+
+    if (!getValidatorsResponse.success) return getValidatorsResponse;
+
+    bcValidatorDetails = getValidatorsResponse.data;
+  }
+
+  return processProvidedConsolidations(consolidations, bcValidatorDetails);
+};
+
+const processProvidedConsolidations = async (
+  consolidations: Consolidation[],
+  bcValidatorDetails: BCValidatorDetails[],
+): Promise<IResponse> => {
+  const keyedBCValidatorDetails = keyBy(
+    bcValidatorDetails,
+    (v) => v.validatorindex,
+  );
+
+  for (const consolidation of consolidations) {
+    const bcValidatorDetails =
+      keyedBCValidatorDetails[consolidation.sourceValidatorIndex];
+
+    if (!bcValidatorDetails) {
+      console.error(
+        `No data found when processing consolidations for validator index ${consolidation.sourceValidatorIndex}`,
+      );
+
+      continue;
+    }
+
+    await checkConsolidationProcessedAndUpdate(
+      consolidation,
+      bcValidatorDetails,
+    );
+  }
+
+  return {
+    success: true,
+    data: null,
+  };
+};
+
 export const checkConsolidationProcessedAndUpdate = async (
   dbConsolidation: Consolidation,
   bcValidatorDetails: BCValidatorDetails,
@@ -32,50 +96,4 @@ export const checkConsolidationProcessedAndUpdate = async (
   }
 
   return false;
-};
-
-export const processConsolidations = async (
-  networkId: SupportedNetworkIds,
-): Promise<IResponse> => {
-  const consolidations = await ConsolidationModel.find({
-    status: ACTIVE_STATUS,
-  });
-
-  if (!consolidations)
-    return {
-      success: false,
-      error: "Consolidation query failed to execute.",
-    };
-
-  const response = await getValidators(
-    consolidations.map((consolidation) => consolidation.sourceValidatorIndex),
-    networkId,
-  );
-
-  if (!response.success) return response;
-
-  const keyedBCValidatorDetails = keyBy(response.data, (v) => v.validatorindex);
-
-  for (const consolidation of consolidations) {
-    const bcValidatorDetails =
-      keyedBCValidatorDetails[consolidation.sourceValidatorIndex];
-
-    if (!bcValidatorDetails) {
-      console.error(
-        `No data found when processing consolidations for validator index ${consolidation.sourceValidatorIndex}`,
-      );
-
-      continue;
-    }
-
-    await checkConsolidationProcessedAndUpdate(
-      consolidation,
-      bcValidatorDetails,
-    );
-  }
-
-  return {
-    success: true,
-    data: null,
-  };
 };

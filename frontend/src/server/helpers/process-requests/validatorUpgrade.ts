@@ -10,6 +10,79 @@ import { keyBy } from "lodash";
 import { BCValidatorDetails } from "pec/lib/api/schemas/beaconchain/validator";
 import { sendEmailNotification } from "pec/lib/services/emailService";
 
+interface ProcessAllValidatorUpgradesParams {
+  networkId: SupportedNetworkIds;
+  validatorUpgrades?: ValidatorUpgrade[];
+  bcValidatorDetails?: BCValidatorDetails[];
+}
+
+export const processValidatorUpgrades = async ({
+  networkId,
+
+  ...overrides
+}: ProcessAllValidatorUpgradesParams): Promise<IResponse> => {
+  const validatorUpgrades =
+    overrides?.validatorUpgrades ??
+    (await ValidatorUpgradeModel.find({
+      status: ACTIVE_STATUS,
+    }));
+
+  if (validatorUpgrades.length === 0) return { success: true, data: null };
+
+  let bcValidatorDetails = overrides?.bcValidatorDetails;
+
+  if (!bcValidatorDetails) {
+    const getValidatorsResponse = await getValidators(
+      validatorUpgrades.map(
+        (validatorUpgrade) => validatorUpgrade.validatorIndex,
+      ),
+      networkId,
+    );
+
+    if (!getValidatorsResponse.success) return getValidatorsResponse;
+
+    bcValidatorDetails = getValidatorsResponse.data;
+  }
+
+  return processProvidedValidatorUpgrades(
+    validatorUpgrades,
+    bcValidatorDetails,
+  );
+};
+
+const processProvidedValidatorUpgrades = async (
+  validatorUpgrades: ValidatorUpgrade[],
+  bcValidatorDetails: BCValidatorDetails[],
+): Promise<IResponse> => {
+  const keyedBCValidatorDetails = keyBy(
+    bcValidatorDetails,
+    (v) => v.validatorindex,
+  );
+
+  for (const validatorUpgrade of validatorUpgrades) {
+    const bcValidatorDetails =
+      keyedBCValidatorDetails[validatorUpgrade.validatorIndex];
+
+    if (!bcValidatorDetails) {
+      console.error(
+        `No data found for validator index when processing exits ${validatorUpgrade.validatorIndex}`,
+      );
+
+      continue;
+    }
+
+    await checkValidatorUpgradeProcessedAndUpdate(
+      validatorUpgrade,
+      bcValidatorDetails,
+    );
+  }
+
+  return {
+    success: true,
+    data: null,
+  };
+};
+
 export const checkValidatorUpgradeProcessedAndUpdate = async (
   dbValidatorUpgrade: ValidatorUpgrade,
   bcValidatorDetails: BCValidatorDetails,
@@ -37,46 +110,4 @@ export const checkValidatorUpgradeProcessedAndUpdate = async (
   }
 
   return false;
-};
-
-export const processValidatorUpgrades = async (
-  networkId: SupportedNetworkIds,
-): Promise<IResponse> => {
-  const validatorUpgrades = await ValidatorUpgradeModel.find({
-    status: ACTIVE_STATUS,
-  });
-
-  const response = await getValidators(
-    validatorUpgrades.map(
-      (validatorUpgrade) => validatorUpgrade.validatorIndex,
-    ),
-    networkId,
-  );
-
-  if (!response.success) return response;
-
-  const keyedBCValidatorDetails = keyBy(response.data, (v) => v.validatorindex);
-
-  for (const validatorUpgrade of validatorUpgrades) {
-    const bcValidatorDetails =
-      keyedBCValidatorDetails[validatorUpgrade.validatorIndex];
-
-    if (!bcValidatorDetails) {
-      console.error(
-        `No data found for validator index when processing exits ${validatorUpgrade.validatorIndex}`,
-      );
-
-      continue;
-    }
-
-    await checkValidatorUpgradeProcessedAndUpdate(
-      validatorUpgrade,
-      bcValidatorDetails,
-    );
-  }
-
-  return {
-    success: true,
-    data: null,
-  };
 };

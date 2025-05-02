@@ -1,55 +1,68 @@
 import { WithdrawalModel } from "pec/server/database/models";
 import { ACTIVE_STATUS, INACTIVE_STATUS } from "pec/types/app";
 import type { IResponse } from "pec/types/response";
-import { entries, groupBy, keyBy, range } from "lodash";
+import { entries, groupBy } from "lodash";
 import { SupportedNetworkIds } from "pec/constants/chain";
 import { getPendingPartialWithdrawals } from "../requests/quicknode/getPendingPartialWithdrawals";
 import { Withdrawal } from "pec/server/database/classes/withdrawal";
 import { sendEmailNotification } from "pec/lib/services/emailService";
+import { getMinimumProcessDelay } from "./common";
+import { QNPendingPartialWithdrawalType } from "pec/lib/api/schemas/quicknode/pendingPartialWithdrawals";
 
 interface ProcessPartialWithdrawalsParams {
   networkId: SupportedNetworkIds;
   withdrawals?: Withdrawal[];
+  qnPendingPartialWithdrawals?: QNPendingPartialWithdrawalType[];
 }
 
-// 10 minutes
-const MINIMUM_PROCESS_DELAY_MS = 10 * 60 * 1000;
+export const providedPartialWithdrawals = async ({
+  networkId,
 
-const getMinimumProcessDelay = () =>
-  new Date(Date.now() - MINIMUM_PROCESS_DELAY_MS);
+  ...overrides
+}: ProcessPartialWithdrawalsParams): Promise<IResponse> => {
+  const withdrawals =
+    overrides?.withdrawals ??
+    (await WithdrawalModel.find({
+      status: ACTIVE_STATUS,
+      createdAt: { $lt: getMinimumProcessDelay() },
+    }).sort({ createdAt: -1 }));
+
+  let allWithdrawals = overrides.qnPendingPartialWithdrawals;
+
+  if (!allWithdrawals) {
+    const response = await getPendingPartialWithdrawals(networkId);
+
+    if (!response.success) return response;
+
+    allWithdrawals = response.data;
+  }
+
+  return processProvidedPartialWithdrawals(withdrawals, allWithdrawals);
+};
 
 // Check if the provided partial withdrawals isn't in the pending withdrawals
 // Because we can only use the validator index and amount to determine if the withdrawal is pending, we instead group withdrawals by this key and compare the counts.
 // If the amount of pending is less than the amount of stored withdrawals, then the difference is the amount of withdrawals that have been processed. We then mark withdrawals as processed starting from the oldest.
 //
 //
-// @dev The provided withdrawals override param MUST be ordered by date descending and have filtered out documents that have been created before the MINIMUM_PROCESS_DELAY
-export const processPartialWithdrawals = async ({
-  networkId,
-  withdrawals: passedWithdrawals,
-}: ProcessPartialWithdrawalsParams): Promise<IResponse> => {
-  // TODO: Can we pre-filter these by timestamp
-  const withdrawals =
-    passedWithdrawals ??
-    (await WithdrawalModel.find({
-      status: ACTIVE_STATUS,
-      createdAt: { $lt: getMinimumProcessDelay() },
-    }).sort({ createdAt: -1 }));
-
-  const allWithdrawals = await getPendingPartialWithdrawals(networkId);
-
-  if (!allWithdrawals.success) return allWithdrawals;
-
-  const groupedPendingWithdrawals = groupBy(allWithdrawals.data, (withdrawal) =>
-    getWithdrawalKey(withdrawal.validator_index, withdrawal.amount),
+// @param withdrawals Subset of withdrawals that we only check against. The provided withdrawals override param MUST be ordered by date descending and have filtered out documents that have been created before the MINIMUM_PROCESS_DELAY
+// @param allPartialWithdrawals Support passing an override array, when we process a user's partial withdrawals we fetch this data earlier
+export const processProvidedPartialWithdrawals = async (
+  dbWithdrawals: Withdrawal[],
+  qnPendingPartialWithdrawals: QNPendingPartialWithdrawalType[],
+): Promise<IResponse> => {
+  const groupedQNPendingWithdrawals = groupBy(
+    qnPendingPartialWithdrawals,
+    (withdrawal) =>
+      getWithdrawalKey(withdrawal.validator_index, withdrawal.amount),
   );
 
-  const groupedWithdrawals = groupBy(withdrawals, (withdrawal) =>
+  const groupedDBWithdrawals = groupBy(dbWithdrawals, (withdrawal) =>
     getWithdrawalKey(withdrawal.validatorIndex, withdrawal.amount),
   );
 
-  for (const [key, storedWithdrawals] of entries(groupedWithdrawals)) {
-    const pendingWithdrawals = groupedPendingWithdrawals[key];
+  for (const [key, storedWithdrawals] of entries(groupedDBWithdrawals)) {
+    const pendingWithdrawals = groupedQNPendingWithdrawals[key];
 
     const pendingCount = pendingWithdrawals?.length ?? 0;
     const storedCount = storedWithdrawals.length;

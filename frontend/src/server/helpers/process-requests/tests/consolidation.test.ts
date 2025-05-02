@@ -3,10 +3,10 @@ import { ConsolidationModel } from "pec/server/database/models";
 import { buildMockConsolidation } from "pec/server/__mocks__/database-models";
 import { ACTIVE_STATUS, INACTIVE_STATUS } from "pec/types/app";
 import { getValidators } from "pec/server/helpers/requests/beaconchain/getValidators";
-import { processConsolidations } from "../consolidation";
 import { MAIN_CHAIN } from "pec/lib/constants/contracts";
 import { buildMockBCValidatorsData } from "pec/server/__mocks__/validators";
 import { sendEmailNotification } from "pec/lib/services/emailService";
+import { processConsolidations } from "../consolidation";
 
 vi.mock("pec/server/helpers/requests/beaconchain/getValidators", () => ({
   getValidators: vi.fn(),
@@ -60,7 +60,7 @@ describe("processConsolidations", () => {
       ],
     });
 
-    await processConsolidations(MAIN_CHAIN.id);
+    await processConsolidations({ networkId: MAIN_CHAIN.id });
 
     const updatedConsolidation = await ConsolidationModel.findOne({
       sourceValidatorIndex,

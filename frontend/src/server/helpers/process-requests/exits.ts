@@ -8,7 +8,64 @@ import { SupportedNetworkIds } from "pec/constants/chain";
 import { IResponse } from "pec/types/response";
 import { keyBy } from "lodash";
 
-export const checkExitProcessedAndUpdate = async (
+interface ProcessAllExitsParams {
+  networkId: SupportedNetworkIds;
+  exits?: Exit[];
+  bcValidatorDetails?: BCValidatorDetails[];
+}
+
+export const processExits = async ({
+  networkId,
+
+  ...overrides
+}: ProcessAllExitsParams): Promise<IResponse> => {
+  const exits =
+    overrides?.exits ?? (await ExitModel.find({ status: ACTIVE_STATUS }));
+
+  let bcValidatorDetails = overrides?.bcValidatorDetails;
+
+  if (!bcValidatorDetails) {
+    const getValidatorsResponse = await getValidators(
+      exits.map((exit) => exit.validatorIndex),
+      networkId,
+    );
+
+    if (!getValidatorsResponse.success) return getValidatorsResponse;
+
+    bcValidatorDetails = getValidatorsResponse.data;
+  }
+
+  return processProvidedExits(exits, bcValidatorDetails);
+};
+
+const processProvidedExits = async (
+  exits: Exit[],
+  bcValidatorDetails: BCValidatorDetails[],
+): Promise<IResponse> => {
+  const keyedBCValidatorDetails = keyBy(
+    bcValidatorDetails,
+    (v) => v.validatorindex,
+  );
+
+  for (const exit of exits) {
+    const bcValidatorDetails = keyedBCValidatorDetails[exit.validatorIndex];
+
+    if (!bcValidatorDetails) {
+      console.error(`No data found for validator index ${exit.validatorIndex}`);
+
+      continue;
+    }
+
+    await checkExitProcessedAndUpdate(exit, bcValidatorDetails);
+  }
+
+  return {
+    success: true,
+    data: null,
+  };
+};
+
+const checkExitProcessedAndUpdate = async (
   dbExit: Exit,
   bcValidatorDetails: BCValidatorDetails,
 ): Promise<boolean> => {
@@ -31,53 +88,4 @@ export const checkExitProcessedAndUpdate = async (
   }
 
   return false;
-};
-
-interface ProcessExitsParams {
-  networkId: SupportedNetworkIds;
-  exits?: Exit[];
-  bcValidatorDetails?: BCValidatorDetails[];
-}
-
-export const processExits = async ({
-  networkId,
-
-  ...overrides
-}: ProcessExitsParams): Promise<IResponse> => {
-  const exits =
-    overrides.exits ?? (await ExitModel.find({ status: ACTIVE_STATUS }));
-
-  let bcValidatorDetails = overrides.bcValidatorDetails;
-  if (!bcValidatorDetails) {
-    const response = await getValidators(
-      exits.map((exit) => exit.validatorIndex),
-      networkId,
-    );
-
-    if (!response.success) return response;
-
-    bcValidatorDetails = response.data;
-  }
-
-  const keyedBCValidatorDetails = keyBy(
-    bcValidatorDetails,
-    (v) => v.validatorindex,
-  );
-
-  for (const exit of exits) {
-    const bcValidatorDetails = keyedBCValidatorDetails[exit.validatorIndex];
-
-    if (!bcValidatorDetails) {
-      console.error(`No data found for validator index ${exit.validatorIndex}`);
-
-      continue;
-    }
-
-    await checkExitProcessedAndUpdate(exit, bcValidatorDetails);
-  }
-
-  return {
-    success: true,
-    data: null,
-  };
 };
