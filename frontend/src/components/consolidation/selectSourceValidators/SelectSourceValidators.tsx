@@ -92,10 +92,14 @@ export const SelectSourceValidators = ({
           }
         }}
       >
-        <TabsList className="grid w-full grid-cols-2 rounded-md bg-indigo-800 bg-opacity-10 text-piertwoDark-text dark:bg-gray-800">
-          <TabsListItem value="maxConsolidate">Max consolidate</TabsListItem>
+        <TabsList className="w-full">
+          <TabsTrigger value="maxConsolidate" className="flex-1">
+            Max consolidate
+          </TabsTrigger>
 
-          <TabsListItem value="manuallySelect">Manually select</TabsListItem>
+          <TabsTrigger value="manuallySelect" className="flex-1">
+            Manually select
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="maxConsolidate">
@@ -132,28 +136,20 @@ export const SelectSourceValidators = ({
         max
       </div>
 
+      {newDestinationBalance > 2048 && (
+        <div className="w-full text-center text-sm text-red-500">
+          The new destination balance is greater than the maximum allowed
+          balance.
+          <br /> Please modify your selection before proceeding.
+        </div>
+      )}
+
       <PrimaryButton
         className="w-full"
         label="Next"
         onClick={goToSummary}
-        disabled={sourceValidators.length === 0}
+        disabled={sourceValidators.length === 0 || newDestinationBalance > 2048}
       />
     </div>
-  );
-};
-
-interface TabsListItemProps {
-  value: string;
-  children: React.ReactNode;
-}
-
-const TabsListItem = ({ value, children }: TabsListItemProps) => {
-  return (
-    <TabsTrigger
-      className="rounded-md font-semibold text-piertwo-text data-[state=active]:bg-white data-[state=active]:text-piertwoDark-text data-[state=active]:dark:bg-black"
-      value={value}
-    >
-      {children}
-    </TabsTrigger>
   );
 };

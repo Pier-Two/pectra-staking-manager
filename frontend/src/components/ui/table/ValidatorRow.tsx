@@ -187,7 +187,7 @@ export const ValidatorRow = <T extends TableValidatorDetails>({
                 </div>
               )}
               {renderCellContent(header)}
-              {endContent && (
+              {endContent && isLast && (
                 <div className="ml-auto flex">{endContent(validator)}</div>
               )}
             </div>

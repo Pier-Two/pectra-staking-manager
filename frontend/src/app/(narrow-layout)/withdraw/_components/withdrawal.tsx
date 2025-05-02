@@ -17,8 +17,7 @@ import { useValidators } from "pec/hooks/useValidators";
 import { useWalletAddress } from "pec/hooks/useWallet";
 import { useSubmitWithdraw } from "pec/hooks/useWithdraw";
 import { formatAddressToShortenedString } from "pec/lib/utils/address";
-import { type FC, useState } from "react";
-import { useFieldArray, useForm } from "react-hook-form";
+import { FormProvider, useFieldArray, useForm } from "react-hook-form";
 import WithdrawalLoading from "./withdraw-loading";
 import {
   FormWithdrawalSchema,
@@ -29,12 +28,17 @@ import {
   StageAnimationStep,
 } from "pec/components/stage-animation";
 
-const Withdrawal: FC = () => {
+const Withdrawal = () => {
   const walletAddress = useWalletAddress();
-  const [showEmail, setShowEmail] = useState(false);
   const { activeType2Validators, isSuccess } = useValidators();
 
   const { submitWithdrawals, stage, setStage } = useSubmitWithdraw();
+
+  const form = useForm<FormWithdrawalType>({
+    resolver: zodResolver(FormWithdrawalSchema),
+    defaultValues: { withdrawals: [], email: "" },
+    mode: "onChange",
+  });
 
   const {
     handleSubmit,
@@ -43,23 +47,18 @@ const Withdrawal: FC = () => {
     control,
     watch,
     register,
-    formState: { isValid, errors },
-  } = useForm<FormWithdrawalType>({
-    resolver: zodResolver(FormWithdrawalSchema),
-    defaultValues: { withdrawals: [], email: "" },
-    mode: "onChange",
-  });
+    formState: { errors },
+  } = form;
 
   const { remove, append } = useFieldArray({
     control,
     name: "withdrawals",
   });
 
-  const [withdrawals, watchedEmail] = watch(["withdrawals", "email"]);
-  const email = watchedEmail ?? "";
+  const withdrawals = watch("withdrawals");
   const withdrawalTotal = sumBy(withdrawals, (withdrawal) => withdrawal.amount);
-  const disabled =
-    isValid && withdrawalTotal > 0 && (showEmail ? email.length > 0 : true);
+
+  const disabled = withdrawalTotal > 0;
 
   if (!isSuccess) return <WithdrawalLoading />;
 
@@ -91,7 +90,7 @@ const Withdrawal: FC = () => {
   };
 
   return (
-    <>
+    <FormProvider {...form}>
       <div className="flex flex-col gap-5 pt-8">
         <div className="flex flex-row gap-3 pl-4">
           <Image
@@ -130,15 +129,6 @@ const Withdrawal: FC = () => {
             <Email
               cardText="Add your email to receive an email when your withdrawals are complete."
               cardTitle="Notify me when complete"
-              summaryEmail={email}
-              setSummaryEmail={(email) =>
-                setValue("email", email, {
-                  shouldValidate: true,
-                })
-              }
-              errors={errors}
-              showEmail={showEmail}
-              setShowEmail={setShowEmail}
             />
             <ValidatorHeader
               selectedCount={withdrawals.length}
@@ -182,7 +172,7 @@ const Withdrawal: FC = () => {
           </StageAnimationStep>
         )}
       </StageAnimationParent>
-    </>
+    </FormProvider>
   );
 };
 

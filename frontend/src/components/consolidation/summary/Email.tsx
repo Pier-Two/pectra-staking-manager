@@ -4,30 +4,43 @@ import { AnimatePresence, motion } from "framer-motion";
 import { HiMail } from "react-icons/hi";
 import { Input } from "pec/components/ui/input";
 import { Switch } from "pec/components/ui/switch";
-import { type FormDepositType } from "pec/lib/api/schemas/deposit";
 import { type FC } from "react";
-import { type FieldErrors } from "react-hook-form";
+import { Controller, useFormContext } from "react-hook-form";
+import { z } from "zod";
 
 export interface IConsolidationEmail {
   cardText: string;
   cardTitle: string;
-  summaryEmail: string;
-  setSummaryEmail: (email: string) => void;
-  errors?: FieldErrors<FormDepositType>;
-  showEmail: boolean;
-  setShowEmail: (showEmail: boolean) => void;
 }
 
-export const Email: FC<IConsolidationEmail> = (props) => {
+export const emailSchema = z.union([
+  z.object({
+    showEmail: z.literal(false),
+    email: z.string().optional().or(z.literal("")),
+  }),
+  z.object({
+    showEmail: z.literal(true),
+    email: z.string().email("Please enter a valid email address"),
+  }),
+]);
+
+export type EmailFormData = z.infer<typeof emailSchema>;
+
+/**
+ * This component inherits the form from the form context.
+ * The parent form's schema should have `.and(emailSchema)` so that
+ * the types and the validation are correct and should use the FormProvider
+ * component to share the form context.
+ */
+export const Email: FC<IConsolidationEmail> = ({ cardText, cardTitle }) => {
   const {
-    cardText,
-    cardTitle,
-    summaryEmail,
-    setSummaryEmail,
-    errors,
-    showEmail,
-    setShowEmail,
-  } = props;
+    register,
+    formState: { errors },
+    watch,
+    control,
+  } = useFormContext<EmailFormData>();
+
+  const showEmail = watch("showEmail");
 
   return (
     <motion.div
@@ -46,10 +59,12 @@ export const Email: FC<IConsolidationEmail> = (props) => {
           </div>
         </div>
 
-        <Switch
-          checked={showEmail}
-          onCheckedChange={() => setShowEmail(!showEmail)}
-          className="relative items-center rounded-full transition-colors before:absolute before:h-5 before:w-5 before:rounded-full before:bg-white before:transition-transform before:duration-300 data-[state=checked]:bg-indigo-500 data-[state=unchecked]:bg-border data-[state=checked]:before:translate-x-5 data-[state=unchecked]:before:translate-x-0 data-[state=unchecked]:dark:bg-gray-600"
+        <Controller
+          control={control}
+          name="showEmail"
+          render={({ field: { onChange, value } }) => (
+            <Switch checked={value} onCheckedChange={onChange} />
+          )}
         />
       </div>
 
@@ -66,8 +81,7 @@ export const Email: FC<IConsolidationEmail> = (props) => {
               <Input
                 className="mt-2 rounded-xl border border-indigo-200 bg-white p-4 dark:border-gray-800 dark:bg-black"
                 placeholder="Email"
-                value={summaryEmail || ""}
-                onChange={(e) => setSummaryEmail(e.target.value)}
+                {...register("email")}
                 autoFocusOn={showEmail}
               />
 
@@ -77,7 +91,7 @@ export const Email: FC<IConsolidationEmail> = (props) => {
                 animate={{ opacity: errors?.email ? 1 : 0 }}
                 transition={{ duration: 0.2 }}
               >
-                {errors?.email && "Invalid email address"}
+                {errors?.email?.message}
               </motion.div>
             </div>
           </motion.div>

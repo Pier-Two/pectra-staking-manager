@@ -13,8 +13,8 @@ export const routeHandler = async <T>(
 
       throw new TRPCError({
         code: "INTERNAL_SERVER_ERROR",
-        message: "Failed to fetch validators",
-        cause: response.error,
+        message: response.error ?? "Failed to fetch validators",
+        cause: response.error ?? "Failed to fetch validators",
       });
     }
 

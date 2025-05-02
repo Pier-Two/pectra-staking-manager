@@ -9,7 +9,7 @@ import { useSubmitConsolidate } from "./use-consolidation";
 import { getRequiredConsolidationTransactions } from "pec/lib/utils/validators/consolidate";
 import type { TransactionStatus } from "pec/types/withdraw";
 import { trackEvent } from "pec/helpers/trackEvent";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 interface UseConsolidate {
   activeValidators: ValidatorDetails[];
@@ -21,6 +21,8 @@ export const useNewConsolidate = ({ activeValidators }: UseConsolidate) => {
   const [stage, setStage] = useImmer<ConsolidationWorkflowStages>({
     stage: "destination",
   });
+
+  const [email, setEmail] = useState("");
 
   /**
    * Watch for changes in the stage and track events
@@ -154,12 +156,11 @@ export const useNewConsolidate = ({ activeValidators }: UseConsolidate) => {
 
     setStage(updatedStage);
 
-    // TODO: EMAIL
     const result = await consolidate(
       updatedStage.destinationValidator,
       updatedStage.transactions.transactions,
       updateTransactionStatus,
-      "",
+      email,
     );
 
     if (!result) goBack();
@@ -193,5 +194,7 @@ export const useNewConsolidate = ({ activeValidators }: UseConsolidate) => {
     goBack,
     reset,
     getAvailableSourceValidators,
+    email,
+    setEmail,
   };
 };

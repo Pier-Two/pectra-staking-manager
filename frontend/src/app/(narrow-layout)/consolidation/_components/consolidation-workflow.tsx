@@ -30,6 +30,8 @@ const ConsolidationWorkflow = () => {
     goToSelectSourceValidators,
     getAvailableSourceValidators,
     reset,
+    email,
+    setEmail,
   } = useNewConsolidate({
     activeValidators,
   });
@@ -92,6 +94,8 @@ const ConsolidationWorkflow = () => {
               goToSubmit={goToSubmit}
               goBack={goBack}
               reset={reset}
+              email={email}
+              setEmail={setEmail}
             />
           </StageAnimationStep>
         )}
