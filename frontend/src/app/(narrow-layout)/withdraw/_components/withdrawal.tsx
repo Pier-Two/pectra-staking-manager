@@ -36,7 +36,7 @@ const Withdrawal = () => {
 
   const form = useForm<FormWithdrawalType>({
     resolver: zodResolver(FormWithdrawalSchema),
-    defaultValues: { withdrawals: [], email: "" },
+    defaultValues: { withdrawals: [], email: "", showEmail: false },
     mode: "onChange",
   });
 
@@ -122,28 +122,30 @@ const Withdrawal = () => {
       <StageAnimationParent
         stage={stage.type}
         stageOrder={["data-capture", "sign-submit-finalise"]}
-        stepClassName="flex flex-col gap-5 pt-8"
+        stepClassName="flex flex-col gap-5"
       >
         {stage.type !== "sign-submit-finalise" && (
-          <StageAnimationStep key="data-capture">
+          <StageAnimationStep key="data-capture" className="gap-8">
             <Email
               cardText="Add your email to receive an email when your withdrawals are complete."
               cardTitle="Notify me when complete"
             />
-            <ValidatorHeader
-              selectedCount={withdrawals.length}
-              totalCount={activeType2Validators.length}
-              onClear={handleResetWithdrawal}
-            />
+            <div className="flex flex-col gap-y-4">
+              <ValidatorHeader
+                selectedCount={withdrawals.length}
+                totalCount={activeType2Validators.length}
+                onClear={handleResetWithdrawal}
+              />
 
-            <WithdrawalValidatorTable
-              validators={activeType2Validators}
-              withdrawals={withdrawals}
-              addWithdrawal={append}
-              removeWithdrawal={remove}
-              register={register}
-              errors={errors}
-            />
+              <WithdrawalValidatorTable
+                validators={activeType2Validators}
+                withdrawals={withdrawals}
+                addWithdrawal={append}
+                removeWithdrawal={remove}
+                register={register}
+                errors={errors}
+              />
+            </div>
           </StageAnimationStep>
         )}
         {stage.type === "sign-submit-finalise" && (

@@ -74,7 +74,7 @@ export const WithdrawalInformation = ({
 
   return (
     <div className="flex w-full flex-col gap-4 rounded-2xl border border-border bg-white p-4 dark:border-gray-800 dark:bg-black">
-      <div className="flex w-full flex-col items-center justify-between gap-4 md:flex-row">
+      <div className="flex w-full flex-col gap-4">
         <div className="flex flex-wrap items-center gap-10">
           {distributionStats.map((stat, index) => (
             <div key={stat.label} className="flex items-center">
@@ -110,7 +110,7 @@ export const WithdrawalInformation = ({
           ))}
         </div>
 
-        <div className="px-6">
+        <div>
           {(isSigning || isSubmitting || isPending) &&
             !allTransactionsFinalised && (
               <div className="flex flex-row items-center gap-2">
@@ -135,18 +135,19 @@ export const WithdrawalInformation = ({
             </>
           )}
           {stage.type === "data-capture" && (
-            <div className="relative flex flex-row items-center gap-2 md:gap-4">
-              <div
-                className={cn(
-                  "transition-all duration-500 ease-in-out",
-                  validatorsSelected !== availableValidators
-                    ? "translate-x-0 opacity-100"
-                    : "pointer-events-none -translate-x-8 opacity-0",
-                )}
-              >
+            <div className="relative flex flex-col gap-2">
+              <div className="flex flex-row gap-2">
                 <SecondaryButton
-                  className="border-border hover:bg-indigo-100/30 dark:border-gray-800"
-                  label="Max"
+                  className="flex-1"
+                  label="Max Partial Withdrawal"
+                  disabled={false}
+                  onClick={() => {
+                    handleMaxAllocation();
+                  }}
+                />
+                <SecondaryButton
+                  className="flex-1 text-red-500 hover:text-red-500"
+                  label="Max Full Exit"
                   disabled={false}
                   onClick={() => {
                     handleMaxAllocation();
@@ -155,11 +156,6 @@ export const WithdrawalInformation = ({
               </div>
 
               <PrimaryButton
-                className={cn(
-                  "w-60 transition-all duration-500 ease-in-out",
-                  validatorsSelected === availableValidators &&
-                    "mr-16 w-64 md:mr-4",
-                )}
                 label={buttonText}
                 disabled={!disabled}
                 onClick={onSubmit}
