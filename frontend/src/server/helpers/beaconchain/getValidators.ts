@@ -46,7 +46,7 @@ export const getValidators = async (
           return { success: true, data: [response.data] };
         }
 
-        // otherwise return the error (should this be thrown?)
+        // otherwise return the error
         return response;
       }
 
