@@ -21,6 +21,7 @@ export interface IConnectedAddress {
 export interface IDetectedValidators {
   cardTitle: string;
   validators: ValidatorDetails[];
+  layoutId?: string;
 }
 
 export interface ISourceValidatorCard {

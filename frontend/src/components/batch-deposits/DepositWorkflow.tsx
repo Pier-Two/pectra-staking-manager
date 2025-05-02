@@ -26,6 +26,7 @@ import { DistributionInformation } from "./distribution/DistributionInformation"
 import { DistributionMethod } from "./distribution/DistributionMethod";
 import { SignatureDetails } from "./SignatureDetails";
 import { SelectValidators } from "./validators/SelectValidators";
+import { StageAnimationStep, StageAnimationParent } from "../stage-animation";
 
 export interface IDepositWorkflowProps {
   validators: ValidatorDetails[];
@@ -172,92 +173,102 @@ export const DepositWorkflow = ({
     <div className="flex w-full flex-col gap-y-4">
       <FormProvider {...form}>
         <div className="space-y-8">
-          {stage.type === "data-capture" && (
-            <>
-              {balance === 0 ? (
-                <SignatureDetails
-                  title="Insufficient balance"
-                  text="Please top up your wallet with ETH before submitting deposits."
-                />
-              ) : (
-                <>
-                  <DistributionMethod
-                    submitButtonDisabled={submitButtonDisabled}
-                    errors={errors}
-                    register={register}
-                    distributionMethod={watchedDistributionMethod}
-                    onDistributionMethodChange={handleDistributionMethodChange}
-                    onSubmit={handleSubmit(onSubmit)}
-                    resetBatchDeposit={handleResetBatchDeposit}
-                    numDeposits={watchedDeposits.length}
-                    stage={stage}
-                    totalAllocated={totalAllocated}
-                    totalToDistribute={totalToDistribute}
-                    walletBalance={balance}
+          <StageAnimationParent
+            stage={stage.type}
+            stageOrder={["data-capture", "sign-submit"]}
+            stepClassName="flex flex-col gap-y-8"
+          >
+            {stage.type === "data-capture" && (
+              <StageAnimationStep key="data-capture">
+                {balance === 0 ? (
+                  <SignatureDetails
+                    title="Insufficient balance"
+                    text="Please top up your wallet with ETH before submitting deposits."
                   />
-
-                  <Email
-                    cardText="Add your email to receive an email when your deposits are complete."
-                    cardTitle="Notify me when complete"
-                  />
-
-                  {(watchedDistributionMethod === EDistributionMethod.MANUAL ||
-                    (watchedDistributionMethod === EDistributionMethod.SPLIT &&
-                      totalToDistribute > 0)) && (
-                    <SelectValidators
+                ) : (
+                  <>
+                    <DistributionMethod
+                      submitButtonDisabled={submitButtonDisabled}
                       errors={errors}
                       register={register}
-                      clearSelectedValidators={handleClearValidators}
                       distributionMethod={watchedDistributionMethod}
-                      handleValidatorSelect={handleValidatorSelect}
+                      onDistributionMethodChange={
+                        handleDistributionMethodChange
+                      }
+                      onSubmit={handleSubmit(onSubmit)}
+                      resetBatchDeposit={handleResetBatchDeposit}
+                      numDeposits={watchedDeposits.length}
+                      stage={stage}
+                      totalAllocated={totalAllocated}
                       totalToDistribute={totalToDistribute}
-                      deposits={watchedDeposits}
-                      validators={validators}
-                      depositExceedsRemaining={depositExceedsRemaining}
+                      walletBalance={balance}
                     />
-                  )}
-                </>
-              )}
-            </>
-          )}
 
-          {stage.type === "sign-submit" && (
-            <>
-              <DistributionInformation
-                resetBatchDeposit={reset}
-                stage={stage}
-                totalAllocated={totalAllocated}
-                totalToDistribute={totalToDistribute}
-                numDeposits={watchedDeposits.length}
-              />
-              <div className="text-md font-670">Deposits</div>
-              <ValidatorTable
-                headers={SUBMITTING_DEPOSIT_COLUMN_HEADERS}
-                data={watchedDeposits.map(
-                  (w): DepositTableValidatorDetails => ({
-                    ...w.validator,
-                    depositAmount: w.amount,
-                  }),
+                    <Email
+                      cardText="Add your email to receive an email when your deposits are complete."
+                      cardTitle="Notify me when complete"
+                    />
+
+                    {(watchedDistributionMethod ===
+                      EDistributionMethod.MANUAL ||
+                      (watchedDistributionMethod ===
+                        EDistributionMethod.SPLIT &&
+                        totalToDistribute > 0)) && (
+                      <SelectValidators
+                        errors={errors}
+                        register={register}
+                        clearSelectedValidators={handleClearValidators}
+                        distributionMethod={watchedDistributionMethod}
+                        handleValidatorSelect={handleValidatorSelect}
+                        totalToDistribute={totalToDistribute}
+                        deposits={watchedDeposits}
+                        validators={validators}
+                        depositExceedsRemaining={depositExceedsRemaining}
+                      />
+                    )}
+                  </>
                 )}
-                wrapperProps={{ clearBackground: true }}
-                disableSort
-                disablePagination
-                renderOverrides={{
-                  depositAmount: (value) => (
-                    <DisplayAmount
-                      amount={value.depositAmount}
-                      opts={{ decimals: 4 }}
-                    />
-                  ),
-                  transactionStatus: () => (
-                    <DepositSignDataCard
-                      transactionStatus={stage.transactionStatus}
-                    />
-                  ),
-                }}
-              />
-            </>
-          )}
+              </StageAnimationStep>
+            )}
+
+            {stage.type === "sign-submit" && (
+              <StageAnimationStep key="sign-submit">
+                <DistributionInformation
+                  resetBatchDeposit={reset}
+                  stage={stage}
+                  totalAllocated={totalAllocated}
+                  totalToDistribute={totalToDistribute}
+                  numDeposits={watchedDeposits.length}
+                />
+                <div className="text-md font-670">Deposits</div>
+                <ValidatorTable
+                  headers={SUBMITTING_DEPOSIT_COLUMN_HEADERS}
+                  data={watchedDeposits.map(
+                    (w): DepositTableValidatorDetails => ({
+                      ...w.validator,
+                      depositAmount: w.amount,
+                    }),
+                  )}
+                  wrapperProps={{ clearBackground: true }}
+                  disableSort
+                  disablePagination
+                  renderOverrides={{
+                    depositAmount: (value) => (
+                      <DisplayAmount
+                        amount={value.depositAmount}
+                        opts={{ decimals: 4 }}
+                      />
+                    ),
+                    transactionStatus: () => (
+                      <DepositSignDataCard
+                        transactionStatus={stage.transactionStatus}
+                      />
+                    ),
+                  }}
+                />
+              </StageAnimationStep>
+            )}
+          </StageAnimationParent>
         </div>
       </FormProvider>
     </div>
