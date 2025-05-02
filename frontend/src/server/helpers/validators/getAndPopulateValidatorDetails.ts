@@ -16,7 +16,7 @@ import { TYPE_2_PREFIX } from "pec/constants/pectra";
 
 // We don't process anything in the database here and instead operate off of API responses
 // Reasoning is so we don't delay the client response longer than we should
-export const getAndPopulateValidators = async (
+export const getAndPopulateValidatorDetails = async (
   address: string,
   networkId: SupportedNetworkIds,
 ): Promise<IResponse<ValidatorDetails[]>> => {
@@ -24,6 +24,7 @@ export const getAndPopulateValidators = async (
     address,
     networkId,
   );
+  console.log(bcValidatorsForWithdrawAddress);
 
   if (!bcValidatorsForWithdrawAddress.success)
     return bcValidatorsForWithdrawAddress;
