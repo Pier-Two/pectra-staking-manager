@@ -15,7 +15,7 @@ interface ProcessDepositsParams {
 }
 
 // Function simply processes deposits, it also supports passing an array of subset of deposits in which case it will check and update only those
-export const processAllDeposits = async ({
+export const processDeposits = async ({
   networkId,
 
   ...overrides
