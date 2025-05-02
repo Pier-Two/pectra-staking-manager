@@ -22,7 +22,7 @@ export const BCValidatorsDataSchema = z.object({
 export type BCValidatorDetails = z.infer<typeof BCValidatorsDataSchema>;
 
 export const BCValidatorsResponseSchema = buildBeaconchainResponseSchema(
-  z.array(BCValidatorsDataSchema),
+  z.union([z.array(BCValidatorsDataSchema), BCValidatorsDataSchema]),
 );
 
 export type BCValidatorsResponse = z.infer<typeof BCValidatorsResponseSchema>;

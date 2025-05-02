@@ -1,9 +1,5 @@
 import { type SupportedNetworkIds } from "pec/constants/chain";
-import {
-  type BCValidatorsResponse,
-  BCValidatorsResponseSchema,
-} from "pec/lib/api/schemas/beaconchain/validator";
-import { type IResponse } from "pec/types/response";
+import { BCValidatorsResponseSchema } from "pec/lib/api/schemas/beaconchain/validator";
 import { executeBeaconChainTypesafeRequest } from "../generics";
 import { chunkRequest } from "../../chunk-request";
 
@@ -17,17 +13,31 @@ import { chunkRequest } from "../../chunk-request";
 export const getValidators = async (
   validators: Array<number | string>,
   network: SupportedNetworkIds,
-): Promise<IResponse<BCValidatorsResponse["data"]>> => {
+) => {
   return await chunkRequest(
     validators,
     async (validatorIndexes) => {
       const url = `/api/v1/validator/${validatorIndexes.join(",")}`;
 
-      return executeBeaconChainTypesafeRequest(
+      const response = await executeBeaconChainTypesafeRequest(
         BCValidatorsResponseSchema,
         url,
         network,
       );
+
+      if (response.success) {
+        if (Array.isArray(response.data)) {
+          if (response.data.length === 0) {
+            return { success: false, error: "Validator not found" };
+          }
+
+          return { success: true, data: response.data };
+        }
+
+        return { success: true, data: [response.data] };
+      }
+
+      return response;
     },
     100,
   );

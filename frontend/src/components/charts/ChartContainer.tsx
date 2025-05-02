@@ -19,8 +19,34 @@ const emptyChart = (
   </Card>
 );
 
+const ChartNavigation = ({
+  isFullscreen,
+  setIsFullscreen,
+  handleChartBackward,
+  handleChartForward,
+}: {
+  isFullscreen: boolean;
+  setIsFullscreen: (value: boolean) => void;
+  handleChartBackward: () => void;
+  handleChartForward: () => void;
+}) => (
+  <div className="flex flex-row items-center gap-2">
+    <Expand
+      className="h-10 w-10 cursor-pointer rounded-full border-2 p-2 hover:bg-white dark:border-gray-800 dark:bg-gray-900 dark:hover:bg-gray-800 max-sm:hidden"
+      onClick={() => setIsFullscreen(!isFullscreen)}
+    />
+    <ChevronLeft
+      className="h-10 w-10 cursor-pointer rounded-full border-2 p-2 hover:bg-white dark:border-gray-800 dark:bg-gray-900 dark:hover:bg-gray-800 max-sm:h-8 max-sm:w-8 max-sm:p-1.5"
+      onClick={handleChartBackward}
+    />
+    <ChevronRight
+      className="h-10 w-10 cursor-pointer rounded-full border-2 p-2 hover:bg-white dark:border-gray-800 dark:bg-gray-900 dark:hover:bg-gray-800 max-sm:h-8 max-sm:w-8 max-sm:p-1.5"
+      onClick={handleChartForward}
+    />
+  </div>
+);
+
 export const ChartContainer: FC = () => {
-  const [filter, setFilter] = useState<"days" | "months" | "years">("days");
   const [isFullscreen, setIsFullscreen] = useState(false);
 
   const { data, isFetched } = api.charts.getChartData.useQuery(undefined, {
@@ -34,7 +60,7 @@ export const ChartContainer: FC = () => {
   const chartCount = data.length;
 
   const activeChartGroup = data.find(
-    (chart) => chart.key === filter,
+    (chart) => chart.key === "days",
   ) as ChartGroup;
 
   const activeChart = activeChartGroup?.data[chartIndex];
@@ -62,45 +88,13 @@ export const ChartContainer: FC = () => {
         </div>
 
         {chartCount > 1 && (
-          <div className="flex flex-row items-center gap-8 max-sm:gap-4">
-            <div className="flex flex-row items-center gap-4 text-sm">
-              <div
-                onClick={() => setFilter("days")}
-                className={`cursor-pointer ${filter === "days" ? "font-semibold text-indigo-500" : "text-zinc-950 dark:text-zinc-50"}`}
-              >
-                Day
-              </div>
-
-              <div
-                onClick={() => setFilter("months")}
-                className={`cursor-pointer ${filter === "months" ? "font-semibold text-indigo-500" : "text-zinc-950 dark:text-zinc-50"}`}
-              >
-                Month
-              </div>
-
-              <div
-                onClick={() => setFilter("years")}
-                className={`cursor-pointer ${filter === "years" ? "font-semibold text-indigo-500" : "text-zinc-950 dark:text-zinc-50"}`}
-              >
-                Year
-              </div>
-            </div>
-
-            <div className="flex flex-row items-center gap-2">
-              <Expand
-                className="h-10 w-10 cursor-pointer rounded-full border-2 p-2 hover:bg-white dark:border-gray-800 dark:bg-gray-900 dark:hover:bg-gray-800 max-sm:hidden"
-                onClick={() => setIsFullscreen(!isFullscreen)}
-              />
-
-              <ChevronLeft
-                className="h-10 w-10 cursor-pointer rounded-full border-2 p-2 hover:bg-white dark:border-gray-800 dark:bg-gray-900 dark:hover:bg-gray-800 max-sm:h-8 max-sm:w-8 max-sm:p-1.5"
-                onClick={handleChartBackward}
-              />
-              <ChevronRight
-                className="h-10 w-10 cursor-pointer rounded-full border-2 p-2 hover:bg-white dark:border-gray-800 dark:bg-gray-900 dark:hover:bg-gray-800 max-sm:h-8 max-sm:w-8 max-sm:p-1.5"
-                onClick={handleChartForward}
-              />
-            </div>
+          <div className="flex flex-row items-center gap-8 max-sm:hidden">
+            <ChartNavigation
+              isFullscreen={isFullscreen}
+              setIsFullscreen={setIsFullscreen}
+              handleChartBackward={handleChartBackward}
+              handleChartForward={handleChartForward}
+            />
           </div>
         )}
       </div>
@@ -128,6 +122,16 @@ export const ChartContainer: FC = () => {
           <CardFooter className="flex flex-row items-center justify-center text-[14px] font-380 text-zinc-950 dark:text-zinc-50 max-sm:text-[12px]">
             {footer}
           </CardFooter>
+        )}
+        {chartCount > 1 && (
+          <div className="flex flex-row items-center justify-center gap-4 px-4 pb-4 sm:hidden">
+            <ChartNavigation
+              isFullscreen={isFullscreen}
+              setIsFullscreen={setIsFullscreen}
+              handleChartBackward={handleChartBackward}
+              handleChartForward={handleChartForward}
+            />
+          </div>
         )}
       </Card>
     </div>

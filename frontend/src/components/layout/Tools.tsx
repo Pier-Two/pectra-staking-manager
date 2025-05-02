@@ -27,10 +27,10 @@ export const Tools = () => {
           </div>
         </DropdownMenuTrigger>
 
-        <DropdownMenuContent className="border:indigo-200 mt-2 max-w-[385px] rounded-xl bg-white shadow-lg dark:border-gray-800 dark:bg-black">
+        <DropdownMenuContent className="mt-2 max-w-[385px] rounded-xl">
           <div className="flex flex-col">
             {Object.entries(cardPresets).map(([key, preset]) => (
-              <DropdownMenuItem key={key}>
+              <DropdownMenuItem className="focus:bg-transparent" key={key}>
                 <div
                   className="hover:bg-activeCard group flex flex-col gap-2 rounded-xl p-4 transition-colors hover:cursor-pointer"
                   onClick={() => handleNavigation(preset.url)}

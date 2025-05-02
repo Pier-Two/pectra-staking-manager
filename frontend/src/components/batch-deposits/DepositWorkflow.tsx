@@ -17,7 +17,7 @@ import { DECIMAL_PLACES } from "pec/lib/constants";
 import { EDistributionMethod } from "pec/types/batch-deposits";
 import type { ValidatorDetails } from "pec/types/validator";
 import { useEffect, useState } from "react";
-import { useForm, useWatch } from "react-hook-form";
+import { FormProvider, useForm, useWatch } from "react-hook-form";
 import { Email } from "../consolidation/summary/Email";
 import { DisplayAmount } from "../ui/table/TableComponents";
 import { ValidatorTable } from "../ui/table/ValidatorTable";
@@ -37,7 +37,6 @@ export const DepositWorkflow = ({
   balance,
 }: IDepositWorkflowProps) => {
   const { submitBatchDeposit, stage, resetStage } = useBatchDeposit();
-  const [showEmail, setShowEmail] = useState(false);
 
   const totalValidatorBalance = sumBy(validators, "balance");
 
@@ -49,7 +48,14 @@ export const DepositWorkflow = ({
     totalToDistribute: 0,
     distributionMethod: EDistributionMethod.SPLIT,
     email: "",
+    showEmail: false,
   };
+
+  const form = useForm<FormDepositType>({
+    resolver: zodResolver(FormDepositSchema(balance, maxTotalRemaining)),
+    defaultValues: initialValues,
+    mode: "onChange",
+  });
 
   const {
     register,
@@ -57,24 +63,15 @@ export const DepositWorkflow = ({
     handleSubmit,
     setValue,
     reset,
-    formState: { isValid, errors },
-  } = useForm<FormDepositType>({
-    resolver: zodResolver(FormDepositSchema(balance, maxTotalRemaining)),
-    defaultValues: initialValues,
-    mode: "onChange",
-  });
+    formState: { errors },
+  } = form;
 
-  const [
-    watchedDeposits,
-    watchedDistributionMethod,
-    watchTotalToDistribute,
-    watchEmail,
-  ] = useWatch({
-    control,
-    name: ["deposits", "distributionMethod", "totalToDistribute", "email"],
-  });
+  const [watchedDeposits, watchedDistributionMethod, watchTotalToDistribute] =
+    useWatch({
+      control,
+      name: ["deposits", "distributionMethod", "totalToDistribute"],
+    });
 
-  const email = watchEmail ?? "";
   // Stupid RHF doesn't handle an empty input and returns a string, even when you specify its a number
   const totalToDistribute =
     watchedDistributionMethod === EDistributionMethod.MANUAL
@@ -100,11 +97,9 @@ export const DepositWorkflow = ({
     }) || depositExceedsRemaining;
 
   const submitButtonDisabled =
-    !isValid ||
     totalAllocated !== totalToDistribute ||
     totalToDistribute <= 0 ||
     totalAllocated > balance ||
-    (showEmail && email.length === 0) ||
     hasInvalidAmount;
 
   const handleDistributionMethodChange = (method: EDistributionMethod) => {
@@ -175,103 +170,96 @@ export const DepositWorkflow = ({
 
   return (
     <div className="flex w-full flex-col gap-y-4">
-      <div className="space-y-8">
-        {stage.type === "data-capture" && (
-          <>
-            {balance === 0 ? (
-              <SignatureDetails
-                title="Insufficient balance"
-                text="Please top up your wallet with ETH before submitting deposits."
-              />
-            ) : (
-              <>
-                <DistributionMethod
-                  submitButtonDisabled={submitButtonDisabled}
-                  errors={errors}
-                  register={register}
-                  distributionMethod={watchedDistributionMethod}
-                  onDistributionMethodChange={handleDistributionMethodChange}
-                  onSubmit={handleSubmit(onSubmit)}
-                  resetBatchDeposit={handleResetBatchDeposit}
-                  numDeposits={watchedDeposits.length}
-                  stage={stage}
-                  totalAllocated={totalAllocated}
-                  totalToDistribute={totalToDistribute}
-                  walletBalance={balance}
+      <FormProvider {...form}>
+        <div className="space-y-8">
+          {stage.type === "data-capture" && (
+            <>
+              {balance === 0 ? (
+                <SignatureDetails
+                  title="Insufficient balance"
+                  text="Please top up your wallet with ETH before submitting deposits."
                 />
-
-                <Email
-                  showEmail={showEmail}
-                  setShowEmail={setShowEmail}
-                  cardText="Add your email to receive an email when your deposits are complete."
-                  cardTitle="Notify me when complete"
-                  summaryEmail={email}
-                  errors={errors}
-                  setSummaryEmail={(email) =>
-                    setValue("email", email, {
-                      shouldValidate: true,
-                    })
-                  }
-                />
-
-                {(watchedDistributionMethod === EDistributionMethod.MANUAL ||
-                  (watchedDistributionMethod === EDistributionMethod.SPLIT &&
-                    totalToDistribute > 0)) && (
-                  <SelectValidators
+              ) : (
+                <>
+                  <DistributionMethod
+                    submitButtonDisabled={submitButtonDisabled}
                     errors={errors}
                     register={register}
-                    clearSelectedValidators={handleClearValidators}
                     distributionMethod={watchedDistributionMethod}
-                    handleValidatorSelect={handleValidatorSelect}
+                    onDistributionMethodChange={handleDistributionMethodChange}
+                    onSubmit={handleSubmit(onSubmit)}
+                    resetBatchDeposit={handleResetBatchDeposit}
+                    numDeposits={watchedDeposits.length}
+                    stage={stage}
+                    totalAllocated={totalAllocated}
                     totalToDistribute={totalToDistribute}
-                    deposits={watchedDeposits}
-                    validators={validators}
-                    depositExceedsRemaining={depositExceedsRemaining}
+                    walletBalance={balance}
                   />
-                )}
-              </>
-            )}
-          </>
-        )}
 
-        {stage.type === "sign-submit" && (
-          <>
-            <DistributionInformation
-              resetBatchDeposit={reset}
-              stage={stage}
-              totalAllocated={totalAllocated}
-              totalToDistribute={totalToDistribute}
-              numDeposits={watchedDeposits.length}
-            />
-            <div className="text-md font-670">Deposits</div>
-            <ValidatorTable
-              headers={SUBMITTING_DEPOSIT_COLUMN_HEADERS}
-              data={watchedDeposits.map(
-                (w): DepositTableValidatorDetails => ({
-                  ...w.validator,
-                  depositAmount: w.amount,
-                }),
+                  <Email
+                    cardText="Add your email to receive an email when your deposits are complete."
+                    cardTitle="Notify me when complete"
+                  />
+
+                  {(watchedDistributionMethod === EDistributionMethod.MANUAL ||
+                    (watchedDistributionMethod === EDistributionMethod.SPLIT &&
+                      totalToDistribute > 0)) && (
+                    <SelectValidators
+                      errors={errors}
+                      register={register}
+                      clearSelectedValidators={handleClearValidators}
+                      distributionMethod={watchedDistributionMethod}
+                      handleValidatorSelect={handleValidatorSelect}
+                      totalToDistribute={totalToDistribute}
+                      deposits={watchedDeposits}
+                      validators={validators}
+                      depositExceedsRemaining={depositExceedsRemaining}
+                    />
+                  )}
+                </>
               )}
-              wrapperProps={{ clearBackground: true }}
-              disableSort
-              disablePagination
-              renderOverrides={{
-                depositAmount: (value) => (
-                  <DisplayAmount
-                    amount={value.depositAmount}
-                    opts={{ decimals: 4 }}
-                  />
-                ),
-                transactionStatus: () => (
-                  <DepositSignDataCard
-                    transactionStatus={stage.transactionStatus}
-                  />
-                ),
-              }}
-            />
-          </>
-        )}
-      </div>
+            </>
+          )}
+
+          {stage.type === "sign-submit" && (
+            <>
+              <DistributionInformation
+                resetBatchDeposit={reset}
+                stage={stage}
+                totalAllocated={totalAllocated}
+                totalToDistribute={totalToDistribute}
+                numDeposits={watchedDeposits.length}
+              />
+              <div className="text-md font-670">Deposits</div>
+              <ValidatorTable
+                headers={SUBMITTING_DEPOSIT_COLUMN_HEADERS}
+                data={watchedDeposits.map(
+                  (w): DepositTableValidatorDetails => ({
+                    ...w.validator,
+                    depositAmount: w.amount,
+                  }),
+                )}
+                wrapperProps={{ clearBackground: true }}
+                disableSort
+                disablePagination
+                renderOverrides={{
+                  depositAmount: (value) => (
+                    <DisplayAmount
+                      amount={value.depositAmount}
+                      opts={{ decimals: 4 }}
+                    />
+                  ),
+                  transactionStatus: () => (
+                    <DepositSignDataCard
+                      transactionStatus={stage.transactionStatus}
+                    />
+                  ),
+                }}
+              />
+            </>
+          )}
+        </div>
+      </FormProvider>
     </div>
   );
 };

@@ -30,5 +30,7 @@ export const Primary: Story = {
     goToSubmit: noop,
     consolidationTransactions: 5,
     upgradeTransactions: 3,
+    email: "test@test.com",
+    setEmail: noop,
   },
 };
