@@ -36,9 +36,9 @@ export const cardPresets = {
     delay: dashboardAnimationDelays.toolCards.batchDeposit,
   },
   Withdrawal: {
-    title: "Partial Withdrawal",
+    title: "Withdrawal",
     description:
-      "Submit onchain execution layer withdrawal requests against validators, as per Pectra EIP-7002.",
+      "Submit onchain execution layer withdrawal requests (partial or full) against validators, as per Pectra EIP-7002.",
     url: "/withdraw",
     buttonLabel: "Withdraw now",
     icon: <ArrowUpFromDot size={24} />,
