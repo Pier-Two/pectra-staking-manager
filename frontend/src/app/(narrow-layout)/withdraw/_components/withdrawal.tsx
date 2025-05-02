@@ -36,7 +36,7 @@ const Withdrawal = () => {
 
   const form = useForm<FormWithdrawalType>({
     resolver: zodResolver(FormWithdrawalSchema),
-    defaultValues: { withdrawals: [], email: "", showEmail: false },
+    defaultValues: { withdrawals: [], showEmail: false },
     mode: "onChange",
   });
 
@@ -62,13 +62,14 @@ const Withdrawal = () => {
 
   if (!isSuccess) return <WithdrawalLoading />;
 
-  const handleMaxAllocation = () => {
+  const handleMaxAllocation = (type: "partial" | "full") => {
     setValue(
       "withdrawals",
       activeType2Validators.map(
         (validator) => ({
           validator,
-          amount: validator.balance,
+          amount:
+            type === "partial" ? validator.balance - 32 : validator.balance,
         }),
         {
           // These options are critical to ensure proper updates
@@ -113,7 +114,6 @@ const Withdrawal = () => {
           onSubmit={handleSubmit(onSubmit)}
           resetWithdrawal={handleResetWithdrawal}
           stage={stage}
-          availableValidators={activeType2Validators.length}
           validatorsSelected={withdrawals.length}
           withdrawalTotal={withdrawalTotal}
         />
