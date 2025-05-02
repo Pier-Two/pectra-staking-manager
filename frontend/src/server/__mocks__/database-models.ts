@@ -16,6 +16,10 @@ const generateTxHash = () => {
   return faker.string.hexadecimal({ length: 66, prefix: "0x" });
 };
 
+export const generateObjectId = () => {
+  return new ObjectId(faker.string.hexadecimal({ length: 24, prefix: "" }));
+};
+
 // Function to generate random consolidation data
 export const buildMockConsolidation = (
   overrides: Partial<Consolidation> = {},
@@ -68,16 +72,17 @@ export const buildMockDeposit = (
   overrides: Partial<DocumentWithId<Deposit>> = {},
 ): DocumentWithId<Deposit> => {
   return {
-    _id: new ObjectId(faker.string.hexadecimal({ length: 24, prefix: "" })),
+    _id: generateObjectId(),
     email: faker.internet.email(),
     status: faker.helpers.arrayElement(Object.values(DatabaseDocumentStatuses)),
     deposits: [
       {
+        _id: generateObjectId(),
         publicKey: faker.string.hexadecimal({ length: 96, prefix: "0x" }),
         validatorIndex: faker.number.int({ min: 1, max: 1000000 }),
         amount: faker.number.int({ min: 1, max: 1000000 }),
       },
-    ],
+    ] as any,
     txHash: generateTxHash(),
     networkId: faker.helpers.arrayElement(SUPPORTED_NETWORKS_IDS),
     createdAt: faker.date.past(),

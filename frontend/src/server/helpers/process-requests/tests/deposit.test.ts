@@ -1,6 +1,9 @@
 import { beforeEach, describe, expect, it, vi, type Mock } from "vitest";
 import { DepositModel } from "pec/server/database/models";
-import { buildMockDeposit } from "pec/server/__mocks__/database-models";
+import {
+  buildMockDeposit,
+  generateObjectId,
+} from "pec/server/__mocks__/database-models";
 import { ACTIVE_STATUS, INACTIVE_STATUS } from "pec/types/app";
 import { MAIN_CHAIN } from "pec/lib/constants/contracts";
 import { sendEmailNotification } from "pec/lib/services/emailService";
@@ -37,7 +40,14 @@ describe("processDeposits", { concurrent: false }, () => {
     const amount = 1;
     const mockWithdrawal = buildMockDeposit({
       status: ACTIVE_STATUS,
-      deposits: [{ publicKey: publicKey, amount, validatorIndex: 1 }],
+      deposits: [
+        {
+          publicKey: publicKey,
+          amount,
+          validatorIndex: 1,
+          _id: generateObjectId(),
+        } as any,
+      ],
       txHash: "0x123",
     });
 
@@ -72,7 +82,7 @@ describe("processDeposits", { concurrent: false }, () => {
       deposits: [
         { publicKey: publicKey, amount, validatorIndex: 1 },
         { publicKey: "0x222", amount: 500, validatorIndex: 2 },
-      ],
+      ] as any,
       txHash: "0x123",
     });
 
@@ -87,7 +97,7 @@ describe("processDeposits", { concurrent: false }, () => {
 
     const updatedWithdrawal = await DepositModel.findOne({
       _id: mockWithdrawal._id,
-    })!;
+    });
 
     expect(updatedWithdrawal!.status).eq(INACTIVE_STATUS);
 
@@ -136,14 +146,14 @@ describe("processDeposits", { concurrent: false }, () => {
 
     const updatedWithdrawal = await DepositModel.findOne({
       _id: firstMockDeposit._id,
-    })!;
+    });
 
     expect(updatedWithdrawal!.status).eq(INACTIVE_STATUS);
     expect(mockedSendEmailNotification).toHaveBeenCalledOnce();
 
     const updatedSecondWithdrawal = await DepositModel.findOne({
       _id: secondMockDeposit._id,
-    })!;
+    });
 
     expect(updatedSecondWithdrawal!.status).eq(ACTIVE_STATUS);
   });

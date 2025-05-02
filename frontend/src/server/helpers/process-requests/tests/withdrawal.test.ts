@@ -87,7 +87,7 @@ describe("processWithdrawals", { concurrent: false }, () => {
 
     const updatedWithdrawal = await WithdrawalModel.findOne({
       _id: mockWithdrawal._id,
-    })!;
+    });
 
     expect(updatedWithdrawal!.status).eq(INACTIVE_STATUS);
 
