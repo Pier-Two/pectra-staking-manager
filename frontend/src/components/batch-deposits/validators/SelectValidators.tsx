@@ -89,7 +89,7 @@ export const SelectValidators = ({
       const depositAmount = deposits[depositIndex]?.amount ?? 0;
       const remainingBalance = MAX_VALIDATOR_BALANCE - validator.balance;
       const invalidAmount =
-        (depositAmount === 0 && isSelected) || remainingBalance < depositAmount;
+        (depositAmount < 1 && isSelected) || remainingBalance < depositAmount;
 
       return (
         <AmountInput
