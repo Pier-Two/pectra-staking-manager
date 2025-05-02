@@ -48,7 +48,7 @@ export const ConsolidationSummary = ({
 
   return (
     <FormProvider {...form}>
-      <form onSubmit={onSubmit} className="space-y-8">
+      <div className="space-y-8">
         <div className="space-y-6">
           <div className="text-2xl font-medium">Consolidation Summary</div>
 
@@ -112,7 +112,7 @@ export const ConsolidationSummary = ({
           <PrimaryButton
             className="w-full"
             label="Generate transactions"
-            type="submit"
+            onClick={onSubmit}
             disabled={false}
           />
 
@@ -135,7 +135,7 @@ export const ConsolidationSummary = ({
             </div>
           </div>
         </div>
-      </form>
+      </div>
     </FormProvider>
   );
 };
