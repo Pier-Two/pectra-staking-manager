@@ -49,7 +49,6 @@ export const ValidatorCardWrapper = ({
       className={cn(
         "group flex h-16 w-full items-center justify-between gap-x-4 rounded-2xl px-4 py-2 text-sm transition-colors duration-200",
         {
-          "bg-white dark:bg-gray-900": !clearBackground,
           ...ValidatorCardBorderStyles({
             clearBackground,
             onClick,

@@ -130,10 +130,10 @@ export const ValidatorRow = <T extends TableValidatorDetails>({
         const isLast = index === headers.length - 1;
 
         return (
-          <th
+          <td
             key={header.sortKey as string}
             className={cn(
-              "bg-inherit px-4 py-2 font-normal transition-colors duration-200",
+              "px-4 py-2 font-normal transition-colors duration-200",
               {
                 border: isHovering && onClick(),
                 "!border-l-0": !isFirst,
@@ -141,6 +141,7 @@ export const ValidatorRow = <T extends TableValidatorDetails>({
                 "rounded-l-2xl": isFirst,
                 "rounded-r-2xl": isLast,
                 "hidden md:table-cell": !header.mobile,
+                "bg-white dark:bg-gray-900": !wrapperProps?.clearBackground,
               },
               ValidatorCardBorderStyles({
                 clearBackground: wrapperProps?.clearBackground,
@@ -191,7 +192,7 @@ export const ValidatorRow = <T extends TableValidatorDetails>({
                 <div className="ml-auto flex">{endContent(validator)}</div>
               )}
             </div>
-          </th>
+          </td>
         );
       })}
     </ValidatorCardWrapper>
