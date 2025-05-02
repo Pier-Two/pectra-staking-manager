@@ -8,7 +8,9 @@ import { getPendingDeposits } from "../requests/quicknode/getPendingDeposits";
 import { QNPendingDepositsType } from "pec/lib/api/schemas/quicknode/pendingDeposits";
 import { sendEmailNotification } from "pec/lib/services/emailService";
 import { getMinimumProcessDelay } from "./common";
-import { logger } from "../logger";
+import { getLogger } from "../logger";
+
+const logger = getLogger();
 
 interface ProcessDepositsParams {
   networkId: SupportedNetworkIds;

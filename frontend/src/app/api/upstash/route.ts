@@ -1,8 +1,10 @@
 import { verifySignatureAppRouter } from "@upstash/qstash/nextjs";
 import { SUPPORTED_CHAINS } from "pec/constants/chain";
-import { logger } from "pec/server/helpers/logger";
+import { getLogger } from "pec/server/helpers/logger";
 import { processAllRequestsOnNetwork } from "pec/server/helpers/process-requests/process-all";
 import { IResponse } from "pec/types/response";
+
+const logger = getLogger();
 
 async function processHandler(_request: Request) {
   logger.info("Processing Upstash request...");

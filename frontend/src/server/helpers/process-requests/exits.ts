@@ -7,7 +7,9 @@ import { getValidators } from "../requests/beaconchain/getValidators";
 import { SupportedNetworkIds } from "pec/constants/chain";
 import { IResponse } from "pec/types/response";
 import { keyBy } from "lodash";
-import { logger } from "../logger";
+import { getLogger } from "../logger";
+
+const logger = getLogger();
 
 interface ProcessAllExitsParams {
   networkId: SupportedNetworkIds;

@@ -34,6 +34,10 @@ const PendingRequestsSchema = z.union([
     type: z.literal("deposits"),
     amount: z.number(),
   }),
+  z.object({
+    type: z.literal("withdrawals"),
+    amount: z.number(),
+  }),
 ]);
 
 export const ValidatorDataSchema = z.object({

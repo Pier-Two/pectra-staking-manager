@@ -7,7 +7,9 @@ import { type Consolidation } from "pec/server/database/classes/consolidation";
 import { type BCValidatorDetails } from "pec/lib/api/schemas/beaconchain/validator";
 import { type SupportedNetworkIds } from "pec/constants/chain";
 import { keyBy } from "lodash";
-import { logger } from "../logger";
+import { getLogger } from "../logger";
+
+const logger = getLogger();
 
 interface ProcessConsolidationsParams {
   networkId: SupportedNetworkIds;

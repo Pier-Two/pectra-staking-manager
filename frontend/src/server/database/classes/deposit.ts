@@ -1,4 +1,4 @@
-import { modelOptions, prop } from "@typegoose/typegoose";
+import { modelOptions, prop, Ref } from "@typegoose/typegoose";
 import { DatabaseDocumentStatuses } from "pec/types/app";
 import {
   SUPPORTED_NETWORKS_IDS,
@@ -6,8 +6,14 @@ import {
 } from "pec/constants/chain";
 import { StoreDatabaseDepositType } from "pec/lib/api/schemas/deposit";
 
-// Define DepositEntry as a class
-class DepositEntry {
+@modelOptions({
+  schemaOptions: {
+    timestamps: true,
+    toObject: { virtuals: true },
+    collection: "depositEntry",
+  },
+})
+export class DepositEntry {
   @prop({ required: true })
   public publicKey!: string;
 
@@ -25,12 +31,12 @@ class DepositEntry {
     collection: "deposits",
   },
 })
-export class Deposit implements StoreDatabaseDepositType {
+export class Deposit implements Omit<StoreDatabaseDepositType, "deposits"> {
   @prop({ required: true, type: String })
   public status!: (typeof DatabaseDocumentStatuses)[number];
 
-  @prop({ required: true, type: () => [DepositEntry] })
-  public deposits!: DepositEntry[];
+  @prop({ required: true, ref: () => DepositEntry })
+  public deposits!: Ref<DepositEntry>[];
 
   @prop({ required: true })
   public txHash!: string;

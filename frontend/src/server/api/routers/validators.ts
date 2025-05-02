@@ -14,37 +14,14 @@ import { routeHandler } from "pec/server/helpers/route-errors";
 import { type IResponse } from "pec/types/response";
 import { getValidatorsForWithdrawAddress } from "pec/server/helpers/requests/beaconchain/getValidatorForWithdrawAddress";
 import { redisCacheMiddleware } from "../middleware/redis-cache-middleware";
+import { getAndPopulateValidatorDetails } from "pec/server/helpers/validators/getAndPopulateValidatorDetails";
 
 export const validatorRouter = createTRPCRouter({
   getValidators: publicProcedure
     .input(z.object({ address: z.string(), chainId: SupportedChainIdSchema }))
     .query(async ({ input: { address, chainId: network } }) =>
       routeHandler(async (): Promise<IResponse<ValidatorDetails[]>> => {
-        const withdrawAddressValidators = await getValidatorsForWithdrawAddress(
-          address,
-          network,
-        );
-
-        if (!withdrawAddressValidators.success)
-          return withdrawAddressValidators;
-
-        const validatorIndexes = withdrawAddressValidators.data.map(
-          (validator) => validator.validatorindex,
-        );
-
-        const validatorDetails = await getValidators(validatorIndexes, network);
-
-        if (!validatorDetails.success) return validatorDetails;
-
-        const validators: ValidatorDetails[] = [];
-
-        for (const validator of validatorDetails.data) {
-          validators.push(
-            await populateBeaconchainValidatorResponse(validator),
-          );
-        }
-
-        return { success: true, data: validators };
+        return getAndPopulateValidatorDetails(address, network);
       }),
     ),
 

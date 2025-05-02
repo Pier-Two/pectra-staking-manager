@@ -29,7 +29,7 @@ export const getBeaconChainAxios = (network: SupportedNetworkIds) => {
 
 const getQuicknodeURL = (network: SupportedNetworkIds) => {
   if (network === HOODI_CHAIN_ID) {
-    return `https://${env.HOODI_QUICKNODE_ENDPOINT_NAME}.quiknode.pro/${env.HOODI_QUICKNODE_ENDPOINT_SECRET}`;
+    return `https://${env.HOODI_QUICKNODE_ENDPOINT_NAME}.ethereum-hoodi.quiknode.pro/${env.HOODI_QUICKNODE_ENDPOINT_SECRET}`;
   }
 
   return `https://${env.QUICKNODE_ENDPOINT_NAME}.quiknode.pro/${env.QUICKNODE_ENDPOINT_SECRET}`;
