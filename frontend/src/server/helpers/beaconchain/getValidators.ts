@@ -1,6 +1,5 @@
 import { type SupportedNetworkIds } from "pec/constants/chain";
 import {
-  BCValidatorResponseSchema,
   type BCValidatorsResponse,
   BCValidatorsResponseSchema,
 } from "pec/lib/api/schemas/beaconchain/validator";
@@ -18,38 +17,10 @@ import { chunkRequest } from "../chunk-request";
 export const getValidators = async (
   validators: Array<number | string>,
   network: SupportedNetworkIds,
-): Promise<IResponse<BCValidatorsResponse["data"]>> => {
+) => {
   return await chunkRequest(
     validators,
     async (validatorIndexes) => {
-      // if of length 1, we need to use different types since the response is not an array
-      if (validatorIndexes.length === 1) {
-        const url = `/api/v1/validator/${validatorIndexes[0]}`;
-
-        const response = await executeBeaconchainTypesafeRequest(
-          BCValidatorResponseSchema,
-          url,
-          network,
-        );
-
-        // if successful then we need to rewrite it to be an array
-        if (response.success) {
-          // check if the response is an array
-          // this is returned when the validator is not found
-          if (Array.isArray(response.data)) {
-            return {
-              success: false,
-              error: "Validator not found",
-            };
-          }
-
-          return { success: true, data: [response.data] };
-        }
-
-        // otherwise return the error
-        return response;
-      }
-
       const url = `/api/v1/validator/${validatorIndexes.join(",")}`;
 
       const response = await executeBeaconchainTypesafeRequest(
@@ -57,6 +28,18 @@ export const getValidators = async (
         url,
         network,
       );
+
+      if (response.success) {
+        if (Array.isArray(response.data)) {
+          if (response.data.length === 0) {
+            return { success: false, error: "Validator not found" };
+          }
+
+          return { success: true, data: response.data };
+        }
+
+        return { success: true, data: [response.data] };
+      }
 
       return response;
     },
