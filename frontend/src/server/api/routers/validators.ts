@@ -179,7 +179,7 @@ export const validatorRouter = createTRPCRouter({
 
         for (const validator of validatorDetails.data) {
           validators.push(
-            await populateBeaconchainValidatorResponse(validator),
+            await populateBeaconchainValidatorResponse(validator, network),
           );
         }
 
@@ -253,8 +253,10 @@ export const validatorRouter = createTRPCRouter({
           return { success: false, error: "NOT_FOUND" };
         }
 
-        const populatedDetails =
-          await populateBeaconchainValidatorResponse(validator);
+        const populatedDetails = await populateBeaconchainValidatorResponse(
+          validator,
+          network,
+        );
 
         return { success: true, data: populatedDetails };
       }),

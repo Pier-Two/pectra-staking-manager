@@ -1,19 +1,22 @@
+import { type SupportedNetworkIds } from "pec/constants/chain";
 import { type BCValidatorsData } from "pec/lib/api/schemas/beaconchain/validator";
+import { getValidatorActiveInfo } from "pec/lib/utils/validators/activity";
+import { getValidatorStatus } from "pec/lib/utils/validators/status";
 import {
   ConsolidationModel,
   DepositModel,
   WithdrawalModel,
 } from "pec/server/database/models";
-import { getValidatorActiveInfo } from "pec/lib/utils/validators/activity";
-import { getValidatorStatus } from "pec/lib/utils/validators/status";
 import { ACTIVE_STATUS } from "pec/types/app";
-import { TransactionStatus, type ValidatorDetails } from "pec/types/validator";
+import { type ValidatorDetails } from "pec/types/validator";
 
 export const prePopulateBeaconchainValidatorResponse = (
   rawValidatorDetails: BCValidatorsData,
+  network: SupportedNetworkIds,
 ): ValidatorDetails => {
   const { activeSince, activeDuration } = getValidatorActiveInfo(
     rawValidatorDetails.activationepoch,
+    network,
   );
 
   return {
@@ -33,9 +36,12 @@ export const prePopulateBeaconchainValidatorResponse = (
 
 export const populateBeaconchainValidatorResponse = async (
   rawValidatorDetails: BCValidatorsData,
+  network: SupportedNetworkIds,
 ): Promise<ValidatorDetails> => {
-  const validatorDetails =
-    prePopulateBeaconchainValidatorResponse(rawValidatorDetails);
+  const validatorDetails = prePopulateBeaconchainValidatorResponse(
+    rawValidatorDetails,
+    network,
+  );
 
   const [withdrawTx, upgradeTx, consolidationTx, depositTx] = await Promise.all(
     [

@@ -13,7 +13,7 @@ import {
   FormDepositSchema,
   type FormDepositType,
 } from "pec/lib/api/schemas/deposit";
-import { DECIMAL_PLACES } from "pec/lib/constants";
+import { DECIMAL_PLACES_ETH_MAX } from "pec/lib/constants";
 import { EDistributionMethod } from "pec/types/batch-deposits";
 import type { ValidatorDetails } from "pec/types/validator";
 import { useEffect, useState } from "react";
@@ -84,7 +84,7 @@ export const DepositWorkflow = ({
   const totalAllocated = Number(
     watchedDeposits
       .reduce((acc, curr) => acc + (curr.amount ?? 0), 0)
-      .toFixed(DECIMAL_PLACES),
+      .toFixed(DECIMAL_PLACES_ETH_MAX),
   );
 
   const depositExceedsRemaining = watchedDeposits.some((deposit) => {
@@ -94,7 +94,7 @@ export const DepositWorkflow = ({
 
   const hasInvalidAmount =
     watchedDeposits.some((deposit) => {
-      return deposit.amount === 0;
+      return deposit.amount < 1;
     }) || depositExceedsRemaining;
 
   const submitButtonDisabled =
