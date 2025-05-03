@@ -10,6 +10,7 @@ import { ChartSkeleton } from "./ChartSkeleton";
 import type { ChartGroup } from "pec/types/chart";
 import { Dialog, DialogContent } from "../ui/dialog";
 import { cn } from "pec/lib/utils";
+import { motion } from "motion/react";
 
 const emptyChart = (
   <Card className="w-full rounded-xl bg-white text-black shadow-xl dark:bg-gray-900 dark:text-white">
@@ -81,7 +82,10 @@ export const ChartContainer: FC = () => {
   const { title, footer } = activeChart;
 
   const ChartStuff = ({ isFullscreen }: { isFullscreen: boolean }) => (
-    <div className={`flex w-full flex-col gap-4`}>
+    <motion.div
+      className={`flex w-full flex-col gap-4 bg-indigo-50 dark:bg-gray-950`}
+      layoutId="chart-container"
+    >
       <div className="flex flex-row items-center justify-between gap-12 px-6 max-sm:flex-col max-sm:items-center max-sm:gap-4 max-sm:px-4">
         <div className="text-center text-[24px] font-670 text-zinc-950 max-sm:text-[16px] dark:text-zinc-50">
           {title}
@@ -139,7 +143,7 @@ export const ChartContainer: FC = () => {
           </div>
         )}
       </Card>
-    </div>
+    </motion.div>
   );
 
   return (
