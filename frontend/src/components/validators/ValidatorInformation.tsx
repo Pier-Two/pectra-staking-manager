@@ -15,6 +15,8 @@ export const ValidatorInformation = (props: ValidatorInformationProps) => {
       validatorIsActive(validator),
   ).length;
 
+  if (validators.length === 0) return null;
+
   return (
     <div className="flex w-full flex-col gap-y-2 rounded-2xl border border-indigo-200 bg-[#A5B4FC12] p-4 text-left dark:border-gray-800 dark:bg-gray-900">
       <div className="flex items-center gap-x-4">
