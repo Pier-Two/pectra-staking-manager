@@ -17,7 +17,15 @@ const BatchDeposit = () => (
         </div>
 
         <div className="text-base">
-          Top up your existing validators in one transaction.
+          Top up your existing validators in one transaction using{" "}
+          <a
+            href="https://etherscan.io/address/0x00000000219ab540356cBB839Cbe05303d7705Fa"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-indigo-500 dark:text-indigo-300"
+          >
+            Pier Two&apos;s batch deposit contract.
+          </a>
         </div>
       </div>
       <DepositWorkflowWrapper />
