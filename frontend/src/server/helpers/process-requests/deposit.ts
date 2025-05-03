@@ -9,7 +9,7 @@ import { QNPendingDepositsType } from "pec/lib/api/schemas/quicknode/pendingDepo
 import { sendEmailNotification } from "pec/server/helpers/emails/emailService";
 import { getMinimumProcessDelay } from "./common";
 import { getLogger } from "../logger";
-import { isAfter } from "date-fns";
+import { isBefore } from "date-fns";
 
 const logger = getLogger();
 
@@ -31,6 +31,10 @@ export const processDeposits = async ({
       status: ACTIVE_STATUS,
       networkId,
     }).sort({ createdAt: 1 }));
+
+  console.log("Deposits", deposits);
+
+  if (deposits.length === 0) return { success: true, data: null };
 
   let qnPendingDeposits = overrides?.qnPendingDeposits;
 
@@ -55,7 +59,7 @@ export const processProvidedDeposits = async (
   qnPendingDeposits: QNPendingDepositsType[],
 ): Promise<IResponse> => {
   const filteredDepositsByMinimumProcessDelay = deposits.filter((d) =>
-    isAfter(d.createdAt, getMinimumProcessDelay()),
+    isBefore(d.createdAt, getMinimumProcessDelay()),
   );
   const groupedQNDeposits = groupBy(qnPendingDeposits, (v) =>
     getDepositsKey(v.pubkey, v.amount),
@@ -64,19 +68,23 @@ export const processProvidedDeposits = async (
   const groupedDBDeposits = groupBy(
     filteredDepositsByMinimumProcessDelay.flatMap((d) =>
       d.deposits.map((v) => ({
-        ...v,
+        publicKey: v.publicKey,
+        amount: v.amount,
         txHash: d.txHash,
         email: d.email,
       })),
     ),
     (v) => getDepositsKey(v.publicKey, v.amount),
   );
+  console.log(JSON.stringify(groupedDBDeposits, null, 2));
 
   // We store this to prevent sending multiple emails for deposits in the same batch
   const processedDeposits: Record<string, boolean> = {};
 
   for (const [key, storedDeposits] of entries(groupedDBDeposits)) {
+    console.log("Stored deposits", storedDeposits);
     const pendingDeposits = groupedQNDeposits[key];
+    console.log("Pending deposits", pendingDeposits);
 
     const pendingCount = pendingDeposits?.length ?? 0;
     const storedCount = storedDeposits.length;
@@ -86,26 +94,34 @@ export const processProvidedDeposits = async (
     if (processedCount > 0) {
       const depositsToProcess = storedDeposits.slice(0, processedCount);
 
-      for (const deposit of depositsToProcess) {
-        const pendingDeposit = pendingDeposits?.find(
-          (d) => d.amount === deposit.amount,
-        );
+      console.log("Deposits to process", depositsToProcess);
 
-        if (!pendingDeposit && !processedDeposits[deposit.txHash]) {
+      for (const deposit of depositsToProcess) {
+        // Ensure we don't send multiple emails for the same deposit
+        if (!processedDeposits[deposit.txHash]) {
           logger.info(
             `Deposit with txHash ${deposit.txHash} and publicKey ${deposit.publicKey} has been processed`,
           );
 
-          await DepositModel.updateOne(
+          const updatedEntry = await DepositModel.findOneAndUpdate(
             { txHash: deposit.txHash },
             {
               $set: {
                 status: INACTIVE_STATUS,
               },
             },
+            { new: true }, // This option returns the modified document rather than the original
           );
 
-          const totalAmount = sumBy(storedDeposits, (d) => d.amount);
+          if (!updatedEntry) {
+            logger.error(
+              `Failed to update and find deposit with txHash ${deposit.txHash}`,
+            );
+
+            continue;
+          }
+
+          const totalAmount = sumBy(updatedEntry.deposits, (d) => d.amount);
 
           await sendEmailNotification({
             emailName: "PECTRA_STAKING_MANAGER_DEPOSIT_COMPLETE",

@@ -26,6 +26,8 @@ export const processConsolidations = async ({
     overrides?.consolidations ??
     (await ConsolidationModel.find({ status: ACTIVE_STATUS, networkId }));
 
+  if (consolidations.length === 0) return { success: true, data: null };
+
   let bcValidatorDetails = overrides?.bcValidatorDetails;
 
   if (!bcValidatorDetails) {

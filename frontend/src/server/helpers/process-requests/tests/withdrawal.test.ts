@@ -2,12 +2,12 @@ import { beforeEach, describe, expect, it, vi, type Mock } from "vitest";
 import { WithdrawalModel } from "pec/server/database/models";
 import { buildMockWithdrawal } from "pec/server/__mocks__/database-models";
 import { ACTIVE_STATUS, INACTIVE_STATUS } from "pec/types/app";
-import { MAIN_CHAIN } from "pec/lib/constants/contracts";
 import { sendEmailNotification } from "pec/server/helpers/emails/emailService";
 import { buildMockQNPendingPartialWithdrawal } from "pec/server/__mocks__/quicknode";
 import { getPendingPartialWithdrawals } from "../../requests/quicknode/getPendingPartialWithdrawals";
 import { processPartialWithdrawals } from "../withdrawal";
 import { range } from "lodash";
+import { TEST_NETWORK_ID } from "pec/server/__mocks__/constants";
 
 vi.mock(
   "pec/server/helpers/requests/quicknode/getPendingPartialWithdrawals",
@@ -54,7 +54,7 @@ describe("processWithdrawals", { concurrent: false }, () => {
       ],
     });
 
-    await processPartialWithdrawals({ networkId: MAIN_CHAIN.id });
+    await processPartialWithdrawals({ networkId: TEST_NETWORK_ID });
 
     const updatedWithdrawal = await WithdrawalModel.findOne({
       _id: mockWithdrawal._id,
@@ -65,11 +65,41 @@ describe("processWithdrawals", { concurrent: false }, () => {
     expect(mockedSendEmailNotification).not.toHaveBeenCalled();
   });
 
+  it("Shouldn't process a withdrawal that has been created before the minimum process delay", async () => {
+    const mockWithdrawal = buildMockWithdrawal({
+      status: ACTIVE_STATUS,
+      validatorIndex: 89,
+      amount: 1,
+      createdAt: new Date(),
+    });
+
+    await WithdrawalModel.create(mockWithdrawal);
+
+    mockedGetPendingPartialWithdrawals.mockResolvedValueOnce({
+      success: true,
+      data: [
+        buildMockQNPendingPartialWithdrawal({
+          validator_index: mockWithdrawal.validatorIndex,
+          amount: mockWithdrawal.amount,
+        }),
+      ],
+    });
+
+    await processPartialWithdrawals({ networkId: TEST_NETWORK_ID });
+
+    const updatedWithdrawal = await WithdrawalModel.findOne({
+      _id: mockWithdrawal._id,
+    });
+
+    expect(updatedWithdrawal?.status).eq(ACTIVE_STATUS);
+  });
+
   it("Should update the database record and send an email when the withdrawal is processed", async () => {
     const mockWithdrawal = buildMockWithdrawal({
       status: ACTIVE_STATUS,
       validatorIndex: 5,
       amount: 1,
+      createdAt: new Date("2023-01-01"),
     });
 
     await WithdrawalModel.create(mockWithdrawal);
@@ -83,7 +113,7 @@ describe("processWithdrawals", { concurrent: false }, () => {
       ],
     });
 
-    await processPartialWithdrawals({ networkId: MAIN_CHAIN.id });
+    await processPartialWithdrawals({ networkId: TEST_NETWORK_ID });
 
     const updatedWithdrawal = await WithdrawalModel.findOne({
       _id: mockWithdrawal._id,
@@ -132,7 +162,7 @@ describe("processWithdrawals", { concurrent: false }, () => {
       ],
     });
 
-    await processPartialWithdrawals({ networkId: MAIN_CHAIN.id });
+    await processPartialWithdrawals({ networkId: TEST_NETWORK_ID });
 
     const updatedFirstWithdrawal = await WithdrawalModel.findOne({
       _id: firstMockWithdrawal._id,
@@ -175,7 +205,7 @@ describe("processWithdrawals", { concurrent: false }, () => {
       data: [],
     });
 
-    await processPartialWithdrawals({ networkId: MAIN_CHAIN.id });
+    await processPartialWithdrawals({ networkId: TEST_NETWORK_ID });
 
     const allWithdrawals = await WithdrawalModel.find({
       $or: mockWithdrawals.map((w) => ({ _id: w._id })),

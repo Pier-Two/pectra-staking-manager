@@ -10,7 +10,7 @@ import { getMinimumProcessDelay } from "./common";
 import { QNPendingPartialWithdrawalType } from "pec/lib/api/schemas/quicknode/pendingPartialWithdrawals";
 import { DocumentWithId } from "pec/types/database";
 import { getLogger } from "../logger";
-import { isAfter } from "date-fns";
+import { isBefore } from "date-fns";
 
 const logger = getLogger();
 
@@ -31,6 +31,8 @@ export const processPartialWithdrawals = async ({
       status: ACTIVE_STATUS,
       networkId,
     }).sort({ createdAt: 1 }));
+
+  if (withdrawals.length === 0) return { success: true, data: null };
 
   let allWithdrawals = overrides.qnPendingPartialWithdrawals;
 
@@ -57,7 +59,7 @@ export const processProvidedPartialWithdrawals = async (
   qnPendingPartialWithdrawals: QNPendingPartialWithdrawalType[],
 ): Promise<IResponse> => {
   const filteredWithdrawalsByMinimumProcessDelay = dbWithdrawals.filter((d) =>
-    isAfter(d.createdAt, getMinimumProcessDelay()),
+    isBefore(d.createdAt, getMinimumProcessDelay()),
   );
 
   const groupedQNPendingWithdrawals = groupBy(

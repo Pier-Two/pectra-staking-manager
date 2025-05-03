@@ -26,6 +26,8 @@ export const processExits = async ({
     overrides?.exits ??
     (await ExitModel.find({ status: ACTIVE_STATUS, networkId }));
 
+  if (exits.length === 0) return { success: true, data: null };
+
   let bcValidatorDetails = overrides?.bcValidatorDetails;
 
   if (!bcValidatorDetails) {

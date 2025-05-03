@@ -1,16 +1,13 @@
 import { beforeEach, describe, expect, it, vi, type Mock } from "vitest";
 import { DepositModel } from "pec/server/database/models";
-import {
-  buildMockDeposit,
-  generateObjectId,
-} from "pec/server/__mocks__/database-models";
+import { buildMockDeposit } from "pec/server/__mocks__/database-models";
 import { ACTIVE_STATUS, INACTIVE_STATUS } from "pec/types/app";
-import { MAIN_CHAIN } from "pec/lib/constants/contracts";
 import { sendEmailNotification } from "pec/server/helpers/emails/emailService";
 import { buildMockQNPendingDeposit } from "pec/server/__mocks__/quicknode";
 import { sumBy } from "lodash";
 import { getPendingDeposits } from "../../requests/quicknode/getPendingDeposits";
 import { processDeposits } from "../deposit";
+import { TEST_NETWORK_ID } from "pec/server/__mocks__/constants";
 
 vi.mock("pec/server/helpers/requests/quicknode/getPendingDeposits", () => ({
   getPendingDeposits: vi.fn(),
@@ -48,6 +45,7 @@ describe("processDeposits", { concurrent: false }, () => {
         },
       ],
       txHash: "0x123",
+      createdAt: new Date("2023-01-01"),
     });
 
     await DepositModel.create(mockWithdrawal);
@@ -62,7 +60,7 @@ describe("processDeposits", { concurrent: false }, () => {
       ],
     });
 
-    await processDeposits({ networkId: MAIN_CHAIN.id });
+    await processDeposits({ networkId: TEST_NETWORK_ID });
 
     const updatedDeposit = await DepositModel.findOne({
       _id: mockWithdrawal._id,
@@ -72,6 +70,8 @@ describe("processDeposits", { concurrent: false }, () => {
 
     expect(mockedSendEmailNotification).not.toHaveBeenCalled();
   });
+
+  it("Shouldn't process a deposit that has been created before the minimum process delay", async () => {});
 
   it("Should update the database record and send an email when the deposit is processed", async () => {
     const publicKey = "0x111";
@@ -92,7 +92,7 @@ describe("processDeposits", { concurrent: false }, () => {
       data: [],
     });
 
-    await processDeposits({ networkId: MAIN_CHAIN.id });
+    await processDeposits({ networkId: TEST_NETWORK_ID });
 
     const updatedWithdrawal = await DepositModel.findOne({
       _id: mockWithdrawal._id,
@@ -141,7 +141,7 @@ describe("processDeposits", { concurrent: false }, () => {
       ],
     });
 
-    await processDeposits({ networkId: MAIN_CHAIN.id });
+    await processDeposits({ networkId: TEST_NETWORK_ID });
 
     const updatedWithdrawal = await DepositModel.findOne({
       _id: firstMockDeposit._id,
