@@ -8,11 +8,8 @@ import { getPendingDeposits } from "../requests/quicknode/getPendingDeposits";
 import { QNPendingDepositsType } from "pec/lib/api/schemas/quicknode/pendingDeposits";
 import { sendEmailNotification } from "pec/server/helpers/emails/emailService";
 import { getMinimumProcessDelay } from "./common";
-import { getLogger } from "../logger";
 import { isBefore } from "date-fns";
-import { Types } from "mongoose";
-
-const logger = getLogger();
+import { logger } from "../logger";
 
 interface ProcessDepositsParams {
   networkId: SupportedNetworkIds;
