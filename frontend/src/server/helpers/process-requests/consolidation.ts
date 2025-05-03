@@ -24,7 +24,7 @@ export const processConsolidations = async ({
 }: ProcessConsolidationsParams): Promise<IResponse> => {
   const consolidations =
     overrides?.consolidations ??
-    (await ConsolidationModel.find({ status: ACTIVE_STATUS }));
+    (await ConsolidationModel.find({ status: ACTIVE_STATUS, networkId }));
 
   let bcValidatorDetails = overrides?.bcValidatorDetails;
 

@@ -29,6 +29,7 @@ export const processDeposits = async ({
     (await DepositModel.find({
       status: ACTIVE_STATUS,
       createdAt: { $lt: getMinimumProcessDelay() },
+      networkId,
     }).sort({ createdAt: -1 }));
 
   let qnPendingDeposits = overrides?.qnPendingDeposits;
@@ -48,7 +49,7 @@ export const processDeposits = async ({
 // There is an edge-case here where the user submits multiple deposits with the same public key and amount. In this case we only process 1 at a time (because we delete the object). That seems fine because on next run of this it will process the next one.
 //
 // @param Deposits Deposits that we are processing. The provided deposits override param MUST be ordered by date descending and have filtered out documents that have been created before the MINIMUM_PROCESS_DELAY
-const processProvidedDeposits = async (
+export const processProvidedDeposits = async (
   deposits: Deposit[],
   qnPendingDeposits: QNPendingDepositsType[],
 ): Promise<IResponse> => {
@@ -74,7 +75,11 @@ const processProvidedDeposits = async (
           },
         );
 
-        const totalAmount = sumBy(dbDeposit.deposits, (d) => d.amount);
+        const totalAmount = sumBy(
+          dbDeposit.deposits,
+          // We can safely assume this is populated because the above check ensures that
+          (d) => d.amount,
+        );
 
         await sendEmailNotification({
           emailName: "PECTRA_STAKING_MANAGER_DEPOSIT_COMPLETE",

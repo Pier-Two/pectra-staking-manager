@@ -2,7 +2,7 @@ import { getModelForClass, type DocumentType } from "@typegoose/typegoose";
 import mongoose, { type Model, type Mongoose } from "mongoose";
 import { env } from "pec/env";
 import { Consolidation } from "../classes/consolidation";
-import { Deposit, DepositEntry } from "../classes/deposit";
+import { Deposit } from "../classes/deposit";
 import { ValidatorSummary } from "../classes/validatorSummary";
 import { Withdrawal } from "../classes/withdrawal";
 import { ValidatorUpgrade } from "../classes/validatorUpgrade";
@@ -37,9 +37,6 @@ export const DepositModel: Model<Deposit> =
   mongoose.models.Deposit ?? getModelForClass(Deposit);
 
 export type DepositDocumentType = DocumentType<Deposit>;
-
-export const DepositEntryModel: Model<DepositEntry> =
-  mongoose.models.DepositEntry ?? getModelForClass(DepositEntry);
 
 // CONSOLIDATIONS
 

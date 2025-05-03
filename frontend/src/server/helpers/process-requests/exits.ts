@@ -23,7 +23,8 @@ export const processExits = async ({
   ...overrides
 }: ProcessAllExitsParams): Promise<IResponse> => {
   const exits =
-    overrides?.exits ?? (await ExitModel.find({ status: ACTIVE_STATUS }));
+    overrides?.exits ??
+    (await ExitModel.find({ status: ACTIVE_STATUS, networkId }));
 
   let bcValidatorDetails = overrides?.bcValidatorDetails;
 

@@ -6,14 +6,7 @@ import {
 } from "pec/constants/chain";
 import { StoreDatabaseDepositType } from "pec/lib/api/schemas/deposit";
 
-@modelOptions({
-  schemaOptions: {
-    timestamps: true,
-    toObject: { virtuals: true },
-    collection: "depositEntry",
-  },
-})
-export class DepositEntry {
+class DepositEntry {
   @prop({ required: true })
   public publicKey!: string;
 
@@ -35,11 +28,14 @@ export class Deposit implements Omit<StoreDatabaseDepositType, "deposits"> {
   @prop({ required: true, type: String })
   public status!: (typeof DatabaseDocumentStatuses)[number];
 
-  @prop({ required: true, ref: () => DepositEntry })
-  public deposits!: Ref<DepositEntry>[];
+  @prop({ required: true, type: () => DepositEntry })
+  public deposits!: DepositEntry[];
 
   @prop({ required: true })
   public txHash!: string;
+
+  @prop({ required: true })
+  public withdrawalAddress!: string;
 
   @prop()
   public email?: string;

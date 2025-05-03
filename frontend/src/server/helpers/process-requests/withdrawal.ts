@@ -29,6 +29,7 @@ export const processPartialWithdrawals = async ({
     (await WithdrawalModel.find({
       status: ACTIVE_STATUS,
       createdAt: { $lt: getMinimumProcessDelay() },
+      networkId,
     }).sort({ createdAt: 1 }));
 
   let allWithdrawals = overrides.qnPendingPartialWithdrawals;
@@ -51,7 +52,7 @@ export const processPartialWithdrawals = async ({
 //
 // @param withdrawals Withdrawals that we are processing. The provided withdrawals override param MUST be ordered by date ascending and have filtered out documents that have been created before the MINIMUM_PROCESS_DELAY
 // @param allPartialWithdrawals Support passing an override array, when we process a user's partial withdrawals we fetch this data earlier
-const processProvidedPartialWithdrawals = async (
+export const processProvidedPartialWithdrawals = async (
   dbWithdrawals: DocumentWithId<Withdrawal>[],
   qnPendingPartialWithdrawals: QNPendingPartialWithdrawalType[],
 ): Promise<IResponse> => {

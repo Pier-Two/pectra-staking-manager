@@ -4,7 +4,7 @@ import { getValidators } from "pec/server/helpers/requests/beaconchain/getValida
 import { getValidatorsForWithdrawAddress } from "pec/server/helpers/requests/beaconchain/getValidatorForWithdrawAddress";
 import {
   ConsolidationModel,
-  DepositEntryModel,
+  DepositModel,
   ExitModel,
   ValidatorUpgradeModel,
   WithdrawalModel,
@@ -18,6 +18,8 @@ import { TYPE_2_PREFIX } from "pec/constants/pectra";
 import { getPendingDeposits } from "../requests/quicknode/getPendingDeposits";
 import { getPendingPartialWithdrawals } from "../requests/quicknode/getPendingPartialWithdrawals";
 import { getLogger } from "../logger";
+import { processProvidedDeposits } from "../process-requests/deposit";
+import { processProvidedPartialWithdrawals } from "../process-requests/withdrawal";
 
 // We don't process anything in the database here and instead operate off of API responses
 // Reasoning is so we don't delay the client response longer than we should
@@ -42,12 +44,12 @@ export const getAndPopulateValidatorDetails = async (
 
   if (!bcValidatorDetails.success) return bcValidatorDetails;
 
-  const allValidatorIndexes = bcValidatorDetails.data.map(
-    (validator) => validator.validatorindex,
-  );
-
   const validatorDetails = bcValidatorDetails.data.map(
     prePopulateBeaconchainValidatorResponse,
+  );
+
+  const allValidatorIndexes = validatorDetails.map(
+    (validator) => validator.validatorIndex,
   );
 
   const keyedValidatorDetails = keyBy(
@@ -66,6 +68,29 @@ export const getAndPopulateValidatorDetails = async (
         `Validator with validatorIndex ${validatorIndex} not found in validator details`,
       );
       return;
+    }
+
+    if (fields.pendingRequests) {
+      fields.pendingRequests = [
+        ...(validator.pendingRequests ?? []),
+        ...fields.pendingRequests,
+      ];
+
+      for (const pendingRequest of fields.pendingRequests) {
+        if (pendingRequest.type === "withdrawals") {
+          fields.balance = validator.balance - pendingRequest.amount;
+          fields.pendingBalance =
+            validator.pendingBalance - pendingRequest.amount;
+        } else if (pendingRequest.type === "deposits") {
+          fields.pendingBalance =
+            validator.pendingBalance + pendingRequest.amount;
+        } else if (pendingRequest.type === "consolidation") {
+          console.log("In here", pendingRequest);
+          console.log(validator);
+          fields.pendingBalance =
+            validator.pendingBalance + pendingRequest.amount;
+        }
+      }
     }
 
     Object.assign(validator, fields);
@@ -128,16 +153,14 @@ export const getAndPopulateValidatorDetails = async (
       // If the current user owns the target validator, we need to modify the target validator to include the pending consolidation request
       mutateValidator(targetValidator.validatorIndex, {
         pendingRequests: [
-          ...targetValidator.pendingRequests,
           { type: "consolidation", amount: consolidation.amount },
         ],
-        pendingBalance: targetValidator.pendingBalance + consolidation.amount,
       });
     }
   }
 
   await calculatePendingDepositsForValidators(
-    allValidatorIndexes,
+    address,
     validatorDetails,
     networkId,
     mutateValidator,
@@ -159,7 +182,7 @@ export const getAndPopulateValidatorDetails = async (
 // This function is used to calculate pending deposits for validators
 // We create a separate function for this mostly so the getPendingDeposits has a reduced scope and the memory assigned for this can be re-allocated sooner
 const calculatePendingDepositsForValidators = async (
-  validatorIndexes: number[],
+  withdrawalAddress: string,
   validatorDetails: ValidatorDetails[],
   networkId: SupportedNetworkIds,
   mutateValidator: (
@@ -167,16 +190,14 @@ const calculatePendingDepositsForValidators = async (
     fields: Partial<ValidatorDetails>,
   ) => void,
 ) => {
-  // TODO: We need to account for delays in propagation of deposits
-  //
-  // We only use this to reduce the amount of getPendingDeposits requests ensuring we only do it when we know they have a pending deposit
-  const numDeposits = (
-    await DepositEntryModel.find({
-      validatorIndex: { $in: validatorIndexes },
-    })
-  ).length;
+  const deposits = await DepositModel.find({
+    withdrawalAddress,
+    status: ACTIVE_STATUS,
+    networkId,
+  });
 
-  if (numDeposits > 0) {
+  // We only use this to reduce the amount of getPendingDeposits requests ensuring we only do it when we know they have a pending deposit
+  if (deposits.length > 0) {
     const pendingDepositsResponse = await getPendingDeposits(networkId);
 
     if (!pendingDepositsResponse.success) {
@@ -187,28 +208,64 @@ const calculatePendingDepositsForValidators = async (
       return;
     }
 
+    // We have to process deposits here, so that we can refetch Deposits from the DB ensuring they are up to date
+    const processDepositsResult = await processProvidedDeposits(
+      deposits,
+      pendingDepositsResponse.data,
+    );
+
+    if (!processDepositsResult.success) {
+      getLogger().error(
+        `Error processing deposits when fetching validators: ${processDepositsResult.error}`,
+      );
+    }
+
+    const updatedDeposits = await DepositModel.find({
+      status: ACTIVE_STATUS,
+      withdrawalAddress,
+      networkId,
+    });
+
+    const flattedDeposits = updatedDeposits.flatMap(
+      (deposit) => deposit.deposits,
+    );
+
     const groupedPendingDeposits = groupBy(
       pendingDepositsResponse.data,
       (pendingDeposit) => pendingDeposit.pubkey,
     );
 
-    for (const {
-      publicKey,
-      validatorIndex,
-      pendingRequests,
-      pendingBalance,
-    } of validatorDetails) {
+    for (const { publicKey, validatorIndex } of validatorDetails) {
       const pendingDeposits = groupedPendingDeposits[publicKey] ?? [];
 
       for (const pendingDeposit of pendingDeposits) {
+        // We need to remove each found deposit from the flatted deposits array
+        const index = flattedDeposits.findIndex(
+          (deposit) =>
+            deposit.validatorIndex === validatorIndex &&
+            deposit.amount === pendingDeposit.amount,
+        );
+
+        if (index !== -1) {
+          flattedDeposits.splice(index, 1);
+        }
+
         mutateValidator(validatorIndex, {
           pendingRequests: [
-            ...pendingRequests,
             { type: "deposits", amount: pendingDeposit.amount },
           ],
-          pendingBalance: pendingBalance + pendingDeposit.amount,
         });
       }
+    }
+
+    // Finally include all the remaining flattened deposits, that weren't included in the quicknode response
+    // This ensures we don't miss any deposits that were made before quicknode has a chance to pick them up
+    for (const remainingDeposit of flattedDeposits) {
+      mutateValidator(remainingDeposit.validatorIndex, {
+        pendingRequests: [
+          { type: "deposits", amount: remainingDeposit.amount },
+        ],
+      });
     }
   }
 };
@@ -223,15 +280,13 @@ export const calculatePendingWithdrawalsForValidators = async (
   ) => void,
 ) => {
   // We only use this to reduce the amount of getPendingWithdrawals requests ensuring we only do it when we know they have a pending deposit
-  const numWithdrawals = (
-    await WithdrawalModel.find({
-      validatorIndex: { $in: validatorIndexes },
-      status: ACTIVE_STATUS,
-      networkId,
-    })
-  ).length;
+  const withdrawals = await WithdrawalModel.find({
+    validatorIndex: { $in: validatorIndexes },
+    status: ACTIVE_STATUS,
+    networkId,
+  });
 
-  if (numWithdrawals > 0) {
+  if (withdrawals.length > 0) {
     const pendingPartialWithdrawals =
       await getPendingPartialWithdrawals(networkId);
 
@@ -243,29 +298,58 @@ export const calculatePendingWithdrawalsForValidators = async (
       return;
     }
 
+    const processWithdrawalsResult = await processProvidedPartialWithdrawals(
+      withdrawals,
+      pendingPartialWithdrawals.data,
+    );
+
+    if (!processWithdrawalsResult.success) {
+      getLogger().error(
+        `Error processing partial withdrawals when fetching validators: ${processWithdrawalsResult.error}`,
+      );
+    }
+
+    const updatedWithdrawals = await WithdrawalModel.find({
+      status: ACTIVE_STATUS,
+      validatorIndex: { $in: validatorIndexes },
+      networkId,
+    });
+
     const groupedPendingPartialWithdrawals = groupBy(
       pendingPartialWithdrawals.data,
       (pendingDeposit) => pendingDeposit.validator_index,
     );
 
-    for (const {
-      publicKey,
-      validatorIndex,
-      pendingRequests,
-      balance,
-    } of validatorDetails) {
+    for (const { publicKey, validatorIndex } of validatorDetails) {
       const pendingWithdrawals =
         groupedPendingPartialWithdrawals[publicKey] ?? [];
 
       for (const pendingWithdrawal of pendingWithdrawals) {
+        const foundIndex = updatedWithdrawals.findIndex(
+          (withdrawal) =>
+            withdrawal.validatorIndex === validatorIndex &&
+            withdrawal.amount === pendingWithdrawal.amount,
+        );
+
+        if (foundIndex !== -1) {
+          updatedWithdrawals.splice(foundIndex, 1);
+        }
+
         mutateValidator(validatorIndex, {
           pendingRequests: [
-            ...pendingRequests,
             { type: "withdrawals", amount: pendingWithdrawal.amount },
           ],
-          balance: balance - pendingWithdrawal.amount,
         });
       }
+    }
+
+    // Finally include all the remaining withdrawals, that weren't included in the quicknode response
+    for (const remainingWithdrawal of updatedWithdrawals) {
+      mutateValidator(remainingWithdrawal.validatorIndex, {
+        pendingRequests: [
+          { type: "withdrawals", amount: remainingWithdrawal.amount },
+        ],
+      });
     }
   }
 };

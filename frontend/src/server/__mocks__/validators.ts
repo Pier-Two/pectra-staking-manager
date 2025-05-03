@@ -37,10 +37,11 @@ export const generateWithdrawalCredentials = (
 export const buildMockBCValidatorsData = (
   overrides: Partial<BCValidatorDetails> = {},
 ): BCValidatorDetails => {
+  const balance =
+    (overrides.balance ?? faker.number.int({ min: 1000, max: 50000 })) * 1e9;
   return {
     activationeligibilityepoch: faker.number.int({ min: 1, max: 100 }),
     activationepoch: faker.number.int({ min: 1, max: 100 }),
-    balance: faker.number.int({ min: 1000, max: 50000 }),
     effectivebalance: faker.number.int({ min: 1000, max: 50000 }),
     exitepoch: faker.number.int({ min: 100, max: 500 }),
     lastattestationslot: faker.number.int({ min: 1, max: 10000 }),
@@ -56,6 +57,8 @@ export const buildMockBCValidatorsData = (
     withdrawalcredentials: generateWithdrawalCredentials(),
     total_withdrawals: faker.number.int({ min: 0, max: 100 }),
     ...overrides,
+    // Comes after the overrides to ensure they are not overridden
+    balance,
   };
 };
 
@@ -67,6 +70,7 @@ export const buildMockValidatorDetails = (
     activeDuration: `${faker.number.int({ min: 1, max: 100 })} days`,
     activeSince: faker.date.past().toISOString(),
     balance: faker.number.int({ min: 0, max: 10000 }),
+    pendingBalance: faker.number.int({ min: 0, max: 10000 }),
     pendingRequests: [generatePendingRequest(), generatePendingRequest()],
     effectiveBalance: faker.number.int({ min: 0, max: 10000 }),
     numberOfWithdrawals: faker.number.int({ min: 0, max: 100 }),

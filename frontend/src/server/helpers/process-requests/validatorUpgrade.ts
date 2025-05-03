@@ -28,6 +28,7 @@ export const processValidatorUpgrades = async ({
     overrides?.validatorUpgrades ??
     (await ValidatorUpgradeModel.find({
       status: ACTIVE_STATUS,
+      networkId,
     }));
 
   if (validatorUpgrades.length === 0) return { success: true, data: null };

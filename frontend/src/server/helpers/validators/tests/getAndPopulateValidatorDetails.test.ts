@@ -20,6 +20,7 @@ import { ISuccessResponse } from "pec/types/response";
 import { ValidatorDetails, ValidatorStatus } from "pec/types/validator";
 import { ACTIVE_STATUS } from "pec/types/app";
 import { TYPE_1_PREFIX } from "pec/constants/pectra";
+import { TEST_NETWORK_ID } from "pec/server/__mocks__/constants";
 
 vi.mock("pec/server/helpers/requests/beaconchain/getValidators", () => ({
   getValidators: vi.fn(),
@@ -72,7 +73,7 @@ describe("getAndPopulateValidatorDetails", () => {
 
     const validatorDetails = (await getAndPopulateValidatorDetails(
       "",
-      0,
+      TEST_NETWORK_ID,
     )) as ISuccessResponse<ValidatorDetails[]>;
 
     const [exitedValidator, activeValidator] = validatorDetails.data;
@@ -102,12 +103,15 @@ describe("getAndPopulateValidatorDetails", () => {
     });
 
     await ValidatorUpgradeModel.create(
-      buildMockValidatorUpgrade({ validatorIndex, status: ACTIVE_STATUS }),
+      buildMockValidatorUpgrade({
+        validatorIndex,
+        status: ACTIVE_STATUS,
+      }),
     );
 
     const validatorDetails = (await getAndPopulateValidatorDetails(
       "",
-      0,
+      TEST_NETWORK_ID,
     )) as ISuccessResponse<ValidatorDetails[]>;
 
     const [pendingUpgradeValidator, otherValidator] = validatorDetails.data;
@@ -120,44 +124,54 @@ describe("getAndPopulateValidatorDetails", () => {
     const sourceValidatorIndex = 90;
     const targetValidatorIndex = 100;
 
+    const sourceValidatorBalance = 32;
+    const targetValidatorBalance = 64;
+
+    const sourceValidator = buildMockBCValidatorsData({
+      status: "active_online",
+      validatorindex: sourceValidatorIndex,
+      withdrawalcredentials: generateWithdrawalCredentials(TYPE_1_PREFIX),
+      balance: sourceValidatorBalance,
+    });
+    const targetValidator = buildMockBCValidatorsData({
+      status: "active_online",
+      validatorindex: targetValidatorIndex,
+      balance: targetValidatorBalance,
+    });
+
     mockedGetValidators.mockResolvedValueOnce({
       success: true,
-      data: [
-        buildMockBCValidatorsData({
-          status: "active_online",
-          validatorindex: sourceValidatorIndex,
-        }),
-        buildMockBCValidatorsData({
-          status: "active_online",
-          validatorindex: targetValidatorIndex,
-        }),
-      ],
+      data: [sourceValidator, targetValidator],
     });
-    const consolidationAmount = 32;
 
     await ConsolidationModel.create(
       buildMockConsolidation({
         sourceValidatorIndex: sourceValidatorIndex,
         targetValidatorIndex: targetValidatorIndex,
         status: ACTIVE_STATUS,
-        amount: consolidationAmount,
+        amount: sourceValidatorBalance,
       }),
     );
 
     const validatorDetails = (await getAndPopulateValidatorDetails(
       "",
-      0,
+      TEST_NETWORK_ID,
     )) as ISuccessResponse<ValidatorDetails[]>;
 
-    const [sourceValidator, targetValidator] = validatorDetails.data;
-    expect(sourceValidator!.status).toEqual(ValidatorStatus.EXITED);
-    expect(targetValidator!.status).toEqual(ValidatorStatus.ACTIVE);
+    const [sourceValidatorResponse, targetValidatorResponse] =
+      validatorDetails.data;
 
-    expect(targetValidator?.pendingRequests).toEqual([
+    expect(sourceValidatorResponse!.status).toEqual(ValidatorStatus.EXITED);
+    expect(targetValidatorResponse!.status).toEqual(ValidatorStatus.ACTIVE);
+
+    expect(targetValidatorResponse!.pendingRequests).toEqual([
       {
         type: "consolidation",
-        amount: consolidationAmount,
+        amount: sourceValidatorBalance,
       },
     ]);
+    expect(targetValidatorResponse!.pendingBalance).toEqual(
+      targetValidatorBalance + sourceValidatorBalance,
+    );
   });
 });

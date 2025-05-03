@@ -1,15 +1,14 @@
 import { faker } from "@faker-js/faker";
 import { DatabaseDocumentStatuses } from "pec/types/app";
-import { SUPPORTED_NETWORKS_IDS } from "pec/constants/chain";
 import { type Consolidation } from "pec/server/database/classes/consolidation";
 import { Exit } from "../database/classes/exit";
 import { generateAddress } from "./validators";
 import { ValidatorUpgrade } from "../database/classes/validatorUpgrade";
 import { Deposit } from "../database/classes/deposit";
 import { Withdrawal } from "../database/classes/withdrawal";
-import { HydratedDocument } from "mongoose";
 import { ObjectId } from "mongodb";
 import { DocumentWithId } from "pec/types/database";
+import { TEST_NETWORK_ID } from "./constants";
 
 // Helper function to generate random txHash
 const generateTxHash = () => {
@@ -37,7 +36,7 @@ export const buildMockConsolidation = (
       max: 30000000,
     }),
     txHash: generateTxHash(),
-    networkId: faker.helpers.arrayElement(SUPPORTED_NETWORKS_IDS),
+    networkId: TEST_NETWORK_ID,
     amount: faker.number.int({ min: 1, max: 1000000 }),
     ...overrides,
   };
@@ -50,7 +49,7 @@ export const buildMockExit = (overrides: Partial<Exit> = {}): Exit => {
     withdrawalAddress: generateAddress(),
     validatorIndex: faker.number.int({ min: 1, max: 1000000 }),
     txHash: generateTxHash(),
-    networkId: faker.helpers.arrayElement(SUPPORTED_NETWORKS_IDS),
+    networkId: TEST_NETWORK_ID,
     amount: faker.number.int({ min: 1, max: 1000000 }),
     ...overrides,
   };
@@ -63,7 +62,7 @@ export const buildMockValidatorUpgrade = (
     status: faker.helpers.arrayElement(Object.values(DatabaseDocumentStatuses)),
     validatorIndex: faker.number.int({ min: 1, max: 1000000 }),
     txHash: generateTxHash(),
-    networkId: faker.helpers.arrayElement(SUPPORTED_NETWORKS_IDS),
+    networkId: TEST_NETWORK_ID,
     ...overrides,
   };
 };
@@ -77,16 +76,16 @@ export const buildMockDeposit = (
     status: faker.helpers.arrayElement(Object.values(DatabaseDocumentStatuses)),
     deposits: [
       {
-        _id: generateObjectId(),
         publicKey: faker.string.hexadecimal({ length: 96, prefix: "0x" }),
         validatorIndex: faker.number.int({ min: 1, max: 1000000 }),
         amount: faker.number.int({ min: 1, max: 1000000 }),
       },
-    ] as any,
+    ],
     txHash: generateTxHash(),
-    networkId: faker.helpers.arrayElement(SUPPORTED_NETWORKS_IDS),
+    networkId: TEST_NETWORK_ID,
     createdAt: faker.date.past(),
     updatedAt: faker.date.past(),
+    withdrawalAddress: generateAddress(),
     ...overrides,
   };
 };
@@ -99,7 +98,7 @@ export const buildMockWithdrawal = (
     email: faker.internet.email(),
     status: faker.helpers.arrayElement(Object.values(DatabaseDocumentStatuses)),
     txHash: generateTxHash(),
-    networkId: faker.helpers.arrayElement(SUPPORTED_NETWORKS_IDS),
+    networkId: TEST_NETWORK_ID,
     amount: faker.number.int({ min: 1, max: 1000000 }),
     validatorIndex: faker.number.int({ min: 1000000, max: 2000000 }),
     withdrawalAddress: generateAddress(),
