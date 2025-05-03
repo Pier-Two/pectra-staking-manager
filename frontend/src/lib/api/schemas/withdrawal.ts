@@ -1,24 +1,32 @@
 import { z } from "zod";
-import { DatabaseWithdrawalSchema } from "./database/withdrawal";
 import { EmailSchema } from "./email";
 import { ValidatorDataSchema } from "./validator";
-export const WithdrawalFormSchema = z.object({
-  withdrawals: z.array(
-    z.object({
-      validator: ValidatorDataSchema,
-      amount: z
-        .number()
-        .min(0, { message: "Please enter an acceptable amount" }),
-    }),
-  ),
+import { SupportedChainIdSchema } from "./network";
+import { emailSchema } from "pec/components/consolidation/summary/Email";
+
+export const FormWithdrawalSchema = z
+  .object({
+    withdrawals: z.array(
+      z.object({
+        validator: ValidatorDataSchema,
+        amount: z
+          .number()
+          .min(0, { message: "Please enter an acceptable amount" }),
+      }),
+    ),
+  })
+  .and(emailSchema);
+
+export type FormWithdrawalType = z.infer<typeof FormWithdrawalSchema>;
+
+export const StoreWithdrawalRequestSchema = z.object({
+  validatorIndex: z.number(),
+  withdrawalAddress: z.string(),
+  balance: z.number(),
+  amount: z.number(),
+  txHash: z.string(),
   email: EmailSchema,
-});
-
-export type WithdrawalFormType = z.infer<typeof WithdrawalFormSchema>;
-
-export const StoreWithdrawalRequestSchema = DatabaseWithdrawalSchema.omit({
-  status: true,
-  withdrawalIndex: true,
+  network: SupportedChainIdSchema,
 });
 
 export type StoreWithdrawalRequestType = z.infer<

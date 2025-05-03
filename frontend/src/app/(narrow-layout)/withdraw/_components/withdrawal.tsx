@@ -2,7 +2,6 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { sumBy } from "lodash";
-import { ArrowUpFromDot } from "lucide-react";
 import Image from "next/image";
 import { ValidatorHeader } from "pec/components/batch-deposits/validators/ValidatorHeader";
 import { Email } from "pec/components/consolidation/summary/Email";
@@ -17,21 +16,29 @@ import {
 import { useValidators } from "pec/hooks/useValidators";
 import { useWalletAddress } from "pec/hooks/useWallet";
 import { useSubmitWithdraw } from "pec/hooks/useWithdraw";
-import {
-  WithdrawalFormSchema,
-  type WithdrawalFormType,
-} from "pec/lib/api/schemas/withdrawal";
 import { formatAddressToShortenedString } from "pec/lib/utils/address";
-import { type FC, useState } from "react";
-import { useFieldArray, useForm } from "react-hook-form";
+import { FormProvider, useFieldArray, useForm } from "react-hook-form";
 import WithdrawalLoading from "./withdraw-loading";
+import {
+  FormWithdrawalSchema,
+  type FormWithdrawalType,
+} from "pec/lib/api/schemas/withdrawal";
+import {
+  StageAnimationParent,
+  StageAnimationStep,
+} from "pec/components/stage-animation";
 
-const Withdrawal: FC = () => {
+const Withdrawal = () => {
   const walletAddress = useWalletAddress();
-  const [showEmail, setShowEmail] = useState(false);
   const { activeType2Validators, isSuccess } = useValidators();
 
   const { submitWithdrawals, stage, setStage } = useSubmitWithdraw();
+
+  const form = useForm<FormWithdrawalType>({
+    resolver: zodResolver(FormWithdrawalSchema),
+    defaultValues: { withdrawals: [], email: "" },
+    mode: "onChange",
+  });
 
   const {
     handleSubmit,
@@ -40,23 +47,18 @@ const Withdrawal: FC = () => {
     control,
     watch,
     register,
-    formState: { isValid, errors },
-  } = useForm<WithdrawalFormType>({
-    resolver: zodResolver(WithdrawalFormSchema),
-    defaultValues: { withdrawals: [], email: "" },
-    mode: "onChange",
-  });
+    formState: { errors },
+  } = form;
 
   const { remove, append } = useFieldArray({
     control,
     name: "withdrawals",
   });
 
-  const [withdrawals, watchedEmail] = watch(["withdrawals", "email"]);
-  const email = watchedEmail ?? "";
+  const withdrawals = watch("withdrawals");
   const withdrawalTotal = sumBy(withdrawals, (withdrawal) => withdrawal.amount);
-  const disabled =
-    isValid && withdrawalTotal > 0 && (showEmail ? email.length > 0 : true);
+
+  const disabled = withdrawalTotal > 0;
 
   if (!isSuccess) return <WithdrawalLoading />;
 
@@ -83,12 +85,12 @@ const Withdrawal: FC = () => {
     setStage({ type: "data-capture" });
   };
 
-  const onSubmit = async (data: WithdrawalFormType) => {
+  const onSubmit = async (data: FormWithdrawalType) => {
     await submitWithdrawals(data.withdrawals, data.email ?? "");
   };
 
   return (
-    <>
+    <FormProvider {...form}>
       <div className="flex flex-col gap-5 pt-8">
         <div className="flex flex-row gap-3 pl-4">
           <Image
@@ -117,61 +119,60 @@ const Withdrawal: FC = () => {
         />
       </div>
 
-      {stage.type !== "sign-submit-finalise" && (
-        <>
-          <Email
-            cardText="Add your email to receive an email when your withdrawals are complete."
-            cardTitle="Notify me when complete"
-            summaryEmail={email}
-            setSummaryEmail={(email) =>
-              setValue("email", email, {
-                shouldValidate: true,
-              })
-            }
-            errors={errors}
-            showEmail={showEmail}
-            setShowEmail={setShowEmail}
-          />
-          <ValidatorHeader
-            selectedCount={withdrawals.length}
-            totalCount={activeType2Validators.length}
-            onClear={handleResetWithdrawal}
-          />
+      <StageAnimationParent
+        stage={stage.type}
+        stageOrder={["data-capture", "sign-submit-finalise"]}
+        stepClassName="flex flex-col gap-5 pt-8"
+      >
+        {stage.type !== "sign-submit-finalise" && (
+          <StageAnimationStep key="data-capture">
+            <Email
+              cardText="Add your email to receive an email when your withdrawals are complete."
+              cardTitle="Notify me when complete"
+            />
+            <ValidatorHeader
+              selectedCount={withdrawals.length}
+              totalCount={activeType2Validators.length}
+              onClear={handleResetWithdrawal}
+            />
 
-          <WithdrawalValidatorTable
-            validators={activeType2Validators}
-            withdrawals={withdrawals}
-            addWithdrawal={append}
-            removeWithdrawal={remove}
-            register={register}
-            errors={errors}
-          />
-        </>
-      )}
-      {stage.type === "sign-submit-finalise" && (
-        <ValidatorTable
-          headers={SUBMITTING_WITHDRAWAL_COLUMN_HEADERS}
-          data={withdrawals.map(
-            (w): WithdrawalTableValidatorDetails => ({
-              ...w.validator,
-              transactionStatus: stage.txHashes[w.validator.validatorIndex],
-              withdrawalAmount: w.amount,
-            }),
-          )}
-          wrapperProps={{ clearBackground: true }}
-          disableSort
-          disablePagination
-          renderOverrides={{
-            withdrawalAmount: (value) => (
-              <DisplayAmount
-                amount={value.withdrawalAmount}
-                opts={{ decimals: 4 }}
-              />
-            ),
-          }}
-        />
-      )}
-    </>
+            <WithdrawalValidatorTable
+              validators={activeType2Validators}
+              withdrawals={withdrawals}
+              addWithdrawal={append}
+              removeWithdrawal={remove}
+              register={register}
+              errors={errors}
+            />
+          </StageAnimationStep>
+        )}
+        {stage.type === "sign-submit-finalise" && (
+          <StageAnimationStep key="sign-submit-finalise">
+            <ValidatorTable
+              headers={SUBMITTING_WITHDRAWAL_COLUMN_HEADERS}
+              data={withdrawals.map(
+                (w): WithdrawalTableValidatorDetails => ({
+                  ...w.validator,
+                  transactionStatus: stage.txHashes[w.validator.validatorIndex],
+                  withdrawalAmount: w.amount,
+                }),
+              )}
+              wrapperProps={{ clearBackground: true }}
+              disableSort
+              disablePagination
+              renderOverrides={{
+                withdrawalAmount: (value) => (
+                  <DisplayAmount
+                    amount={value.withdrawalAmount}
+                    opts={{ decimals: 4 }}
+                  />
+                ),
+              }}
+            />
+          </StageAnimationStep>
+        )}
+      </StageAnimationParent>
+    </FormProvider>
   );
 };
 

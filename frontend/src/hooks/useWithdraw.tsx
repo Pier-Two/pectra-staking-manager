@@ -1,7 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { toast } from "pec/components/ui/Toast";
-import { type WithdrawalFormType } from "pec/lib/api/schemas/withdrawal";
-import { parseError } from "pec/lib/utils/parseError";
+import { type FormWithdrawalType } from "pec/lib/api/schemas/withdrawal";
 import { client } from "pec/lib/wallet/client";
 import { api } from "pec/trpc/react";
 import type { TxHashRecord, WithdrawWorkflowStages } from "pec/types/withdraw";
@@ -12,6 +11,8 @@ import { encodePacked, fromHex, parseGwei } from "viem";
 import { useActiveChainWithDefault } from "./useChain";
 import { useContracts } from "./useContracts";
 import { useRpcClient } from "./useRpcClient";
+import { trackEvent } from "pec/helpers/trackEvent";
+import { useEffect } from "react";
 
 export const useWithdraw = () => {
   const rpcClient = useRpcClient();
@@ -40,16 +41,24 @@ export const useSubmitWithdraw = () => {
   const [stage, setStage] = useImmer<WithdrawWorkflowStages>({
     type: "data-capture",
   });
+
+  // track stage
+  useEffect(() => {
+    trackEvent(`withdraw_stage_changed`, {
+      stage: stage.type,
+    });
+  }, [stage]);
+
   const contracts = useContracts();
   const rpcClient = useRpcClient();
   const account = useActiveAccount();
   const chain = useActiveChainWithDefault();
 
   const { mutateAsync: saveWithdrawalToDatabase } =
-    api.storeEmailRequest.storeWithdrawalRequest.useMutation();
+    api.storeFlowCompletion.storeWithdrawalRequest.useMutation();
 
   const submitWithdrawals = async (
-    withdrawals: WithdrawalFormType["withdrawals"],
+    withdrawals: FormWithdrawalType["withdrawals"],
     email: string,
   ) => {
     if (!contracts || !rpcClient || !account || !withdrawalFee) {
@@ -74,6 +83,7 @@ export const useSubmitWithdraw = () => {
     // We jump to this state because there is multiple signings
     setStage({ type: "sign-submit-finalise", txHashes });
 
+    // TODO: Integrate exits here, reemove this check
     const filteredWithdrawals = withdrawals.filter(
       (withdrawal) => withdrawal.amount > 0,
     );
@@ -114,20 +124,22 @@ export const useSubmitWithdraw = () => {
           txHashes,
         });
 
-        const result = await saveWithdrawalToDatabase({
-          requestData: {
+        // Emails get their own try-catch, because they are non-critical errors that we are kinda ignoring so the flow doesn't break for the user
+        try {
+          await saveWithdrawalToDatabase({
             validatorIndex: withdrawal.validator.validatorIndex,
+            balance: withdrawal.validator.balance,
             amount: withdrawal.amount,
             txHash: txHash.transactionHash,
             email,
-          },
-          network: chain.id,
-        });
-
-        if (!result.success) {
+            network: chain.id,
+            withdrawalAddress: account.address,
+          });
+        } catch (e) {
+          console.error("Error saving withdrawal to database", e);
           toast({
-            title: "Error withdrawing",
-            description: result.error,
+            title:
+              "Error saving withdrawal to database, emails may not be sent",
             variant: "error",
           });
 
@@ -139,6 +151,16 @@ export const useSubmitWithdraw = () => {
           description: "Withdrawal request submitted successfully",
           variant: "success",
         });
+
+        // track event
+        trackEvent("withdrawal_submitted", {
+          validatorIndex: withdrawal.validator.validatorIndex,
+          amount: withdrawal.amount,
+        });
+
+        if (email) {
+          trackEvent("withdrawal_email_submitted");
+        }
       } catch (error) {
         toast({
           title: "User cancelled",

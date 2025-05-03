@@ -1,6 +1,6 @@
 import { Check } from "lucide-react";
 import { PectraSpinner } from "pec/components/ui/custom/pectraSpinner";
-import { TransactionStatus } from "pec/types/withdraw";
+import { type TransactionStatus } from "pec/types/withdraw";
 
 export interface IDepositSignDataCard {
   transactionStatus: TransactionStatus;

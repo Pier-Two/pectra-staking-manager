@@ -1,4 +1,4 @@
-import { BeaconChainValidatorPerformance } from "pec/types/api";
+import { type BeaconChainValidatorPerformance } from "pec/types/api";
 
 export const PERFORMANCE_FILTERS = [
   "daily",

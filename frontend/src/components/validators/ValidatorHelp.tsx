@@ -1,8 +1,12 @@
 "use client";
 
-
 import { type FC } from "react";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "../ui/accordion";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "../ui/accordion";
 
 const CustomAccordionContent = ({ text }: { text: string }) => {
   return (
@@ -15,21 +19,34 @@ const CustomAccordionContent = ({ text }: { text: string }) => {
 };
 
 export const ValidatorHelp: FC = () => {
-  return (    
-    <Accordion type="single" collapsible className="w-full flex flex-col rounded-xl border border-zinc-200 bg-white px-4 text-left text-sm dark:border-gray-800 dark:bg-black">
-      <AccordionItem value="what-is-validator-consolidation" className="dark:border-gray-800">
+  return (
+    <Accordion
+      type="single"
+      collapsible
+      className="flex w-full flex-col rounded-xl border border-zinc-200 bg-white px-4 text-left text-sm dark:border-gray-800 dark:bg-black"
+    >
+      <AccordionItem
+        value="what-is-validator-consolidation"
+        className="dark:border-gray-800"
+      >
         <AccordionTrigger className="hover:no-underline">
           What is validator consolidation?
         </AccordionTrigger>
         <CustomAccordionContent text="Validator consolidation is the process of combining multiple validators into a single validator." />
       </AccordionItem>
-      <AccordionItem value="why-should-i-consolidate" className="dark:border-gray-800">
+      <AccordionItem
+        value="why-should-i-consolidate"
+        className="dark:border-gray-800"
+      >
         <AccordionTrigger className="hover:no-underline">
           Why should I consolidate?
         </AccordionTrigger>
-          <CustomAccordionContent text="Consolidating your validators allows you to take advantage of enhanced staking features." />
+        <CustomAccordionContent text="Consolidating your validators allows you to take advantage of enhanced staking features." />
       </AccordionItem>
-      <AccordionItem value="what-new-staking-features-does-consolidating-enable" className="border-none">
+      <AccordionItem
+        value="what-new-staking-features-does-consolidating-enable"
+        className="border-none"
+      >
         <AccordionTrigger className="hover:no-underline">
           What new staking features does consolidating enable?
         </AccordionTrigger>

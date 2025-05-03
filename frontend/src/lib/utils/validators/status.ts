@@ -1,15 +1,8 @@
 import {
-  ValidatorDetails,
+  type ValidatorDetails,
   type ValidatorLifecycleStatus,
   ValidatorStatus,
 } from "pec/types/validator";
-
-type ValidatorState =
-  | { type: "pending" }
-  | { type: "consolidation-source" }
-  | { type: "active" }
-  | { type: "inactive" }
-  | { type: "exited" };
 
 export const getValidatorStatus = (
   status: ValidatorLifecycleStatus,
@@ -42,9 +35,7 @@ export const getValidatorStatus = (
 
 export const validatorIsActive = (validator: ValidatorDetails): boolean => {
   return (
-    validator.status === ValidatorStatus.ACTIVE &&
-    !validator.hasPendingDeposit &&
-    validator.consolidationTransaction?.isConsolidatedValidator !== false
+    validator.status === ValidatorStatus.ACTIVE && !validator.pendingUpgrade
   );
 };
 
@@ -54,10 +45,4 @@ export const validatorIsInactive = (validator: ValidatorDetails): boolean => {
 
 export const validatorIsExited = (validator: ValidatorDetails): boolean => {
   return validator.status === ValidatorStatus.EXITED;
-};
-
-export const validatorHasPendingDeposit = (
-  validator: ValidatorDetails,
-): boolean => {
-  return validator.hasPendingDeposit;
 };

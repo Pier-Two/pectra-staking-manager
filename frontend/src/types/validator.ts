@@ -1,7 +1,7 @@
 import {
-  TYPE_0_PREFIX,
-  TYPE_1_PREFIX,
-  TYPE_2_PREFIX,
+  type TYPE_0_PREFIX,
+  type TYPE_1_PREFIX,
+  type TYPE_2_PREFIX,
 } from "pec/constants/pectra";
 import type {
   TransactionSchema,
@@ -21,6 +21,7 @@ export interface IConnectedAddress {
 export interface IDetectedValidators {
   cardTitle: string;
   validators: ValidatorDetails[];
+  layoutId?: string;
 }
 
 export interface ISourceValidatorCard {
@@ -36,19 +37,23 @@ export enum ValidatorStatus {
   EXITED = "Exited",
 }
 
+export const VALIDATOR_LIFECYCLE_STATUSES = [
+  "pending_initialized",
+  "pending_queued",
+  "active_ongoing",
+  "active_online",
+  "active_offline",
+  "active_exiting",
+  "active_slashed",
+  "exited_unslashed",
+  "exited",
+  "exited_slashed",
+  "withdrawal_possible",
+  "withdrawal_done",
+] as const;
+
 export type ValidatorLifecycleStatus =
-  | "pending_initialized"
-  | "pending_queued"
-  | "active_ongoing"
-  | "active_online"
-  | "active_offline"
-  | "active_exiting"
-  | "active_slashed"
-  | "exited_unslashed"
-  | "exited"
-  | "exited_slashed"
-  | "withdrawal_possible"
-  | "withdrawal_done";
+  (typeof VALIDATOR_LIFECYCLE_STATUSES)[number];
 
 export enum TransactionStatus {
   IN_PROGRESS = "In Progress",

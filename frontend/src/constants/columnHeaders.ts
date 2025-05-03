@@ -3,7 +3,7 @@ import type {
   IHeaderConfig,
   TableValidatorDetails,
 } from "pec/types/validatorTable";
-import { TransactionStatus } from "pec/types/withdraw";
+import { type TransactionStatus } from "pec/types/withdraw";
 
 export type WithdrawalTableValidatorDetails = TableValidatorDetails & {
   withdrawalAmount: number;
@@ -59,7 +59,8 @@ export const DASHBOARD_VALIDATOR_COLUMN_HEADERS: IHeaderConfig<ValidatorDetails>
     { label: "Active since", sortKey: "activeSince" },
     { label: "Credentials", sortKey: "withdrawalAddress", mobile: true },
     { label: "Status", sortKey: "status" },
-    { label: "Balance", sortKey: "balance", mobile: true },
+    { label: "Active balance", sortKey: "balance", mobile: true },
+    { label: "Pending balance", sortKey: "pendingBalance", mobile: true },
   ];
 
 export const SIGN_DEPOSIT_COLUMN_HEADERS = [

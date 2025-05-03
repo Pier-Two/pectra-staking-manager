@@ -7,7 +7,8 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "pec/components/ui/chart";
-import { useTheme } from "pec/hooks/useTheme";
+import { useIsMobile } from "pec/hooks/use-mobile";
+
 import { cn } from "pec/lib/utils";
 import type { IAreaChart } from "pec/types/chart";
 import type { FC } from "react";
@@ -28,7 +29,7 @@ const chartConfig = {
   },
 };
 
-export const AreaChartComponent: FC<IAreaChart> = ({ chart, isFullscreen }) => {
+export const AreaChartComponent: FC<IAreaChart> = ({ chart }) => {
   const { chartData, yAxis, legend, xAxis } = chart;
   const {
     lowerRange,
@@ -45,14 +46,6 @@ export const AreaChartComponent: FC<IAreaChart> = ({ chart, isFullscreen }) => {
     orientation: xOrientation,
   } = xAxis;
 
-  const { darkMode } = useTheme();
-
-  const axisTextStyle = {
-    stroke: darkMode ? "#e3e3e3" : "#a1a1a1",
-    fontSize: "11px",
-    fontWeight: 180,
-  };
-
   const formatTick = (value: number): string => {
     const abs = Math.abs(value);
     const format = (val: number, suffix: string) =>
@@ -68,27 +61,14 @@ export const AreaChartComponent: FC<IAreaChart> = ({ chart, isFullscreen }) => {
     return value.toFixed(2);
   };
 
+  const isMobile = useIsMobile();
+
   return (
     <ChartContainer
-      className={cn(
-        "mx-auto w-full max-w-[800px]",
-        isFullscreen && "max-w-none",
-      )}
+      className={cn("aspect-auto h-full w-full flex-1")}
       config={chartConfig}
     >
-      <AreaChart
-        data={chartData}
-        margin={{ top: 10, right: 50, left: 10, bottom: isFullscreen ? 200 : 10 }}
-        width={
-          typeof window !== "undefined"
-            ? isFullscreen
-              ? window.innerWidth - 40
-              : Math.min(window.innerWidth - 40, 800)
-            : 800
-        }
-        height={isFullscreen ? 400 : 300}
-        className="w-full"
-      >
+      <AreaChart data={chartData} className="h-full w-full">
         <defs>
           <linearGradient id="fillPectra" x1="0" y1="0" x2="0" y2="1">
             <stop
@@ -148,32 +128,33 @@ export const AreaChartComponent: FC<IAreaChart> = ({ chart, isFullscreen }) => {
               : undefined
           }
           minTickGap={32}
-          tick={axisTextStyle}
           orientation={xOrientation}
           className="max-sm:minTickGap-48"
         />
 
-        <YAxis
-          allowDataOverflow={true}
-          tickLine={false}
-          axisLine={false}
-          domain={[lowerRange, upperRange]}
-          ticks={ticks}
-          tick={axisTextStyle}
-          tickFormatter={(value) => formatTick(+value)}
-          orientation={yOrientation}
-          interval={0}
-          className="max-sm:width-40"
-        >
-          {showYLabel && (
-            <Label
-              angle={yOrientation === "left" ? -90 : 90}
-              value={yLabel}
-              position={yOrientation === "left" ? "insideLeft" : "insideRight"}
-              style={{ textAnchor: "middle" }}
-            />
-          )}
-        </YAxis>
+        {!isMobile && (
+          <YAxis
+            allowDataOverflow={true}
+            tickLine={false}
+            axisLine={false}
+            domain={[lowerRange, upperRange]}
+            ticks={ticks}
+            tickFormatter={(value) => formatTick(+value)}
+            orientation={yOrientation}
+            interval={0}
+          >
+            {showYLabel && (
+              <Label
+                angle={yOrientation === "left" ? -90 : 90}
+                value={yLabel}
+                position={
+                  yOrientation === "left" ? "insideLeft" : "insideRight"
+                }
+                style={{ textAnchor: "middle" }}
+              />
+            )}
+          </YAxis>
+        )}
 
         <ChartTooltip
           cursor={false}
@@ -212,7 +193,7 @@ export const AreaChartComponent: FC<IAreaChart> = ({ chart, isFullscreen }) => {
 
         {legend && (
           <ChartLegend
-            className={`${showXLabel ? "mt-4" : ""}`}
+            className={cn(showXLabel ? "mt-4" : "", "ml-8")}
             content={<ChartLegendContent />}
           />
         )}

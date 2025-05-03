@@ -1,18 +1,17 @@
-import type {
-  IHeaderConfig,
-  TableValidatorDetails,
+import {
+  type IHeaderConfig,
+  type TableValidatorDetails,
 } from "pec/types/validatorTable";
 import { TableHeader } from "./TableHeader";
 import { useValidatorSorting } from "pec/hooks/use-validator-sorting";
 import { TableNoResults } from "pec/components/dashboard/validatorTable/TableNoResults";
 import { ValidatorRow } from "pec/components/ui/table/ValidatorRow";
 import { usePagination } from "pec/hooks/use-pagination";
-import type { ReactNode } from "react";
+import { type ReactNode } from "react";
 import { TablePagination } from "./TablePagination";
-import type { ValidatorCardWrapperProps } from "../custom/validator-card-wrapper";
+import { type ValidatorCardWrapperProps } from "../custom/validator-card-wrapper";
 import { useSearch } from "pec/hooks/useSearch";
 import { SearchFilter } from "./SearchFilter";
-import { TableRow, TableCell } from "../table";
 import { EnterAnimation } from "pec/app/(login-layout)/welcome/_components/enter-animation";
 
 interface ValidatorTableProps<T extends TableValidatorDetails> {
@@ -74,7 +73,7 @@ export const ValidatorTable = <T extends TableValidatorDetails>({
           <SearchFilter searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
         )}
         {children?.({ setCurrentPage })}
-        <table className="table w-full table-auto border-separate border-spacing-y-2 pb-4">
+        <table className="table w-full table-auto border-separate border-spacing-y-2">
           {/* Render the pagination controls from the parent */}
 
           <TableHeader

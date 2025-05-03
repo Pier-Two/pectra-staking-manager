@@ -10,7 +10,9 @@ import {
   SidebarHeader,
 } from "pec/components/ui/sidebar";
 import { useActiveAccount } from "thirdweb/react";
+import DarkMode from "./dark-mode";
 import { cardPresets } from "./dashboard/tools/ToolCard";
+import { ValidatorCount } from "./ui/custom/ValidatorCount";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -18,17 +20,8 @@ import {
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import { ConnectWalletButton } from "./ui/wallet/ConnectWallet";
-import { useValidators } from "pec/hooks/useValidators";
-import { PectraSpinner } from "./ui/custom/pectraSpinner";
-import DarkMode from "./dark-mode";
 
 const links = [
-  {
-    id: "validators",
-    name: "Dashboard",
-    href: "/dashboard",
-    requireAuth: true,
-  },
   {
     id: "charts",
     name: "Charts",
@@ -39,7 +32,6 @@ const links = [
 
 export function AppSidebar() {
   const account = useActiveAccount();
-  const { data: validators, isLoading: validatorsLoading } = useValidators();
 
   // Filter links based on authentication status
   const filteredLinks = links.filter(
@@ -73,26 +65,11 @@ export function AppSidebar() {
         <SidebarGroup>
           <div className="flex items-center">
             <a
-              href="/validators-found"
+              href="/dashboard"
               className="flex w-full items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700"
             >
               My Validators
-              {validatorsLoading ? (
-                <PectraSpinner />
-              ) : (
-                <div
-                  className="relative flex h-6 w-6 items-center justify-center rounded-[3px] font-inter text-black dark:text-zinc-50"
-                  style={{
-                    background:
-                      "linear-gradient(130.54deg, #00FFA7 11.34%, #5164DC 31.73%, #313C86 59.22%, rgba(113, 255, 224, 0.8) 100%)",
-                  }}
-                >
-                  <div className="absolute inset-[1px] rounded-[3px] bg-sidebar" />
-                  <p className="relative text-sm font-medium text-gray-700 dark:text-gray-200">
-                    {validators?.length}
-                  </p>
-                </div>
-              )}
+              <ValidatorCount />
             </a>
           </div>
           {filteredLinks.map((link) => (
@@ -129,7 +106,7 @@ export function AppSidebar() {
       </SidebarContent>
       <SidebarFooter className="w-full flex-row items-center justify-center space-x-2 pb-12">
         <DarkMode />
-        <ConnectWalletButton />
+        <ConnectWalletButton className="!w-fit" />
       </SidebarFooter>
     </Sidebar>
   );

@@ -6,6 +6,11 @@ import { EIconPosition } from "pec/types/components";
 import { PrimaryButton } from "../../ui/custom/PrimaryButton";
 import { Separator } from "../../ui/separator";
 import { displayedEthAmount } from "pec/lib/utils/validators/balance";
+import { useActiveChainWithDefault } from "pec/hooks/useChain";
+import {
+  getBlockExplorerTxUrl,
+  openInNewTab,
+} from "pec/helpers/getExternalLink";
 
 export interface IDistributionInformation {
   onSubmit?: () => void;
@@ -26,6 +31,8 @@ export const DistributionInformation = ({
   totalAllocated,
   totalToDistribute,
 }: IDistributionInformation) => {
+  const chain = useActiveChainWithDefault();
+
   const distributionStats = [
     {
       icon: "Ξ",
@@ -106,7 +113,7 @@ export const DistributionInformation = ({
         (stage.transactionStatus.status === "submitted" ||
           stage.transactionStatus.status === "finalised") && (
           <>
-            <div className="rounded-md bg-green-100 p-2 text-[13px] font-570 text-green-500">
+            <div className="rounded-md bg-green-500/[7%] p-2 text-[13px] font-570 text-green-500">
               Your transactions{" "}
               {stage.transactionStatus.status === "submitted"
                 ? "have been submitted successfully and will be processed shortly. It is safe to leave this page."
@@ -120,12 +127,11 @@ export const DistributionInformation = ({
               iconPosition={EIconPosition.RIGHT}
               disabled={false}
               onClick={() => {
-                window.open(
-                  // I hate to cast here, but this is type-narrowed properly with the above check, but for some reason typescript is confused
-                  // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
-                  `https://etherscan.io/tx/${(stage.transactionStatus as any).txHash}`,
-                  "_blank",
-                );
+                // I hate to cast here, but this is type-narrowed properly with the above check, but for some reason typescript is confused
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment
+                const txHash = (stage.transactionStatus as any).txHash;
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+                openInNewTab(getBlockExplorerTxUrl(txHash, chain.id));
               }}
             />
           </>

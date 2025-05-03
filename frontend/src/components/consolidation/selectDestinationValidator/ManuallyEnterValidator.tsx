@@ -16,7 +16,8 @@ import { useActiveChainWithDefault } from "pec/hooks/useChain";
 import { api } from "pec/trpc/react";
 import { displayedEthAmount } from "pec/lib/utils/validators/balance";
 import { PrimaryButton } from "pec/components/ui/custom/PrimaryButton";
-import { ValidatorDetails } from "pec/types/validator";
+import { type ValidatorDetails } from "pec/types/validator";
+import { EnterAnimation } from "pec/app/(login-layout)/welcome/_components/enter-animation";
 
 interface ManuallyEnterValidatorProps {
   goToSelectSourceValidators: (validator: ValidatorDetails) => void;
@@ -44,6 +45,7 @@ export const ManuallyEnterValidator = ({
     data: validator, // typeof validator === "string" is true if theres an error
     isLoading: isLoadingValidator,
     isError: isErrorGettingValidator,
+    error: validatorError,
   } = api.validators.getValidatorDetails.useQuery(
     {
       searchTerm: searchTerm!,
@@ -93,103 +95,112 @@ export const ManuallyEnterValidator = ({
   };
 
   return (
-    <div className="mx-auto space-y-6">
-      <form onSubmit={handleSubmit} className="flex gap-4">
-        <Input
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          placeholder="Enter validator index or public key (0x...)"
-          className="flex-1"
-        />
-        <PrimaryButton type="submit" label="Search" className="!px-8" />
-      </form>
+    <EnterAnimation>
+      <div className="flex flex-col gap-6">
+        <form onSubmit={handleSubmit} className="flex gap-4">
+          <Input
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            placeholder="Enter validator index or public key (0x...)"
+            className="flex-1 rounded-full border-indigo-200 bg-white text-gray-500 dark:border-gray-800 dark:bg-black dark:text-white"
+          />
+          <PrimaryButton type="submit" label="Search" className="!px-8" />
+        </form>
 
-      {searchTerm && (
-        <Card className="overflow-hidden">
-          <CardHeader>
-            <CardTitle>Validator Details</CardTitle>
-          </CardHeader>
-          <CardContent className="pt-4">
-            {isLoadingValidator && (
-              <div className="flex flex-col space-y-4">
-                <Skeleton className="h-12 w-32 rounded-xl bg-gray-200 dark:bg-gray-800" />
-                <Skeleton className="h-12 w-full rounded-xl bg-gray-200 dark:bg-gray-800" />
-                <Skeleton className="h-12 w-28 rounded-xl bg-gray-200 dark:bg-gray-800" />
-              </div>
-            )}
-
-            {(isErrorGettingValidator || typeof validator === "string") && (
-              <div className="text-red-500">
-                Error loading validator data. Please try again.
-              </div>
-            )}
-
-            {validator && typeof validator !== "string" && (
-              <div className="space-y-4">
-                <div>
-                  <div className="mb-1 text-sm font-medium text-gray-500 dark:text-gray-400">
-                    Validator Index
+        {searchTerm && (
+          <EnterAnimation>
+            <Card>
+              <CardHeader>
+                <CardTitle>Validator Details</CardTitle>
+              </CardHeader>
+              <CardContent>
+                {isLoadingValidator && (
+                  <div className="flex flex-col space-y-4">
+                    <Skeleton className="h-12 w-32 rounded-xl bg-gray-200 dark:bg-gray-800" />
+                    <Skeleton className="h-12 w-full rounded-xl bg-gray-200 dark:bg-gray-800" />
+                    <Skeleton className="h-12 w-28 rounded-xl bg-gray-200 dark:bg-gray-800" />
                   </div>
-                  <div className="font-mono text-lg">
-                    {validator.validatorIndex}
-                  </div>
-                </div>
-
-                <div>
-                  <div className="mb-1 flex items-center justify-between text-sm font-medium text-gray-500 dark:text-gray-400">
-                    <span>Public Key</span>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => copyToClipboard(validator.publicKey)}
-                      className="h-8 px-2"
-                    >
-                      <Copy className="mr-1 h-4 w-4" />
-                      <span className="text-xs">
-                        {copied ? "Copied!" : "Copy"}
-                      </span>
-                    </Button>
-                  </div>
-                  <div className="break-all font-mono text-sm">
-                    {validator.publicKey}
-                  </div>
-                </div>
-
-                <div>
-                  <div className="mb-1 text-sm font-medium text-gray-500 dark:text-gray-400">
-                    Balance
-                  </div>
-                  <div className="text-lg font-semibold">
-                    Ξ {displayedEthAmount(validator.balance)}
-                  </div>
-                </div>
-              </div>
-            )}
-          </CardContent>
-          <CardFooter>
-            {validator && typeof validator !== "string" && (
-              <div className="flex w-full flex-col gap-2">
-                <PrimaryButton
-                  onClick={handleConfirmValidator}
-                  disabled={
-                    validator && !validator.withdrawalAddress.startsWith("0x02")
-                  }
-                  label={`Use ${validator.validatorIndex} as Destination Validator`}
-                />
-
-                {!validator.withdrawalAddress.startsWith("0x02") && (
-                  <p className="w-full text-center text-xs">
-                    You can&apos;t set this validator as a consolidation target
-                    as it is not the correct validator version. (Expected
-                    version 0x02, got{" "}
-                    {validator.withdrawalAddress.substring(0, 4)})
-                  </p>
                 )}
-              </div>
-            )}
-          </CardFooter>
-        </Card>
-      )}
-    </div>
+
+                {(isErrorGettingValidator || typeof validator === "string") && (
+                  <div className="text-red-500">{validatorError?.message}</div>
+                )}
+
+                {validator && typeof validator !== "string" && (
+                  <div className="space-y-4">
+                    <div>
+                      <div className="mb-1 text-sm font-medium text-gray-500 dark:text-gray-400">
+                        Validator Index
+                      </div>
+                      <div className="font-mono text-lg">
+                        {validator.validatorIndex}
+                      </div>
+                    </div>
+
+                    <div>
+                      <div className="mb-1 flex items-center justify-between text-sm font-medium text-gray-500 dark:text-gray-400">
+                        <span>Public Key</span>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => copyToClipboard(validator.publicKey)}
+                          className="h-8 px-2"
+                        >
+                          <Copy className="mr-1 h-4 w-4" />
+                          <span className="text-xs">
+                            {copied ? "Copied!" : "Copy"}
+                          </span>
+                        </Button>
+                      </div>
+                      <div className="break-all font-mono text-sm">
+                        {validator.publicKey}
+                      </div>
+                    </div>
+
+                    <div>
+                      <div className="mb-1 text-sm font-medium text-gray-500 dark:text-gray-400">
+                        Balance
+                      </div>
+                      <div className="text-lg font-semibold">
+                        Ξ {displayedEthAmount(validator.balance)}
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </CardContent>
+              <CardFooter>
+                {!isErrorGettingValidator && (
+                  <div className="flex w-full flex-col gap-2">
+                    <PrimaryButton
+                      onClick={handleConfirmValidator}
+                      disabled={
+                        !validator ||
+                        (validator &&
+                          !validator.withdrawalAddress.startsWith("0x02"))
+                      }
+                      label={
+                        validator
+                          ? `Use ${validator.validatorIndex} as Destination Validator`
+                          : ""
+                      }
+                    />
+
+                    {validator &&
+                      !validator.withdrawalAddress.startsWith("0x02") && (
+                        <p className="w-full text-center text-xs">
+                          You can&apos;t set this validator as a consolidation
+                          target as it is not the correct validator version.
+                          (Expected version 0x02, got{" "}
+                          {validator.withdrawalAddress.substring(0, 4)})
+                        </p>
+                      )}
+                  </div>
+                )}
+              </CardFooter>
+            </Card>
+          </EnterAnimation>
+        )}
+      </div>
+    </EnterAnimation>
   );
 };

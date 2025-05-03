@@ -26,21 +26,21 @@ export const cardPresets = {
     delay: dashboardAnimationDelays.toolCards.consolidate,
   },
   BatchDeposit: {
-    title: "Batch Deposit",
+    title: "Deposit",
     description:
-      "Deposit multiple active validators at once, via Pier Two's batch deposit contract.",
-    url: "/batch-deposit",
+      "Deposit any increment of ETH to your existing validators to manage their balance.",
+    url: "/deposit",
     buttonLabel: "Deposit now",
     icon: <ArrowDownToDot size={24} />,
     iconHover: "group-hover:text-blue-200",
     delay: dashboardAnimationDelays.toolCards.batchDeposit,
   },
   Withdrawal: {
-    title: "Partial Withdrawal",
+    title: "Unstake",
     description:
-      "Submit onchain execution layer withdrawal requests against validators, as per Pectra EIP-7002.",
+      "Trigger onchain partial withdrawals and full exits with a transaction.",
     url: "/withdraw",
-    buttonLabel: "Withdraw now",
+    buttonLabel: "Unstake now",
     icon: <ArrowUpFromDot size={24} />,
     iconHover: "group-hover:text-green-400",
     delay: dashboardAnimationDelays.toolCards.withdrawal,
@@ -53,23 +53,23 @@ export const ToolCard = ({ preset }: ToolCardProps) => {
 
   return (
     <EnterAnimation delay={delay}>
-      <div className="hover:bg-activeCard hover:border-3 group flex h-[231px] grow basis-0 flex-col space-y-4 rounded-2xl border border-indigo-200 bg-white p-6 text-gray-900 hover:cursor-pointer hover:text-white dark:border-gray-700 dark:bg-black dark:text-white">
-        <div
-          className={cn(
-            "flex flex-row items-center gap-x-2 text-primary-dark dark:text-indigo-200",
-            iconHover,
-          )}
-        >
-          {icon}
-          <p className="text-2xl font-670 leading-[24px]">{title}</p>
-        </div>
+      <Link href={url}>
+        <div className="hover:bg-activeCard hover:border-3 group flex h-[231px] grow basis-0 flex-col space-y-4 rounded-2xl border border-indigo-200 bg-white p-6 text-gray-900 hover:cursor-pointer hover:text-white dark:border-gray-700 dark:bg-black dark:text-white">
+          <div
+            className={cn(
+              "flex flex-row items-center gap-x-2 text-primary-dark dark:text-indigo-200",
+              iconHover,
+            )}
+          >
+            {icon}
+            <p className="text-2xl font-670 leading-[24px]">{title}</p>
+          </div>
 
-        <div className="flex flex-grow flex-col justify-end gap-y-6">
-          <p className="h-12 text-base font-380 leading-[20px]">
-            {description}
-          </p>
+          <div className="flex flex-grow flex-col justify-end gap-y-6">
+            <p className="h-12 text-base font-380 leading-[20px]">
+              {description}
+            </p>
 
-          <Link href={url}>
             <PrimaryButton
               className="w-fit border-white text-xs font-570 leading-[13px] backdrop-blur-xl group-hover:border group-hover:bg-white/10 group-hover:text-white dark:group-hover:bg-white dark:group-hover:text-indigo-800"
               label={buttonLabel}
@@ -79,9 +79,9 @@ export const ToolCard = ({ preset }: ToolCardProps) => {
               iconPosition={EIconPosition.RIGHT}
               disabled={false}
             />
-          </Link>
+          </div>
         </div>
-      </div>
+      </Link>
     </EnterAnimation>
   );
 };

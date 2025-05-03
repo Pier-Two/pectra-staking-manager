@@ -1,10 +1,11 @@
 "use client";
 
+import { useTheme } from "next-themes";
 import Image from "next/image";
 import Link from "next/link";
 import { logoPaths } from "pec/constants/logo";
 import { labrysUrl, pierTwoUrl } from "pec/helpers/getExternalLink";
-import { useTheme } from "pec/hooks/useTheme";
+
 import { cn } from "pec/lib/utils";
 import { EThemeMode } from "pec/types/theme";
 import type { FC } from "react";
@@ -16,9 +17,15 @@ interface RenderLogoProps {
   height: number;
 }
 
-export const RenderLogo = ({ logo, grayscale = false, width, height }: RenderLogoProps) => {
-  const { darkMode } = useTheme();
-  const mode: EThemeMode = darkMode ? EThemeMode.DARK : EThemeMode.LIGHT;
+export const RenderLogo = ({
+  logo,
+  grayscale = false,
+  width,
+  height,
+}: RenderLogoProps) => {
+  const { resolvedTheme: theme } = useTheme();
+  const mode: EThemeMode =
+    theme === "dark" ? EThemeMode.DARK : EThemeMode.LIGHT;
   const currentLogo = logoPaths[logo];
   if (!currentLogo) return null;
 
@@ -30,7 +37,8 @@ export const RenderLogo = ({ logo, grayscale = false, width, height }: RenderLog
         src={logoSrc}
         alt={logo}
         className={cn({
-          "transition-grayscale grayscale duration-200 group-hover:grayscale-0": grayscale,
+          "transition-grayscale grayscale duration-200 group-hover:grayscale-0":
+            grayscale,
         })}
         width={width}
         height={height}
@@ -40,8 +48,11 @@ export const RenderLogo = ({ logo, grayscale = false, width, height }: RenderLog
 };
 
 export const BottomBar: FC = () => {
-
-  const items: { logo: "PierTwo" | "Labrys"; text: string; redirectUrl: string }[] = [
+  const items: {
+    logo: "PierTwo" | "Labrys";
+    text: string;
+    redirectUrl: string;
+  }[] = [
     {
       logo: "PierTwo",
       text: "Product by",
@@ -53,20 +64,30 @@ export const BottomBar: FC = () => {
       redirectUrl: labrysUrl,
     },
   ];
-  
+
   return (
-    <footer className="fixed bottom-0 z-10 flex flex-col sm:flex-row p-4 w-full items-center justify-center sm:justify-between border-t gap-y-4 bg-[rgba(255,255,255,0.98)] px-6 shadow-sm dark:border-gray-800 dark:bg-gray-950">
-      <div className="text-xs leading-[11px] text-zinc-950 dark:text-gray-300 text-center sm:text-left">
+    <footer className="fixed bottom-0 z-10 flex w-full flex-col items-center justify-center gap-y-4 border-t bg-[rgba(255,255,255,0.98)] p-4 px-6 shadow-sm dark:border-gray-800 dark:bg-gray-950 sm:flex-row sm:justify-between">
+      <div className="text-center text-xs leading-[11px] text-zinc-950 dark:text-gray-300 sm:text-left">
         Built with 🩶 by and for the Ethereum community
       </div>
 
-      <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-8">
+      <div className="flex flex-col items-center gap-4 sm:flex-row sm:gap-8">
         {items.map((item) => (
-          <Link href={item.redirectUrl} target="_blank" className="flex flex-wrap items-center justify-center gap-x-3 hover:cursor-pointer" key={item.logo}>
+          <Link
+            href={item.redirectUrl}
+            target="_blank"
+            className="flex flex-wrap items-center justify-center gap-x-3 hover:cursor-pointer"
+            key={item.logo}
+          >
             <p className="text-xs leading-[11px] text-zinc-950 dark:text-gray-300">
               {item.text}
-          </p>
-            <RenderLogo logo={item.logo} grayscale={true} width={100} height={100} />
+            </p>
+            <RenderLogo
+              logo={item.logo}
+              grayscale={true}
+              width={100}
+              height={100}
+            />
           </Link>
         ))}
       </div>

@@ -12,7 +12,7 @@ import {
 import { useConsolidationFee } from "pec/hooks/use-consolidation";
 import { formatEther, parseEther } from "viem";
 import { displayedEthAmount } from "pec/lib/utils/validators/balance";
-import { ValidatorDetails } from "pec/types/validator";
+import { type ValidatorDetails } from "pec/types/validator";
 import { sumBy } from "lodash";
 
 interface OverviewProps {
@@ -108,6 +108,15 @@ export const Overview = ({
           </div>
           {/*TODO: Populate with real estimate*/}
           <div className="text-sm font-medium">12-24 hours</div>
+        </div>
+
+        <div className="flex flex-row justify-between">
+          <div className="text-sm text-zinc-700 dark:text-zinc-300">
+            Your retained validator index number
+          </div>
+          <div className="text-sm font-medium">
+            {destinationValidator.validatorIndex}
+          </div>
         </div>
       </div>
     </div>

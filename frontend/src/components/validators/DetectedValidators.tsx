@@ -12,7 +12,7 @@ import { CONSOLIDATION_TABLE_HEADERS } from "pec/constants/columnHeaders";
 import { AnimatePresence, motion } from "motion/react";
 
 export const DetectedValidators: FC<IDetectedValidators> = (props) => {
-  const { cardTitle, validators } = props;
+  const { cardTitle, validators, layoutId } = props;
 
   const activeValidators = validators?.filter((validator) =>
     validatorIsActive(validator),
@@ -34,8 +34,9 @@ export const DetectedValidators: FC<IDetectedValidators> = (props) => {
       animate={{ height: "auto" }}
       transition={{ duration: 1 }}
     >
-      <motion.div layoutId={"validators-found-detected-validators"}>
+      <motion.div layoutId={layoutId}>
         <ValidatorCardWrapper
+          className="bg-white dark:bg-gray-900"
           isSelected={showValidators}
           onClick={() => setShowValidators(!showValidators)}
         >

@@ -1,10 +1,13 @@
 import { CircleMinus, CirclePlay, CirclePlus } from "lucide-react";
 import { ValidatorStatus } from "pec/types/validator";
-import { IHeaderConfig, TableValidatorDetails } from "pec/types/validatorTable";
+import {
+  type IHeaderConfig,
+  type TableValidatorDetails,
+} from "pec/types/validatorTable";
 import {
   ValidatorCardBorderStyles,
   ValidatorCardWrapper,
-  ValidatorCardWrapperProps,
+  type ValidatorCardWrapperProps,
 } from "pec/components/ui/custom/validator-card-wrapper";
 import { cn } from "pec/lib/utils";
 import { useState } from "react";
@@ -12,7 +15,7 @@ import {
   DisplayAmount,
   SubmittingTransactionTableComponent,
   ValidatorIndex,
-  WithdrawalAddress,
+  WithdrawalCredentials,
 } from "./TableComponents";
 import { FaCircleCheck, FaCircleMinus, FaCirclePlus } from "react-icons/fa6";
 
@@ -66,7 +69,7 @@ export const ValidatorRow = <T extends TableValidatorDetails>({
         );
 
       case "withdrawalAddress":
-        return <WithdrawalAddress validator={validator} />;
+        return <WithdrawalCredentials validator={validator} />;
 
       case "status":
         return (
@@ -127,10 +130,10 @@ export const ValidatorRow = <T extends TableValidatorDetails>({
         const isLast = index === headers.length - 1;
 
         return (
-          <th
+          <td
             key={header.sortKey as string}
             className={cn(
-              "bg-inherit px-4 py-2 font-normal",
+              "px-4 py-2 font-normal transition-colors duration-200",
               {
                 border: isHovering && onClick(),
                 "!border-l-0": !isFirst,
@@ -138,6 +141,7 @@ export const ValidatorRow = <T extends TableValidatorDetails>({
                 "rounded-l-2xl": isFirst,
                 "rounded-r-2xl": isLast,
                 "hidden md:table-cell": !header.mobile,
+                "bg-white dark:bg-gray-900": !wrapperProps?.clearBackground,
               },
               ValidatorCardBorderStyles({
                 clearBackground: wrapperProps?.clearBackground,
@@ -154,32 +158,29 @@ export const ValidatorRow = <T extends TableValidatorDetails>({
                     <>
                       <FaCircleCheck
                         className={cn(
-                          "h-5 min-h-5 w-5 min-w-5 text-green-500",
-                          { hidden: isHovering },
+                          "h-5 min-h-5 w-5 min-w-5 text-green-500 transition-opacity duration-200",
+                          { "opacity-0": isHovering },
                         )}
                       />
                       <FaCircleMinus
                         className={cn(
-                          "hidden h-5 min-h-5 w-5 min-w-5 text-red-500",
-                          {
-                            block: isHovering,
-                          },
+                          "absolute h-5 min-h-5 w-5 min-w-5 text-red-500 transition-opacity duration-200",
+                          { "opacity-0": !isHovering },
                         )}
                       />
                     </>
                   ) : (
                     <>
                       <CirclePlus
-                        className={cn("h-5 min-h-5 w-5 min-w-5 text-primary", {
-                          hidden: isHovering,
-                        })}
+                        className={cn(
+                          "h-5 min-h-5 w-5 min-w-5 text-primary transition-opacity duration-200",
+                          { "opacity-0": isHovering },
+                        )}
                       />
                       <FaCirclePlus
                         className={cn(
-                          "hidden h-5 min-h-5 w-5 min-w-5 text-primary",
-                          {
-                            block: isHovering,
-                          },
+                          "absolute h-5 min-h-5 w-5 min-w-5 text-primary transition-opacity duration-200",
+                          { "opacity-0": !isHovering },
                         )}
                       />
                     </>
@@ -187,11 +188,11 @@ export const ValidatorRow = <T extends TableValidatorDetails>({
                 </div>
               )}
               {renderCellContent(header)}
-              {endContent && (
+              {endContent && isLast && (
                 <div className="ml-auto flex">{endContent(validator)}</div>
               )}
             </div>
-          </th>
+          </td>
         );
       })}
     </ValidatorCardWrapper>

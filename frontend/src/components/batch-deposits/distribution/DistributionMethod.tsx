@@ -1,5 +1,5 @@
 import { DISTRIBUTION_OPTIONS } from "pec/constants/deposit";
-import type { DepositType } from "pec/lib/api/schemas/deposit";
+import type { FormDepositType } from "pec/lib/api/schemas/deposit";
 import type { DepositWorkflowStage } from "pec/types/batch-deposits";
 import { EDistributionMethod } from "pec/types/batch-deposits";
 import type { FieldErrors, UseFormRegister } from "react-hook-form";
@@ -18,8 +18,8 @@ export interface IDistributionMethodProps {
   totalAllocated: number;
   totalToDistribute: number;
   walletBalance: number;
-  errors: FieldErrors<DepositType>;
-  register: UseFormRegister<DepositType>;
+  errors: FieldErrors<FormDepositType>;
+  register: UseFormRegister<FormDepositType>;
 }
 
 export const DistributionMethod = ({
@@ -58,7 +58,6 @@ export const DistributionMethod = ({
 
       {distributionMethod === EDistributionMethod.SPLIT && (
         <TotalAmountInput
-          amount={totalToDistribute}
           errors={errors}
           register={register}
           walletBalance={walletBalance}

@@ -34,7 +34,7 @@ export const EnterSiteButton = () => {
       <div className="z-10 flex flex-col items-center justify-center gap-4">
         {hasWalletAddress ? (
           <PrimaryButton
-            className="h-10 w-full"
+            className="h-10 w-[420px]"
             label={"View Validators"}
             onClick={handleEnterSite}
             disabled={false}

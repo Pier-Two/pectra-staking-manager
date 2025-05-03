@@ -1,7 +1,7 @@
 import axios from "axios";
 import { headers } from "next/headers";
 import { env } from "pec/env";
-import { ValidatorSummaryModel } from "pec/lib/database/models";
+import { ValidatorSummaryModel } from "pec/server/database/models";
 import {
   type ValidatorsResponseData,
   type ValidatorUpgradeSummaryObject,

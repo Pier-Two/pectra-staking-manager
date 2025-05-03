@@ -7,9 +7,10 @@ import {
   openInNewTab,
 } from "pec/helpers/getExternalLink";
 import { cn } from "pec/lib/utils";
-import { ValidatorDetails } from "pec/types/validator";
+import { type ValidatorDetails } from "pec/types/validator";
 import type { TransactionStatus } from "pec/types/withdraw";
 import { displayedEthAmount } from "pec/lib/utils/validators/balance";
+import { useActiveChainWithDefault } from "pec/hooks/useChain";
 
 interface StatusConfig {
   text: string;
@@ -67,6 +68,7 @@ interface SubmittingTransactionTableComponentProps {
 export const SubmittingTransactionTableComponent = ({
   transactionStatus,
 }: SubmittingTransactionTableComponentProps) => {
+  const chain = useActiveChainWithDefault();
   const statusConfig = getStatusConfig(transactionStatus);
   const showLoader =
     statusConfig.text === "Signing transaction..." ||
@@ -86,7 +88,7 @@ export const SubmittingTransactionTableComponent = ({
           size="sm"
           className="flex items-center gap-x-1 text-indigo-500 dark:text-indigo-400"
           onClick={() =>
-            openInNewTab(getBlockExplorerTxUrl(statusConfig.txHash))
+            openInNewTab(getBlockExplorerTxUrl(statusConfig.txHash!, chain.id))
           }
         >
           {statusConfig.txHash.slice(0, 6)}...
@@ -122,17 +124,24 @@ export const ValidatorIndex = ({ validator }: TableComponentProps) => {
   );
 };
 
-export const WithdrawalAddress = ({ validator }: TableComponentProps) => {
+export const WithdrawalCredentials = ({ validator }: TableComponentProps) => {
   return (
     <div className="flex items-center gap-1">
-      {validator.withdrawalAddress.includes("0x02") ? (
-        <CircleCheck className="h-4 w-4 fill-green-500 text-white dark:text-black" />
-      ) : (
-        <OctagonMinus className="h-4 w-4 text-gray-500 dark:text-white" />
+      {!validator.pendingUpgrade && (
+        <>
+          {validator.withdrawalAddress.includes("0x02") ? (
+            <CircleCheck className="h-4 w-4 fill-green-500 text-white dark:text-black" />
+          ) : (
+            <OctagonMinus className="h-4 w-4 text-gray-500 dark:text-white" />
+          )}
+          <div className="text-sm font-semibold">
+            {validator.withdrawalAddress.slice(0, 4)}
+          </div>
+        </>
       )}
-      <div className="text-sm font-semibold">
-        {validator.withdrawalAddress.slice(0, 4)}
-      </div>
+      {validator.pendingUpgrade && (
+        <div className="font-semibold text-gray-500">Upgrading...</div>
+      )}
     </div>
   );
 };
@@ -143,17 +152,20 @@ interface DisplayAmountProps {
   opts?: {
     decimals?: number;
   };
+  children?: React.ReactNode;
 }
 
 export const DisplayAmount = ({
   amount,
   className,
   opts,
+  children,
 }: DisplayAmountProps) => {
   return (
     <div className={cn("text-sm font-semibold", className)}>
-      <span className="hidden md:contents"> Ξ</span>{" "}
+      <span className="hidden md:contents">Ξ</span>{" "}
       {displayedEthAmount(amount, opts?.decimals)}
+      {children}
     </div>
   );
 };

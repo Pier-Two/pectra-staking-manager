@@ -1,4 +1,4 @@
-import { ValidatorDetails } from "pec/types/validator";
+import { type ValidatorDetails } from "pec/types/validator";
 import { useState } from "react";
 
 interface IUseSearch<T> {

@@ -1,4 +1,4 @@
-import { ValidatorDetails } from "pec/types/validator";
+import { type ValidatorDetails } from "pec/types/validator";
 import { useValidatorSorting } from "./use-validator-sorting";
 import { usePagination } from "./use-pagination";
 

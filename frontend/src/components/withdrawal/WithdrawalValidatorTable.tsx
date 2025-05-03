@@ -1,23 +1,21 @@
 import {
   WITHDRAWAL_COLUMN_HEADERS,
-  WithdrawalTableValidatorDetails,
+  type WithdrawalTableValidatorDetails,
 } from "pec/constants/columnHeaders";
-import type { WithdrawalFormType } from "pec/lib/api/schemas/withdrawal";
-import { cn } from "pec/lib/utils";
+import type { FormWithdrawalType } from "pec/lib/api/schemas/withdrawal";
 import type { ValidatorDetails } from "pec/types/validator";
 import { useCallback, useMemo } from "react";
 import type { FieldErrors, UseFormRegister } from "react-hook-form";
-import { Input } from "../ui/input";
 import { ValidatorTable } from "../ui/table/ValidatorTable";
 import { AmountInput } from "../ui/custom/AmountInput";
 
 interface WithdrawalValidatorTable {
   validators: ValidatorDetails[];
-  withdrawals: WithdrawalFormType["withdrawals"];
-  addWithdrawal: (withdrawal: WithdrawalFormType["withdrawals"][0]) => void;
+  withdrawals: FormWithdrawalType["withdrawals"];
+  addWithdrawal: (withdrawal: FormWithdrawalType["withdrawals"][0]) => void;
   removeWithdrawal: (index: number) => void;
-  register: UseFormRegister<WithdrawalFormType>;
-  errors: FieldErrors<WithdrawalFormType>;
+  register: UseFormRegister<FormWithdrawalType>;
+  errors: FieldErrors<FormWithdrawalType>;
 }
 
 export const WithdrawalValidatorTable = ({

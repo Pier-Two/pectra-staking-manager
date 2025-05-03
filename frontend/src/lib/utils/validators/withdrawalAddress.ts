@@ -1,7 +1,7 @@
 import { groupBy } from "lodash";
 import {
-  ValidatorDetails,
-  WithdrawalAddressPrefixType,
+  type ValidatorDetails,
+  type WithdrawalAddressPrefixType,
 } from "pec/types/validator";
 
 export const groupValidatorsByWithdrawalPrefix = (
@@ -10,4 +10,10 @@ export const groupValidatorsByWithdrawalPrefix = (
   return groupBy(validators, (validator) =>
     validator.withdrawalAddress.slice(0, 4),
   );
+};
+
+export const getWithdrawalAddressPrefixType = (
+  withdrawalAddress: string,
+): WithdrawalAddressPrefixType => {
+  return withdrawalAddress.slice(0, 4) as WithdrawalAddressPrefixType;
 };

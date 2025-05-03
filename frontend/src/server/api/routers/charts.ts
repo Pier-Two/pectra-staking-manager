@@ -1,12 +1,12 @@
 import { createTRPCRouter, publicProcedure } from "pec/server/api/trpc";
-import { ValidatorSummaryModel } from "pec/lib/database/models";
+import { ValidatorSummaryModel } from "pec/server/database/models";
 import { groupBy } from "lodash";
 import type {
   IGroupedValidatorStatistics,
   IChart,
   ValidatorStatistics,
 } from "pec/types/chart";
-import type { ValidatorSummary } from "pec/lib/database/classes/validatorSummary";
+import type { ValidatorSummary } from "pec/server/database/classes/validatorSummary";
 import { constructNumberOfValidatorsForEachUpgradeChartData } from "pec/lib/utils/charts/numberOfValidatorsForEachUpgrade";
 import { constructTotalEthStakedChartData } from "pec/lib/utils/charts/totalEthStaked";
 import { constructAverageEthStakedChartData } from "pec/lib/utils/charts/averageEthStaked";
