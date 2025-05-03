@@ -180,7 +180,7 @@ export const ManuallyEnterValidator = ({
                       }
                       label={
                         validator
-                          ? `Use ${validator.validatorIndex} as Destination Validator`
+                          ? `Use ${validator.validatorIndex} as Target Validator`
                           : ""
                       }
                     />

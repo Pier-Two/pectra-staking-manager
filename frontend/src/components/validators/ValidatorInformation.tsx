@@ -24,8 +24,8 @@ export const ValidatorInformation = (props: ValidatorInformationProps) => {
           <div className="flex flex-col gap-y-2">
             <p className="text-sm font-semibold text-primary dark:text-indigo-500">
               {numberOfOldValidators} of your validators are using the old
-              credentials (0x01). Before consolidation can occur, you must
-              update them to Pectra (0x02) to enable enhanced staking features.
+              credentials (0x01), use the consolidation tool to upgrade them to
+              Pectra (0x02) and optionally combine them with other validators.
             </p>
           </div>
         )}
