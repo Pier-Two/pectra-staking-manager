@@ -21,7 +21,7 @@ export const ProgressBar: FC<IProgressBar> = (props) => {
       <SecondaryButton
         label="<"
         onClick={backHandler}
-        disabled={CONSOLIDATION_STEPS[progress] === 1 || progress === "submit"}
+        disabled={progress === "submit"}
       />
 
       {[1, 2, 3, 4].map((step) => (

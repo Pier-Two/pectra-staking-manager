@@ -10,6 +10,7 @@ import { getRequiredConsolidationTransactions } from "pec/lib/utils/validators/c
 import type { TransactionStatus } from "pec/types/withdraw";
 import { trackEvent } from "pec/helpers/trackEvent";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 interface UseConsolidate {
   activeValidators: ValidatorDetails[];
@@ -166,12 +167,14 @@ export const useNewConsolidate = ({ activeValidators }: UseConsolidate) => {
     if (!result) goBack();
   };
 
+  const router = useRouter();
+
   const goBack = () => {
     const currentStep = CONSOLIDATION_STEPS[stage.stage];
 
     if (currentStep === 1) {
-      // Log the error because this is misuse
-      console.error("Already at the first step", stage);
+      // navigate back to the consolidation page
+      router.back();
       return;
     }
 
