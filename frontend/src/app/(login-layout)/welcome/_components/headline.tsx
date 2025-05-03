@@ -26,7 +26,7 @@ export const Headline = () => {
     <div className="flex flex-col items-center gap-2">
       <div className="flex flex-col gap-2 sm:flex-row">
         <AnimatedText delay={welcomeAnimationDelays.headline.thisIs}>
-          This is
+          Welcome to
         </AnimatedText>
         <AnimatedText delay={welcomeAnimationDelays.headline.theFutureOf}>
           the Future of
