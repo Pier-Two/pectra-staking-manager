@@ -26,15 +26,14 @@ export const getValidators = async (
       );
 
       if (response.success) {
-        if (Array.isArray(response.data)) {
-          if (response.data.length === 0) {
-            return { success: false, error: "Validator not found" };
-          }
+        const responseData =
+          response.data instanceof Array ? response.data : [response.data];
 
-          return { success: true, data: response.data };
+        if (responseData.length === 0) {
+          return { success: false, error: "Validator not found" };
         }
 
-        return { success: true, data: [response.data] };
+        return { success: true, data: responseData };
       }
 
       return response;

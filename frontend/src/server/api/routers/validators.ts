@@ -8,13 +8,12 @@ import {
   PERFORMANCE_FILTERS,
   VALIDATOR_PERFORMANCE_FILTER_TO_BEACONCHAIN,
 } from "pec/lib/constants/validators/performance";
-import { populateBeaconchainValidatorResponse } from "pec/server/helpers/validators";
-import { getValidators } from "pec/server/helpers/requests/beaconchain/getValidators";
 import { routeHandler } from "pec/server/helpers/route-errors";
 import { type IResponse } from "pec/types/response";
 import { getValidatorsForWithdrawAddress } from "pec/server/helpers/requests/beaconchain/getValidatorForWithdrawAddress";
 import { getAndPopulateValidatorDetails } from "pec/server/helpers/validators/getAndPopulateValidatorDetails";
 import { redisCacheMiddleware } from "../middleware/redis-cache-middleware";
+import { getAndPopulateExternalValidator } from "pec/server/helpers/validators/getAndPopulateExternalValidator";
 
 export const validatorRouter = createTRPCRouter({
   getValidators: publicProcedure
@@ -82,19 +81,7 @@ export const validatorRouter = createTRPCRouter({
     )
     .query(async ({ input: { searchTerm, network } }) =>
       routeHandler(async (): Promise<IResponse<ValidatorDetails>> => {
-        const validatorResponse = await getValidators([searchTerm], network);
-
-        if (!validatorResponse.success) return validatorResponse;
-        const [validator] = validatorResponse.data;
-
-        if (!validator) {
-          return { success: false, error: "NOT_FOUND" };
-        }
-
-        const populatedDetails =
-          await populateBeaconchainValidatorResponse(validator);
-
-        return { success: true, data: populatedDetails };
+        return getAndPopulateExternalValidator(searchTerm, network);
       }),
     ),
 });
