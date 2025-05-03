@@ -8,7 +8,7 @@ import { getValidators } from "../requests/beaconchain/getValidators";
 import { SupportedNetworkIds } from "pec/constants/chain";
 import { keyBy } from "lodash";
 import { BCValidatorDetails } from "pec/lib/api/schemas/beaconchain/validator";
-import { sendEmailNotification } from "pec/lib/services/emailService";
+import { sendEmailNotification } from "pec/server/helpers/emails/emailService";
 import { getLogger } from "../logger";
 
 const logger = getLogger();

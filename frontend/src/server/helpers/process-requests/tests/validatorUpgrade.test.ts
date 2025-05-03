@@ -8,7 +8,7 @@ import {
   buildMockBCValidatorsData,
   generateWithdrawalCredentials,
 } from "pec/server/__mocks__/validators";
-import { sendEmailNotification } from "pec/lib/services/emailService";
+import { sendEmailNotification } from "pec/server/helpers/emails/emailService";
 import { TYPE_1_PREFIX, TYPE_2_PREFIX } from "pec/constants/pectra";
 import { processValidatorUpgrades } from "../validatorUpgrade";
 

@@ -6,7 +6,7 @@ import type { IResponse } from "pec/types/response";
 import { SupportedNetworkIds } from "pec/constants/chain";
 import { getPendingDeposits } from "../requests/quicknode/getPendingDeposits";
 import { QNPendingDepositsType } from "pec/lib/api/schemas/quicknode/pendingDeposits";
-import { sendEmailNotification } from "pec/lib/services/emailService";
+import { sendEmailNotification } from "pec/server/helpers/emails/emailService";
 import { getMinimumProcessDelay } from "./common";
 import { getLogger } from "../logger";
 

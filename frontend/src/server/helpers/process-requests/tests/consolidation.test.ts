@@ -5,7 +5,7 @@ import { ACTIVE_STATUS, INACTIVE_STATUS } from "pec/types/app";
 import { getValidators } from "pec/server/helpers/requests/beaconchain/getValidators";
 import { MAIN_CHAIN } from "pec/lib/constants/contracts";
 import { buildMockBCValidatorsData } from "pec/server/__mocks__/validators";
-import { sendEmailNotification } from "pec/lib/services/emailService";
+import { sendEmailNotification } from "pec/server/helpers/emails/emailService";
 import { processConsolidations } from "../consolidation";
 
 vi.mock("pec/server/helpers/requests/beaconchain/getValidators", () => ({

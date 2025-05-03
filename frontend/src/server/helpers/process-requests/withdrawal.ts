@@ -5,7 +5,7 @@ import { entries, groupBy } from "lodash";
 import { SupportedNetworkIds } from "pec/constants/chain";
 import { getPendingPartialWithdrawals } from "../requests/quicknode/getPendingPartialWithdrawals";
 import { Withdrawal } from "pec/server/database/classes/withdrawal";
-import { sendEmailNotification } from "pec/lib/services/emailService";
+import { sendEmailNotification } from "pec/server/helpers/emails/emailService";
 import { getMinimumProcessDelay } from "./common";
 import { QNPendingPartialWithdrawalType } from "pec/lib/api/schemas/quicknode/pendingPartialWithdrawals";
 import { DocumentWithId } from "pec/types/database";

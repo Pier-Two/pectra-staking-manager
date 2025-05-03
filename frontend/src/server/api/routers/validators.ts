@@ -3,7 +3,7 @@ import { createTRPCRouter, publicProcedure } from "pec/server/api/trpc";
 import type { BeaconChainValidatorPerformanceResponse } from "pec/types/api";
 import { type ValidatorDetails } from "pec/types/validator";
 import { SupportedChainIdSchema } from "pec/lib/api/schemas/network";
-import { getBeaconChainAxios } from "pec/lib/server/axios";
+import { getBeaconChainAxios } from "pec/server/helpers/axios";
 import {
   PERFORMANCE_FILTERS,
   VALIDATOR_PERFORMANCE_FILTER_TO_BEACONCHAIN,

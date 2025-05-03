@@ -14,7 +14,7 @@ import { StoreWithdrawalRequestSchema } from "pec/lib/api/schemas/withdrawal";
 import { ACTIVE_STATUS } from "pec/types/app";
 import { maxBy } from "lodash";
 import type { IResponse } from "pec/types/response";
-import { createContact } from "pec/lib/services/emailService";
+import { createContact } from "pec/server/helpers/emails/emailService";
 import { Ratelimit } from "@upstash/ratelimit";
 import { getWithdrawals } from "pec/server/helpers/requests/beaconchain/getWithdrawals";
 import { StoreDatabaseDepositSchema } from "pec/lib/api/schemas/deposit";

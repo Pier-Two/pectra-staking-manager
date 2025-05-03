@@ -1,7 +1,7 @@
 import { ConsolidationModel } from "pec/server/database/models";
 import { ACTIVE_STATUS, INACTIVE_STATUS } from "pec/types/app";
 import type { IResponse } from "pec/types/response";
-import { sendEmailNotification } from "pec/lib/services/emailService";
+import { sendEmailNotification } from "pec/server/helpers/emails/emailService";
 import { getValidators } from "../requests/beaconchain/getValidators";
 import { type Consolidation } from "pec/server/database/classes/consolidation";
 import { type BCValidatorDetails } from "pec/lib/api/schemas/beaconchain/validator";

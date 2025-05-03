@@ -1,7 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { AxiosResponse, type AxiosRequestConfig } from "axios";
 import { type SupportedNetworkIds } from "pec/constants/chain";
-import { getBeaconChainAxios, getQuicknodeAxios } from "pec/lib/server/axios";
+import {
+  getBeaconChainAxios,
+  getQuicknodeAxios,
+} from "pec/server/helpers/axios";
 import { generateErrorResponse } from "pec/lib/utils";
 import { type IResponse } from "pec/types/response";
 import { type z } from "zod";

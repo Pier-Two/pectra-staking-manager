@@ -3,7 +3,7 @@ import { WithdrawalModel } from "pec/server/database/models";
 import { buildMockWithdrawal } from "pec/server/__mocks__/database-models";
 import { ACTIVE_STATUS, INACTIVE_STATUS } from "pec/types/app";
 import { MAIN_CHAIN } from "pec/lib/constants/contracts";
-import { sendEmailNotification } from "pec/lib/services/emailService";
+import { sendEmailNotification } from "pec/server/helpers/emails/emailService";
 import { buildMockQNPendingPartialWithdrawal } from "pec/server/__mocks__/quicknode";
 import { getPendingPartialWithdrawals } from "../../requests/quicknode/getPendingPartialWithdrawals";
 import { processPartialWithdrawals } from "../withdrawal";
