@@ -6,8 +6,8 @@ import {
   buildMockExit,
 } from "pec/server/__mocks__/database-models";
 import { ConsolidationModel, ExitModel } from "pec/server/database/models";
-import { ISuccessResponse } from "pec/types/response";
-import { ValidatorDetails, ValidatorStatus } from "pec/types/validator";
+import { type ISuccessResponse } from "pec/types/response";
+import { type ValidatorDetails, ValidatorStatus } from "pec/types/validator";
 import { ACTIVE_STATUS } from "pec/types/app";
 import { TEST_NETWORK_ID } from "pec/server/__mocks__/constants";
 import { getAndPopulateExternalValidator } from "../getAndPopulateExternalValidator";
@@ -45,7 +45,7 @@ describe("getAndPopulateExternalValidator", () => {
       TEST_NETWORK_ID,
     )) as ISuccessResponse<ValidatorDetails>;
 
-    expect(validatorDetails.data!.status).toEqual(ValidatorStatus.EXITED);
+    expect(validatorDetails.data.status).toEqual(ValidatorStatus.EXITED);
   });
 
   it("Should return a validator as exited, when they have a pending consolidation where they are the source", async () => {
@@ -73,6 +73,6 @@ describe("getAndPopulateExternalValidator", () => {
       TEST_NETWORK_ID,
     )) as ISuccessResponse<ValidatorDetails>;
 
-    expect(validatorDetails.data!.status).toEqual(ValidatorStatus.EXITED);
+    expect(validatorDetails.data.status).toEqual(ValidatorStatus.EXITED);
   });
 });
