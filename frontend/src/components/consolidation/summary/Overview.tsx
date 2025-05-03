@@ -9,11 +9,11 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "pec/components/ui/tooltip";
-import { useConsolidationFee } from "pec/hooks/use-consolidation";
 import { formatEther, parseEther } from "viem";
 import { displayedEthAmount } from "pec/lib/utils/validators/balance";
 import { type ValidatorDetails } from "pec/types/validator";
 import { sumBy } from "lodash";
+import { useConsolidationFee } from "pec/hooks/useConsolidateContractCalls";
 
 interface OverviewProps {
   sourceValidators: ValidatorDetails[];

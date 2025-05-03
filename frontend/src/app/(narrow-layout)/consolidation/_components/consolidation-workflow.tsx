@@ -6,7 +6,6 @@ import { SelectSourceValidators } from "pec/components/consolidation/selectSourc
 import { useValidators } from "pec/hooks/useValidators";
 import { useWalletAddress } from "pec/hooks/useWallet";
 import { ValidatorStatus } from "pec/types/validator";
-import { useNewConsolidate } from "pec/hooks/useNewConsolidate";
 import { ConsolidationSummary } from "pec/components/consolidation/summary/ConsolidationSummary";
 import { SubmitConsolidationRequests } from "pec/components/consolidation/submitRequests/SubmitConsolidationRequests";
 import { Skeleton } from "pec/components/ui/skeleton";
@@ -14,6 +13,7 @@ import {
   StageAnimationParent,
   StageAnimationStep,
 } from "pec/components/stage-animation";
+import { useConsolidate } from "pec/hooks/useConsolidate";
 
 const ConsolidationWorkflow = () => {
   const walletAddress = useWalletAddress();
@@ -32,7 +32,7 @@ const ConsolidationWorkflow = () => {
     reset,
     email,
     setEmail,
-  } = useNewConsolidate({
+  } = useConsolidate({
     activeValidators,
   });
 

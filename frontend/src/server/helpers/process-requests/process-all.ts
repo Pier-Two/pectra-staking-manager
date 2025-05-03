@@ -5,9 +5,7 @@ import { processValidatorUpgrades } from "./validatorUpgrade";
 import { processDeposits } from "./deposit";
 import { IResponse } from "pec/types/response";
 import { processPartialWithdrawals } from "./withdrawal";
-import { getLogger } from "../logger";
-
-const logger = getLogger();
+import { logger } from "../logger";
 
 export const processAllRequestsOnNetwork = async (
   networkId: SupportedNetworkIds,

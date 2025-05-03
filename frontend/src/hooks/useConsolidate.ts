@@ -5,7 +5,7 @@ import {
 } from "pec/types/consolidation";
 import { type ValidatorDetails } from "pec/types/validator";
 import { useImmer } from "use-immer";
-import { useSubmitConsolidate } from "./use-consolidation";
+import { useSubmitConsolidate } from "./useConsolidateContractCalls";
 import { getRequiredConsolidationTransactions } from "pec/lib/utils/validators/consolidate";
 import type { TransactionStatus } from "pec/types/withdraw";
 import { trackEvent } from "pec/helpers/trackEvent";
@@ -16,7 +16,7 @@ interface UseConsolidate {
   activeValidators: ValidatorDetails[];
 }
 
-export const useNewConsolidate = ({ activeValidators }: UseConsolidate) => {
+export const useConsolidate = ({ activeValidators }: UseConsolidate) => {
   const consolidate = useSubmitConsolidate();
 
   const [stage, setStage] = useImmer<ConsolidationWorkflowStages>({
