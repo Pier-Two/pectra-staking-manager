@@ -42,9 +42,11 @@ export const Connector: FC<IConnector> = ({
             description
           ))}
         <div className={cn("text-left text-base", className)}>
-          You have {validators.length} total validators using this withdrawal
+          {validators.length > 0
+            ? `You have ${validators.length} total validators using this withdrawal
           address, consolidate them to Pectra standard now to get the most out
-          of Ethereum staking.
+          of Ethereum staking.`
+            : `There are no validators associated to this withdrawal address.`}
         </div>
       </div>
 
