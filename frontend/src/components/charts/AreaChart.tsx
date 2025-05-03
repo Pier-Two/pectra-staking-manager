@@ -71,30 +71,10 @@ export const AreaChartComponent: FC<IAreaChart> = ({ chart, isFullscreen }) => {
 
   return (
     <ChartContainer
-      className={cn(
-        "mx-auto mb-8 w-full max-w-[800px]",
-        isFullscreen && "max-w-none",
-      )}
+      className={cn("aspect-auto h-full w-full flex-1")}
       config={chartConfig}
     >
-      <AreaChart
-        data={chartData}
-        margin={{
-          top: 4,
-          right: window.innerWidth < 700 ? 25 : 50,
-          left: window.innerWidth < 700 ? 0 : 10,
-          bottom: isFullscreen ? 200 : -6,
-        }}
-        width={
-          typeof window !== "undefined"
-            ? isFullscreen
-              ? window.innerWidth - 40
-              : Math.min(window.innerWidth - 40, 800)
-            : 800
-        }
-        height={isFullscreen ? 400 : 300}
-        className="w-full"
-      >
+      <AreaChart data={chartData} className="h-full w-full">
         <defs>
           <linearGradient id="fillPectra" x1="0" y1="0" x2="0" y2="1">
             <stop
