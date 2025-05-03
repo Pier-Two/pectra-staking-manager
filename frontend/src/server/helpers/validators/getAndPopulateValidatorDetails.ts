@@ -256,7 +256,7 @@ const calculatePendingDepositsForValidators = async (
       }
     }
 
-    // Finally include all the remaining flattened deposits, that weren't included in the quicknode response
+    // Finally include all the remaining flattened deposits that weren't included in the quicknode response
     // This ensures we don't miss any deposits that were made before quicknode has a chance to pick them up
     for (const remainingDeposit of flattedDeposits) {
       mutateValidator(remainingDeposit.validatorIndex, {
@@ -318,9 +318,9 @@ export const calculatePendingWithdrawalsForValidators = async (
       (pendingDeposit) => pendingDeposit.validator_index,
     );
 
-    for (const { publicKey, validatorIndex } of validatorDetails) {
+    for (const { validatorIndex } of validatorDetails) {
       const pendingWithdrawals =
-        groupedPendingPartialWithdrawals[publicKey] ?? [];
+        groupedPendingPartialWithdrawals[validatorIndex] ?? [];
 
       for (const pendingWithdrawal of pendingWithdrawals) {
         const foundIndex = updatedWithdrawals.findIndex(
