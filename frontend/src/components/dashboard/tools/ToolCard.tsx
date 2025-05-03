@@ -26,21 +26,21 @@ export const cardPresets = {
     delay: dashboardAnimationDelays.toolCards.consolidate,
   },
   BatchDeposit: {
-    title: "Batch Deposit",
+    title: "Deposit",
     description:
-      "Deposit multiple active validators at once, via Pier Two's batch deposit contract.",
-    url: "/batch-deposit",
+      "Deposit any increment of ETH to your existing validators to manage their balance.",
+    url: "/deposit",
     buttonLabel: "Deposit now",
     icon: <ArrowDownToDot size={24} />,
     iconHover: "group-hover:text-blue-200",
     delay: dashboardAnimationDelays.toolCards.batchDeposit,
   },
   Withdrawal: {
-    title: "Partial Withdrawal",
+    title: "Unstake",
     description:
-      "Submit onchain execution layer withdrawal requests against validators, as per Pectra EIP-7002.",
+      "Trigger onchain partial withdrawals and full exits with a transaction.",
     url: "/withdraw",
-    buttonLabel: "Withdraw now",
+    buttonLabel: "Unstake now",
     icon: <ArrowUpFromDot size={24} />,
     iconHover: "group-hover:text-green-400",
     delay: dashboardAnimationDelays.toolCards.withdrawal,

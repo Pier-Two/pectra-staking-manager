@@ -1,6 +1,5 @@
 "use client";
 
-import { useTheme } from "next-themes";
 import {
   ChartContainer,
   ChartLegend,
@@ -8,6 +7,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "pec/components/ui/chart";
+import { useIsMobile } from "pec/hooks/use-mobile";
 
 import { cn } from "pec/lib/utils";
 import type { IAreaChart } from "pec/types/chart";
@@ -29,7 +29,7 @@ const chartConfig = {
   },
 };
 
-export const AreaChartComponent: FC<IAreaChart> = ({ chart, isFullscreen }) => {
+export const AreaChartComponent: FC<IAreaChart> = ({ chart }) => {
   const { chartData, yAxis, legend, xAxis } = chart;
   const {
     lowerRange,
@@ -46,14 +46,6 @@ export const AreaChartComponent: FC<IAreaChart> = ({ chart, isFullscreen }) => {
     orientation: xOrientation,
   } = xAxis;
 
-  const { resolvedTheme: theme } = useTheme();
-
-  const axisTextStyle = {
-    stroke: theme === "dark" ? "#e3e3e3" : "#a1a1a1",
-    fontSize: window.innerWidth < 500 ? "7px" : "11px",
-    fontWeight: 180,
-  };
-
   const formatTick = (value: number): string => {
     const abs = Math.abs(value);
     const format = (val: number, suffix: string) =>
@@ -69,32 +61,14 @@ export const AreaChartComponent: FC<IAreaChart> = ({ chart, isFullscreen }) => {
     return value.toFixed(2);
   };
 
+  const isMobile = useIsMobile();
+
   return (
     <ChartContainer
-      className={cn(
-        "mx-auto mb-8 w-full max-w-[800px]",
-        isFullscreen && "max-w-none",
-      )}
+      className={cn("aspect-auto h-full w-full flex-1")}
       config={chartConfig}
     >
-      <AreaChart
-        data={chartData}
-        margin={{
-          top: 4,
-          right: window.innerWidth < 700 ? 25 : 50,
-          left: window.innerWidth < 700 ? 0 : 10,
-          bottom: isFullscreen ? 200 : -6,
-        }}
-        width={
-          typeof window !== "undefined"
-            ? isFullscreen
-              ? window.innerWidth - 40
-              : Math.min(window.innerWidth - 40, 800)
-            : 800
-        }
-        height={isFullscreen ? 400 : 300}
-        className="w-full"
-      >
+      <AreaChart data={chartData} className="h-full w-full">
         <defs>
           <linearGradient id="fillPectra" x1="0" y1="0" x2="0" y2="1">
             <stop
@@ -154,32 +128,33 @@ export const AreaChartComponent: FC<IAreaChart> = ({ chart, isFullscreen }) => {
               : undefined
           }
           minTickGap={32}
-          tick={axisTextStyle}
           orientation={xOrientation}
           className="max-sm:minTickGap-48"
         />
 
-        <YAxis
-          allowDataOverflow={true}
-          tickLine={false}
-          axisLine={false}
-          domain={[lowerRange, upperRange]}
-          ticks={ticks}
-          tick={axisTextStyle}
-          tickFormatter={(value) => formatTick(+value)}
-          orientation={yOrientation}
-          interval={0}
-          className="max-sm:width-40"
-        >
-          {showYLabel && (
-            <Label
-              angle={yOrientation === "left" ? -90 : 90}
-              value={yLabel}
-              position={yOrientation === "left" ? "insideLeft" : "insideRight"}
-              style={{ textAnchor: "middle" }}
-            />
-          )}
-        </YAxis>
+        {!isMobile && (
+          <YAxis
+            allowDataOverflow={true}
+            tickLine={false}
+            axisLine={false}
+            domain={[lowerRange, upperRange]}
+            ticks={ticks}
+            tickFormatter={(value) => formatTick(+value)}
+            orientation={yOrientation}
+            interval={0}
+          >
+            {showYLabel && (
+              <Label
+                angle={yOrientation === "left" ? -90 : 90}
+                value={yLabel}
+                position={
+                  yOrientation === "left" ? "insideLeft" : "insideRight"
+                }
+                style={{ textAnchor: "middle" }}
+              />
+            )}
+          </YAxis>
+        )}
 
         <ChartTooltip
           cursor={false}
