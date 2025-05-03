@@ -77,12 +77,7 @@ describe("processWithdrawals", { concurrent: false }, () => {
 
     mockedGetPendingPartialWithdrawals.mockResolvedValueOnce({
       success: true,
-      data: [
-        buildMockQNPendingPartialWithdrawal({
-          validator_index: mockWithdrawal.validatorIndex,
-          amount: mockWithdrawal.amount,
-        }),
-      ],
+      data: [],
     });
 
     await processPartialWithdrawals({ networkId: TEST_NETWORK_ID });

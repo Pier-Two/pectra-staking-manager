@@ -32,8 +32,6 @@ export const processDeposits = async ({
       networkId,
     }).sort({ createdAt: 1 }));
 
-  console.log("Deposits", deposits);
-
   if (deposits.length === 0) return { success: true, data: null };
 
   let qnPendingDeposits = overrides?.qnPendingDeposits;
@@ -76,15 +74,12 @@ export const processProvidedDeposits = async (
     ),
     (v) => getDepositsKey(v.publicKey, v.amount),
   );
-  console.log(JSON.stringify(groupedDBDeposits, null, 2));
 
   // We store this to prevent sending multiple emails for deposits in the same batch
   const processedDeposits: Record<string, boolean> = {};
 
   for (const [key, storedDeposits] of entries(groupedDBDeposits)) {
-    console.log("Stored deposits", storedDeposits);
     const pendingDeposits = groupedQNDeposits[key];
-    console.log("Pending deposits", pendingDeposits);
 
     const pendingCount = pendingDeposits?.length ?? 0;
     const storedCount = storedDeposits.length;
@@ -93,8 +88,6 @@ export const processProvidedDeposits = async (
 
     if (processedCount > 0) {
       const depositsToProcess = storedDeposits.slice(0, processedCount);
-
-      console.log("Deposits to process", depositsToProcess);
 
       for (const deposit of depositsToProcess) {
         // Ensure we don't send multiple emails for the same deposit
