@@ -43,6 +43,7 @@ export const StoreDatabaseDepositSchema = z.object({
       amount: z.number(),
     }),
   ),
+  withdrawalAddress: z.string(),
   txHash: z.string(),
   networkId: SupportedChainIdSchema,
   email: EmailSchema,

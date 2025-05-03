@@ -13,9 +13,6 @@ import { DatabaseDocumentStatuses } from "pec/types/app";
   },
 })
 export class ValidatorUpgrade {
-  @prop()
-  public email?: string;
-
   @prop({ required: true, type: String })
   public status!: (typeof DatabaseDocumentStatuses)[number];
 
@@ -27,4 +24,7 @@ export class ValidatorUpgrade {
 
   @prop({ required: true, enum: SUPPORTED_NETWORKS_IDS, type: Number })
   public networkId!: SupportedNetworkIds;
+
+  @prop()
+  public email?: string;
 }

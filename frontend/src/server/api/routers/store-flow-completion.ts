@@ -42,13 +42,14 @@ export const storeFlowCompletion = createTRPCRouter({
         routeHandler(async (): Promise<IResponse<null>> => {
           if (amount === balance) {
             await ExitModel.create({
-              email,
               status: ACTIVE_STATUS,
+
+              withdrawalAddress,
               validatorIndex,
               txHash,
               networkId: network,
               amount,
-              withdrawalAddress,
+              email,
             });
 
             await createContact(email);
@@ -59,22 +60,15 @@ export const storeFlowCompletion = createTRPCRouter({
             };
           }
 
-          const response = await getWithdrawals([validatorIndex], network);
-
-          if (!response.success) return response;
-
-          const lastWithdrawal = maxBy(response.data, "withdrawalindex");
-          const withdrawalIndex = lastWithdrawal?.withdrawalindex ?? 0;
-
           await WithdrawalModel.create({
-            validatorIndex,
-            email,
-            withdrawalIndex,
             status: ACTIVE_STATUS,
+
+            validatorIndex,
+            withdrawalAddress,
+            txHash,
             networkId: network,
             amount,
-            txHash,
-            withdrawalAddress,
+            email,
           });
 
           await createContact(email);
@@ -93,8 +87,11 @@ export const storeFlowCompletion = createTRPCRouter({
     .mutation(async ({ input }) =>
       routeHandler(async (): Promise<IResponse<null>> => {
         await DepositModel.create({
-          ...input,
           status: ACTIVE_STATUS,
+
+          deposits: input.deposits,
+          txHash: input.txHash,
+          withdrawalAddress: input.withdrawalAddress,
           email: input.email,
           networkId: input.networkId,
         });
@@ -126,21 +123,23 @@ export const storeFlowCompletion = createTRPCRouter({
         routeHandler(async (): Promise<IResponse<null>> => {
           if (targetValidatorIndex === sourceValidatorIndex) {
             await ValidatorUpgradeModel.create({
-              validatorIndex: targetValidatorIndex,
-              email,
               status: ACTIVE_STATUS,
-              networkId: network,
+
+              validatorIndex: targetValidatorIndex,
               txHash,
+              networkId: network,
+              email,
             });
           } else {
             await ConsolidationModel.create({
+              status: ACTIVE_STATUS,
+
               targetValidatorIndex,
               sourceValidatorIndex,
-              status: ACTIVE_STATUS,
               txHash,
-              email,
               networkId: network,
               amount,
+              email,
             });
           }
 
