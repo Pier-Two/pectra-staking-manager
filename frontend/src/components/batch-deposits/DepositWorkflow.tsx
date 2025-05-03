@@ -205,8 +205,8 @@ export const DepositWorkflow = ({
                     />
 
                     <Email
-                      cardText="Add your email to receive an email when your deposits are complete."
-                      cardTitle="Notify me when complete"
+                      cardText="Add your email to receive an email when your deposits have been processed."
+                      cardTitle="Notify me when processed"
                     />
 
                     {(watchedDistributionMethod ===
