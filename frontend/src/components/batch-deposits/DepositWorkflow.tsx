@@ -16,7 +16,7 @@ import {
 import { DECIMAL_PLACES_ETH_MAX } from "pec/lib/constants";
 import { EDistributionMethod } from "pec/types/batch-deposits";
 import type { ValidatorDetails } from "pec/types/validator";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { FormProvider, useForm, useWatch } from "react-hook-form";
 import { Email } from "../consolidation/summary/Email";
 import { DisplayAmount } from "../ui/table/TableComponents";

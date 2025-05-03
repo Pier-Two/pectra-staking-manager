@@ -114,6 +114,7 @@ export const useBatchDeposit = () => {
           networkId: chain.id,
           email,
           txHash: receipt.transactionHash,
+          withdrawalAddress: account.address,
         });
       } catch (e) {
         console.error("Error saving deposit to database:", e);

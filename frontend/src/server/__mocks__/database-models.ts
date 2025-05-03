@@ -102,7 +102,6 @@ export const buildMockWithdrawal = (
     amount: faker.number.int({ min: 1, max: 1000000 }),
     validatorIndex: faker.number.int({ min: 1000000, max: 2000000 }),
     withdrawalAddress: generateAddress(),
-    withdrawalIndex: faker.number.int({ min: 1, max: 1000000 }),
     createdAt: faker.date.past(),
     updatedAt: faker.date.past(),
     ...overrides,
