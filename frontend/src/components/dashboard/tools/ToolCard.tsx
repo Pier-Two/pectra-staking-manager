@@ -18,7 +18,7 @@ export const cardPresets = {
   Consolidate: {
     title: "Consolidate",
     description:
-      "Combine multiple Pectra validators (0x02 credentials) into one large-balance validator.",
+      "Upgrade and combine multiple validators to the new Pectra standard (0x02).",
     url: "/consolidate",
     buttonLabel: "Consolidate now",
     icon: <Merge className="rotate-90" size={24} />,
