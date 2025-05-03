@@ -23,10 +23,10 @@ export const SelectDestinationValidator = ({
 
   return (
     <div className="space-y-6">
-      <div className="text-2xl font-medium">Destination Validator</div>
+      <div className="text-2xl font-medium">Taget Validator</div>
       <div className="text-base">
-        Your destination validator will receive all staked ETH from source
-        validators and be updated to the new Pectra standard (0x02).
+        Your target validator will receive all staked ETH from source validators
+        and be updated to the new Pectra standard (0x02).
       </div>
 
       <div className="text-base">
@@ -39,9 +39,7 @@ export const SelectDestinationValidator = ({
         onValueChange={setSelectedTab}
         className="flex flex-col gap-6"
       >
-        <div className="text-base font-medium">
-          Select destination validator
-        </div>
+        <div className="text-base font-medium">Select target validator</div>
 
         <TabsList className="w-full">
           <TabsTrigger value="validators" className="flex-1">

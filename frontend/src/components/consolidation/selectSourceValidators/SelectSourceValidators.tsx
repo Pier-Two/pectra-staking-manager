@@ -53,19 +53,19 @@ export const SelectSourceValidators = ({
         <div className="text-2xl font-medium">Source Validator(s)</div>
         <div className="text-base">
           All source validator balances will be consolidated into the elected
-          destination validator.
+          target validator.
         </div>
       </div>
 
       <div className="flex flex-col gap-2">
-        <div className="text-md font-medium">Destination validator</div>
+        <div className="text-md font-medium">Target validator</div>
 
         <div className="flex flex-col items-center justify-center gap-4">
           <ValidatorCard validator={destinationValidator} />
 
           <SecondaryButton
             className="w-full"
-            label="Change destination"
+            label="Change target"
             icon={<Pencil className="h-4 w-4" />}
             iconPosition={EIconPosition.LEFT}
             onClick={goBack}

@@ -66,7 +66,7 @@ const helpItems: HelpItem[] = [
     question:
       "Can I consolidate to a validator that is not connected to my withdrawal address?",
     answer:
-      "Yes you can. This will be made clear in the following consolidation flow. Please ensure that you are consolidating to the right validator, as if you input the index or validator key incorrectly that you wish to be your destination validator you will not get that ETH back.",
+      "Yes you can. This will be made clear in the following consolidation flow. Please ensure that you are consolidating to the right validator, as if you input the index or validator key incorrectly that you wish to be your target validator you will not get that ETH back.",
   },
   {
     id: "consolidate-pectra-validators",

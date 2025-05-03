@@ -70,7 +70,7 @@ export const Overview = ({
                 <span>All validators with 0x01</span>
                 <span>credentials set require a</span>
                 <span>consolidation, including the</span>
-                <span>destination validator.</span>
+                <span>target validator.</span>
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
