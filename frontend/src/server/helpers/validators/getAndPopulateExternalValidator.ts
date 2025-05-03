@@ -4,7 +4,6 @@ import { ValidatorDetails, ValidatorStatus } from "pec/types/validator";
 import { getValidators } from "../requests/beaconchain/getValidators";
 import { prePopulateBeaconchainValidatorResponse } from "../validators";
 import { ConsolidationModel, ExitModel } from "pec/server/database/models";
-import { ACTIVE_STATUS } from "pec/types/app";
 
 export const getAndPopulateExternalValidator = async (
   searchTerm: string,
@@ -25,12 +24,10 @@ export const getAndPopulateExternalValidator = async (
   const [exit, sourceOfConsolidation] = await Promise.all([
     ExitModel.findOne({
       validatorIndex: validatorDetails.validatorIndex,
-      status: ACTIVE_STATUS,
       networkId,
     }),
     ConsolidationModel.findOne({
       sourceValidatorIndex: validatorDetails.validatorIndex,
-      status: ACTIVE_STATUS,
       networkId,
     }),
   ]);
