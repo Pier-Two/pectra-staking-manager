@@ -2,7 +2,7 @@ import { HOODI_CHAIN_ID } from "@piertwo/contracts/constants/networks";
 import axios from "axios";
 import type { SupportedNetworkIds } from "pec/constants/chain";
 import { env } from "pec/env";
-import { MAIN_CHAIN } from "../constants/contracts";
+import { MAIN_CHAIN } from "../../lib/constants/contracts";
 
 export const getBeaconChainURL = (isTestnet = true): `${string}/` =>
   `https://${isTestnet ? "hoodi." : ""}beaconcha.in/`;
