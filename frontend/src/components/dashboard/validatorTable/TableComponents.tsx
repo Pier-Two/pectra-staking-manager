@@ -35,7 +35,7 @@ export const ValidatorRowEndContent = ({
       label: "Deposit",
       icon: ArrowDownToDot,
       iconClassName: "text-indigo-500 dark:text-indigo-300",
-      onClick: () => router.push("/batch-deposit"),
+      onClick: () => router.push("/deposit"),
       isDisabled,
     },
     {
