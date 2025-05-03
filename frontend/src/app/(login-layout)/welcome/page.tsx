@@ -27,7 +27,7 @@ const Welcome: FC = () => {
       <Footer />
 
       <EnterAnimation delay={welcomeAnimationDelays.chart}>
-        <div className="flex flex-col items-center justify-center">
+        <div className="flex w-full flex-col items-center justify-center">
           <div className="flex flex-col items-center justify-center">
             <Suspense fallback={<ChartSkeleton />}>
               <ChartPrefetch />

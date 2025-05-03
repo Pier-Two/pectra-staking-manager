@@ -120,7 +120,7 @@ export const ChartContainer: FC = () => {
             isFullscreen && "h-[calc(100vh-220px)]",
           )}
         >
-          <AreaChartComponent chart={activeChart} isFullscreen={isFullscreen} />
+          <AreaChartComponent chart={activeChart} />
         </div>
 
         {footer && (
