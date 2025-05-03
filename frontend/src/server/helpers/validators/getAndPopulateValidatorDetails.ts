@@ -71,11 +71,6 @@ export const getAndPopulateValidatorDetails = async (
     }
 
     if (fields.pendingRequests) {
-      fields.pendingRequests = [
-        ...(validator.pendingRequests ?? []),
-        ...fields.pendingRequests,
-      ];
-
       for (const pendingRequest of fields.pendingRequests) {
         if (pendingRequest.type === "withdrawals") {
           fields.balance = validator.balance - pendingRequest.amount;
@@ -89,6 +84,11 @@ export const getAndPopulateValidatorDetails = async (
             validator.pendingBalance + pendingRequest.amount;
         }
       }
+
+      fields.pendingRequests = [
+        ...(validator.pendingRequests ?? []),
+        ...fields.pendingRequests,
+      ];
     }
 
     Object.assign(validator, fields);

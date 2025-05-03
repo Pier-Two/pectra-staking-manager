@@ -3,7 +3,6 @@ import { ValidatorUpgradeModel } from "pec/server/database/models";
 import { buildMockValidatorUpgrade } from "pec/server/__mocks__/database-models";
 import { ACTIVE_STATUS, INACTIVE_STATUS } from "pec/types/app";
 import { getValidators } from "pec/server/helpers/requests/beaconchain/getValidators";
-import { MAIN_CHAIN } from "pec/lib/constants/contracts";
 import {
   buildMockBCValidatorsData,
   generateWithdrawalCredentials,
@@ -11,12 +10,13 @@ import {
 import { sendEmailNotification } from "pec/server/helpers/emails/emailService";
 import { TYPE_1_PREFIX, TYPE_2_PREFIX } from "pec/constants/pectra";
 import { processValidatorUpgrades } from "../validatorUpgrade";
+import { TEST_NETWORK_ID } from "pec/server/__mocks__/constants";
 
 vi.mock("pec/server/helpers/requests/beaconchain/getValidators", () => ({
   getValidators: vi.fn(),
 }));
 
-vi.mock("pec/lib/services/emailService", () => ({
+vi.mock("pec/server/helpers/emails/emailService", () => ({
   sendEmailNotification: vi.fn(),
 }));
 
@@ -25,7 +25,7 @@ const mockedSendEmailNotification = sendEmailNotification as Mock<
   typeof sendEmailNotification
 >;
 
-describe("process validator upgrades", () => {
+describe("processValidatorUpgrades", () => {
   const validatorIndex = 100;
 
   beforeEach(() => {
@@ -65,7 +65,7 @@ describe("process validator upgrades", () => {
       ],
     });
 
-    await processValidatorUpgrades({ networkId: MAIN_CHAIN.id });
+    await processValidatorUpgrades({ networkId: TEST_NETWORK_ID });
 
     const updatedValidatorUpgrade = await ValidatorUpgradeModel.findOne({
       validatorIndex,

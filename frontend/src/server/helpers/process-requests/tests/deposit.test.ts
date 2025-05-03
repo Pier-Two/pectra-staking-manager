@@ -16,7 +16,7 @@ vi.mock("pec/server/helpers/requests/quicknode/getPendingDeposits", () => ({
   getPendingDeposits: vi.fn(),
 }));
 
-vi.mock("pec/lib/services/emailService", () => ({
+vi.mock("pec/server/helpers/emails/emailService", () => ({
   sendEmailNotification: vi.fn(),
 }));
 
@@ -45,8 +45,7 @@ describe("processDeposits", { concurrent: false }, () => {
           publicKey: publicKey,
           amount,
           validatorIndex: 1,
-          _id: generateObjectId(),
-        } as any,
+        },
       ],
       txHash: "0x123",
     });
@@ -82,7 +81,7 @@ describe("processDeposits", { concurrent: false }, () => {
       deposits: [
         { publicKey: publicKey, amount, validatorIndex: 1 },
         { publicKey: "0x222", amount: 500, validatorIndex: 2 },
-      ] as any,
+      ],
       txHash: "0x123",
     });
 

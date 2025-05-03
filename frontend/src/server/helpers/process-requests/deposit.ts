@@ -1,4 +1,4 @@
-import { groupBy, sumBy } from "lodash";
+import { entries, groupBy, sumBy } from "lodash";
 import type { Deposit } from "pec/server/database/classes/deposit";
 import { DepositModel } from "pec/server/database/models";
 import { ACTIVE_STATUS, INACTIVE_STATUS } from "pec/types/app";
@@ -9,6 +9,7 @@ import { QNPendingDepositsType } from "pec/lib/api/schemas/quicknode/pendingDepo
 import { sendEmailNotification } from "pec/server/helpers/emails/emailService";
 import { getMinimumProcessDelay } from "./common";
 import { getLogger } from "../logger";
+import { isAfter } from "date-fns";
 
 const logger = getLogger();
 
@@ -28,9 +29,8 @@ export const processDeposits = async ({
     overrides?.deposits ??
     (await DepositModel.find({
       status: ACTIVE_STATUS,
-      createdAt: { $lt: getMinimumProcessDelay() },
       networkId,
-    }).sort({ createdAt: -1 }));
+    }).sort({ createdAt: 1 }));
 
   let qnPendingDeposits = overrides?.qnPendingDeposits;
 
@@ -46,56 +46,77 @@ export const processDeposits = async ({
 };
 
 // Checks if any of the deposits in the Deposit document aren't in the array of pending deposits, meaning it's been processed.
-// There is an edge-case here where the user submits multiple deposits with the same public key and amount. In this case we only process 1 at a time (because we delete the object) from the map. That seems fine because on next run of this it will process the next one.
+// Because we can only use the validator index and amount to determine if the deposit is pending, we instead group deposits by this key and compare the counts.
+// If the amount of pending is less than the amount of stored deposits, then the difference is the amount of deposits that have been processed. We then mark deposits as processed starting from the oldest.
 //
-// @param Deposits Deposits that we are processing. The provided deposits override param MUST be ordered by date descending and have filtered out documents that have been created before the MINIMUM_PROCESS_DELAY
+// @param Deposits Deposits that we are processing. The provided deposits override param MUST be ordered by date ascending
 export const processProvidedDeposits = async (
   deposits: Deposit[],
   qnPendingDeposits: QNPendingDepositsType[],
 ): Promise<IResponse> => {
+  const filteredDepositsByMinimumProcessDelay = deposits.filter((d) =>
+    isAfter(d.createdAt, getMinimumProcessDelay()),
+  );
   const groupedQNDeposits = groupBy(qnPendingDeposits, (v) =>
     getDepositsKey(v.pubkey, v.amount),
   );
 
-  // TODO: Need to fix this issue where we remove the item
-  // If there is multiple with the same key, we will not process the first one and process every single one after that
-  for (const dbDeposit of deposits) {
-    for (const deposit of dbDeposit.deposits) {
-      const depositKey = getDepositsKey(deposit.publicKey, deposit.amount);
+  const groupedDBDeposits = groupBy(
+    filteredDepositsByMinimumProcessDelay.flatMap((d) =>
+      d.deposits.map((v) => ({
+        ...v,
+        txHash: d.txHash,
+        email: d.email,
+      })),
+    ),
+    (v) => getDepositsKey(v.publicKey, v.amount),
+  );
 
-      if (!groupedQNDeposits[depositKey]) {
-        logger.info(
-          `Deposit with txHash ${dbDeposit.txHash} and publicKey ${deposit.publicKey} has been processed`,
+  // We store this to prevent sending multiple emails for deposits in the same batch
+  const processedDeposits: Record<string, boolean> = {};
+
+  for (const [key, storedDeposits] of entries(groupedDBDeposits)) {
+    const pendingDeposits = groupedQNDeposits[key];
+
+    const pendingCount = pendingDeposits?.length ?? 0;
+    const storedCount = storedDeposits.length;
+
+    const processedCount = storedCount - pendingCount;
+
+    if (processedCount > 0) {
+      const depositsToProcess = storedDeposits.slice(0, processedCount);
+
+      for (const deposit of depositsToProcess) {
+        const pendingDeposit = pendingDeposits?.find(
+          (d) => d.amount === deposit.amount,
         );
 
-        await DepositModel.updateOne(
-          { txHash: dbDeposit.txHash },
-          {
-            $set: {
-              status: INACTIVE_STATUS,
+        if (!pendingDeposit && !processedDeposits[deposit.txHash]) {
+          logger.info(
+            `Deposit with txHash ${deposit.txHash} and publicKey ${deposit.publicKey} has been processed`,
+          );
+
+          await DepositModel.updateOne(
+            { txHash: deposit.txHash },
+            {
+              $set: {
+                status: INACTIVE_STATUS,
+              },
             },
-          },
-        );
+          );
 
-        const totalAmount = sumBy(
-          dbDeposit.deposits,
-          // We can safely assume this is populated because the above check ensures that
-          (d) => d.amount,
-        );
+          const totalAmount = sumBy(storedDeposits, (d) => d.amount);
 
-        await sendEmailNotification({
-          emailName: "PECTRA_STAKING_MANAGER_DEPOSIT_COMPLETE",
-          metadata: {
-            emailAddress: dbDeposit.email,
-            totalAmount,
-          },
-        });
+          await sendEmailNotification({
+            emailName: "PECTRA_STAKING_MANAGER_DEPOSIT_COMPLETE",
+            metadata: {
+              emailAddress: deposit.email,
+              totalAmount,
+            },
+          });
 
-        // So only send a single email per deposit document
-        break;
-      } else {
-        // Remove the deposit from the grouped deposits
-        delete groupedQNDeposits[depositKey];
+          processedDeposits[deposit.txHash] = true;
+        }
       }
     }
   }

@@ -16,7 +16,7 @@ vi.mock(
   }),
 );
 
-vi.mock("pec/lib/services/emailService", () => ({
+vi.mock("pec/server/helpers/emails/emailService", () => ({
   sendEmailNotification: vi.fn(),
 }));
 

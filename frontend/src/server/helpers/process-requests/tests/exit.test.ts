@@ -3,16 +3,16 @@ import { ExitModel } from "pec/server/database/models";
 import { buildMockExit } from "pec/server/__mocks__/database-models";
 import { ACTIVE_STATUS, INACTIVE_STATUS } from "pec/types/app";
 import { getValidators } from "pec/server/helpers/requests/beaconchain/getValidators";
-import { MAIN_CHAIN } from "pec/lib/constants/contracts";
 import { buildMockBCValidatorsData } from "pec/server/__mocks__/validators";
 import { sendEmailNotification } from "pec/server/helpers/emails/emailService";
 import { processExits } from "../exits";
+import { TEST_NETWORK_ID } from "pec/server/__mocks__/constants";
 
 vi.mock("pec/server/helpers/requests/beaconchain/getValidators", () => ({
   getValidators: vi.fn(),
 }));
 
-vi.mock("pec/lib/services/emailService", () => ({
+vi.mock("pec/server/helpers/emails/emailService", () => ({
   sendEmailNotification: vi.fn(),
 }));
 
@@ -56,7 +56,7 @@ describe("processExits", () => {
       ],
     });
 
-    await processExits({ networkId: MAIN_CHAIN.id });
+    await processExits({ networkId: TEST_NETWORK_ID });
 
     const updatedExit = await ExitModel.findOne({
       validatorIndex,
