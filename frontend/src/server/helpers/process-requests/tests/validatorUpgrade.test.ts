@@ -1,11 +1,15 @@
 import { beforeEach, describe, expect, it, vi, type Mock } from "vitest";
-import { ConsolidationModel } from "pec/server/database/models";
-import { buildMockConsolidation } from "pec/server/__mocks__/database-models";
+import { ValidatorUpgradeModel } from "pec/server/database/models";
+import { buildMockValidatorUpgrade } from "pec/server/__mocks__/database-models";
 import { ACTIVE_STATUS, INACTIVE_STATUS } from "pec/types/app";
 import { getValidators } from "pec/server/helpers/requests/beaconchain/getValidators";
-import { buildMockBCValidatorsData } from "pec/server/__mocks__/validators";
+import {
+  buildMockBCValidatorsData,
+  generateWithdrawalCredentials,
+} from "pec/server/__mocks__/validators";
 import { sendEmailNotification } from "pec/server/helpers/emails/emailService";
-import { processConsolidations } from "../consolidation";
+import { TYPE_1_PREFIX, TYPE_2_PREFIX } from "pec/constants/pectra";
+import { processValidatorUpgrades } from "../validatorUpgrade";
 import { TEST_NETWORK_ID } from "pec/server/__mocks__/constants";
 
 vi.mock("pec/server/helpers/requests/beaconchain/getValidators", () => ({
@@ -21,59 +25,60 @@ const mockedSendEmailNotification = sendEmailNotification as Mock<
   typeof sendEmailNotification
 >;
 
-describe("processConsolidations", () => {
-  const sourceValidatorIndex = 100;
+describe("processValidatorUpgrades", () => {
+  const validatorIndex = 100;
 
   beforeEach(() => {
     mockedGetValidators.mockClear();
     mockedSendEmailNotification.mockClear();
   });
 
-  it("Should update the database record and send an email wheen the consolidation is processed", async () => {
+  it("Should update the database record and send an email when the validator upgrade is processed", async () => {
     const knownEmail = "email@email.email";
-    const processedConsolidation = buildMockConsolidation({
+    const processedValidatorUpgrade = buildMockValidatorUpgrade({
       status: ACTIVE_STATUS,
-      sourceValidatorIndex: sourceValidatorIndex,
       email: knownEmail,
+      validatorIndex,
     });
-    const unprocessedConsolidation = buildMockConsolidation({
+    const unprocessValidatorUpgrade = buildMockValidatorUpgrade({
       status: ACTIVE_STATUS,
-      sourceValidatorIndex: 200,
     });
 
-    await ConsolidationModel.insertMany([
-      processedConsolidation,
-      unprocessedConsolidation,
+    await ValidatorUpgradeModel.insertMany([
+      processedValidatorUpgrade,
+      unprocessValidatorUpgrade,
     ]);
 
     mockedGetValidators.mockResolvedValueOnce({
       success: true,
       data: [
         buildMockBCValidatorsData({
-          status: "exited",
-          validatorindex: sourceValidatorIndex,
+          // Its not doing a pure match on this address, just checking the prefix
+          withdrawalcredentials: generateWithdrawalCredentials(TYPE_2_PREFIX),
+          validatorindex: validatorIndex,
         }),
         buildMockBCValidatorsData({
           status: "active_exiting",
-          validatorindex: unprocessedConsolidation.sourceValidatorIndex,
+          validatorindex: unprocessValidatorUpgrade.validatorIndex,
+          withdrawalcredentials: generateWithdrawalCredentials(TYPE_1_PREFIX),
         }),
       ],
     });
 
-    await processConsolidations({ networkId: TEST_NETWORK_ID });
+    await processValidatorUpgrades({ networkId: TEST_NETWORK_ID });
 
-    const updatedConsolidation = await ConsolidationModel.findOne({
-      sourceValidatorIndex,
+    const updatedValidatorUpgrade = await ValidatorUpgradeModel.findOne({
+      validatorIndex,
     });
 
-    expect(updatedConsolidation?.status).eq(INACTIVE_STATUS);
+    expect(updatedValidatorUpgrade?.status).eq(INACTIVE_STATUS);
 
     expect(mockedSendEmailNotification).toHaveBeenCalledOnce();
     expect(mockedSendEmailNotification).toBeCalledWith({
       emailName: "PECTRA_STAKING_MANAGER_CONSOLIDATION_COMPLETE",
       metadata: {
         emailAddress: knownEmail,
-        targetValidatorIndex: processedConsolidation.targetValidatorIndex,
+        targetValidatorIndex: validatorIndex,
       },
     });
   });

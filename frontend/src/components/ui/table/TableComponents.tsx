@@ -124,17 +124,24 @@ export const ValidatorIndex = ({ validator }: TableComponentProps) => {
   );
 };
 
-export const WithdrawalAddress = ({ validator }: TableComponentProps) => {
+export const WithdrawalCredentials = ({ validator }: TableComponentProps) => {
   return (
     <div className="flex items-center gap-1">
-      {validator.withdrawalAddress.includes("0x02") ? (
-        <CircleCheck className="h-4 w-4 fill-green-500 text-white dark:text-black" />
-      ) : (
-        <OctagonMinus className="h-4 w-4 text-gray-500 dark:text-white" />
+      {!validator.pendingUpgrade && (
+        <>
+          {validator.withdrawalAddress.includes("0x02") ? (
+            <CircleCheck className="h-4 w-4 fill-green-500 text-white dark:text-black" />
+          ) : (
+            <OctagonMinus className="h-4 w-4 text-gray-500 dark:text-white" />
+          )}
+          <div className="text-sm font-semibold">
+            {validator.withdrawalAddress.slice(0, 4)}
+          </div>
+        </>
       )}
-      <div className="text-sm font-semibold">
-        {validator.withdrawalAddress.slice(0, 4)}
-      </div>
+      {validator.pendingUpgrade && (
+        <div className="font-semibold text-gray-500">Upgrading...</div>
+      )}
     </div>
   );
 };

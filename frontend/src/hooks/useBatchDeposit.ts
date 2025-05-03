@@ -108,11 +108,13 @@ export const useBatchDeposit = () => {
         await saveDepositToDatabase({
           deposits: deposits.map((deposit) => ({
             validatorIndex: deposit.validator.validatorIndex,
-            txHash: receipt.transactionHash,
             amount: deposit.amount,
+            publicKey: deposit.validator.publicKey,
           })),
-          network: chain.id,
+          networkId: chain.id,
           email,
+          txHash: receipt.transactionHash,
+          withdrawalAddress: account.address,
         });
       } catch (e) {
         console.error("Error saving deposit to database:", e);

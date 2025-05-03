@@ -34,12 +34,17 @@ const PendingRequestsSchema = z.union([
     type: z.literal("deposits"),
     amount: z.number(),
   }),
+  z.object({
+    type: z.literal("withdrawals"),
+    amount: z.number(),
+  }),
 ]);
 
 export const ValidatorDataSchema = z.object({
   activeDuration: z.string(),
   activeSince: z.string(),
   balance: z.number(),
+  pendingBalance: z.number(),
   pendingRequests: z.array(PendingRequestsSchema),
   effectiveBalance: z.number(),
   numberOfWithdrawals: z.number(),

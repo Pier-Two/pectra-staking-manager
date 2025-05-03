@@ -5,4 +5,9 @@ export type IErrorResponse = {
   error: IError;
 };
 
-export type IResponse<T = null> = IErrorResponse | { success: true; data: T };
+export type ISuccessResponse<T = null> = {
+  success: true;
+  data: T;
+};
+
+export type IResponse<T = null> = IErrorResponse | ISuccessResponse<T>;

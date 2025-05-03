@@ -19,7 +19,7 @@ export const BCValidatorsDataSchema = z.object({
   total_withdrawals: z.number(),
 });
 
-export type BCValidatorsData = z.infer<typeof BCValidatorsDataSchema>;
+export type BCValidatorDetails = z.infer<typeof BCValidatorsDataSchema>;
 
 export const BCValidatorsResponseSchema = buildBeaconchainResponseSchema(
   z.union([z.array(BCValidatorsDataSchema), BCValidatorsDataSchema]),

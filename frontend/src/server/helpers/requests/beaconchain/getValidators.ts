@@ -1,11 +1,7 @@
 import { type SupportedNetworkIds } from "pec/constants/chain";
-import {
-  type BCValidatorsResponse,
-  BCValidatorsResponseSchema,
-} from "pec/lib/api/schemas/beaconchain/validator";
-import { type IResponse } from "pec/types/response";
-import { executeBeaconchainTypesafeRequest } from "./generics";
-import { chunkRequest } from "../chunk-request";
+import { BCValidatorsResponseSchema } from "pec/lib/api/schemas/beaconchain/validator";
+import { executeBeaconChainTypesafeRequest } from "../generics";
+import { chunkRequest } from "../../chunk-request";
 
 /**
  * Fetches validator information from the Beaconchain API
@@ -23,22 +19,21 @@ export const getValidators = async (
     async (validatorIndexes) => {
       const url = `/api/v1/validator/${validatorIndexes.join(",")}`;
 
-      const response = await executeBeaconchainTypesafeRequest(
+      const response = await executeBeaconChainTypesafeRequest(
         BCValidatorsResponseSchema,
         url,
         network,
       );
 
       if (response.success) {
-        if (Array.isArray(response.data)) {
-          if (response.data.length === 0) {
-            return { success: false, error: "Validator not found" };
-          }
+        const responseData =
+          response.data instanceof Array ? response.data : [response.data];
 
-          return { success: true, data: response.data };
+        if (responseData.length === 0) {
+          return { success: false, error: "Validator not found" };
         }
 
-        return { success: true, data: [response.data] };
+        return { success: true, data: responseData };
       }
 
       return response;

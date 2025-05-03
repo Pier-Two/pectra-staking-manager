@@ -13,9 +13,6 @@ import { DatabaseDocumentStatuses } from "pec/types/app";
   },
 })
 export class Consolidation {
-  @prop()
-  public email?: string;
-
   @prop({ required: true, type: String })
   public status!: (typeof DatabaseDocumentStatuses)[number];
 
@@ -33,4 +30,7 @@ export class Consolidation {
 
   @prop({ required: true })
   public amount!: number;
+
+  @prop()
+  public email?: string;
 }

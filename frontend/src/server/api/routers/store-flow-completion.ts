@@ -12,11 +12,9 @@ import {
 } from "pec/server/database/models";
 import { StoreWithdrawalRequestSchema } from "pec/lib/api/schemas/withdrawal";
 import { ACTIVE_STATUS } from "pec/types/app";
-import { maxBy } from "lodash";
 import type { IResponse } from "pec/types/response";
-import { createContact } from "pec/lib/services/emailService";
+import { createContact } from "pec/server/helpers/emails/emailService";
 import { Ratelimit } from "@upstash/ratelimit";
-import { getWithdrawals } from "pec/server/helpers/beaconchain/getWithdrawals";
 import { StoreDatabaseDepositSchema } from "pec/lib/api/schemas/deposit";
 import { StoreConsolidationSchema } from "pec/lib/api/schemas/consolidation";
 import { routeHandler } from "pec/server/helpers/route-errors";
@@ -27,9 +25,9 @@ export const storeFlowCompletion = createTRPCRouter({
       noRateLimit: true, // no rate limit since this is hit many times during withdrawal processing
     })
     .input(StoreWithdrawalRequestSchema)
-    .mutation(async ({ input }) =>
-      routeHandler(async (): Promise<IResponse<null>> => {
-        const {
+    .mutation(
+      async ({
+        input: {
           network,
           validatorIndex,
           email,
@@ -37,17 +35,38 @@ export const storeFlowCompletion = createTRPCRouter({
           txHash,
           balance,
           withdrawalAddress,
-        } = input;
+        },
+      }) =>
+        routeHandler(async (): Promise<IResponse<null>> => {
+          if (amount === balance) {
+            await ExitModel.create({
+              status: ACTIVE_STATUS,
 
-        if (amount === balance) {
-          await ExitModel.create({
-            email,
+              withdrawalAddress,
+              validatorIndex,
+              txHash,
+              networkId: network,
+              amount,
+              email,
+            });
+
+            await createContact(email);
+
+            return {
+              success: true,
+              data: null,
+            };
+          }
+
+          await WithdrawalModel.create({
             status: ACTIVE_STATUS,
+
             validatorIndex,
+            withdrawalAddress,
             txHash,
             networkId: network,
             amount,
-            withdrawalAddress,
+            email,
           });
 
           await createContact(email);
@@ -56,33 +75,7 @@ export const storeFlowCompletion = createTRPCRouter({
             success: true,
             data: null,
           };
-        }
-
-        const response = await getWithdrawals([validatorIndex], network);
-
-        if (!response.success) return response;
-
-        const lastWithdrawal = maxBy(response.data, "withdrawalindex");
-        const withdrawalIndex = lastWithdrawal?.withdrawalindex ?? 0;
-
-        await WithdrawalModel.create({
-          validatorIndex,
-          email,
-          withdrawalIndex,
-          status: ACTIVE_STATUS,
-          networkId: network,
-          amount,
-          txHash,
-          withdrawalAddress,
-        });
-
-        await createContact(email);
-
-        return {
-          success: true,
-          data: null,
-        };
-      }),
+        }),
     ),
 
   storeDepositRequest: publicProcedure
@@ -91,19 +84,17 @@ export const storeFlowCompletion = createTRPCRouter({
     .input(StoreDatabaseDepositSchema)
     .mutation(async ({ input }) =>
       routeHandler(async (): Promise<IResponse<null>> => {
-        // Each batched deposit request in the array will have the same email
-        const email = input.email;
+        await DepositModel.create({
+          status: ACTIVE_STATUS,
 
-        await DepositModel.create(
-          input.deposits.map((deposit) => ({
-            ...deposit,
-            status: ACTIVE_STATUS,
-            email,
-            networkId: input.network,
-          })),
-        );
+          deposits: input.deposits,
+          txHash: input.txHash,
+          withdrawalAddress: input.withdrawalAddress,
+          email: input.email,
+          networkId: input.networkId,
+        });
 
-        await createContact(email);
+        await createContact(input.email);
 
         return {
           success: true,
@@ -130,21 +121,23 @@ export const storeFlowCompletion = createTRPCRouter({
         routeHandler(async (): Promise<IResponse<null>> => {
           if (targetValidatorIndex === sourceValidatorIndex) {
             await ValidatorUpgradeModel.create({
-              validatorIndex: targetValidatorIndex,
-              email,
               status: ACTIVE_STATUS,
-              networkId: network,
+
+              validatorIndex: targetValidatorIndex,
               txHash,
+              networkId: network,
+              email,
             });
           } else {
             await ConsolidationModel.create({
+              status: ACTIVE_STATUS,
+
               targetValidatorIndex,
               sourceValidatorIndex,
-              status: ACTIVE_STATUS,
               txHash,
-              email,
               networkId: network,
               amount,
+              email,
             });
           }
 
