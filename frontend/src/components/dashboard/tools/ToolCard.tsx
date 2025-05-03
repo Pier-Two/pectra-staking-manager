@@ -39,7 +39,7 @@ export const cardPresets = {
     title: "Unstake",
     description:
       "Trigger onchain partial withdrawals and full exits with a transaction.",
-    url: "/withdraw",
+    url: "/unstake",
     buttonLabel: "Unstake now",
     icon: <ArrowUpFromDot size={24} />,
     iconHover: "group-hover:text-green-400",
