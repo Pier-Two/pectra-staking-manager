@@ -15,6 +15,7 @@ export const getAndPopulateExternalValidator = async (
 
   const validatorDetails = prePopulateBeaconchainValidatorResponse(
     bcValidatorDetails.data[0]!,
+    networkId,
   );
 
   // We can early exit here, the remaining checks are to ensure this validator isn't about to be exited

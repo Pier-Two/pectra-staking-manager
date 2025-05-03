@@ -44,8 +44,8 @@ export const getAndPopulateValidatorDetails = async (
 
   if (!bcValidatorDetails.success) return bcValidatorDetails;
 
-  const validatorDetails = bcValidatorDetails.data.map(
-    prePopulateBeaconchainValidatorResponse,
+  const validatorDetails = bcValidatorDetails.data.map((v) =>
+    prePopulateBeaconchainValidatorResponse(v, networkId),
   );
 
   const allValidatorIndexes = validatorDetails.map(
