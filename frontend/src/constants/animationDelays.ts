@@ -8,7 +8,6 @@ export const welcomeAnimationDelays = (() => {
   const d = 0.125;
 
   return {
-    pectraLink: 0,
     headline: {
       thisIs: 0,
       theFutureOf: 2 * d,

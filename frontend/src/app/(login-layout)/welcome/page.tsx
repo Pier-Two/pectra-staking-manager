@@ -2,7 +2,6 @@ import { ChartPrefetch } from "pec/components/charts/ChartPrefetch";
 import { ChartSkeleton } from "pec/components/charts/ChartSkeleton";
 import { Footer } from "pec/components/layout/welcome/Footer";
 import { Information } from "pec/components/layout/welcome/Information";
-import { PectraLink } from "pec/components/layout/welcome/PectraLink";
 import { Suspense, type FC } from "react";
 import { EnterSiteButton } from "./_components/enter-site-button";
 import { Headline } from "./_components/headline";
@@ -14,8 +13,6 @@ const Welcome: FC = () => {
     <div className="flex h-full w-full flex-col gap-y-8 px-4 sm:gap-y-[72px]">
       <div className="flex flex-col gap-y-4">
         <div className="flex w-full flex-col items-center justify-center gap-y-4">
-          <PectraLink />
-
           <Headline />
         </div>
       </div>
