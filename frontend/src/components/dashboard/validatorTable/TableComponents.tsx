@@ -39,10 +39,10 @@ export const ValidatorRowEndContent = ({
       isDisabled,
     },
     {
-      label: "Withdraw",
+      label: "Unstake",
       icon: ArrowUpFromDot,
       iconClassName: "text-green-500 dark:text-green-300",
-      onClick: () => router.push("/withdraw"),
+      onClick: () => router.push("/unstake"),
       isDisabled,
     },
     {
