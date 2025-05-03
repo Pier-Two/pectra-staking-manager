@@ -1,5 +1,5 @@
 import { type SupportedNetworkIds } from "pec/constants/chain";
-import { executeBeaconchainTypesafeRequest } from "./generics";
+import { executeBeaconChainTypesafeRequest } from "../generics";
 import {
   type BCValidatorsForWithdrawAddressResponse,
   BCValidatorsForWithdrawAddressResponseSchema,
@@ -12,7 +12,7 @@ export const getValidatorsForWithdrawAddress = async (
 ): Promise<IResponse<BCValidatorsForWithdrawAddressResponse["data"]>> => {
   const url = `/api/v1/validator/eth1/${withdrawAddress}`;
 
-  return executeBeaconchainTypesafeRequest(
+  return executeBeaconChainTypesafeRequest(
     BCValidatorsForWithdrawAddressResponseSchema,
     url,
     network,

@@ -1,5 +1,5 @@
 import hubspotApi from "./hubspot-api";
-import { parseError } from "../utils/parseError";
+import { parseError } from "../../../lib/utils/parseError";
 import { type EmailPayload } from "pec/types/emails";
 
 /**

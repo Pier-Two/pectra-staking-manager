@@ -29,7 +29,7 @@ export const cardPresets = {
     title: "Deposit",
     description:
       "Deposit any increment of ETH to your existing validators to manage their balance.",
-    url: "/batch-deposit",
+    url: "/deposit",
     buttonLabel: "Deposit now",
     icon: <ArrowDownToDot size={24} />,
     iconHover: "group-hover:text-blue-200",

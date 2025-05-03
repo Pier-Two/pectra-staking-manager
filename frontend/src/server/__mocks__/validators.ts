@@ -1,10 +1,11 @@
 import {
   VALIDATOR_LIFECYCLE_STATUSES,
   ValidatorStatus,
+  WithdrawalAddressPrefixType,
   type ValidatorDetails,
 } from "pec/types/validator";
 import { faker } from "@faker-js/faker";
-import { type BCValidatorsData } from "pec/lib/api/schemas/beaconchain/validator";
+import { type BCValidatorDetails } from "pec/lib/api/schemas/beaconchain/validator";
 
 // Helper function to generate random pending request
 const generatePendingRequest = () => {
@@ -16,27 +17,35 @@ const generatePendingRequest = () => {
 };
 
 // Helper function to generate a public key in the required format
-const generatePublicKey = () => {
-  return `0x${faker.string.hexadecimal({ length: 64 }).slice(2)}`;
+export const generatePublicKey = () => {
+  return `0x${faker.string.hexadecimal({ length: 64, casing: "lower", prefix: "" })}`;
+};
+
+export const generateAddress = () => {
+  return `0x${faker.string.hexadecimal({ length: 40, casing: "lower", prefix: "" })}`;
 };
 
 // Helper function to generate a withdrawal address in the required format
-const generateWithdrawalAddress = () => {
-  const prefix = faker.helpers.arrayElement(["00", "01", "02"]);
-  return `0x${prefix}${faker.string.hexadecimal({ length: 40 }).slice(2)}`;
+export const generateWithdrawalCredentials = (
+  overridePrefix?: WithdrawalAddressPrefixType,
+) => {
+  const prefix =
+    overridePrefix?.slice(2) ?? faker.helpers.arrayElement(["00", "01", "02"]);
+  return `0x${prefix}${faker.string.hexadecimal({ length: 40, casing: "lower", prefix: "" })}`;
 };
 
 export const buildMockBCValidatorsData = (
-  overrides: Partial<BCValidatorsData> = {},
-): BCValidatorsData => {
+  overrides: Partial<BCValidatorDetails> = {},
+): BCValidatorDetails => {
+  const balance =
+    (overrides.balance ?? faker.number.int({ min: 1000, max: 50000 })) * 1e9;
   return {
     activationeligibilityepoch: faker.number.int({ min: 1, max: 100 }),
     activationepoch: faker.number.int({ min: 1, max: 100 }),
-    balance: faker.number.int({ min: 1000, max: 50000 }),
     effectivebalance: faker.number.int({ min: 1000, max: 50000 }),
     exitepoch: faker.number.int({ min: 100, max: 500 }),
     lastattestationslot: faker.number.int({ min: 1, max: 10000 }),
-    name: faker.name.firstName() + " Validator",
+    name: faker.person.firstName() + " Validator",
     pubkey: generatePublicKey(),
     slashed: faker.datatype.boolean(),
     status: faker.helpers.arrayElement(VALIDATOR_LIFECYCLE_STATUSES),
@@ -45,9 +54,11 @@ export const buildMockBCValidatorsData = (
       max: 20000000,
     }),
     withdrawableepoch: faker.number.int({ min: 200, max: 1000 }),
-    withdrawalcredentials: generateWithdrawalAddress(),
+    withdrawalcredentials: generateWithdrawalCredentials(),
     total_withdrawals: faker.number.int({ min: 0, max: 100 }),
     ...overrides,
+    // Comes after the overrides to ensure they are not overridden
+    balance,
   };
 };
 
@@ -59,6 +70,7 @@ export const buildMockValidatorDetails = (
     activeDuration: `${faker.number.int({ min: 1, max: 100 })} days`,
     activeSince: faker.date.past().toISOString(),
     balance: faker.number.int({ min: 0, max: 10000 }),
+    pendingBalance: faker.number.int({ min: 0, max: 10000 }),
     pendingRequests: [generatePendingRequest(), generatePendingRequest()],
     effectiveBalance: faker.number.int({ min: 0, max: 10000 }),
     numberOfWithdrawals: faker.number.int({ min: 0, max: 100 }),
@@ -68,7 +80,7 @@ export const buildMockValidatorDetails = (
       min: 10000000,
       max: 20000000,
     }),
-    withdrawalAddress: generateWithdrawalAddress(),
+    withdrawalAddress: generateWithdrawalCredentials(),
     pendingUpgrade: faker.datatype.boolean(),
     ...overrides,
   };

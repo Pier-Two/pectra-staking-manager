@@ -13,17 +13,11 @@ import { DatabaseDocumentStatuses } from "pec/types/app";
   },
 })
 export class Withdrawal {
-  @prop()
-  public email?: string;
-
   @prop({ required: true, type: String })
   public status!: (typeof DatabaseDocumentStatuses)[number];
 
   @prop({ required: true })
   public validatorIndex!: number;
-
-  @prop({ required: true })
-  public withdrawalIndex!: number;
 
   @prop({ required: true })
   public withdrawalAddress!: string;
@@ -36,4 +30,10 @@ export class Withdrawal {
 
   @prop({ required: true })
   public amount!: number;
+
+  @prop()
+  public email?: string;
+
+  public createdAt!: Date;
+  public updatedAt!: Date;
 }
