@@ -28,6 +28,7 @@ export const processPartialWithdrawals = async ({
     overrides?.withdrawals ??
     (await WithdrawalModel.find({
       status: ACTIVE_STATUS,
+      // TODO: Shouldn't this be greater than?
       createdAt: { $lt: getMinimumProcessDelay() },
       networkId,
     }).sort({ createdAt: 1 }));

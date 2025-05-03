@@ -174,4 +174,24 @@ describe("getAndPopulateValidatorDetails", () => {
       targetValidatorBalance + sourceValidatorBalance,
     );
   });
+
+  describe("deposits", () => {
+    it("Should process a deposit that has been processed and not add it to the pending request array", () => {
+      // Check database is updated
+    });
+
+    it("Should include a deposit that has been created within the minimum process delay and isn't included in the response from quicknode", () => {});
+
+    it("Should only include a deposit once that is in the database and in the quicknode response", () => {});
+  });
+
+  describe("withdrawals", () => {
+    it("Should process a withdrawal that has been processed and not add it to the pending request array", () => {
+      // Check database is updated
+    });
+
+    it("Should include a withdrawal that has been created within the minimum process delay and isn't included in the response from quicknode", () => {});
+
+    it("Should only include a withdrawal once that is in the database and in the quicknode response", () => {});
+  });
 });

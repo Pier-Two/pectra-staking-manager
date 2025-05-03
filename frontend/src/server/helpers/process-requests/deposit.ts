@@ -46,7 +46,7 @@ export const processDeposits = async ({
 };
 
 // Checks if any of the deposits in the Deposit document aren't in the array of pending deposits, meaning it's been processed.
-// There is an edge-case here where the user submits multiple deposits with the same public key and amount. In this case we only process 1 at a time (because we delete the object). That seems fine because on next run of this it will process the next one.
+// There is an edge-case here where the user submits multiple deposits with the same public key and amount. In this case we only process 1 at a time (because we delete the object) from the map. That seems fine because on next run of this it will process the next one.
 //
 // @param Deposits Deposits that we are processing. The provided deposits override param MUST be ordered by date descending and have filtered out documents that have been created before the MINIMUM_PROCESS_DELAY
 export const processProvidedDeposits = async (
@@ -57,6 +57,8 @@ export const processProvidedDeposits = async (
     getDepositsKey(v.pubkey, v.amount),
   );
 
+  // TODO: Need to fix this issue where we remove the item
+  // If there is multiple with the same key, we will not process the first one and process every single one after that
   for (const dbDeposit of deposits) {
     for (const deposit of dbDeposit.deposits) {
       const depositKey = getDepositsKey(deposit.publicKey, deposit.amount);

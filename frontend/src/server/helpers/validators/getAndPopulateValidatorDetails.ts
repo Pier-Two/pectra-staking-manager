@@ -85,8 +85,6 @@ export const getAndPopulateValidatorDetails = async (
           fields.pendingBalance =
             validator.pendingBalance + pendingRequest.amount;
         } else if (pendingRequest.type === "consolidation") {
-          console.log("In here", pendingRequest);
-          console.log(validator);
           fields.pendingBalance =
             validator.pendingBalance + pendingRequest.amount;
         }
