@@ -29,7 +29,7 @@ export const cardPresets = {
     title: "Batch Deposit",
     description:
       "Deposit multiple active validators at once, via Pier Two's batch deposit contract.",
-    url: "/batch-deposit",
+    url: "/deposit",
     buttonLabel: "Deposit now",
     icon: <ArrowDownToDot size={24} />,
     iconHover: "group-hover:text-blue-200",
