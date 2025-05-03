@@ -8,12 +8,14 @@ import { SupportedNetworkIds } from "pec/constants/chain";
 import { IResponse } from "pec/types/response";
 import { keyBy } from "lodash";
 import { getLogger } from "../logger";
+import { DocumentWithId } from "pec/types/database";
+import { Types } from "mongoose";
 
 const logger = getLogger();
 
 interface ProcessAllExitsParams {
   networkId: SupportedNetworkIds;
-  exits?: Exit[];
+  exits?: DocumentWithId<Exit>[];
   bcValidatorDetails?: BCValidatorDetails[];
 }
 
@@ -45,13 +47,15 @@ export const processExits = async ({
 };
 
 const processProvidedExits = async (
-  exits: Exit[],
+  exits: DocumentWithId<Exit>[],
   bcValidatorDetails: BCValidatorDetails[],
 ): Promise<IResponse> => {
   const keyedBCValidatorDetails = keyBy(
     bcValidatorDetails,
     (v) => v.validatorindex,
   );
+
+  const exitsIdsToUpdate: Types.ObjectId[] = [];
 
   for (const exit of exits) {
     const bcValidatorDetails = keyedBCValidatorDetails[exit.validatorIndex];
@@ -62,40 +66,31 @@ const processProvidedExits = async (
       continue;
     }
 
-    await checkExitProcessedAndUpdate(exit, bcValidatorDetails);
+    if (bcValidatorDetails.status === "exited") {
+      logger.info(
+        `Exit for validator index ${exit.validatorIndex} has been processed`,
+      );
+
+      exitsIdsToUpdate.push(exit._id);
+
+      await sendEmailNotification({
+        emailName: "PECTRA_STAKING_MANAGER_WITHDRAWAL_COMPLETE",
+        metadata: {
+          amount: exit.amount,
+          emailAddress: exit.email,
+          withdrawalAddress: exit.withdrawalAddress,
+        },
+      });
+    }
   }
+
+  await ExitModel.updateMany(
+    { _id: { $in: exitsIdsToUpdate } },
+    { $set: { status: INACTIVE_STATUS } },
+  );
 
   return {
     success: true,
     data: null,
   };
-};
-
-const checkExitProcessedAndUpdate = async (
-  dbExit: Exit,
-  bcValidatorDetails: BCValidatorDetails,
-): Promise<boolean> => {
-  if (bcValidatorDetails.status === "exited") {
-    logger.info(
-      `Exit for validator index ${dbExit.validatorIndex} has been processed`,
-    );
-
-    await ExitModel.updateOne(
-      { validatorIndex: dbExit.validatorIndex },
-      { $set: { status: INACTIVE_STATUS } },
-    );
-
-    await sendEmailNotification({
-      emailName: "PECTRA_STAKING_MANAGER_WITHDRAWAL_COMPLETE",
-      metadata: {
-        amount: dbExit.amount,
-        emailAddress: dbExit.email,
-        withdrawalAddress: dbExit.withdrawalAddress,
-      },
-    });
-
-    return true;
-  }
-
-  return false;
 };

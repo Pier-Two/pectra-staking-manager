@@ -10,6 +10,7 @@ import { sendEmailNotification } from "pec/server/helpers/emails/emailService";
 import { getMinimumProcessDelay } from "./common";
 import { getLogger } from "../logger";
 import { isBefore } from "date-fns";
+import { Types } from "mongoose";
 
 const logger = getLogger();
 
@@ -96,6 +97,7 @@ export const processProvidedDeposits = async (
             `Deposit with txHash ${deposit.txHash} and publicKey ${deposit.publicKey} has been processed`,
           );
 
+          // Not bulk-writing this one because we need the updatedEntry response to send the email
           const updatedEntry = await DepositModel.findOneAndUpdate(
             { txHash: deposit.txHash },
             {

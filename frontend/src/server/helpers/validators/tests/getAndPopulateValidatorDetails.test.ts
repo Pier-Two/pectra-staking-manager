@@ -585,7 +585,7 @@ describe("getAndPopulateValidatorDetails", () => {
       expect(validatorDetails!.balance).toEqual(balance - withdrawalAmount);
     });
 
-    it.only("Should only include a withdrawal once that is in the database and in the quicknode response", async () => {
+    it("Should only include a withdrawal once that is in the database and in the quicknode response", async () => {
       const address = generateAddress();
       const balance = 64;
       const validator = buildMockBCValidatorsData({

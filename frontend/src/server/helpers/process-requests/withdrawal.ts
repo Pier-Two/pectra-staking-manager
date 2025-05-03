@@ -11,6 +11,7 @@ import { QNPendingPartialWithdrawalType } from "pec/lib/api/schemas/quicknode/pe
 import { DocumentWithId } from "pec/types/database";
 import { getLogger } from "../logger";
 import { isBefore } from "date-fns";
+import { Types } from "mongoose";
 
 const logger = getLogger();
 
@@ -74,6 +75,8 @@ export const processProvidedPartialWithdrawals = async (
       getWithdrawalKey(withdrawal.validatorIndex, withdrawal.amount),
   );
 
+  const withdrawalIdsToProcess: Types.ObjectId[] = [];
+
   for (const [key, storedWithdrawals] of entries(groupedDBWithdrawals)) {
     const pendingWithdrawals = groupedQNPendingWithdrawals[key];
 
@@ -89,12 +92,8 @@ export const processProvidedPartialWithdrawals = async (
         logger.info(
           `Withdrawal for validator index ${withdrawal.validatorIndex} has been processed`,
         );
-        await WithdrawalModel.updateOne(
-          {
-            _id: withdrawal._id,
-          },
-          { $set: { status: INACTIVE_STATUS } },
-        );
+
+        withdrawalIdsToProcess.push(withdrawal._id);
 
         await sendEmailNotification({
           emailName: "PECTRA_STAKING_MANAGER_WITHDRAWAL_COMPLETE",
@@ -107,6 +106,11 @@ export const processProvidedPartialWithdrawals = async (
       }
     }
   }
+
+  await WithdrawalModel.updateMany(
+    { _id: { $in: withdrawalIdsToProcess } },
+    { $set: { status: INACTIVE_STATUS } },
+  );
 
   return {
     success: true,

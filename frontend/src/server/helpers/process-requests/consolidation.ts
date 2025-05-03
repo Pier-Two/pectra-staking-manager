@@ -8,12 +8,14 @@ import { type BCValidatorDetails } from "pec/lib/api/schemas/beaconchain/validat
 import { type SupportedNetworkIds } from "pec/constants/chain";
 import { keyBy } from "lodash";
 import { getLogger } from "../logger";
+import { DocumentWithId } from "pec/types/database";
+import { Types } from "mongoose";
 
 const logger = getLogger();
 
 interface ProcessConsolidationsParams {
   networkId: SupportedNetworkIds;
-  consolidations?: Consolidation[];
+  consolidations?: DocumentWithId<Consolidation>[];
   bcValidatorDetails?: BCValidatorDetails[];
 }
 
@@ -45,13 +47,15 @@ export const processConsolidations = async ({
 };
 
 const processProvidedConsolidations = async (
-  consolidations: Consolidation[],
+  consolidations: DocumentWithId<Consolidation>[],
   bcValidatorDetails: BCValidatorDetails[],
 ): Promise<IResponse> => {
   const keyedBCValidatorDetails = keyBy(
     bcValidatorDetails,
     (v) => v.validatorindex,
   );
+
+  const consolidationIdsToUpdate: Types.ObjectId[] = [];
 
   for (const consolidation of consolidations) {
     const bcValidatorDetails =
@@ -65,44 +69,34 @@ const processProvidedConsolidations = async (
       continue;
     }
 
-    await checkConsolidationProcessedAndUpdate(
-      consolidation,
-      bcValidatorDetails,
-    );
+    if (bcValidatorDetails.status === "exited") {
+      logger.info(
+        `Consolidation for validator index ${consolidation.sourceValidatorIndex} is complete.`,
+      );
+
+      consolidationIdsToUpdate.push(consolidation._id);
+
+      await sendEmailNotification({
+        emailName: "PECTRA_STAKING_MANAGER_CONSOLIDATION_COMPLETE",
+        metadata: {
+          emailAddress: consolidation.email,
+          targetValidatorIndex: consolidation.targetValidatorIndex,
+        },
+      });
+    }
   }
+
+  await ConsolidationModel.updateMany(
+    {
+      _id: { $in: consolidationIdsToUpdate },
+    },
+    {
+      $set: { status: INACTIVE_STATUS },
+    },
+  );
 
   return {
     success: true,
     data: null,
   };
-};
-
-export const checkConsolidationProcessedAndUpdate = async (
-  dbConsolidation: Consolidation,
-  bcValidatorDetails: BCValidatorDetails,
-): Promise<boolean> => {
-  if (bcValidatorDetails.status === "exited") {
-    logger.info(
-      `Consolidation for validator index ${dbConsolidation.sourceValidatorIndex} is complete.`,
-    );
-
-    await ConsolidationModel.updateOne(
-      {
-        sourceValidatorIndex: dbConsolidation.sourceValidatorIndex,
-      },
-      { $set: { status: INACTIVE_STATUS } },
-    );
-
-    await sendEmailNotification({
-      emailName: "PECTRA_STAKING_MANAGER_CONSOLIDATION_COMPLETE",
-      metadata: {
-        emailAddress: dbConsolidation.email,
-        targetValidatorIndex: dbConsolidation.targetValidatorIndex,
-      },
-    });
-
-    return true;
-  }
-
-  return false;
 };
