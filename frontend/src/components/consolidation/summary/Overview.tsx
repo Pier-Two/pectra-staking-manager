@@ -49,14 +49,17 @@ export const Overview = ({
           Consolidate{" "}
           <span className="font-bold">
             {totalSourceValidators + 1} validator
-            {totalSourceValidators <= 1 ? "" : "s"}
+            {totalSourceValidators + 1 <= 1 ? "" : "s"}
           </span>{" "}
-          into <span className="font-bold">one</span> with a new total balance
-          of
+          into <span className="font-bold">one</span> with index{" "}
+          <span className="font-bold">
+            {destinationValidator.validatorIndex}
+          </span>{" "}
+          and a new total balance of
         </span>
 
         <div className="flex items-center gap-1">
-          <div className="font-semibold">
+          <div className="font-bold">
             Ξ {displayedEthAmount(newTotalBalance, 2)}
           </div>
 
