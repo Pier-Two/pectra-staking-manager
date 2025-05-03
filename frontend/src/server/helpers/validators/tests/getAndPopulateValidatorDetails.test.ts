@@ -720,7 +720,7 @@ describe("getAndPopulateValidatorDetails", () => {
         ],
       });
 
-      // Create an empty withdrawal in the database, so that the `withdrawals.length > 0` check passes
+      // Create an old withdrawal in the database, this will be processed
       await WithdrawalModel.create(
         buildMockWithdrawal({
           validatorIndex: validator.validatorindex,

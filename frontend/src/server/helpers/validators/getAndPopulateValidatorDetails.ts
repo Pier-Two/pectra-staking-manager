@@ -94,23 +94,32 @@ export const getAndPopulateValidatorDetails = async (
     Object.assign(validator, fields);
   };
 
-  const exits = await ExitModel.find({
-    validatorIndex: { $in: allValidatorIndexes },
-    status: ACTIVE_STATUS,
-    networkId,
-  });
+  const [exits, validatorUpgrades, consolidations] = await Promise.all([
+    ExitModel.find({
+      validatorIndex: { $in: allValidatorIndexes },
+      status: ACTIVE_STATUS,
+      networkId,
+    }),
+    ValidatorUpgradeModel.find({
+      validatorIndex: { $in: allValidatorIndexes },
+      status: ACTIVE_STATUS,
+      networkId,
+    }),
+    ConsolidationModel.find({
+      $or: [
+        { targetValidatorIndex: { $in: allValidatorIndexes } },
+        { sourceValidatorIndex: { $in: allValidatorIndexes } },
+      ],
+      status: ACTIVE_STATUS,
+      networkId,
+    }),
+  ]);
 
   for (const exit of exits) {
     mutateValidator(exit.validatorIndex, {
       status: ValidatorStatus.EXITED,
     });
   }
-
-  const validatorUpgrades = await ValidatorUpgradeModel.find({
-    validatorIndex: { $in: allValidatorIndexes },
-    status: ACTIVE_STATUS,
-    networkId,
-  });
 
   for (const upgrade of validatorUpgrades) {
     const validator = keyedValidatorDetails[upgrade.validatorIndex]!;
@@ -124,15 +133,6 @@ export const getAndPopulateValidatorDetails = async (
       });
     }
   }
-
-  const consolidations = await ConsolidationModel.find({
-    status: ACTIVE_STATUS,
-    $or: [
-      { targetValidatorIndex: { $in: allValidatorIndexes } },
-      { sourceValidatorIndex: { $in: allValidatorIndexes } },
-    ],
-    networkId,
-  });
 
   for (const consolidation of consolidations) {
     const sourceValidator =
