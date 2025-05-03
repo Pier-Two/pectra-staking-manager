@@ -7,11 +7,9 @@ import { getValidators } from "../requests/beaconchain/getValidators";
 import { SupportedNetworkIds } from "pec/constants/chain";
 import { IResponse } from "pec/types/response";
 import { keyBy } from "lodash";
-import { getLogger } from "../logger";
 import { DocumentWithId } from "pec/types/database";
 import { Types } from "mongoose";
-
-const logger = getLogger();
+import { logger } from "../logger";
 
 interface ProcessAllExitsParams {
   networkId: SupportedNetworkIds;

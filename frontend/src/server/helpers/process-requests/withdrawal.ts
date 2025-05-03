@@ -9,11 +9,9 @@ import { sendEmailNotification } from "pec/server/helpers/emails/emailService";
 import { getMinimumProcessDelay } from "./common";
 import { QNPendingPartialWithdrawalType } from "pec/lib/api/schemas/quicknode/pendingPartialWithdrawals";
 import { DocumentWithId } from "pec/types/database";
-import { getLogger } from "../logger";
 import { isBefore } from "date-fns";
 import { Types } from "mongoose";
-
-const logger = getLogger();
+import { logger } from "../logger";
 
 interface ProcessPartialWithdrawalsParams {
   networkId: SupportedNetworkIds;

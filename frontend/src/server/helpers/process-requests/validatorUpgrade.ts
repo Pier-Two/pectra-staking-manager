@@ -9,11 +9,9 @@ import { SupportedNetworkIds } from "pec/constants/chain";
 import { keyBy } from "lodash";
 import { BCValidatorDetails } from "pec/lib/api/schemas/beaconchain/validator";
 import { sendEmailNotification } from "pec/server/helpers/emails/emailService";
-import { getLogger } from "../logger";
 import { Types } from "mongoose";
 import { DocumentWithId } from "pec/types/database";
-
-const logger = getLogger();
+import { logger } from "../logger";
 
 interface ProcessAllValidatorUpgradesParams {
   networkId: SupportedNetworkIds;
