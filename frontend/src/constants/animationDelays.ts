@@ -15,15 +15,15 @@ export const welcomeAnimationDelays = (() => {
       ethereum: 4 * d,
       staking: 6 * d,
     },
-    infoParagraph: 8 * d,
-    infoCards: [9 * d, 10 * d, 11 * d],
-    infoShield: 12 * d,
-    enterSiteButton: 13 * d,
+    chart: 8 * d,
+    infoParagraph: 9 * d,
+    infoCards: [10 * d, 11 * d, 12 * d],
+    infoShield: 13 * d,
+    enterSiteButton: 14 * d,
     footer: {
-      pierTwo: 14 * d,
-      labrys: 15 * d,
+      pierTwo: 15 * d,
+      labrys: 16 * d,
     },
-    chart: 16 * d,
   };
 })();
 
