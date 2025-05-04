@@ -13,6 +13,7 @@ import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { ThemeProvider } from "pec/components/theme-provider";
 import Head from "next/head";
+import { CustomCursor } from "pec/components/custom-cursor";
 
 const sans = localFont({
   src: "../fonts/Saans-TRIAL-VF.woff2",
@@ -66,6 +67,7 @@ export default function RootLayout({
             disableTransitionOnChange
           >
             <body className="bg-indigo-50 dark:bg-gray-950">
+              <CustomCursor />
               <SidebarProvider>
                 <div className="md:hidden">
                   <AppSidebar />

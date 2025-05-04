@@ -25,11 +25,11 @@ export const EnterSiteButton = () => {
         <OvalBlur />
       </div>
 
-      {!hasWalletAddress && (
+      {/* {!hasWalletAddress && (
         <div className="z-10 text-center text-[14px] font-570 leading-[14px]">
           Connect your withdrawal address to access validators
         </div>
-      )}
+      )} */}
 
       <div className="z-10 flex flex-col items-center justify-center gap-4">
         {hasWalletAddress ? (
@@ -40,7 +40,10 @@ export const EnterSiteButton = () => {
             disabled={false}
           />
         ) : (
-          <ConnectWalletButton className="!w-[420px] !max-w-[90vw]" />
+          <ConnectWalletButton
+            className="!w-[420px] !max-w-[90vw]"
+            text="Connect your wallet to unlock the future of staking"
+          />
         )}
       </div>
     </EnterAnimation>
