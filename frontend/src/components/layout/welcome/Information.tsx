@@ -83,19 +83,17 @@ export const Information = () => {
         })}
       </div>
 
-      <ClingableElement className="rounded-xl">
-        <EnterAnimation
-          delay={welcomeAnimationDelays.infoShield}
-          className="flex w-full flex-col items-start gap-[10px] rounded-xl bg-black/[2%] px-6 py-3 text-[15px] font-380 sm:max-w-[683px] sm:flex-row sm:items-center"
-        >
-          <GradientShield className="size-8 flex-shrink-0 sm:size-8" />
-          <p>
-            You retain full control over your validators and staked ETH at all
-            times. This tool does not control, custody, manage, or interact with
-            your ETH or validator keys - you do.
-          </p>
-        </EnterAnimation>
-      </ClingableElement>
+      <EnterAnimation
+        delay={welcomeAnimationDelays.infoShield}
+        className="flex w-full flex-col items-start gap-[10px] rounded-xl bg-black/[2%] px-6 py-3 text-[15px] font-380 sm:max-w-[683px] sm:flex-row sm:items-center"
+      >
+        <GradientShield className="size-8 flex-shrink-0 sm:size-8" />
+        <p>
+          You retain full control over your validators and staked ETH at all
+          times. This tool does not control, custody, manage, or interact with
+          your ETH or validator keys - you do.
+        </p>
+      </EnterAnimation>
     </div>
   );
 };
