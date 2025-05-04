@@ -12,11 +12,22 @@ function closestPointOnRect(x: number, y: number, rect: DOMRect) {
   return { x: closestX, y: closestY };
 }
 
+// Type for cling target info
+type ClingTarget = {
+  rect: DOMRect;
+  borderRadius: string;
+  element: HTMLElement;
+};
+
 export const CustomCursor = () => {
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
   const [isClinging, setIsClinging] = useState(false);
-  const [clingTarget, setClingTarget] = useState<DOMRect | null>(null);
+  const [clingTarget, setClingTarget] = useState<ClingTarget | null>(null);
+
+  // Default cursor size
+  const defaultSize = 64; // 32 * 4 (tailwind size-32)
+  const defaultRadius = "999px";
 
   // Smooth spring animation for the cursor
   const cursorX = useSpring(mouseX, { stiffness: 150, damping: 15 });
@@ -27,7 +38,7 @@ export const CustomCursor = () => {
       x: number,
       y: number,
       distancePx = 64,
-    ): DOMRect | null {
+    ): ClingTarget | null {
       const absorbers = document.querySelectorAll(
         '[data-absorb-cursor="true"], .absorb-cursor',
       );
@@ -39,43 +50,78 @@ export const CustomCursor = () => {
         const dy = y - closestY;
         const dist = Math.sqrt(dx * dx + dy * dy);
         if (dist <= distancePx) {
-          return rect;
+          // Get computed border-radius
+          const computedStyle = window.getComputedStyle(el as HTMLElement);
+          const borderRadius = computedStyle.borderRadius || "0px";
+          return { rect, borderRadius, element: el as HTMLElement };
         }
       }
       return null;
     }
 
-    const handleMouseMove = (e: MouseEvent) => {
-      const rect = findClingTarget(e.clientX, e.clientY, 64);
-      if (rect) {
+    const updateCursorPosition = (x: number, y: number) => {
+      const target = findClingTarget(x, y, 16);
+
+      // If we have a current cling target and a new target, and they're different elements
+      if (clingTarget && target && clingTarget.element !== target.element) {
+        // Dispatch uncling for the old target
+        window.dispatchEvent(new CustomEvent("cursor-uncling"));
+      }
+
+      if (target) {
         setIsClinging(true);
-        setClingTarget(rect);
-        mouseX.set(rect.left + rect.width / 2);
-        mouseY.set(rect.top + rect.height / 2);
+        setClingTarget(target);
+        // Move cursor to center of the rect
+        mouseX.set(target.rect.left + target.rect.width / 2);
+        mouseY.set(target.rect.top + target.rect.height / 2);
+        // Dispatch event for button scaling
         window.dispatchEvent(
-          new CustomEvent("cursor-cling", { detail: { rect } }),
+          new CustomEvent("cursor-cling", { detail: { rect: target.rect } }),
         );
       } else {
         setIsClinging(false);
         setClingTarget(null);
-        mouseX.set(e.clientX);
-        mouseY.set(e.clientY);
+        mouseX.set(x);
+        mouseY.set(y);
         window.dispatchEvent(new CustomEvent("cursor-uncling"));
       }
     };
 
+    const handleMouseMove = (e: MouseEvent) => {
+      updateCursorPosition(e.clientX, e.clientY);
+    };
+
+    const handleScroll = () => {
+      // Get the current mouse position from the motion values
+      const currentX = mouseX.get();
+      const currentY = mouseY.get();
+      updateCursorPosition(currentX, currentY);
+    };
+
     window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("scroll", handleScroll, true); // true for capture phase to catch all scroll events
 
     return () => {
       window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("scroll", handleScroll, true);
     };
-  }, [mouseX, mouseY]);
+  }, [mouseX, mouseY, clingTarget]);
+
+  // Morphing styles
+  const width =
+    isClinging && clingTarget ? clingTarget.rect.width : defaultSize;
+  const height =
+    isClinging && clingTarget ? clingTarget.rect.height : defaultSize;
+  const borderRadius =
+    isClinging && clingTarget ? clingTarget.borderRadius : defaultRadius;
 
   return (
     <motion.div
-      className="pointer-events-none fixed left-0 top-0 z-50 size-32 rounded-full bg-primary mix-blend-screen"
+      className="pointer-events-none fixed left-0 top-0 z-50 bg-primary mix-blend-screen"
       animate={{
-        scale: isClinging ? 0 : 1,
+        width,
+        height,
+        borderRadius,
       }}
       transition={{
         type: "spring",

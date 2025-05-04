@@ -11,6 +11,7 @@ import type { ChartGroup } from "pec/types/chart";
 import { Dialog, DialogContent } from "../ui/dialog";
 import { cn } from "pec/lib/utils";
 import { motion } from "motion/react";
+import { ClingableElement } from "../ui/clingable-element";
 
 const emptyChart = (
   <Card className="w-full rounded-xl bg-white text-black shadow-xl dark:bg-gray-900 dark:text-white">
@@ -34,18 +35,24 @@ const ChartNavigation = ({
   handleChartForward: () => void;
 }) => (
   <div className="flex flex-row items-center gap-2">
-    <Expand
-      className="h-10 w-10 cursor-pointer rounded-full border-2 p-2 hover:bg-white max-sm:hidden dark:border-gray-800 dark:bg-gray-900 dark:hover:bg-gray-800"
-      onClick={() => setIsFullscreen(!isFullscreen)}
-    />
-    <ChevronLeft
-      className="h-10 w-10 cursor-pointer rounded-full border-2 p-2 hover:bg-white max-sm:h-8 max-sm:w-8 max-sm:p-1.5 dark:border-gray-800 dark:bg-gray-900 dark:hover:bg-gray-800"
-      onClick={handleChartBackward}
-    />
-    <ChevronRight
-      className="h-10 w-10 cursor-pointer rounded-full border-2 p-2 hover:bg-white max-sm:h-8 max-sm:w-8 max-sm:p-1.5 dark:border-gray-800 dark:bg-gray-900 dark:hover:bg-gray-800"
-      onClick={handleChartForward}
-    />
+    <ClingableElement className="rounded-full">
+      <Expand
+        className="h-10 w-10 cursor-pointer rounded-full border-2 p-2 hover:bg-white max-sm:hidden dark:border-gray-800 dark:bg-gray-900 dark:hover:bg-gray-800"
+        onClick={() => setIsFullscreen(!isFullscreen)}
+      />
+    </ClingableElement>
+    <ClingableElement className="rounded-full">
+      <ChevronLeft
+        className="h-10 w-10 cursor-pointer rounded-full border-2 p-2 hover:bg-white max-sm:h-8 max-sm:w-8 max-sm:p-1.5 dark:border-gray-800 dark:bg-gray-900 dark:hover:bg-gray-800"
+        onClick={handleChartBackward}
+      />
+    </ClingableElement>
+    <ClingableElement className="rounded-full">
+      <ChevronRight
+        className="h-10 w-10 cursor-pointer rounded-full border-2 p-2 hover:bg-white max-sm:h-8 max-sm:w-8 max-sm:p-1.5 dark:border-gray-800 dark:bg-gray-900 dark:hover:bg-gray-800"
+        onClick={handleChartForward}
+      />
+    </ClingableElement>
   </div>
 );
 
