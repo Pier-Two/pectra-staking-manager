@@ -2,6 +2,7 @@ import { DepositWorkflowWrapper } from "./_components/deposit-workflow";
 import { title } from "pec/constants/metadata";
 import type { Metadata } from "next";
 import { ArrowDownToDot } from "lucide-react";
+import { BatchContractLink } from "./_components/batch-contract-link";
 
 export const metadata: Metadata = {
   title: title("Batch Deposit"),
@@ -18,16 +19,8 @@ const BatchDeposit = () => (
 
         <div className="text-base">
           Top up your existing validators in one transaction using{" "}
-          <a
-            href="https://etherscan.io/address/0x00000000219ab540356cBB839Cbe05303d7705Fa"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-indigo-500 dark:text-indigo-300"
-          >
-            Pier Two&apos;s batch deposit contract.
-          </a>{" "}
-          Send any amount of ETH, up to a total of 2016, to validators that are
-          connected to your withdrawal address.
+          <BatchContractLink /> Send any amount of ETH, up to a total of 2016,
+          to validators that are connected to your withdrawal address.
         </div>
         <div className="text-base">
           In order to see the full benefits of Pectra’s auto-compounding, it is
