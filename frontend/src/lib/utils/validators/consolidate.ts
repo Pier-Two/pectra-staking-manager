@@ -2,7 +2,7 @@ import { type SubmittingConsolidationValidatorDetails } from "pec/constants/colu
 import { type ValidatorDetails } from "pec/types/validator";
 
 export const needsUpgradeTx = (v: ValidatorDetails): boolean => {
-  return !v.withdrawalAddress.startsWith("0x02");
+  return !v.withdrawalAddress.startsWith("0x02") && !v.pendingUpgrade;
 };
 
 export const getRequiredConsolidationTransactions = (
