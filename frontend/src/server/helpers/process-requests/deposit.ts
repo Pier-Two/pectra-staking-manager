@@ -8,10 +8,8 @@ import { getPendingDeposits } from "../requests/quicknode/getPendingDeposits";
 import { QNPendingDepositsType } from "pec/lib/api/schemas/quicknode/pendingDeposits";
 import { sendEmailNotification } from "pec/server/helpers/emails/emailService";
 import { getMinimumProcessDelay } from "./common";
-import { getLogger } from "../logger";
 import { isBefore } from "date-fns";
-
-const logger = getLogger();
+import { logger } from "../logger";
 
 interface ProcessDepositsParams {
   networkId: SupportedNetworkIds;
@@ -96,6 +94,7 @@ export const processProvidedDeposits = async (
             `Deposit with txHash ${deposit.txHash} and publicKey ${deposit.publicKey} has been processed`,
           );
 
+          // Not bulk-writing this one because we need the updatedEntry response to send the email
           const updatedEntry = await DepositModel.findOneAndUpdate(
             { txHash: deposit.txHash },
             {

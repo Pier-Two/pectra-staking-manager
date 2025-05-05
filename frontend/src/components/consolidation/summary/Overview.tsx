@@ -9,11 +9,11 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "pec/components/ui/tooltip";
-import { useConsolidationFee } from "pec/hooks/use-consolidation";
 import { formatEther, parseEther } from "viem";
 import { displayedEthAmount } from "pec/lib/utils/validators/balance";
 import { type ValidatorDetails } from "pec/types/validator";
 import { sumBy } from "lodash";
+import { useConsolidationFee } from "pec/hooks/useConsolidateContractCalls";
 
 interface OverviewProps {
   sourceValidators: ValidatorDetails[];
@@ -49,14 +49,17 @@ export const Overview = ({
           Consolidate{" "}
           <span className="font-bold">
             {totalSourceValidators + 1} validator
-            {totalSourceValidators <= 1 ? "" : "s"}
+            {totalSourceValidators + 1 <= 1 ? "" : "s"}
           </span>{" "}
-          into <span className="font-bold">one</span> with a new total balance
-          of
+          into <span className="font-bold">one</span> with index{" "}
+          <span className="font-bold">
+            {destinationValidator.validatorIndex}
+          </span>{" "}
+          and a new total balance of
         </span>
 
         <div className="flex items-center gap-1">
-          <div className="font-semibold">
+          <div className="font-bold">
             Ξ {displayedEthAmount(newTotalBalance, 2)}
           </div>
 
@@ -70,7 +73,7 @@ export const Overview = ({
                 <span>All validators with 0x01</span>
                 <span>credentials set require a</span>
                 <span>consolidation, including the</span>
-                <span>destination validator.</span>
+                <span>target validator.</span>
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>

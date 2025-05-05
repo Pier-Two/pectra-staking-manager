@@ -49,7 +49,7 @@ const Welcome: FC = () => {
             operations, private keys, or staked ETH. The tool does not
             constitute the provision of a financial product or service, nor does
             it imply any ongoing monitoring, custody, or execution
-            functionality.*
+            functionality.
           </p>
         </div>
       </div>

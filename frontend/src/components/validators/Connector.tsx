@@ -9,7 +9,7 @@ import { EnterAnimation } from "pec/app/(login-layout)/welcome/_components/enter
 
 export interface IConnector {
   title?: JSX.Element | string;
-  description?: string;
+  description?: JSX.Element | string;
   connectedAddress: string;
   validators: ValidatorDetails[];
   className?: string;
@@ -35,11 +35,18 @@ export const Connector: FC<IConnector> = ({
           </div>
         )}
 
-        {!!description && <p className="w-full text-base">{description}</p>}
+        {!!description &&
+          (typeof description === "string" ? (
+            <p className="w-full text-base">{description}</p>
+          ) : (
+            description
+          ))}
         <div className={cn("text-left text-base", className)}>
-          You have {validators.length} total validators using this withdrawal
+          {validators.length > 0
+            ? `You have ${validators.length} total validators using this withdrawal
           address, consolidate them to Pectra standard now to get the most out
-          of Ethereum staking.
+          of Ethereum staking.`
+            : `There are no validators associated to this withdrawal address.`}
         </div>
       </div>
 

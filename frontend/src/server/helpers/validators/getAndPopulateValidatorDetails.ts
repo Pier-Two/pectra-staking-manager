@@ -17,9 +17,9 @@ import { getWithdrawalAddressPrefixType } from "pec/lib/utils/validators/withdra
 import { TYPE_2_PREFIX } from "pec/constants/pectra";
 import { getPendingDeposits } from "../requests/quicknode/getPendingDeposits";
 import { getPendingPartialWithdrawals } from "../requests/quicknode/getPendingPartialWithdrawals";
-import { getLogger } from "../logger";
 import { processProvidedDeposits } from "../process-requests/deposit";
 import { processProvidedPartialWithdrawals } from "../process-requests/withdrawal";
+import { logger } from "../logger";
 
 // We don't process anything in the database here and instead operate off of API responses
 // Reasoning is so we don't delay the client response longer than we should
@@ -94,23 +94,32 @@ export const getAndPopulateValidatorDetails = async (
     Object.assign(validator, fields);
   };
 
-  const exits = await ExitModel.find({
-    validatorIndex: { $in: allValidatorIndexes },
-    status: ACTIVE_STATUS,
-    networkId,
-  });
+  const [exits, validatorUpgrades, consolidations] = await Promise.all([
+    ExitModel.find({
+      validatorIndex: { $in: allValidatorIndexes },
+      status: ACTIVE_STATUS,
+      networkId,
+    }),
+    ValidatorUpgradeModel.find({
+      validatorIndex: { $in: allValidatorIndexes },
+      status: ACTIVE_STATUS,
+      networkId,
+    }),
+    ConsolidationModel.find({
+      $or: [
+        { targetValidatorIndex: { $in: allValidatorIndexes } },
+        { sourceValidatorIndex: { $in: allValidatorIndexes } },
+      ],
+      status: ACTIVE_STATUS,
+      networkId,
+    }),
+  ]);
 
   for (const exit of exits) {
     mutateValidator(exit.validatorIndex, {
       status: ValidatorStatus.EXITED,
     });
   }
-
-  const validatorUpgrades = await ValidatorUpgradeModel.find({
-    validatorIndex: { $in: allValidatorIndexes },
-    status: ACTIVE_STATUS,
-    networkId,
-  });
 
   for (const upgrade of validatorUpgrades) {
     const validator = keyedValidatorDetails[upgrade.validatorIndex]!;
@@ -124,15 +133,6 @@ export const getAndPopulateValidatorDetails = async (
       });
     }
   }
-
-  const consolidations = await ConsolidationModel.find({
-    status: ACTIVE_STATUS,
-    $or: [
-      { targetValidatorIndex: { $in: allValidatorIndexes } },
-      { sourceValidatorIndex: { $in: allValidatorIndexes } },
-    ],
-    networkId,
-  });
 
   for (const consolidation of consolidations) {
     const sourceValidator =
@@ -199,7 +199,7 @@ const calculatePendingDepositsForValidators = async (
     const pendingDepositsResponse = await getPendingDeposits(networkId);
 
     if (!pendingDepositsResponse.success) {
-      getLogger().error(
+      logger.error(
         `Error getting pending deposits: ${pendingDepositsResponse.error}`,
       );
 
@@ -213,7 +213,7 @@ const calculatePendingDepositsForValidators = async (
     );
 
     if (!processDepositsResult.success) {
-      getLogger().error(
+      logger.error(
         `Error processing deposits when fetching validators: ${processDepositsResult.error}`,
       );
     }
@@ -256,7 +256,7 @@ const calculatePendingDepositsForValidators = async (
       }
     }
 
-    // Finally include all the remaining flattened deposits, that weren't included in the quicknode response
+    // Finally include all the remaining flattened deposits that weren't included in the quicknode response
     // This ensures we don't miss any deposits that were made before quicknode has a chance to pick them up
     for (const remainingDeposit of flattedDeposits) {
       mutateValidator(remainingDeposit.validatorIndex, {
@@ -289,7 +289,7 @@ export const calculatePendingWithdrawalsForValidators = async (
       await getPendingPartialWithdrawals(networkId);
 
     if (!pendingPartialWithdrawals.success) {
-      getLogger().error(
+      logger.error(
         `Error getting partial withdrawals: ${pendingPartialWithdrawals.error}`,
       );
 
@@ -302,7 +302,7 @@ export const calculatePendingWithdrawalsForValidators = async (
     );
 
     if (!processWithdrawalsResult.success) {
-      getLogger().error(
+      logger.error(
         `Error processing partial withdrawals when fetching validators: ${processWithdrawalsResult.error}`,
       );
     }
@@ -318,9 +318,9 @@ export const calculatePendingWithdrawalsForValidators = async (
       (pendingDeposit) => pendingDeposit.validator_index,
     );
 
-    for (const { publicKey, validatorIndex } of validatorDetails) {
+    for (const { validatorIndex } of validatorDetails) {
       const pendingWithdrawals =
-        groupedPendingPartialWithdrawals[publicKey] ?? [];
+        groupedPendingPartialWithdrawals[validatorIndex] ?? [];
 
       for (const pendingWithdrawal of pendingWithdrawals) {
         const foundIndex = updatedWithdrawals.findIndex(

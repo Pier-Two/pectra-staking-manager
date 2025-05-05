@@ -64,9 +64,8 @@ export const TopBar: FC<ITopBar> = (props) => {
           >
             <div
               className={cn(
-                "hidden font-inter transition-colors duration-200 hover:cursor-pointer hover:text-zinc-500 dark:text-zinc-50 dark:hover:text-zinc-400 lg:block",
-                pathname === "/validators-found" &&
-                  "text-zinc-500 dark:text-zinc-400",
+                "hidden font-inter transition-colors duration-200 hover:cursor-pointer hover:text-zinc-500 lg:block dark:text-zinc-50 dark:hover:text-zinc-400",
+                pathname === "/dashboard" && "text-zinc-500 dark:text-zinc-400",
               )}
             >
               My Validators

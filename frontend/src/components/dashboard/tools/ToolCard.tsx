@@ -18,7 +18,7 @@ export const cardPresets = {
   Consolidate: {
     title: "Consolidate",
     description:
-      "Combine multiple Pectra validators (0x02 credentials) into one large-balance validator.",
+      "Upgrade and combine multiple validators to the new Pectra standard (0x02).",
     url: "/consolidate",
     buttonLabel: "Consolidate now",
     icon: <Merge className="rotate-90" size={24} />,
@@ -39,7 +39,7 @@ export const cardPresets = {
     title: "Unstake",
     description:
       "Trigger onchain partial withdrawals and full exits with a transaction.",
-    url: "/withdraw",
+    url: "/unstake",
     buttonLabel: "Unstake now",
     icon: <ArrowUpFromDot size={24} />,
     iconHover: "group-hover:text-green-400",
