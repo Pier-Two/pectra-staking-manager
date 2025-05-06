@@ -1,7 +1,6 @@
 "use client";
 
 import { ChevronDown } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { SUPPORTED_CHAINS } from "pec/constants/chain";
 import { useWalletAddress } from "pec/hooks/useWallet";
 import { client, wallets } from "pec/lib/wallet/client";
@@ -25,7 +24,6 @@ export const ConnectWalletButton = ({
   className,
   text,
 }: StyleableComponent & { text?: string }) => {
-  const router = useRouter();
   const { resolvedTheme: theme } = useTheme();
   const address = useWalletAddress();
   const detailsModal = useWalletDetailsModal();
@@ -34,13 +32,12 @@ export const ConnectWalletButton = ({
   const { data: ensAvatar } = useEnsAvatar({ client, ensName });
   const connectionStatus = useActiveWalletConnectionStatus();
 
-  // watch for disconnection and redirect to welcome page
+  // watch for disconnection and track event
   useEffect(() => {
     if (connectionStatus === "disconnected") {
       trackEvent("disconnect_wallet");
-      router.push("/welcome");
     }
-  }, [connectionStatus, router]);
+  }, [connectionStatus]);
 
   // This is to prevent the component from rendering on the server causing hydration errors from the dynamic theme styling
   useEffect(() => {
@@ -114,7 +111,6 @@ export const ConnectWalletButton = ({
         }}
         onConnect={() => {
           trackEvent("connect_wallet");
-          router.push("/validators-found");
         }}
       />
     </ClingableElement>

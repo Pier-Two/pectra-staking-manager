@@ -287,6 +287,9 @@ importers:
       use-immer:
         specifier: ^0.11.0
         version: 0.11.0(immer@10.1.1)(react@19.0.0)
+      usehooks-ts:
+        specifier: ^3.1.1
+        version: 3.1.1(react@19.0.0)
       uuid:
         specifier: ^11.1.0
         version: 11.1.0
@@ -8766,6 +8769,12 @@ packages:
     resolution: {integrity: sha512-eEgnFxGQ1Ife9bzYs6VLi8/4X6CObHMw9Qr9tPY43iKwsPw8xE8+EFsf/2cFZ5S3esXgpWgtSCtLNS41F+sKPA==}
     peerDependencies:
       react: ^16.8.0 || ^17.0.0 || ^18.0.0
+
+  usehooks-ts@3.1.1:
+    resolution: {integrity: sha512-I4diPp9Cq6ieSUH2wu+fDAVQO43xwtulo+fKEidHUwZPnYImbtkTjzIJYcDcJqxgmX31GVqNFURodvcgHcW0pA==}
+    engines: {node: '>=16.15.0'}
+    peerDependencies:
+      react: ^16.8.0  || ^17 || ^18 || ^19 || ^19.0.0-rc
 
   utf8@3.0.0:
     resolution: {integrity: sha512-E8VjFIQ/TyQgp+TZfS6l8yp/xWppSAHzidGiRrqe4bK4XP9pTRyKFgGJpO3SN7zdX4DeomTrwaseCHovfpFcqQ==}
@@ -19184,6 +19193,11 @@ snapshots:
 
   use-sync-external-store@1.2.0(react@19.0.0):
     dependencies:
+      react: 19.0.0
+
+  usehooks-ts@3.1.1(react@19.0.0):
+    dependencies:
+      lodash.debounce: 4.0.8
       react: 19.0.0
 
   utf8@3.0.0: {}

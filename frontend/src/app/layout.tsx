@@ -13,6 +13,7 @@ import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { ThemeProvider } from "pec/components/theme-provider";
 import Head from "next/head";
+import { RedirectOnFirstConnect } from "pec/hooks/use-redirect-on-first-connect";
 
 const sans = localFont({
   src: "../fonts/Saans-TRIAL-VF.woff2",
@@ -67,6 +68,7 @@ export default function RootLayout({
           >
             <body className="bg-indigo-50 dark:bg-gray-950">
               <SidebarProvider>
+                <RedirectOnFirstConnect />
                 <div className="md:hidden">
                   <AppSidebar />
                 </div>
