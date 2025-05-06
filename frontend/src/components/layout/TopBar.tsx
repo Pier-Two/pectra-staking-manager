@@ -4,22 +4,23 @@ import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { ConnectWalletButton } from "pec/components/ui/wallet/ConnectWallet";
 import { cn } from "pec/lib/utils";
-import type { FC } from "react";
 import DarkMode from "../dark-mode";
 import { SidebarTrigger } from "../ui/sidebar";
 import { Tools } from "./Tools";
 import { ValidatorCount } from "../ui/custom/ValidatorCount";
+import { useActiveWalletConnectionStatus } from "thirdweb/react";
 
-export interface ITopBar {
-  type?: "profile" | "wallet_connect";
-}
-
-export const TopBar: FC<ITopBar> = (props) => {
-  const { type } = props;
+export const TopBar = () => {
   const router = useRouter();
   const pathname = usePathname();
+  const connectionStatus = useActiveWalletConnectionStatus();
 
   const handleWelcomeNavigation = () => {
+    if (connectionStatus === "connected") {
+      router.push("/dashboard");
+      return;
+    }
+
     router.push("/welcome");
   };
 
@@ -56,35 +57,57 @@ export const TopBar: FC<ITopBar> = (props) => {
         </div>
       </div>
 
-      {type === "profile" && (
-        <div className="order-3 hidden items-center gap-[clamp(1rem,2.5vw,4rem)] md:flex">
+      <div className="order-3 hidden items-center gap-[clamp(1rem,2.5vw,4rem)] md:flex">
+        {connectionStatus === "connected" && (
+          <>
+            <div
+              className="flex items-center space-x-2 hover:cursor-pointer"
+              onClick={handleValidatorsNavigation}
+            >
+              <div
+                className={cn(
+                  "hidden font-inter transition-colors duration-200 hover:cursor-pointer hover:text-zinc-500 lg:block dark:text-zinc-50 dark:hover:text-zinc-400",
+                  pathname === "/dashboard" &&
+                    "text-zinc-500 dark:text-zinc-400",
+                )}
+              >
+                My Validators
+              </div>
+              <ValidatorCount />
+            </div>
+
+            <Tools />
+          </>
+        )}
+
+        {connectionStatus === "disconnected" && (
           <div
             className="flex items-center space-x-2 hover:cursor-pointer"
-            onClick={handleValidatorsNavigation}
+            onClick={() => {
+              router.push("/welcome");
+            }}
           >
             <div
               className={cn(
                 "hidden font-inter transition-colors duration-200 hover:cursor-pointer hover:text-zinc-500 lg:block dark:text-zinc-50 dark:hover:text-zinc-400",
-                pathname === "/dashboard" && "text-zinc-500 dark:text-zinc-400",
+                pathname === "/welcome" && "text-zinc-500 dark:text-zinc-400",
               )}
             >
-              My Validators
+              Welcome
             </div>
-            <ValidatorCount />
           </div>
+        )}
 
-          <Tools />
-          <div
-            className={cn(
-              "font-inter transition-colors duration-200 hover:cursor-pointer hover:text-zinc-500 dark:text-zinc-50 dark:hover:text-zinc-400",
-              pathname === "/charts" && "text-zinc-500 dark:text-zinc-400",
-            )}
-            onClick={handleChartsNavigation}
-          >
-            Charts
-          </div>
+        <div
+          className={cn(
+            "font-inter transition-colors duration-200 hover:cursor-pointer hover:text-zinc-500 dark:text-zinc-50 dark:hover:text-zinc-400",
+            pathname === "/charts" && "text-zinc-500 dark:text-zinc-400",
+          )}
+          onClick={handleChartsNavigation}
+        >
+          Charts
         </div>
-      )}
+      </div>
 
       <div className="order-1 mr-4 flex items-center gap-4 md:order-3">
         <div className="md:hidden">
