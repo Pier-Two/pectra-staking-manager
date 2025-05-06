@@ -70,21 +70,10 @@ export const useConsolidate = ({ activeValidators }: UseConsolidate) => {
       console.error("Invalid state", stage);
     }
 
-    // We can't reuse getAvailableSourceValidators here because its state won't have updated yet
-    const sourceValidators = activeValidators.filter((v) => {
-      if (v.validatorIndex !== validator.validatorIndex) return true;
-
-      if (needsUpgradeTx(v)) {
-        return true;
-      }
-
-      return false;
-    });
-
     setStage({
       stage: "source",
       destinationValidator: validator,
-      sourceValidator: sourceValidators,
+      sourceValidator: _getSourceValidators(validator, activeValidators),
     });
   };
 
