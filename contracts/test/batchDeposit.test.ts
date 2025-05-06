@@ -3,6 +3,7 @@ import { testingFixture } from "../helpers/testing";
 import { BatchDepositContract, ETHDepositContract } from "../types/testing";
 import { expect } from "chai";
 import { flipAmountEndianness } from "../helpers/deposit";
+import hre from "hardhat";
 
 interface Deposit {
   pubKey: `0x${string}`;
@@ -28,6 +29,32 @@ describe("BatchDeposit", () => {
 
   beforeEach(async () => {
     ({ batchDeposit, ethDepositContract } = await testingFixture());
+  });
+
+  it("Should revert when sending ETH directly to the contract", async () => {
+    const [sender] = await hre.ethers.getSigners();
+
+    // Attempt to send ETH directly to the contract
+    await expect(
+      sender.sendTransaction({
+        to: batchDeposit.address,
+        value: parseEther("1"),
+      }),
+    ).to.be.revertedWithCustomError(batchDeposit, "ETHNotAccepted");
+  });
+
+  it("Should revert when the fallback function is called", async () => {
+    const [sender] = await hre.ethers.getSigners();
+
+    // Create a transaction that will trigger the fallback function
+    // by calling a non-existent function with some data and value
+    await expect(
+      sender.sendTransaction({
+        to: batchDeposit.address,
+        value: parseEther("1"),
+        data: "0x12345678", // Some arbitrary data that doesn't match any function signature
+      }),
+    ).to.be.revertedWithCustomError(batchDeposit, "FallbackMethodNotAccepted");
   });
 
   it("Should revert when supplying no deposits", async () => {
