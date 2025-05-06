@@ -24,6 +24,7 @@ export const CustomCursor = () => {
   const mouseY = useMotionValue(0);
   const [isClinging, setIsClinging] = useState(false);
   const [clingTarget, setClingTarget] = useState<ClingTarget | null>(null);
+  const [isTouchDevice, setIsTouchDevice] = useState(false);
 
   // Default cursor size
   const defaultSize = 64; // 32 * 4 (tailwind size-32)
@@ -34,6 +35,32 @@ export const CustomCursor = () => {
   const cursorY = useSpring(mouseY, { stiffness: 150, damping: 15 });
 
   useEffect(() => {
+    // Check if device is touch-enabled
+    const checkTouchDevice = () => {
+      const hasTouchScreen =
+        "ontouchstart" in window ||
+        navigator.maxTouchPoints > 0 ||
+        // @ts-expect-error - for older browsers
+        navigator.msMaxTouchPoints > 0;
+
+      setIsTouchDevice(hasTouchScreen);
+    };
+
+    // Initial check
+    checkTouchDevice();
+
+    // Listen for changes in touch capability (e.g., when device is connected/disconnected)
+    window.addEventListener("touchstart", checkTouchDevice, { once: true });
+
+    return () => {
+      window.removeEventListener("touchstart", checkTouchDevice);
+    };
+  }, []);
+
+  useEffect(() => {
+    // If it's a touch device, don't set up mouse tracking
+    if (isTouchDevice) return;
+
     function findClingTarget(
       x: number,
       y: number,
@@ -105,7 +132,7 @@ export const CustomCursor = () => {
       window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("scroll", handleScroll, true);
     };
-  }, [mouseX, mouseY, clingTarget]);
+  }, [mouseX, mouseY, clingTarget, isTouchDevice]);
 
   // Morphing styles
   const width =
@@ -114,6 +141,9 @@ export const CustomCursor = () => {
     isClinging && clingTarget ? clingTarget.rect.height : defaultSize;
   const borderRadius =
     isClinging && clingTarget ? clingTarget.borderRadius : defaultRadius;
+
+  // If it's a touch device, don't render the cursor
+  if (isTouchDevice) return null;
 
   return (
     <motion.div
