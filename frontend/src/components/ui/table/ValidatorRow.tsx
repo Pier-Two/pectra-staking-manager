@@ -108,10 +108,10 @@ export const ValidatorRow = <T extends TableValidatorDetails>({
   };
 
   const clearBackground =
-    wrapperProps?.clearBackground || selectableRows?.isPermanentSelected;
+    wrapperProps?.clearBackground ?? selectableRows?.isPermanentSelected;
 
   const isSelected =
-    selectableRows?.isSelected || selectableRows?.isPermanentSelected;
+    selectableRows?.isSelected ?? selectableRows?.isPermanentSelected;
 
   return (
     <ValidatorCardWrapper
