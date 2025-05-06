@@ -64,6 +64,8 @@ export const generateChartData = async () => {
     },
   ];
 
+  if (chartData.length === 0) return [];
+
   await redis.set("pectra-cache:chart-data", JSON.stringify(chartData), {
     ex: 60 * 60 * 6, // 6 hours
   });

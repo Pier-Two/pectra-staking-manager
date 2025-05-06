@@ -3,7 +3,6 @@ import { headers } from "next/headers";
 import { env } from "pec/env";
 import { generateChartData } from "pec/server/api/routers/charts/generateChartData";
 import { connect, ValidatorSummaryModel } from "pec/server/database/models";
-import type { ValidatorStatistics } from "pec/types/chart";
 
 import {
   type ValidatorsResponseData,

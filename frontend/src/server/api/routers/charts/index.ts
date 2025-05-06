@@ -14,7 +14,7 @@ export const chartRouter = createTRPCRouter({
     >("pectra-cache:chart-data");
 
     // if the data is cached, return it
-    if (cachedChartData) {
+    if (cachedChartData && cachedChartData.length > 0) {
       return cachedChartData;
     }
 
