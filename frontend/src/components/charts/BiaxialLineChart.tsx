@@ -1,5 +1,3 @@
-"use client";
-
 import {
   ChartContainer,
   ChartLegend,
@@ -8,38 +6,27 @@ import {
   ChartTooltipContent,
 } from "pec/components/ui/chart";
 import { useIsMobile } from "pec/hooks/use-mobile";
-
-import { cn } from "pec/lib/utils";
-import type { IAreaChart } from "pec/types/chart";
-import type { FC } from "react";
-import { Area, AreaChart, CartesianGrid, Label, XAxis, YAxis } from "recharts";
+import { IBiaxialLineChart } from "pec/types/chart";
+import { CartesianGrid, Label, Line, LineChart, XAxis, YAxis } from "recharts";
 import { formatTick } from "./formatTick";
+import { maxBy, minBy } from "lodash";
+import { cn } from "pec/lib/utils";
 
 const chartConfig = {
-  pectra: {
-    label: "Type 2 (Pectra)",
-    color: "hsl(var(--chart-3))",
-  },
-  shapella: {
-    label: "Type 1 (Shapella)",
-    color: "hsl(var(--chart-2))",
-  },
-  merge: {
-    label: "Type 0 (Merge)",
+  avgEthStaked: {
+    label: "Average ETH Staked",
     color: "hsl(var(--chart-1))",
+  },
+  totalValidatorCount: {
+    label: "Total Validator Count",
+    color: "hsl(var(--chart-2))",
   },
 };
 
-export const AreaChartComponent: FC<IAreaChart> = ({ chart }) => {
-  const { chartData, yAxis, legend, xAxis } = chart;
-  const {
-    lowerRange,
-    upperRange,
-    ticks,
-    label: yLabel,
-    showLabel: showYLabel,
-    orientation: yOrientation,
-  } = yAxis;
+export const BiaxialLineChartComponent = ({ chart }: IBiaxialLineChart) => {
+  const { chartData, yAxis, xAxis } = chart;
+
+  const { label: yLabel, showLabel: showYLabel } = yAxis;
 
   const {
     label: xLabel,
@@ -48,13 +35,12 @@ export const AreaChartComponent: FC<IAreaChart> = ({ chart }) => {
   } = xAxis;
 
   const isMobile = useIsMobile();
-
   return (
     <ChartContainer
       className="aspect-auto h-full w-full flex-1"
       config={chartConfig}
     >
-      <AreaChart data={chartData} className="h-full w-full">
+      <LineChart data={chartData} className="h-full w-full">
         <CartesianGrid vertical={false} horizontal={true} />
 
         <XAxis
@@ -79,24 +65,52 @@ export const AreaChartComponent: FC<IAreaChart> = ({ chart }) => {
 
         {!isMobile && (
           <YAxis
+            yAxisId="left"
             allowDataOverflow={true}
             tickLine={false}
             axisLine={false}
             tickFormatter={(value) => formatTick(+value)}
-            orientation={yOrientation}
+            orientation="left"
+            domain={[
+              32,
+              (maxBy(chartData, "avgEthStaked")?.avgEthStaked ?? 32) * 1.1,
+            ]}
+          />
+        )}
+
+        {!isMobile && (
+          <YAxis
+            allowDataOverflow={true}
+            tickLine={false}
+            axisLine={false}
+            tickFormatter={(value) => formatTick(+value)}
+            orientation="right"
+            yAxisId="right"
           >
             {showYLabel && (
               <Label
-                angle={yOrientation === "left" ? -90 : 90}
+                angle={90}
                 value={yLabel}
-                position={
-                  yOrientation === "left" ? "insideLeft" : "insideRight"
-                }
+                position={"insideRight"}
                 style={{ textAnchor: "middle" }}
               />
             )}
           </YAxis>
         )}
+
+        <Line
+          dataKey="avgEthStaked"
+          type="monotone"
+          stroke={chartConfig.avgEthStaked.color}
+          yAxisId={isMobile ? undefined : "left"}
+        />
+
+        <Line
+          dataKey="totalValidatorCount"
+          type="monotone"
+          stroke={chartConfig.totalValidatorCount.color}
+          yAxisId={isMobile ? undefined : "right"}
+        />
 
         <ChartTooltip
           cursor={false}
@@ -109,37 +123,11 @@ export const AreaChartComponent: FC<IAreaChart> = ({ chart }) => {
           }
         />
 
-        <Area
-          dataKey="merge"
-          type="monotone"
-          fill={chartConfig.merge.color}
-          stroke={chartConfig.merge.color}
-          stackId="1"
+        <ChartLegend
+          className={cn(showXLabel ? "mt-4" : "", "ml-8")}
+          content={<ChartLegendContent />}
         />
-
-        <Area
-          dataKey="shapella"
-          type="monotone"
-          fill={chartConfig.shapella.color}
-          stroke={chartConfig.shapella.color}
-          stackId="1"
-        />
-
-        <Area
-          dataKey="pectra"
-          type="monotone"
-          fill={chartConfig.pectra.color}
-          stroke={chartConfig.pectra.color}
-          stackId="1"
-        />
-
-        {legend && (
-          <ChartLegend
-            className={cn(showXLabel ? "mt-4" : "", "ml-8")}
-            content={<ChartLegendContent />}
-          />
-        )}
-      </AreaChart>
+      </LineChart>
     </ChartContainer>
   );
 };

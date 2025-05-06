@@ -21,6 +21,7 @@ export const constructNumberOfValidatorsForEachUpgradeChartData = (
   const percentageUptake = getPercentageUptake(chartData);
 
   return {
+    type: "area",
     title: "Pectra adoption across all validators",
     chartData,
     yAxis,
