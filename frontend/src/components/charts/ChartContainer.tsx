@@ -121,7 +121,7 @@ export const ChartContainer: FC = () => {
 
         <div
           className={cn(
-            "flex h-[400px] w-full items-center justify-center px-8",
+            "flex h-[400px] w-full items-center justify-center px-4 sm:px-8",
             isFullscreen && "h-[calc(100vh-220px)]",
           )}
         >

@@ -35,8 +35,9 @@ export const constructAverageEthStakedChartData = (
   // Group by key and merge
   const combinedArray = _.chain(allData)
     .groupBy("key")
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     .map((group) => _.mergeWith({}, ...group))
-    .value();
+    .value() as IChartData[];
 
   const yAxis = buildYAxis(
     combinedArray,
@@ -44,6 +45,7 @@ export const constructAverageEthStakedChartData = (
     false,
     "left",
     "avgStaked",
+    30,
   );
 
   const xAxis = buildXAxis(filter);
