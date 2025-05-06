@@ -109,7 +109,6 @@ export const SelectSourceValidators = ({
           <DetectedValidators
             cardTitle="selected"
             validators={sourceValidators}
-            targetValidator={destinationValidator}
           />
         </TabsContent>
 

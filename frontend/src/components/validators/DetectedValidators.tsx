@@ -15,12 +15,11 @@ import { ValidatorIndex } from "../ui/table/TableComponents";
 export interface IDetectedValidators {
   cardTitle: string;
   validators: ValidatorDetails[];
-  targetValidator?: ValidatorDetails;
   layoutId?: string;
 }
 
 export const DetectedValidators: FC<IDetectedValidators> = (props) => {
-  const { cardTitle, validators, layoutId, targetValidator } = props;
+  const { cardTitle, validators, layoutId } = props;
 
   const activeValidators = validators?.filter((validator) =>
     validatorIsActive(validator),
@@ -81,14 +80,7 @@ export const DetectedValidators: FC<IDetectedValidators> = (props) => {
             wrapperProps={{ clearBackground: true }}
             disablePagination
             renderOverrides={{
-              validatorIndex: (v) => (
-                <ValidatorIndex
-                  validator={v}
-                  isUpgrade={
-                    v.validatorIndex === targetValidator?.validatorIndex
-                  }
-                />
-              ),
+              validatorIndex: (v) => <ValidatorIndex validator={v} />,
             }}
           />
         </AnimatePresence>
