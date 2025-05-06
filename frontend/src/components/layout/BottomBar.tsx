@@ -66,9 +66,24 @@ export const BottomBar: FC = () => {
   ];
 
   return (
-    <footer className="fixed bottom-0 z-10 flex w-full flex-col items-center justify-center gap-y-4 border-t bg-[rgba(255,255,255,0.98)] p-4 px-6 shadow-sm dark:border-gray-800 dark:bg-gray-950 sm:flex-row sm:justify-between">
-      <div className="text-center text-xs leading-[11px] text-zinc-950 dark:text-gray-300 sm:text-left">
+    <footer className="fixed bottom-0 z-10 flex w-full flex-col items-center justify-center gap-y-4 border-t bg-[rgba(255,255,255,0.98)] p-4 px-6 shadow-sm sm:flex-row sm:justify-between dark:border-gray-800 dark:bg-gray-950">
+      <div className="text-center text-xs leading-[11px] text-zinc-950 sm:text-left dark:text-gray-300">
         Built with 🩶 by and for the Ethereum community
+      </div>
+
+      <div className="flex flex-row gap-x-4">
+        <Link
+          href="/privacy-policy"
+          className="text-xs leading-[11px] text-zinc-950 dark:text-gray-300"
+        >
+          Privacy Policy
+        </Link>
+        <Link
+          href="/terms-of-service"
+          className="text-xs leading-[11px] text-zinc-950 dark:text-gray-300"
+        >
+          Terms of Service
+        </Link>
       </div>
 
       <div className="flex flex-col items-center gap-4 sm:flex-row sm:gap-8">
