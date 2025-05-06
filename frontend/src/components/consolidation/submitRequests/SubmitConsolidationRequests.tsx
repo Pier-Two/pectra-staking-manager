@@ -89,6 +89,9 @@ export const SubmitConsolidationRequests = ({
           headers={SUBMITTING_CONSOLIDATION_TABLE_HEADERS}
           data={transactions}
           wrapperProps={{ clearBackground: true }}
+          getKey={(validator) =>
+            `${validator.publicKey}-${validator.consolidationType}`
+          }
           disableSort
           disablePagination
           renderOverrides={{
