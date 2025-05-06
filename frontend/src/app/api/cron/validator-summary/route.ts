@@ -1,7 +1,8 @@
 import axios from "axios";
 import { headers } from "next/headers";
 import { env } from "pec/env";
-import { ValidatorSummaryModel } from "pec/server/database/models";
+import { connect, ValidatorSummaryModel } from "pec/server/database/models";
+
 import {
   type ValidatorsResponseData,
   type ValidatorUpgradeSummaryObject,
@@ -19,6 +20,9 @@ export const POST = async () => {
   if (secret !== env.MONGO_TRIGGER_SECRET) {
     return Response.json({ error: "Unauthorized" }, { status: 401 });
   }
+
+  // connect to the database
+  await connect();
 
   // Fetch the validator data (return ALL active validators - ~1 million entries)
   const { data } = await axios.get<ValidatorsResponseData>(
