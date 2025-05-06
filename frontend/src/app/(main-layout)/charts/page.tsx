@@ -6,6 +6,7 @@ import { Suspense, type FC } from "react";
 
 export const metadata: Metadata = {
   title: title("Charts"),
+  description: "Visualise Ethereum's greatest ever validator upgrade.",
 };
 
 const ChartsPage: FC = () => {
