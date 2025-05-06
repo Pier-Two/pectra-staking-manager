@@ -27,8 +27,19 @@ export const Consolidate = () => {
   return (
     <div className="flex w-full flex-col gap-6">
       <Connector
-        description="Combine multiple validator balances into a single large-balance
-          validator, as per Pectra EIP-7251."
+        description={
+          <div className="flex flex-col gap-2">
+            <p className="w-full text-base">
+              Combine multiple validator balances into a single validator up to
+              a total of 2048 ETH.
+            </p>
+            <p className="w-full text-base">
+              In order to experience the full benefits of Pectra’s
+              auto-compounding, it is recommended to leave some capacity on your
+              validators (e.g only consolidate up to 2016 ETH).
+            </p>
+          </div>
+        }
         connectedAddress={walletAddress}
         validators={data}
         title={

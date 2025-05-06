@@ -5,10 +5,14 @@ export interface IChartContainer {
 }
 export interface IAreaChart {
   chart: IChart;
-  isFullscreen: boolean;
+}
+
+export interface IBiaxialLineChart {
+  chart: IChart;
 }
 
 export interface IChart {
+  type: "area" | "line";
   title: string;
   chartData: IChartData[];
   yAxis: IYAxis;
@@ -21,7 +25,9 @@ export interface IChartData {
   key: string;
   merge?: number;
   shapella?: number;
-  pectra: number;
+  pectra?: number;
+  avgEthStaked?: number;
+  totalValidatorCount?: number;
 }
 
 export interface IXAxis {
@@ -37,6 +43,7 @@ export interface IYAxis {
   label: string;
   showLabel: boolean;
   orientation: "left" | "right";
+  width: number;
 }
 
 //API

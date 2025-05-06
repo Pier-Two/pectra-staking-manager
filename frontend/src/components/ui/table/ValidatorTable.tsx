@@ -22,7 +22,9 @@ interface ValidatorTableProps<T extends TableValidatorDetails> {
     onClick: (validator: T) => void;
     isSelected: (validator: T) => boolean;
     showCheckIcons: boolean;
+    permanentSelectedValidatorIndexes?: Record<number, boolean>;
   };
+  getKey?: (validator: T) => string;
   endContent?: (data: T) => JSX.Element;
   children?: (params: { setCurrentPage: (page: number) => void }) => ReactNode;
   disableSearch?: boolean;
@@ -37,6 +39,7 @@ export const ValidatorTable = <T extends TableValidatorDetails>({
   headers,
   endContent,
   children,
+  getKey,
   selectableRows,
   wrapperProps,
   disableSearch,
@@ -88,7 +91,7 @@ export const ValidatorTable = <T extends TableValidatorDetails>({
               paginatedData.map((validator, index) => (
                 <ValidatorRow
                   headers={headers}
-                  key={validator.publicKey}
+                  key={getKey ? getKey(validator) : validator.publicKey}
                   validator={validator}
                   endContent={endContent}
                   wrapperProps={wrapperProps}
@@ -98,6 +101,10 @@ export const ValidatorTable = <T extends TableValidatorDetails>({
                           ...selectableRows,
                           isSelected:
                             selectableRows.isSelected(validator) || false,
+                          isPermanentSelected:
+                            selectableRows?.permanentSelectedValidatorIndexes?.[
+                              validator.validatorIndex
+                            ],
                         }
                       : undefined
                   }

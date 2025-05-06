@@ -130,6 +130,7 @@ export const buildYAxis = (
     IGroupedValidatorStatistics[string][number],
     "count" | "totalStaked" | "avgStaked"
   >,
+  width: number,
 ): IYAxis => {
   const values = chartData.flatMap((item) =>
     [item.pectra, item.merge, item.shapella].filter(
@@ -146,7 +147,15 @@ export const buildYAxis = (
       ? calculateLinearTicks(lowerRange, upperRange, uniqueValues)
       : calculateEthTicks(lowerRange, upperRange, uniqueValues);
 
-  return { lowerRange, upperRange, ticks, label, showLabel, orientation };
+  return {
+    lowerRange,
+    upperRange,
+    ticks,
+    label,
+    showLabel,
+    orientation,
+    width,
+  };
 };
 
 export const buildXAxis = (filter: "days" | "months" | "years"): IXAxis => {

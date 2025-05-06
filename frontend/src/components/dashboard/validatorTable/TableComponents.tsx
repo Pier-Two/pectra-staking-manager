@@ -35,14 +35,14 @@ export const ValidatorRowEndContent = ({
       label: "Deposit",
       icon: ArrowDownToDot,
       iconClassName: "text-indigo-500 dark:text-indigo-300",
-      onClick: () => router.push("/batch-deposit"),
+      onClick: () => router.push("/deposit"),
       isDisabled,
     },
     {
-      label: "Withdraw",
+      label: "Unstake",
       icon: ArrowUpFromDot,
       iconClassName: "text-green-500 dark:text-green-300",
-      onClick: () => router.push("/withdraw"),
+      onClick: () => router.push("/unstake"),
       isDisabled,
     },
     {

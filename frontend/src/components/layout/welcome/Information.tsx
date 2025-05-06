@@ -1,56 +1,86 @@
-import type { FC } from "react";
+"use client";
+
 import { GradientShield } from "./gradient-shield";
 import { EnterAnimation } from "pec/app/(login-layout)/welcome/_components/enter-animation";
 import { welcomeAnimationDelays } from "pec/constants/animationDelays";
+import { ClingableElement } from "pec/components/ui/clingable-element";
+
 const benefits = [
   {
-    title: "Auto-compounding interest",
+    title: "Earn More Rewards",
     description:
-      "Automatically restakes your ETH rewards updating your validator's withdrawal credentials to Type 2 (0x02).",
+      "Put idle ETH to work on your validator by not having to wait for another 32 ETH as well as harness the auto-compounding benefits of Pectra.",
   },
   {
-    title: "Onchain withdrawals",
+    title: "Gain Control",
     description:
-      "Submit partial withdrawals using only your withdrawal credential wallet, directly on the execution layer.",
+      "Submit partial withdrawals and full exists by triggering them via a web3 wallet with your validator withdrawal address.",
   },
   {
-    title: "Validator consolidation",
+    title: "Scale Ethereum",
     description:
-      "Merge multiple validators into fewer, larger ones with balances up to 2,048 ETH, via a simple click-through process.",
+      "Instead of managing multiple 32 ETH validators, consolidate your validators  into a single validator, up to 2048 ETH, to reduce Ethereum network strain.",
   },
 ];
 
-export const Information: FC = () => {
+interface BenefitCardProps {
+  title: string;
+  description: string;
+  index: number;
+  delay: number;
+}
+
+const BenefitCard = ({
+  title,
+  description,
+  index,
+  delay,
+}: BenefitCardProps) => {
+  return (
+    <ClingableElement className="flex flex-row items-stretch rounded-lg">
+      <EnterAnimation
+        className="flex w-full flex-col items-start gap-6 rounded-lg border-[0.5px] border-border bg-white p-6 sm:max-w-[330px] dark:border-gray-700 dark:bg-black"
+        delay={delay}
+      >
+        <div className="flex size-8 items-center justify-center rounded bg-primary/15 text-[16px] font-[790] text-primary">
+          {index + 1}
+        </div>
+        <div className="flex flex-col gap-3">
+          <div className="text-[18px] font-670 text-[#4C4C4C] dark:text-zinc-50">
+            {title}
+          </div>
+          <p className="text-[14px] font-380 text-[#4C4C4C] dark:text-zinc-50">
+            {description}
+          </p>
+        </div>
+      </EnterAnimation>
+    </ClingableElement>
+  );
+};
+
+export const Information = () => {
   return (
     <div className="flex w-full flex-col items-center gap-6 text-black dark:text-white">
       <EnterAnimation
         delay={welcomeAnimationDelays.infoParagraph}
-        className="flex w-full flex-col items-center justify-center gap-x-1 gap-y-2 text-center text-[14px] font-570 leading-[14px] text-[#27272A] sm:flex-row dark:text-zinc-50"
+        className="flex w-full flex-col items-center justify-center gap-x-1 gap-y-2 text-center text-[14px] font-570 leading-[14px] text-[#27272A] dark:text-zinc-50"
       >
-        <p>The Pectra Staking Manager is a self-service</p>
-        <p>tool designed solely to help you:</p>
+        <p>Use this tool to upgrade your existing Ethereum validators from</p>
+        <p>0x01 to 0x02 credentials validators to be able to:</p>
       </EnterAnimation>
 
       <div className="flex w-full flex-col justify-center gap-3 sm:flex-row">
-        {benefits.map((benefit, index) => (
-          <EnterAnimation
-            key={benefit.title}
-            className="flex w-full flex-col items-start gap-6 rounded-lg border-[0.5px] border-border bg-white p-6 sm:max-w-[330px] dark:border-gray-700 dark:bg-black"
-            delay={welcomeAnimationDelays.infoCards[index]}
-          >
-            <div className="flex size-8 items-center justify-center rounded bg-primary/15 text-[16px] font-[790] text-primary">
-              {index + 1}
-            </div>
-            <div className="flex flex-col gap-3">
-              <div className="text-[18px] font-670 text-[#4C4C4C] dark:text-zinc-50">
-                {benefit.title}
-              </div>
-              <p className="text-[14px] font-380 text-[#4C4C4C] dark:text-zinc-50">
-                {benefit.description}
-              </p>
-            </div>
-          </EnterAnimation>
-        ))}
+        {benefits.map((benefit, index) => {
+          const delay = welcomeAnimationDelays.infoCards[index] ?? 0;
+          return (
+            <BenefitCard
+              key={benefit.title}
+              {...benefit}
+              index={index}
+              delay={delay}
+            />
+          );
+        })}
       </div>
 
       <EnterAnimation

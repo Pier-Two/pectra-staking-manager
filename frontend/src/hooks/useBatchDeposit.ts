@@ -14,7 +14,7 @@ import { useActiveChainWithDefault } from "./useChain";
 import { useContracts } from "./useContracts";
 import { ValidatorStatus } from "pec/types/validator";
 import { trackEvent } from "pec/helpers/trackEvent";
-
+import * as Sentry from "@sentry/nextjs";
 interface BatchDepositRequest {
   pubKey: `0x${string}`;
   amount: bigint;
@@ -108,14 +108,17 @@ export const useBatchDeposit = () => {
         await saveDepositToDatabase({
           deposits: deposits.map((deposit) => ({
             validatorIndex: deposit.validator.validatorIndex,
-            txHash: receipt.transactionHash,
             amount: deposit.amount,
+            publicKey: deposit.validator.publicKey,
           })),
-          network: chain.id,
+          networkId: chain.id,
           email,
+          txHash: receipt.transactionHash,
+          withdrawalAddress: account.address,
         });
       } catch (e) {
         console.error("Error saving deposit to database:", e);
+        Sentry.captureException(e);
         toast({
           title: "Error saving deposit to database, emails may not be sent",
           variant: "error",
@@ -159,6 +162,7 @@ export const useBatchDeposit = () => {
       });
     } catch (error) {
       console.error("Error submitting batch deposit:", error);
+      Sentry.captureException(error);
       toast({
         title: "Error",
         description: parseError(error),

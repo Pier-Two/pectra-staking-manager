@@ -7,7 +7,11 @@ import { Card, CardFooter, CardHeader } from "pec/components/ui/card";
 import { AreaChartComponent } from "./AreaChart";
 import { ChevronLeft, ChevronRight, Expand } from "lucide-react";
 import { ChartSkeleton } from "./ChartSkeleton";
-import type { ChartGroup } from "pec/types/chart";
+import { Dialog, DialogContent } from "../ui/dialog";
+import { cn } from "pec/lib/utils";
+import { motion } from "motion/react";
+import { ClingableElement } from "../ui/clingable-element";
+import { BiaxialLineChartComponent } from "./BiaxialLineChart";
 
 const emptyChart = (
   <Card className="w-full rounded-xl bg-white text-black shadow-xl dark:bg-gray-900 dark:text-white">
@@ -31,27 +35,31 @@ const ChartNavigation = ({
   handleChartForward: () => void;
 }) => (
   <div className="flex flex-row items-center gap-2">
-    <Expand
-      className="h-10 w-10 cursor-pointer rounded-full border-2 p-2 hover:bg-white dark:border-gray-800 dark:bg-gray-900 dark:hover:bg-gray-800 max-sm:hidden"
-      onClick={() => setIsFullscreen(!isFullscreen)}
-    />
-    <ChevronLeft
-      className="h-10 w-10 cursor-pointer rounded-full border-2 p-2 hover:bg-white dark:border-gray-800 dark:bg-gray-900 dark:hover:bg-gray-800 max-sm:h-8 max-sm:w-8 max-sm:p-1.5"
-      onClick={handleChartBackward}
-    />
-    <ChevronRight
-      className="h-10 w-10 cursor-pointer rounded-full border-2 p-2 hover:bg-white dark:border-gray-800 dark:bg-gray-900 dark:hover:bg-gray-800 max-sm:h-8 max-sm:w-8 max-sm:p-1.5"
-      onClick={handleChartForward}
-    />
+    <ClingableElement className="rounded-full">
+      <Expand
+        className="h-10 w-10 cursor-pointer rounded-full border-2 p-2 hover:bg-white max-sm:hidden dark:border-gray-800 dark:bg-gray-900 dark:hover:bg-gray-800"
+        onClick={() => setIsFullscreen(!isFullscreen)}
+      />
+    </ClingableElement>
+    <ClingableElement className="rounded-full">
+      <ChevronLeft
+        className="h-10 w-10 cursor-pointer rounded-full border-2 p-2 hover:bg-white max-sm:h-8 max-sm:w-8 max-sm:p-1.5 dark:border-gray-800 dark:bg-gray-900 dark:hover:bg-gray-800"
+        onClick={handleChartBackward}
+      />
+    </ClingableElement>
+    <ClingableElement className="rounded-full">
+      <ChevronRight
+        className="h-10 w-10 cursor-pointer rounded-full border-2 p-2 hover:bg-white max-sm:h-8 max-sm:w-8 max-sm:p-1.5 dark:border-gray-800 dark:bg-gray-900 dark:hover:bg-gray-800"
+        onClick={handleChartForward}
+      />
+    </ClingableElement>
   </div>
 );
 
 export const ChartContainer: FC = () => {
   const [isFullscreen, setIsFullscreen] = useState(false);
 
-  const { data, isFetched } = api.charts.getChartData.useQuery(undefined, {
-    refetchInterval: 10000,
-  });
+  const { data, isFetched } = api.charts.getChartData.useQuery(undefined);
 
   const [chartIndex, setChartIndex] = useState(0);
 
@@ -59,11 +67,7 @@ export const ChartContainer: FC = () => {
 
   const chartCount = data.length;
 
-  const activeChartGroup = data.find(
-    (chart) => chart.key === "days",
-  ) as ChartGroup;
-
-  const activeChart = activeChartGroup?.data[chartIndex];
+  const activeChart = data[chartIndex];
 
   const handleChartForward = () => {
     if (chartIndex === data.length - 1) setChartIndex(0);
@@ -78,12 +82,13 @@ export const ChartContainer: FC = () => {
   if (!activeChart || chartCount === 0) return emptyChart;
   const { title, footer } = activeChart;
 
-  return (
-    <div
-      className={`flex w-full flex-col gap-4 ${isFullscreen ? "fixed inset-0 z-50 bg-white p-4 dark:bg-gray-900" : ""}`}
+  const ChartStuff = ({ isFullscreen }: { isFullscreen: boolean }) => (
+    <motion.div
+      className={`flex w-full flex-col gap-4 bg-indigo-50 dark:bg-gray-950`}
+      layoutId="chart-container"
     >
       <div className="flex flex-row items-center justify-between gap-12 px-6 max-sm:flex-col max-sm:items-center max-sm:gap-4 max-sm:px-4">
-        <div className="text-center text-[24px] font-670 text-zinc-950 dark:text-zinc-50 max-sm:text-[16px]">
+        <div className="text-center text-[24px] font-670 text-zinc-950 max-sm:text-[16px] dark:text-zinc-50">
           {title}
         </div>
 
@@ -100,7 +105,7 @@ export const ChartContainer: FC = () => {
       </div>
 
       <Card
-        className={`w-full rounded-xl bg-white text-black shadow-xl dark:border dark:border-gray-800 dark:bg-gray-900 dark:text-white ${isFullscreen ? "h-[calc(100vh-8rem)]" : ""}`}
+        className={`w-full rounded-xl bg-white text-black shadow-xl dark:border dark:border-gray-800 dark:bg-gray-900 dark:text-white`}
       >
         <CardHeader className="flex flex-row justify-end">
           <div className="flex flex-row items-center gap-2">
@@ -114,12 +119,21 @@ export const ChartContainer: FC = () => {
           </div>
         </CardHeader>
 
-        <div className="flex w-full items-center justify-center">
-          <AreaChartComponent chart={activeChart} isFullscreen={isFullscreen} />
+        <div
+          className={cn(
+            "flex h-[400px] w-full items-center justify-center px-4 sm:px-8",
+            isFullscreen && "h-[calc(100vh-220px)]",
+          )}
+        >
+          {activeChart.type === "area" ? (
+            <AreaChartComponent chart={activeChart} />
+          ) : (
+            <BiaxialLineChartComponent chart={activeChart} />
+          )}
         </div>
 
         {footer && (
-          <CardFooter className="flex flex-row items-center justify-center text-[14px] font-380 text-zinc-950 dark:text-zinc-50 max-sm:text-[12px]">
+          <CardFooter className="flex flex-row items-center justify-center text-[14px] font-380 text-zinc-950 max-sm:text-[12px] dark:text-zinc-50">
             {footer}
           </CardFooter>
         )}
@@ -134,6 +148,20 @@ export const ChartContainer: FC = () => {
           </div>
         )}
       </Card>
-    </div>
+    </motion.div>
+  );
+
+  return (
+    <>
+      <ChartStuff isFullscreen={false} />
+      <Dialog open={isFullscreen} onOpenChange={setIsFullscreen}>
+        <DialogContent
+          className="h-screen w-screen max-w-none rounded-none bg-indigo-50 sm:rounded-none dark:bg-gray-950"
+          noClose
+        >
+          <ChartStuff isFullscreen={true} />
+        </DialogContent>
+      </Dialog>
+    </>
   );
 };

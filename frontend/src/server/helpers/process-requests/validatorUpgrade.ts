@@ -1,69 +1,110 @@
 import { TYPE_2_PREFIX } from "pec/constants/pectra";
 import { type ValidatorUpgrade } from "pec/server/database/classes/validatorUpgrade";
 import { ValidatorUpgradeModel } from "pec/server/database/models";
-import { generateErrorResponse } from "pec/lib/utils";
 import { getWithdrawalAddressPrefixType } from "pec/lib/utils/validators/withdrawalAddress";
 import { type IResponse } from "pec/types/response";
+import { ACTIVE_STATUS, INACTIVE_STATUS } from "pec/types/app";
+import { getValidators } from "../requests/beaconchain/getValidators";
+import { SupportedNetworkIds } from "pec/constants/chain";
+import { keyBy } from "lodash";
+import { BCValidatorDetails } from "pec/lib/api/schemas/beaconchain/validator";
+import { sendEmailNotification } from "pec/server/helpers/emails/emailService";
+import { Types } from "mongoose";
+import { DocumentWithId } from "pec/types/database";
+import { logger } from "../logger";
 
-export const checkValidatorUpgradeProcessedAndUpdate = async (
-  dbValidatorUpgrade: ValidatorUpgrade,
-  withdrawalAddress: string,
-): Promise<boolean> => {
-  if (getWithdrawalAddressPrefixType(withdrawalAddress) === TYPE_2_PREFIX) {
-    await ValidatorUpgradeModel.updateOne(
-      {
-        validatorIndex: dbValidatorUpgrade.validatorIndex,
-      },
-      { $set: { status: "inactive" } },
+interface ProcessAllValidatorUpgradesParams {
+  networkId: SupportedNetworkIds;
+  validatorUpgrades?: DocumentWithId<ValidatorUpgrade>[];
+  bcValidatorDetails?: BCValidatorDetails[];
+}
+
+export const processValidatorUpgrades = async ({
+  networkId,
+
+  ...overrides
+}: ProcessAllValidatorUpgradesParams): Promise<IResponse> => {
+  const validatorUpgrades =
+    overrides?.validatorUpgrades ??
+    (await ValidatorUpgradeModel.find({
+      status: ACTIVE_STATUS,
+      networkId,
+    }));
+
+  if (validatorUpgrades.length === 0) return { success: true, data: null };
+
+  let bcValidatorDetails = overrides?.bcValidatorDetails;
+
+  if (!bcValidatorDetails) {
+    const getValidatorsResponse = await getValidators(
+      validatorUpgrades.map(
+        (validatorUpgrade) => validatorUpgrade.validatorIndex,
+      ),
+      networkId,
     );
 
-    // TODO: integrate
-    // await sendEmailNotification(
-    //   "PECTRA_STAKING_MANAGER_CONSOLIDATION_COMPLETE",
-    //   dbValidatorUpgrade.email,
-    // );
+    if (!getValidatorsResponse.success) return getValidatorsResponse;
 
-    return true;
+    bcValidatorDetails = getValidatorsResponse.data;
   }
 
-  return false;
+  return processProvidedValidatorUpgrades(
+    validatorUpgrades,
+    bcValidatorDetails,
+  );
 };
 
-export const processValidatorUpgrades = async (): Promise<IResponse> => {
-  try {
-    const validatorUpgrades = await ValidatorUpgradeModel.find({
-      status: "active",
-    });
+const processProvidedValidatorUpgrades = async (
+  validatorUpgrades: DocumentWithId<ValidatorUpgrade>[],
+  bcValidatorDetails: BCValidatorDetails[],
+): Promise<IResponse> => {
+  const keyedBCValidatorDetails = keyBy(
+    bcValidatorDetails,
+    (v) => v.validatorindex,
+  );
 
-    if (!validatorUpgrades)
-      return {
-        success: false,
-        error: "Validator upgrade query failed to execute.",
-      };
+  const validatorUpgradeIdsToUpdate: Types.ObjectId[] = [];
 
-    // for (const validatorUpgrade of validatorUpgrades) {
-    //   const response = await getValidators(
-    //     [validatorUpgrade.validatorIndex],
-    //     MAIN_CHAIN.id,
-    //   );
-    //
-    //   if (!response.success) return response;
-    //
-    //   const validatorDetails = response.data;
-    //
-    //   if (!validatorDetails) continue;
-    //
-    //   await checkValidatorUpgradeProcessedAndUpdate(
-    //     validatorUpgrade,
-    //     validatorDetails,
-    //   );
-    // }
+  for (const validatorUpgrade of validatorUpgrades) {
+    const bcValidatorDetails =
+      keyedBCValidatorDetails[validatorUpgrade.validatorIndex];
 
-    return {
-      success: true,
-      data: null,
-    };
-  } catch (error) {
-    return generateErrorResponse(error);
+    if (!bcValidatorDetails) {
+      console.error(
+        `No data found for validator index when processing exits ${validatorUpgrade.validatorIndex}`,
+      );
+
+      continue;
+    }
+
+    if (
+      getWithdrawalAddressPrefixType(
+        bcValidatorDetails.withdrawalcredentials,
+      ) === TYPE_2_PREFIX
+    ) {
+      logger.info(
+        `Validator upgrade for validator index ${validatorUpgrade.validatorIndex} is complete.`,
+      );
+
+      validatorUpgradeIdsToUpdate.push(validatorUpgrade._id);
+
+      await sendEmailNotification({
+        emailName: "PECTRA_STAKING_MANAGER_CONSOLIDATION_COMPLETE",
+        metadata: {
+          emailAddress: validatorUpgrade.email,
+          targetValidatorIndex: validatorUpgrade.validatorIndex,
+        },
+      });
+    }
   }
+
+  await ValidatorUpgradeModel.updateMany(
+    { _id: { $in: validatorUpgradeIdsToUpdate } },
+    { $set: { status: INACTIVE_STATUS } },
+  );
+
+  return {
+    success: true,
+    data: null,
+  };
 };

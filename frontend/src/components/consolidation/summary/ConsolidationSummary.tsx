@@ -59,14 +59,14 @@ export const ConsolidationSummary = ({
 
         <div className="space-y-2">
           <div className="flex flex-col gap-2">
-            <div className="text-md font-medium">Destination validator</div>
+            <div className="text-md font-medium">Target validator</div>
 
             <div className="flex flex-col items-center justify-center gap-4">
               <ValidatorCard validator={destinationValidator} />
 
               <SecondaryButton
                 className="w-full"
-                label="Change destination"
+                label="Change target"
                 icon={<Pencil className="h-4 w-4" />}
                 iconPosition={EIconPosition.LEFT}
                 onClick={() => reset()}

@@ -9,11 +9,14 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "pec/components/ui/tooltip";
-import { useConsolidationFee } from "pec/hooks/use-consolidation";
 import { formatEther, parseEther } from "viem";
 import { displayedEthAmount } from "pec/lib/utils/validators/balance";
 import { type ValidatorDetails } from "pec/types/validator";
-import { sumBy } from "lodash";
+import { useConsolidationFee } from "pec/hooks/useConsolidateContractCalls";
+import {
+  getNewDestinationBalance,
+  needsUpgradeTx,
+} from "pec/lib/utils/validators/consolidate";
 
 interface OverviewProps {
   sourceValidators: ValidatorDetails[];
@@ -31,32 +34,51 @@ export const Overview = ({
   const { data: consolidationFee, isLoading: isLoadingConsolidationFee } =
     useConsolidationFee();
 
-  const totalSourceValidators = sourceValidators.length;
+  const totalSourceValidators =
+    sourceValidators.length - (needsUpgradeTx(destinationValidator) ? 1 : 0);
 
-  const newTotalBalance =
-    destinationValidator.balance + sumBy(sourceValidators, (v) => v.balance);
-
+  const newTotalBalance = getNewDestinationBalance(
+    destinationValidator,
+    sourceValidators,
+  );
   const totalTransactions = upgradeTransactions + consolidationTransactions;
 
   const estimatedGasFee = consolidationFee
     ? consolidationFee * BigInt(totalTransactions)
     : BigInt(0);
 
+  const isUpgradeOnly =
+    sourceValidators.length === 1 && needsUpgradeTx(destinationValidator);
+
   return (
     <div className="flex min-h-[10vh] w-full flex-col justify-between gap-x-4 space-y-4 rounded-xl border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-black">
       <div className="flex items-end gap-x-2 text-sm">
-        <span>
-          Consolidate{" "}
-          <span className="font-bold">
-            {totalSourceValidators + 1} validator
-            {totalSourceValidators <= 1 ? "" : "s"}
-          </span>{" "}
-          into <span className="font-bold">one</span> with a new total balance
-          of
-        </span>
+        {!isUpgradeOnly && (
+          <span>
+            Consolidate{" "}
+            <span className="font-bold">
+              {totalSourceValidators + 1} validator
+              {totalSourceValidators + 1 <= 1 ? "" : "s"}
+            </span>{" "}
+            into <span className="font-bold">one</span> with index{" "}
+            <span className="font-bold">
+              {destinationValidator.validatorIndex}
+            </span>{" "}
+            and a new total balance of
+          </span>
+        )}
+        {isUpgradeOnly && (
+          <span>
+            Upgrade validator{" "}
+            <span className="font-bold">
+              {destinationValidator.validatorIndex}
+            </span>{" "}
+            with a balance of
+          </span>
+        )}
 
         <div className="flex items-center gap-1">
-          <div className="font-semibold">
+          <div className="font-bold">
             Ξ {displayedEthAmount(newTotalBalance, 2)}
           </div>
 
@@ -70,7 +92,7 @@ export const Overview = ({
                 <span>All validators with 0x01</span>
                 <span>credentials set require a</span>
                 <span>consolidation, including the</span>
-                <span>destination validator.</span>
+                <span>target validator.</span>
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>

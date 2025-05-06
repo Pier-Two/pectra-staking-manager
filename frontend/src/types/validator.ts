@@ -18,12 +18,6 @@ export interface IConnectedAddress {
   layoutId?: string;
 }
 
-export interface IDetectedValidators {
-  cardTitle: string;
-  validators: ValidatorDetails[];
-  layoutId?: string;
-}
-
 export interface ISourceValidatorCard {
   checked: boolean;
   onClick: () => void;

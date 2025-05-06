@@ -31,7 +31,7 @@ const ValidatorsFound = () => {
   return (
     <div className="flex w-full flex-col gap-6">
       <Connector
-        title="Validators found!"
+        title={data.length > 0 ? "Validators Found!" : "No Validators Found"}
         connectedAddress={walletAddress}
         className="!text-center"
         titleClassName="!text-center"

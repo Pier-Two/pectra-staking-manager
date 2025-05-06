@@ -18,7 +18,7 @@ export const cardPresets = {
   Consolidate: {
     title: "Consolidate",
     description:
-      "Combine multiple Pectra validators (0x02 credentials) into one large-balance validator.",
+      "Upgrade and combine multiple validators to the new Pectra standard (0x02).",
     url: "/consolidate",
     buttonLabel: "Consolidate now",
     icon: <Merge className="rotate-90" size={24} />,
@@ -26,21 +26,21 @@ export const cardPresets = {
     delay: dashboardAnimationDelays.toolCards.consolidate,
   },
   BatchDeposit: {
-    title: "Batch Deposit",
+    title: "Deposit",
     description:
-      "Deposit multiple active validators at once, via Pier Two's batch deposit contract.",
-    url: "/batch-deposit",
+      "Deposit any increment of ETH to your existing validators to manage their balance.",
+    url: "/deposit",
     buttonLabel: "Deposit now",
     icon: <ArrowDownToDot size={24} />,
     iconHover: "group-hover:text-blue-200",
     delay: dashboardAnimationDelays.toolCards.batchDeposit,
   },
   Withdrawal: {
-    title: "Withdrawal",
+    title: "Unstake",
     description:
-      "Submit onchain execution layer withdrawal requests (partial or full) against validators, as per Pectra EIP-7002.",
-    url: "/withdraw",
-    buttonLabel: "Withdraw now",
+      "Trigger onchain partial withdrawals and full exits with a transaction.",
+    url: "/unstake",
+    buttonLabel: "Unstake now",
     icon: <ArrowUpFromDot size={24} />,
     iconHover: "group-hover:text-green-400",
     delay: dashboardAnimationDelays.toolCards.withdrawal,
