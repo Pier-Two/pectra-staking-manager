@@ -1,3 +1,4 @@
+import { ReactNode } from "react";
 import type { ValidatorDetails } from "./validator";
 import type { TransactionStatus } from "./withdraw";
 
@@ -16,7 +17,7 @@ export type TableValidatorDetails = ValidatorDetails & {
 };
 
 export interface IHeaderConfig<T = TableValidatorDetails, SortKey = keyof T> {
-  label: string;
+  label: string | ReactNode;
   sortKey: SortKey;
   mobile?: boolean;
 }

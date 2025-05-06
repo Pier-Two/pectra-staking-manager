@@ -59,7 +59,7 @@ export const DASHBOARD_VALIDATOR_COLUMN_HEADERS: IHeaderConfig<ValidatorDetails>
     { label: "Active since", sortKey: "activeSince" },
     { label: "Credentials", sortKey: "withdrawalAddress", mobile: true },
     { label: "Status", sortKey: "status" },
-    { label: "Active balance", sortKey: "balance", mobile: true },
+    { label: <div>Hey</div>, sortKey: "balance", mobile: true },
     { label: "Pending balance", sortKey: "pendingBalance", mobile: true },
   ];
 
