@@ -2,7 +2,7 @@
 
 import { ChevronsLeftRight } from "lucide-react";
 import Image from "next/image";
-import { type IDetectedValidators } from "pec/types/validator";
+import { ValidatorDetails } from "pec/types/validator";
 import { useState, type FC } from "react";
 import { validatorIsActive } from "pec/lib/utils/validators/status";
 import { displayedEthAmount } from "pec/lib/utils/validators/balance";
@@ -10,9 +10,17 @@ import { ValidatorCardWrapper } from "../ui/custom/validator-card-wrapper";
 import { ValidatorTable } from "../ui/table/ValidatorTable";
 import { CONSOLIDATION_TABLE_HEADERS } from "pec/constants/columnHeaders";
 import { AnimatePresence, motion } from "motion/react";
+import { ValidatorIndex } from "../ui/table/TableComponents";
+
+export interface IDetectedValidators {
+  cardTitle: string;
+  validators: ValidatorDetails[];
+  targetValidator?: ValidatorDetails;
+  layoutId?: string;
+}
 
 export const DetectedValidators: FC<IDetectedValidators> = (props) => {
-  const { cardTitle, validators, layoutId } = props;
+  const { cardTitle, validators, layoutId, targetValidator } = props;
 
   const activeValidators = validators?.filter((validator) =>
     validatorIsActive(validator),
@@ -72,6 +80,16 @@ export const DetectedValidators: FC<IDetectedValidators> = (props) => {
             headers={CONSOLIDATION_TABLE_HEADERS}
             wrapperProps={{ clearBackground: true }}
             disablePagination
+            renderOverrides={{
+              validatorIndex: (v) => (
+                <ValidatorIndex
+                  validator={v}
+                  isUpgrade={
+                    v.validatorIndex === targetValidator?.validatorIndex
+                  }
+                />
+              ),
+            }}
           />
         </AnimatePresence>
       )}

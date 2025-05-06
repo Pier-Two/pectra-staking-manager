@@ -22,6 +22,7 @@ interface ValidatorTableProps<T extends TableValidatorDetails> {
     onClick: (validator: T) => void;
     isSelected: (validator: T) => boolean;
     showCheckIcons: boolean;
+    permanentSelectedValidatorIndexes?: Record<number, boolean>;
   };
   endContent?: (data: T) => JSX.Element;
   children?: (params: { setCurrentPage: (page: number) => void }) => ReactNode;
@@ -98,6 +99,10 @@ export const ValidatorTable = <T extends TableValidatorDetails>({
                           ...selectableRows,
                           isSelected:
                             selectableRows.isSelected(validator) || false,
+                          isPermanentSelected:
+                            selectableRows?.permanentSelectedValidatorIndexes?.[
+                              validator.validatorIndex
+                            ],
                         }
                       : undefined
                   }

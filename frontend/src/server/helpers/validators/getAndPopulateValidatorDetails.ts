@@ -14,7 +14,7 @@ import { prePopulateBeaconchainValidatorResponse } from "../validators";
 import { groupBy, keyBy } from "lodash";
 import { ValidatorDetails, ValidatorStatus } from "pec/types/validator";
 import { getWithdrawalAddressPrefixType } from "pec/lib/utils/validators/withdrawalAddress";
-import { TYPE_2_PREFIX } from "pec/constants/pectra";
+import { TYPE_1_PREFIX, TYPE_2_PREFIX } from "pec/constants/pectra";
 import { getPendingDeposits } from "../requests/quicknode/getPendingDeposits";
 import { getPendingPartialWithdrawals } from "../requests/quicknode/getPendingPartialWithdrawals";
 import { processProvidedDeposits } from "../process-requests/deposit";
@@ -170,6 +170,10 @@ export const getAndPopulateValidatorDetails = async (
     networkId,
     mutateValidator,
   );
+
+  validatorDetails[0]!.withdrawalAddress = `${TYPE_1_PREFIX}${validatorDetails[0]?.withdrawalAddress.slice(
+    TYPE_2_PREFIX.length,
+  )}`;
 
   return {
     success: true,

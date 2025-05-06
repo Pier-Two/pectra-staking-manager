@@ -41,11 +41,25 @@ export const useConsolidate = ({ activeValidators }: UseConsolidate) => {
     setStage({ stage: "destination" });
   };
 
+  const _getSourceValidators = (
+    destinationValidator: ValidatorDetails,
+    sourceValidators: ValidatorDetails[],
+  ): ValidatorDetails[] => {
+    return sourceValidators.filter((v) => {
+      if (v.validatorIndex !== destinationValidator.validatorIndex) return true;
+
+      // Show the destination validator if it needs an upgrade transaction
+      if (needsUpgradeTx(v)) {
+        return true;
+      }
+
+      return false;
+    });
+  };
+
   const getAvailableSourceValidators = () => {
     if (stage.stage !== "destination") {
-      return activeValidators.filter(
-        (v) => v.validatorIndex !== stage.destinationValidator.validatorIndex,
-      );
+      return _getSourceValidators(stage.destinationValidator, activeValidators);
     }
 
     return activeValidators;
@@ -85,15 +99,24 @@ export const useConsolidate = ({ activeValidators }: UseConsolidate) => {
       }
 
       if (Array.isArray(validator)) {
-        state.sourceValidator = validator;
+        const updatedValidatorArray = [...validator];
 
-        if (needsUpgradeTx(state.destinationValidator)) {
-          state.sourceValidator.unshift(state.destinationValidator);
+        if (
+          needsUpgradeTx(state.destinationValidator) &&
+          !updatedValidatorArray.some(
+            (v) =>
+              v.validatorIndex === state.destinationValidator.validatorIndex,
+          )
+        ) {
+          updatedValidatorArray.push(state.destinationValidator);
         }
+
+        state.sourceValidator = updatedValidatorArray;
 
         return;
       }
 
+      // Early exit here to prevent deselecting the destination validator
       if (
         validator.validatorIndex === state.destinationValidator.validatorIndex
       ) {

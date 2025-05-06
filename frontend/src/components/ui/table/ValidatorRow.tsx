@@ -31,6 +31,7 @@ export interface IValidatorRowProps<T extends TableValidatorDetails> {
     onClick: (validator: T) => void;
     isSelected: boolean;
     showCheckIcons: boolean;
+    isPermanentSelected?: boolean;
   };
   renderOverrides?: Partial<Record<keyof T, (data: T) => JSX.Element>>;
   index: number;
@@ -45,7 +46,7 @@ export const ValidatorRow = <T extends TableValidatorDetails>({
   renderOverrides,
   index,
 }: IValidatorRowProps<T>) => {
-  const [isHovering, setIsHovering] = useState(false);
+  const [isHoveringState, setIsHovering] = useState(false);
 
   // Render cell content based on field key
   const renderCellContent = (header: IHeaderConfig<T>) => {
@@ -106,9 +107,15 @@ export const ValidatorRow = <T extends TableValidatorDetails>({
     return () => selectableRows.onClick(validator);
   };
 
+  const clearBackground =
+    wrapperProps?.clearBackground || selectableRows?.isPermanentSelected;
+
+  const isSelected =
+    selectableRows?.isSelected || selectableRows?.isPermanentSelected;
+
   return (
     <ValidatorCardWrapper
-      {...wrapperProps}
+      {...{ ...wrapperProps, isSelected, clearBackground }}
       // We execute the onClick here to build the onClick function, this ensures undefined is still passed correctly if there is no onClick method which then ensures the styles work as expected
       onClick={onClick()}
       className={cn("!mb-4 table-row text-left")}
@@ -135,37 +142,49 @@ export const ValidatorRow = <T extends TableValidatorDetails>({
             className={cn(
               "px-4 py-2 font-normal transition-colors duration-200",
               {
-                border: isHovering && onClick(),
+                border:
+                  (isHoveringState || selectableRows?.isPermanentSelected) &&
+                  onClick(),
                 "!border-l-0": !isFirst,
                 "!border-r-0": !isLast,
                 "rounded-l-2xl": isFirst,
                 "rounded-r-2xl": isLast,
                 "hidden md:table-cell": !header.mobile,
-                "bg-white dark:bg-gray-900": !wrapperProps?.clearBackground,
+                "bg-white dark:bg-gray-900": !clearBackground,
               },
               ValidatorCardBorderStyles({
-                clearBackground: wrapperProps?.clearBackground,
-                isSelected: selectableRows?.isSelected,
+                clearBackground,
+                isSelected,
                 onClick: onClick(),
-                isHoveringOverride: isHovering,
+                isHoveringOverride:
+                  isHoveringState || selectableRows?.isPermanentSelected,
+                forceHoverBorder: selectableRows?.isPermanentSelected,
               }),
             )}
           >
             <div className="flex items-center gap-x-2">
               {index === 0 && selectableRows?.showCheckIcons && (
                 <div className="flex items-center justify-center">
-                  {selectableRows.isSelected ? (
+                  {isSelected ? (
                     <>
                       <FaCircleCheck
                         className={cn(
                           "h-5 min-h-5 w-5 min-w-5 text-green-500 transition-opacity duration-200",
-                          { "opacity-0": isHovering },
+                          {
+                            "opacity-0":
+                              isHoveringState &&
+                              !selectableRows?.isPermanentSelected,
+                          },
                         )}
                       />
                       <FaCircleMinus
                         className={cn(
                           "absolute h-5 min-h-5 w-5 min-w-5 text-red-500 transition-opacity duration-200",
-                          { "opacity-0": !isHovering },
+                          {
+                            "opacity-0":
+                              selectableRows?.isPermanentSelected ||
+                              !isHoveringState,
+                          },
                         )}
                       />
                     </>
@@ -174,13 +193,13 @@ export const ValidatorRow = <T extends TableValidatorDetails>({
                       <CirclePlus
                         className={cn(
                           "h-5 min-h-5 w-5 min-w-5 text-primary transition-opacity duration-200",
-                          { "opacity-0": isHovering },
+                          { "opacity-0": isHoveringState },
                         )}
                       />
                       <FaCirclePlus
                         className={cn(
                           "absolute h-5 min-h-5 w-5 min-w-5 text-primary transition-opacity duration-200",
-                          { "opacity-0": !isHovering },
+                          { "opacity-0": !isHoveringState },
                         )}
                       />
                     </>

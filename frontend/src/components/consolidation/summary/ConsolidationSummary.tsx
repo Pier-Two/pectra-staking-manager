@@ -81,6 +81,7 @@ export const ConsolidationSummary = ({
           <DetectedValidators
             cardTitle="selected"
             validators={sourceValidators}
+            targetValidator={destinationValidator}
           />
 
           <SecondaryButton

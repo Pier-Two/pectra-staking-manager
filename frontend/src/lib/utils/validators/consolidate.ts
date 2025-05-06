@@ -1,3 +1,4 @@
+import { sumBy } from "lodash";
 import { type SubmittingConsolidationValidatorDetails } from "pec/constants/columnHeaders";
 import { type ValidatorDetails } from "pec/types/validator";
 
@@ -15,6 +16,7 @@ export const getRequiredConsolidationTransactions = (
 } => {
   const transactions: SubmittingConsolidationValidatorDetails[] = [];
   let upgradeTransactions = 0;
+  let consolidationTransactions = sourceValidators.length;
 
   if (needsUpgradeTx(targetValidator)) {
     transactions.push({
@@ -28,8 +30,11 @@ export const getRequiredConsolidationTransactions = (
 
   for (const sourceValidator of sourceValidators) {
     // This transaction is an upgrade for the target and its included above so skip
-    if (sourceValidator.validatorIndex === targetValidator.validatorIndex)
+    if (sourceValidator.validatorIndex === targetValidator.validatorIndex) {
+      consolidationTransactions--;
+
       continue;
+    }
 
     if (needsUpgradeTx(sourceValidator)) {
       transactions.push({
@@ -51,6 +56,22 @@ export const getRequiredConsolidationTransactions = (
   return {
     transactions,
     upgradeTransactions,
-    consolidationTransactions: sourceValidators.length,
+    consolidationTransactions,
   };
+};
+
+export const getNewDestinationBalance = (
+  targetValidator: ValidatorDetails,
+  sourceValidators: ValidatorDetails[],
+) => {
+  const sourceValidatorsSum = sumBy(sourceValidators, (v) => {
+    // Don't include the upgrade validator in the sum
+    if (v.publicKey === targetValidator.publicKey) {
+      return 0;
+    }
+
+    return v.balance;
+  });
+
+  return targetValidator.balance + sourceValidatorsSum;
 };
