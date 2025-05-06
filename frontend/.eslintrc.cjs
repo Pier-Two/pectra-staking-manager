@@ -9,7 +9,7 @@ const config = {
     "next/core-web-vitals",
     "plugin:@typescript-eslint/recommended-type-checked",
     "plugin:@typescript-eslint/stylistic-type-checked",
-    "plugin:storybook/recommended"
+    "plugin:storybook/recommended",
   ],
   rules: {
     // it used to complain if you createContext with an empty arrow function, this fixes that
@@ -41,6 +41,7 @@ const config = {
         },
       },
     ],
+    "@typescript-eslint/prefer-nullish-coalescing": "off",
   },
 };
 module.exports = config;

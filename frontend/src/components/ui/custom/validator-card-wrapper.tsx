@@ -12,15 +12,22 @@ export type ValidatorCardWrapperProps = (
     } & ComponentProps<typeof motion.tr>)
 ) & { clearBackground?: boolean; isSelected?: boolean };
 
+interface ValidatorCardBorderStylesProps
+  extends Pick<
+    ValidatorCardWrapperProps,
+    "clearBackground" | "onClick" | "isSelected"
+  > {
+  isHoveringOverride?: boolean;
+  forceHoverBorder?: boolean;
+}
+
 export const ValidatorCardBorderStyles = ({
   clearBackground,
   onClick,
   isSelected,
   isHoveringOverride,
-}: Pick<
-  ValidatorCardWrapperProps,
-  "clearBackground" | "onClick" | "isSelected"
-> & { isHoveringOverride?: boolean }) => ({
+  forceHoverBorder,
+}: ValidatorCardBorderStylesProps) => ({
   "border bg-transparent border-indigo-200 dark:border-indigo-900":
     clearBackground,
   "border border-transparent hover:border cursor-pointer": onClick,
@@ -31,7 +38,7 @@ export const ValidatorCardBorderStyles = ({
     isSelected && !clearBackground,
   // This is only used by the Validator Table row which doesn't support the tailwind hover:
   "border-primary dark:border-indigo-900":
-    isHoveringOverride && !clearBackground,
+    (isHoveringOverride && !clearBackground) || forceHoverBorder,
 });
 
 export const ValidatorCardWrapper = ({

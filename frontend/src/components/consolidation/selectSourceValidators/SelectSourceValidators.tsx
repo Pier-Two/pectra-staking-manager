@@ -11,11 +11,14 @@ import { ValidatorCard } from "pec/components/validators/cards/ValidatorCard";
 import { DetectedValidators } from "pec/components/validators/DetectedValidators";
 import { EIconPosition } from "pec/types/components";
 import { type ValidatorDetails } from "pec/types/validator";
-import { useMemo } from "react";
 import { ValidatorTable } from "pec/components/ui/table/ValidatorTable";
 import { CONSOLIDATION_TABLE_HEADERS } from "pec/constants/columnHeaders";
-import { DisplayAmount } from "pec/components/ui/table/TableComponents";
-import { keyBy, sumBy } from "lodash";
+import {
+  DisplayAmount,
+  ValidatorIndex,
+} from "pec/components/ui/table/TableComponents";
+import { keyBy } from "lodash";
+import { getNewDestinationBalance } from "pec/lib/utils/validators/consolidate";
 
 interface SelectSourceValidatorsProps {
   availableSourceValidators: ValidatorDetails[];
@@ -42,10 +45,10 @@ export const SelectSourceValidators = ({
     return !!validatorSelectedRecord[validator.publicKey];
   };
 
-  const newDestinationBalance = useMemo(() => {
-    const sourceValidatorsSum = sumBy(sourceValidators, (v) => v.balance);
-    return sourceValidatorsSum + destinationValidator.balance;
-  }, [sourceValidators, destinationValidator]);
+  const newDestinationBalance = getNewDestinationBalance(
+    destinationValidator,
+    sourceValidators,
+  );
 
   return (
     <div className="w-full space-y-6">
@@ -117,6 +120,9 @@ export const SelectSourceValidators = ({
               onClick: setSourceValidators,
               isSelected: isValidatorSelected,
               showCheckIcons: true,
+              permanentSelectedValidatorIndexes: {
+                [destinationValidator.validatorIndex]: true,
+              },
             }}
             disablePagination
           />
