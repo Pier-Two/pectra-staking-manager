@@ -43,6 +43,7 @@ export interface IYAxis {
   label: string;
   showLabel: boolean;
   orientation: "left" | "right";
+  width: number;
 }
 
 //API

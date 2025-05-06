@@ -7,7 +7,7 @@ export const chartRouter = createTRPCRouter({
   getChartData: publicProcedure.query(async () => {
     // get the cached data from the custom redis cache
     const cachedChartData = await redis.get<IChart[]>(
-      "pectra-cache:chart-data-v1",
+      "pectra-cache:chart-data-v1.1",
     );
 
     // if the data is cached, return it

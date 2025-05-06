@@ -33,12 +33,10 @@ const chartConfig = {
 export const AreaChartComponent: FC<IAreaChart> = ({ chart }) => {
   const { chartData, yAxis, legend, xAxis } = chart;
   const {
-    lowerRange,
-    upperRange,
-    ticks,
     label: yLabel,
     showLabel: showYLabel,
     orientation: yOrientation,
+    width: yWidth,
   } = yAxis;
 
   const {
@@ -46,8 +44,6 @@ export const AreaChartComponent: FC<IAreaChart> = ({ chart }) => {
     showLabel: showXLabel,
     orientation: xOrientation,
   } = xAxis;
-
-  const isMobile = useIsMobile();
 
   return (
     <ChartContainer
@@ -77,26 +73,22 @@ export const AreaChartComponent: FC<IAreaChart> = ({ chart }) => {
           className="max-sm:minTickGap-48"
         />
 
-        {!isMobile && (
-          <YAxis
-            allowDataOverflow={true}
-            tickLine={false}
-            axisLine={false}
-            tickFormatter={(value) => formatTick(+value)}
-            orientation={yOrientation}
-          >
-            {showYLabel && (
-              <Label
-                angle={yOrientation === "left" ? -90 : 90}
-                value={yLabel}
-                position={
-                  yOrientation === "left" ? "insideLeft" : "insideRight"
-                }
-                style={{ textAnchor: "middle" }}
-              />
-            )}
-          </YAxis>
-        )}
+        <YAxis
+          tickLine={false}
+          axisLine={false}
+          tickFormatter={(value) => formatTick(+value)}
+          orientation={yOrientation}
+          width={yWidth}
+        >
+          {showYLabel && (
+            <Label
+              angle={yOrientation === "left" ? -90 : 90}
+              value={yLabel}
+              position={yOrientation === "left" ? "insideLeft" : "insideRight"}
+              style={{ textAnchor: "middle" }}
+            />
+          )}
+        </YAxis>
 
         <ChartTooltip
           cursor={false}

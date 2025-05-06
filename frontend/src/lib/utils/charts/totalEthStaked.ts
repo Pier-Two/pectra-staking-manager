@@ -16,6 +16,7 @@ export const constructTotalEthStakedChartData = (
     false,
     "left",
     "totalStaked",
+    30,
   );
   const xAxis = buildXAxis(filter);
 

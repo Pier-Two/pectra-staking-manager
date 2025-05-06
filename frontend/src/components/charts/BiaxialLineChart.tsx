@@ -34,7 +34,6 @@ export const BiaxialLineChartComponent = ({ chart }: IBiaxialLineChart) => {
     orientation: xOrientation,
   } = xAxis;
 
-  const isMobile = useIsMobile();
   return (
     <ChartContainer
       className="aspect-auto h-full w-full flex-1"
@@ -63,53 +62,50 @@ export const BiaxialLineChartComponent = ({ chart }: IBiaxialLineChart) => {
           className="max-sm:minTickGap-48"
         />
 
-        {!isMobile && (
-          <YAxis
-            yAxisId="left"
-            allowDataOverflow={true}
-            tickLine={false}
-            axisLine={false}
-            tickFormatter={(value) => formatTick(+value)}
-            orientation="left"
-            domain={[
-              32,
-              (maxBy(chartData, "avgEthStaked")?.avgEthStaked ?? 32) * 1.1,
-            ]}
-          />
-        )}
+        <YAxis
+          yAxisId="left"
+          allowDataOverflow={true}
+          tickLine={false}
+          axisLine={false}
+          tickFormatter={(value) => formatTick(+value)}
+          orientation="left"
+          domain={[
+            32,
+            (maxBy(chartData, "avgEthStaked")?.avgEthStaked ?? 32) * 1.1,
+          ]}
+        />
 
-        {!isMobile && (
-          <YAxis
-            allowDataOverflow={true}
-            tickLine={false}
-            axisLine={false}
-            tickFormatter={(value) => formatTick(+value)}
-            orientation="right"
-            yAxisId="right"
-          >
-            {showYLabel && (
-              <Label
-                angle={90}
-                value={yLabel}
-                position={"insideRight"}
-                style={{ textAnchor: "middle" }}
-              />
-            )}
-          </YAxis>
-        )}
+        <YAxis
+          tickLine={false}
+          axisLine={false}
+          tickFormatter={(value) => formatTick(+value)}
+          orientation="right"
+          yAxisId="right"
+        >
+          {showYLabel && (
+            <Label
+              angle={90}
+              value={yLabel}
+              position={"insideRight"}
+              style={{ textAnchor: "middle" }}
+            />
+          )}
+        </YAxis>
 
         <Line
           dataKey="avgEthStaked"
           type="monotone"
           stroke={chartConfig.avgEthStaked.color}
-          yAxisId={isMobile ? undefined : "left"}
+          yAxisId={"left"}
+          dot={false}
         />
 
         <Line
           dataKey="totalValidatorCount"
           type="monotone"
           stroke={chartConfig.totalValidatorCount.color}
-          yAxisId={isMobile ? undefined : "right"}
+          yAxisId={"right"}
+          dot={false}
         />
 
         <ChartTooltip
