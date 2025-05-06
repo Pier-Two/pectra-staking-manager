@@ -61,7 +61,7 @@ export const ConnectWalletButton = ({
         connectButton={{
           label: text ?? "Connect Wallet",
           className: cn(
-            "!rounded-full !w-[420px] !max-w-[90vw] absorb-cursor !bg-primary !hover:bg-indigo-400 !text-white !text-xs !shadow-[0px_0px_20px_0px_white] dark:!shadow-[0px_0px_20px_0px_black] !px-4 !py-2 !h-10 !font-570 !leading[13px] !text-[13px] !px-4 dark:!bg-black w-[420px] max-w-[90%]",
+            "!rounded-full !w-[420px] !max-w-[90vw] absorb-cursor !bg-primary !hover:bg-indigo-400 !text-white !text-xs !shadow-[0px_0px_20px_0px_white] dark:!shadow-[0px_0px_20px_0px_black] !px-4 !py-2 !h-10 !font-570 !leading[13px] !text-[13px] !px-4 w-[420px] max-w-[90%]",
             className,
           ),
           style: {
