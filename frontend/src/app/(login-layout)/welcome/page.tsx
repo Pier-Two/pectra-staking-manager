@@ -17,6 +17,12 @@ const Welcome: FC = () => {
         </div>
       </div>
 
+      <Information />
+
+      <EnterSiteButton />
+
+      <Footer />
+
       <EnterAnimation delay={welcomeAnimationDelays.chart}>
         <div className="flex w-full flex-col items-center justify-center">
           <div className="flex flex-col items-center justify-center">
@@ -26,12 +32,6 @@ const Welcome: FC = () => {
           </div>
         </div>
       </EnterAnimation>
-
-      <Information />
-
-      <EnterSiteButton />
-
-      <Footer />
 
       <div className="flex w-full flex-col items-center justify-center">
         <div className="flex max-w-[967px] flex-col items-center justify-center gap-y-2">
