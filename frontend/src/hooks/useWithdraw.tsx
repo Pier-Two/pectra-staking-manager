@@ -13,6 +13,7 @@ import { useContracts } from "./useContracts";
 import { useRpcClient } from "./useRpcClient";
 import { trackEvent } from "pec/helpers/trackEvent";
 import { useEffect } from "react";
+import * as Sentry from "@sentry/nextjs";
 
 export const useWithdraw = () => {
   const rpcClient = useRpcClient();
@@ -142,7 +143,7 @@ export const useSubmitWithdraw = () => {
               "Error saving withdrawal to database, emails may not be sent",
             variant: "error",
           });
-
+          Sentry.captureException(e);
           continue;
         }
 

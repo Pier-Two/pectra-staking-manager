@@ -16,7 +16,7 @@ import { type TransactionStatus } from "pec/types/withdraw";
 import { client } from "pec/lib/wallet/client";
 import { cloneDeep } from "lodash";
 import { trackEvent } from "pec/helpers/trackEvent";
-
+import * as Sentry from "@sentry/nextjs";
 export const useConsolidationFee = () => {
   const contracts = useContracts();
   const rpcClient = useRpcClient();
@@ -92,6 +92,7 @@ export const useSubmitConsolidate = () => {
       });
     } catch (e) {
       console.error("Error saving consolidation to database:", e);
+      Sentry.captureException(e);
       toast({
         title: "Error saving consolidation to database, emails may not be sent",
         variant: "error",
