@@ -6,7 +6,7 @@ export const needsUpgradeTx = (v: ValidatorDetails): boolean => {
 };
 
 export const getRequiredConsolidationTransactions = (
-  destinationValidator: ValidatorDetails,
+  targetValidator: ValidatorDetails,
   sourceValidators: ValidatorDetails[],
 ): {
   transactions: SubmittingConsolidationValidatorDetails[];
@@ -16,9 +16,9 @@ export const getRequiredConsolidationTransactions = (
   const transactions: SubmittingConsolidationValidatorDetails[] = [];
   let upgradeTransactions = 0;
 
-  if (needsUpgradeTx(destinationValidator)) {
+  if (needsUpgradeTx(targetValidator)) {
     transactions.push({
-      ...destinationValidator,
+      ...targetValidator,
       consolidationType: "upgrade",
       transactionStatus: { status: "pending" },
     });
@@ -27,6 +27,10 @@ export const getRequiredConsolidationTransactions = (
   }
 
   for (const sourceValidator of sourceValidators) {
+    // This transaction is an upgrade for the target and its included above so skip
+    if (sourceValidator.validatorIndex === targetValidator.validatorIndex)
+      continue;
+
     if (needsUpgradeTx(sourceValidator)) {
       transactions.push({
         ...sourceValidator,

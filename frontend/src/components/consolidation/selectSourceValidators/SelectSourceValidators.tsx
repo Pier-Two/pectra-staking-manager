@@ -43,7 +43,15 @@ export const SelectSourceValidators = ({
   };
 
   const newDestinationBalance = useMemo(() => {
-    const sourceValidatorsSum = sumBy(sourceValidators, (v) => v.balance);
+    const sourceValidatorsSum = sumBy(sourceValidators, (v) => {
+      // Don't include the upgrade validator in the sum
+      if (v.publicKey === destinationValidator.publicKey) {
+        return 0;
+      }
+
+      return v.balance;
+    });
+
     return sourceValidatorsSum + destinationValidator.balance;
   }, [sourceValidators, destinationValidator]);
 

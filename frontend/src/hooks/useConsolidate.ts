@@ -6,7 +6,10 @@ import {
 import { type ValidatorDetails } from "pec/types/validator";
 import { useImmer } from "use-immer";
 import { useSubmitConsolidate } from "./useConsolidateContractCalls";
-import { getRequiredConsolidationTransactions } from "pec/lib/utils/validators/consolidate";
+import {
+  getRequiredConsolidationTransactions,
+  needsUpgradeTx,
+} from "pec/lib/utils/validators/consolidate";
 import type { TransactionStatus } from "pec/types/withdraw";
 import { trackEvent } from "pec/helpers/trackEvent";
 import { useEffect, useState } from "react";
@@ -54,9 +57,15 @@ export const useConsolidate = ({ activeValidators }: UseConsolidate) => {
     }
 
     // We can't reuse getAvailableSourceValidators here because its state won't have updated yet
-    const sourceValidators = activeValidators.filter(
-      (v) => v.validatorIndex !== validator.validatorIndex,
-    );
+    const sourceValidators = activeValidators.filter((v) => {
+      if (v.validatorIndex !== validator.validatorIndex) return true;
+
+      if (needsUpgradeTx(v)) {
+        return true;
+      }
+
+      return false;
+    });
 
     setStage({
       stage: "source",
@@ -72,12 +81,22 @@ export const useConsolidate = ({ activeValidators }: UseConsolidate) => {
       if (state.stage !== "source") {
         console.error("Invalid state", stage);
 
-        // TODO: How to handle this?
         return;
       }
 
       if (Array.isArray(validator)) {
         state.sourceValidator = validator;
+
+        if (needsUpgradeTx(state.destinationValidator)) {
+          state.sourceValidator.unshift(state.destinationValidator);
+        }
+
+        return;
+      }
+
+      if (
+        validator.validatorIndex === state.destinationValidator.validatorIndex
+      ) {
         return;
       }
 
