@@ -31,7 +31,7 @@ const Welcome: FC = () => {
 
         <EnterAnimation delay={welcomeAnimationDelays.chart}>
           <div className="flex w-full flex-col items-center justify-center">
-            <div className="flex flex-col items-center justify-center">
+            <div className="flex w-full flex-col items-center justify-center md:w-[55vw]">
               <Suspense fallback={<ChartSkeleton />}>
                 <ChartPrefetch />
               </Suspense>
