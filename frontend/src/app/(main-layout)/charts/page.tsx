@@ -18,8 +18,7 @@ const ChartsPage: FC = () => {
           </div>
 
           <div className="flex items-center justify-center text-sm text-zinc-400 dark:text-zinc-400">
-            Visualise Ethereum&apos;s Pectra validator adoption and staking
-            flows.
+            Visualise Ethereum&apos;s greatest ever validator upgrade.
           </div>
         </div>
 
