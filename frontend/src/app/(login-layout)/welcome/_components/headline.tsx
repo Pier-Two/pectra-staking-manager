@@ -11,21 +11,16 @@ const AnimatedText = ({
   delay: number;
 }) => {
   return (
-    <div className="group relative">
-      <motion.p
-        className="relative text-center text-[50px] font-670 leading-[54px]"
-        initial={{ opacity: 0, y: 15, filter: "blur(10px)" }}
-        animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-        transition={{ duration: 0.25, delay, ease: "easeInOut" }}
-      >
-        <span className="relative z-10 text-[#4C4C4C] dark:text-white">
-          {children}
-        </span>
-      </motion.p>
-    </div>
+    <motion.p
+      className="text-center text-[50px] font-670 leading-[54px]"
+      initial={{ opacity: 0, y: 15, filter: "blur(10px)" }}
+      animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+      transition={{ duration: 0.25, delay, ease: "easeInOut" }}
+    >
+      {children}
+    </motion.p>
   );
 };
-
 export const Headline = () => {
   return (
     <div className="flex flex-col items-center gap-2">
