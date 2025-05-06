@@ -12,7 +12,7 @@ export const Footer: FC = () => {
   return (
     <div className="mt-9 flex flex-col items-center font-inter text-xs font-light">
       <div className="flex flex-row gap-16 text-gray-500 dark:text-gray-400">
-        <ClingableElement className="rounded-xl p-2">
+        <ClingableElement className="rounded-full p-2">
           <EnterAnimation
             delay={welcomeAnimationDelays.footer.pierTwo}
             className="flex flex-col items-center gap-y-3"
@@ -33,7 +33,7 @@ export const Footer: FC = () => {
           </EnterAnimation>
         </ClingableElement>
 
-        <ClingableElement className="rounded-xl p-2">
+        <ClingableElement className="rounded-full p-2">
           <EnterAnimation
             delay={welcomeAnimationDelays.footer.labrys}
             className="flex flex-col items-center gap-y-3"
