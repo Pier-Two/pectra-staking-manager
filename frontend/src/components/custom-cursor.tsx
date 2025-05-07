@@ -147,7 +147,7 @@ export const CustomCursor = () => {
 
   return (
     <motion.div
-      className="pointer-events-none fixed left-0 top-0 z-50 bg-primary mix-blend-screen backdrop-blur-sm"
+      className="pointer-events-none fixed left-0 top-0 z-50 bg-primary mix-blend-screen backdrop-blur-sm dark:bg-primary/60"
       animate={{
         width,
         height,
