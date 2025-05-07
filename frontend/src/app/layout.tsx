@@ -8,13 +8,12 @@ import { NetworkContextProvider } from "pec/contexts/NetworkContext";
 import { cn } from "pec/lib/utils";
 import "pec/styles/globals.css";
 import { TRPCReactProvider } from "pec/trpc/react";
-import { GoogleAnalytics } from "@next/third-parties/google";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { ThemeProvider } from "pec/components/theme-provider";
 import Head from "next/head";
 import { headers } from "next/headers";
-import { euCountryISOCodes } from "pec/constants/eu-countries";
+import { CookieConsentBanner } from "pec/components/cookie-consent-banner";
 
 const sans = localFont({
   src: "../fonts/Saans-TRIAL-VF.woff2",
@@ -43,12 +42,6 @@ export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   const region = (await headers()).get("x-vercel-ip-country");
-  console.log(`User is from ${region}`);
-  console.log(
-    euCountryISOCodes.includes(region?.toUpperCase() ?? "")
-      ? "Not enabling Google Analytics"
-      : "Enabling Google Analytics",
-  );
 
   return (
     <html
@@ -66,9 +59,6 @@ export default async function RootLayout({
       </Head>
       {process.env.NODE_ENV === "production" && (
         <>
-          {region && !euCountryISOCodes.includes(region.toUpperCase()) && (
-            <GoogleAnalytics gaId="G-NR0EJ12J5G" />
-          )}
           <Analytics />
           <SpeedInsights />
         </>
@@ -89,6 +79,7 @@ export default async function RootLayout({
                 <main>{children}</main>
               </SidebarProvider>
               <Toaster />
+              <CookieConsentBanner region={region} />
             </body>
           </ThemeProvider>
         </TRPCReactProvider>
