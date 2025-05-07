@@ -115,7 +115,12 @@ export const ValidatorRow = <T extends TableValidatorDetails>({
 
   return (
     <ValidatorCardWrapper
-      {...{ ...wrapperProps, isSelected, clearBackground }}
+      {...{
+        ...wrapperProps,
+        isSelected,
+        clearBackground,
+        isPermanentSelected: selectableRows?.isPermanentSelected,
+      }}
       // We execute the onClick here to build the onClick function, this ensures undefined is still passed correctly if there is no onClick method which then ensures the styles work as expected
       onClick={onClick()}
       className={cn("!mb-4 table-row text-left")}
@@ -150,7 +155,9 @@ export const ValidatorRow = <T extends TableValidatorDetails>({
                 "rounded-l-2xl": isFirst,
                 "rounded-r-2xl": isLast,
                 "hidden md:table-cell": !header.mobile,
-                "bg-white dark:bg-gray-900": !clearBackground,
+                "bg-white dark:bg-gray-900":
+                  !clearBackground && !selectableRows?.isPermanentSelected,
+                "cursor-default": selectableRows?.isPermanentSelected,
               },
               ValidatorCardBorderStyles({
                 clearBackground,
@@ -158,7 +165,7 @@ export const ValidatorRow = <T extends TableValidatorDetails>({
                 onClick: onClick(),
                 isHoveringOverride:
                   isHoveringState || selectableRows?.isPermanentSelected,
-                forceHoverBorder: selectableRows?.isPermanentSelected,
+                isPermanentSelected: selectableRows?.isPermanentSelected,
               }),
             )}
           >
