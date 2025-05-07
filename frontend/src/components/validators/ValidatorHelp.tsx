@@ -36,8 +36,23 @@ const helpItems: HelpItem[] = [
   {
     id: "withdrawal-speed",
     question: "Will it be faster to withdraw when I upgrade?",
-    answer:
-      (<span>You will be able to partially withdraw your ETH faster after upgrading. For example, if you have a 2048 ETH validator, withdrawing 2000 ETH will take approximately 27 hours for the ETH to be back in your account if the queue is empty. Full exit processing times will not change as a result of the Pectra upgrade since they are subject to validator sweep clock.<a href="https://piertwo.com/insights/pectra-withdrawals-explained" target="_blank" className="text-indigo-500 dark:text-indigo-300">{' '}Read more here.</a></span>),
+    answer: (
+      <p className="text-sm text-zinc-950 dark:text-zinc-50">
+        You will be able to partially withdraw your ETH faster after upgrading.
+        For example, if you have a 2048 ETH validator, withdrawing 2000 ETH will
+        take approximately 27 hours for the ETH to be back in your account if
+        the queue is empty. Full exit processing times will not change as a
+        result of the Pectra upgrade since they are subject to validator sweep
+        clock.{" "}
+        <a
+          href="https://piertwo.com/insights/pectra-withdrawals-explained"
+          target="_blank"
+          className="text-indigo-500 dark:text-indigo-300"
+        >
+          Read more here.
+        </a>
+      </p>
+    ),
   },
   {
     id: "single-validator-consolidation",
@@ -54,9 +69,9 @@ const helpItems: HelpItem[] = [
         validator during consolidations, provided they have selected the public
         key or index value of the <span className="font-bold">target</span>{" "}
         validator as their favourite. Only the{" "}
-        <span className="font-bold">source</span> validator(s) (if it is different
-        from <span className="font-bold">target</span>) will be exited from the
-        Beacon chain. Have no fear, your OG index will be preserved.
+        <span className="font-bold">source</span> validator(s) (if it is
+        different from <span className="font-bold">target</span>) will be exited
+        from the Beacon chain. Have no fear, your OG index will be preserved.
       </p>
     ),
   },
