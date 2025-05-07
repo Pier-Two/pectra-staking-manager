@@ -24,8 +24,8 @@ export const constructChartData = (
     );
 
   return [
+    averageETHStakedPerValidatorForEachUpgradeChartData,
     numberOfValidatorsForEachUpgradeChartData,
     totalETHStakedForEachUpgradeChartData,
-    averageETHStakedPerValidatorForEachUpgradeChartData,
   ];
 };
