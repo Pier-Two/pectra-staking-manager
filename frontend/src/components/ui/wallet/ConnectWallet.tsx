@@ -40,19 +40,6 @@ export const ConnectWalletButton = ({
 
   const pathname = usePathname();
 
-  const oldConnectionStatus = useRef(connectionStatus);
-  // watch for disconnection and track event
-  useEffect(() => {
-    if (
-      connectionStatus === "disconnected" &&
-      oldConnectionStatus.current === "connected"
-    ) {
-      trackEvent("disconnect_wallet");
-    }
-
-    oldConnectionStatus.current = connectionStatus;
-  }, [connectionStatus]);
-
   if (!isMounted || !isHydrated)
     return (
       <Button
@@ -76,6 +63,9 @@ export const ConnectWalletButton = ({
           style: {
             border: `1px solid ${theme === "dark" ? "#374151" : "transparent"}`,
           },
+        }}
+        onDisconnect={() => {
+          trackEvent("disconnect_wallet");
         }}
         theme={theme === "dark" ? "dark" : "light"}
         // Details Button ---- Using a custom Component because matching the mocked styling with className Prop is not possible
