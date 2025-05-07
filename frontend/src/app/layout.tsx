@@ -56,6 +56,19 @@ export default async function RootLayout({
               as="image"
               type="image/webp"
             />
+            {process.env.NODE_ENV === "production" && (
+              <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{
+                  __html: JSON.stringify({
+                    "@context": "https://schema.org",
+                    "@type": "WebSite",
+                    name: "Pectra Staking Manager",
+                    url: "https://pectrastaking.com/",
+                  }),
+                }}
+              />
+            )}
           </head>
           <body className="bg-indigo-50 dark:bg-gray-950">
             <ThemeProvider
