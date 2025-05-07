@@ -94,7 +94,12 @@ export const BottomBar: FC = () => {
         >
           Terms of Service
         </Link>
-        <div onClick={() => setCookieConsent(null)}>Cookie Settings</div>
+        <div
+          onClick={() => setCookieConsent(null)}
+          className="cursor-pointer text-xs leading-[11px] text-zinc-950 dark:text-gray-300"
+        >
+          Cookie Settings
+        </div>
       </div>
 
       <div className="flex flex-col items-center gap-4 sm:flex-row sm:gap-8">
