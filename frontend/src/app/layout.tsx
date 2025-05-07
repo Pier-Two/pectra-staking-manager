@@ -65,7 +65,7 @@ export default async function RootLayout({
         />
       </Head>
       {region && !euCountryISOCodes.includes(region.toUpperCase()) && (
-        <GoogleAnalytics gaId="G-34ZMX7ZL6X" />
+        <GoogleAnalytics gaId="G-NR0EJ12J5G" />
       )}
       <Analytics />
       <SpeedInsights />
