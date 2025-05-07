@@ -54,9 +54,13 @@ export default function RootLayout({
           type="image/webp"
         />
       </Head>
-      <GoogleAnalytics gaId="G-34ZMX7ZL6X" />
-      <Analytics />
-      <SpeedInsights />
+      {process.env.NODE_ENV === "production" && (
+        <>
+          <GoogleAnalytics gaId="G-34ZMX7ZL6X" />
+          <Analytics />
+          <SpeedInsights />
+        </>
+      )}
       <NetworkContextProvider>
         <TRPCReactProvider>
           <ThemeProvider
