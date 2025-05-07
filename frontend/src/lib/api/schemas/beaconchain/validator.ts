@@ -1,6 +1,5 @@
 import { z } from "zod";
 import { buildBeaconchainResponseSchema } from "./generic";
-import { VALIDATOR_LIFECYCLE_STATUSES } from "pec/types/validator";
 
 export const BCValidatorsDataSchema = z.object({
   activationeligibilityepoch: z.number(),
@@ -12,7 +11,7 @@ export const BCValidatorsDataSchema = z.object({
   name: z.string(),
   pubkey: z.string(),
   slashed: z.boolean(),
-  status: z.enum(VALIDATOR_LIFECYCLE_STATUSES),
+  status: z.string(),
   validatorindex: z.number(),
   withdrawableepoch: z.number(),
   withdrawalcredentials: z.string(),
