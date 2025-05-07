@@ -13,7 +13,7 @@ const DarkMode = () => {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger className="rounded-full">
+      <DropdownMenuTrigger asChild>
         <ClingableElement className="rounded-full">
           <Button
             variant="outline"

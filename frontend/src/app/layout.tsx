@@ -11,7 +11,6 @@ import { TRPCReactProvider } from "pec/trpc/react";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { ThemeProvider } from "pec/components/theme-provider";
-import Head from "next/head";
 import { headers } from "next/headers";
 import { CookieConsentBanner } from "pec/components/cookie-consent-banner";
 
@@ -44,34 +43,28 @@ export default async function RootLayout({
   const region = (await headers()).get("x-vercel-ip-country");
 
   return (
-    <html
-      lang="en"
-      className={cn(sans.variable, inter.variable)}
-      suppressHydrationWarning
-    >
-      <Head>
-        <link
-          rel="preload"
-          href="/cards/backgrounds/WorkflowOption.webp"
-          as="image"
-          type="image/webp"
-        />
-      </Head>
-      {process.env.NODE_ENV === "production" && (
-        <>
-          <Analytics />
-          <SpeedInsights />
-        </>
-      )}
-      <NetworkContextProvider>
-        <TRPCReactProvider>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
-          >
-            <body className="bg-indigo-50 dark:bg-gray-950">
+    <NetworkContextProvider>
+      <TRPCReactProvider>
+        <html
+          lang="en"
+          className={cn(sans.variable, inter.variable)}
+          suppressHydrationWarning
+        >
+          <head>
+            <link
+              rel="preload"
+              href="/cards/backgrounds/WorkflowOption.webp"
+              as="image"
+              type="image/webp"
+            />
+          </head>
+          <body className="bg-indigo-50 dark:bg-gray-950">
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="system"
+              enableSystem
+              disableTransitionOnChange
+            >
               <SidebarProvider>
                 <div className="md:hidden">
                   <AppSidebar />
@@ -80,10 +73,16 @@ export default async function RootLayout({
               </SidebarProvider>
               <Toaster />
               <CookieConsentBanner region={region} />
-            </body>
-          </ThemeProvider>
-        </TRPCReactProvider>
-      </NetworkContextProvider>
-    </html>
+              {process.env.NODE_ENV === "production" && (
+                <>
+                  <Analytics />
+                  <SpeedInsights />
+                </>
+              )}
+            </ThemeProvider>
+          </body>
+        </html>
+      </TRPCReactProvider>
+    </NetworkContextProvider>
   );
 }
