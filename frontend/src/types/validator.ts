@@ -44,6 +44,7 @@ export const VALIDATOR_LIFECYCLE_STATUSES = [
   "exited_slashed",
   "withdrawal_possible",
   "withdrawal_done",
+  "exiting_online",
 ] as const;
 
 export type ValidatorLifecycleStatus =
