@@ -14,7 +14,7 @@ const benefits = [
   {
     title: "Gain Control",
     description:
-      "Submit partial withdrawals and full exists by triggering them via a web3 wallet with your validator withdrawal address.",
+      "Submit partial withdrawals and full exits by triggering them via a web3 wallet with your validator withdrawal address.",
   },
   {
     title: "Scale Ethereum",
