@@ -31,7 +31,7 @@ const helpItems: HelpItem[] = [
     id: "auto-compounding-strategy",
     question: "How do I achieve an auto-compounding strategy?",
     answer:
-      "In order auto-compound your staking rewards rewards you need to upgrade your validator to a pectra validator. It is then recommended that you stake slightly less than the 2048 limit as that way consensus layer rewards will auto-compound to your Pectra validator. Any rewards above 2048 will be sent back to your withdrawal address.",
+      "In order to auto-compound your validator staking rewards, you need to upgrade your validator to a Pectra validator. Stake less than the 2048 ETH limit so that consensus layer rewards will auto-compound to your Pectra (0x02) validator. Any rewards above 2048 ETH will be automatically sent back to your withdrawal address.",
   },
   {
     id: "withdrawal-speed",
