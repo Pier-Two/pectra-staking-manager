@@ -16,7 +16,7 @@ const Dashboard = () => (
   <>
     <RedirectWhenDisconnected />
     <div className="flex w-full flex-col items-center">
-      <div className="relative -mt-8 flex h-20 w-screen items-center bg-primary py-4">
+      <div className="relative -mt-8 flex h-20 w-screen items-center justify-center bg-primary py-4">
         <div className="flex max-w-[80rem] flex-col items-center gap-1 px-2 py-8 md:px-8 xl:px-2">
           <div className="flex gap-2">
             <TriangleAlert className="text-indigo-50" />
@@ -24,7 +24,7 @@ const Dashboard = () => (
               Notice: Validator Data May Be Inaccurate
             </div>
           </div>
-          <div className="text-center text-sm text-indigo-200">
+          <div className="w-full text-center text-sm text-indigo-200">
             Due to the ongoing Ethereum Pectra upgrade and updates being applied
             to third-party services like beaconcha.in, some validator
             information may not display correctly or be temporarily out of sync.
