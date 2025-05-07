@@ -27,6 +27,7 @@ import {
   StageAnimationParent,
   StageAnimationStep,
 } from "pec/components/stage-animation";
+import { AnimatePresence, motion } from "motion/react";
 
 const Withdrawal = () => {
   const walletAddress = useWalletAddress();
@@ -84,31 +85,49 @@ const Withdrawal = () => {
 
   return (
     <FormProvider {...form}>
-      <div className="flex flex-col gap-5 pt-8">
-        <div className="flex flex-row gap-3 pl-4">
-          <Image
-            className="h-4 w-4"
-            src="/icons/Wallet.svg"
-            alt="Withdrawal Wallet"
-            width={16}
-            height={16}
-          />
+      <div className="flex flex-col gap-8">
+        <AnimatePresence initial={false}>
+          {stage.type === "data-capture" && (
+            <motion.div
+              initial={{ opacity: 0, y: 10, height: 0 }}
+              animate={{ opacity: 1, y: 0, height: "auto" }}
+              exit={{ opacity: 0, y: -10, height: 0 }}
+              transition={{ duration: 0.3 }}
+            >
+              <Email
+                cardText="Add your email to receive an email when your withdrawals are complete."
+                cardTitle="Notify me when complete"
+              />
+            </motion.div>
+          )}
+        </AnimatePresence>
+        <div className="flex flex-col gap-4">
+          <div className="flex flex-row gap-3 pl-4">
+            <Image
+              className="h-4 w-4"
+              src="/icons/Wallet.svg"
+              alt="Withdrawal Wallet"
+              width={16}
+              height={16}
+            />
 
-          <div className="text-sm font-570">Withdrawal address</div>
-          <div className="text-sm text-piertwo-text">
-            {formatAddressToShortenedString(walletAddress)}
+            <div className="text-sm font-570">Withdrawal address</div>
+            <div className="text-sm text-piertwo-text">
+              {formatAddressToShortenedString(walletAddress)}
+            </div>
           </div>
+
+          <WithdrawalInformation
+            buttonText="Withdraw"
+            handleMaxAllocation={handleMaxAllocation}
+            disabled={disabled}
+            onSubmit={handleSubmit(onSubmit)}
+            resetWithdrawal={handleResetWithdrawal}
+            stage={stage}
+            validatorsSelected={withdrawals.length}
+            withdrawalTotal={withdrawalTotal}
+          />
         </div>
-        <WithdrawalInformation
-          buttonText="Withdraw"
-          handleMaxAllocation={handleMaxAllocation}
-          disabled={disabled}
-          onSubmit={handleSubmit(onSubmit)}
-          resetWithdrawal={handleResetWithdrawal}
-          stage={stage}
-          validatorsSelected={withdrawals.length}
-          withdrawalTotal={withdrawalTotal}
-        />
       </div>
 
       <StageAnimationParent
@@ -118,10 +137,6 @@ const Withdrawal = () => {
       >
         {stage.type !== "sign-submit-finalise" && (
           <StageAnimationStep key="data-capture" className="gap-8">
-            <Email
-              cardText="Add your email to receive an email when your withdrawals are complete."
-              cardTitle="Notify me when complete"
-            />
             <div className="flex flex-col gap-y-4">
               <ValidatorHeader
                 selectedCount={withdrawals.length}
