@@ -7,27 +7,30 @@ import { EnterSiteButton } from "./_components/enter-site-button";
 import { Headline } from "./_components/headline";
 import { EnterAnimation } from "./_components/enter-animation";
 import { welcomeAnimationDelays } from "pec/constants/animationDelays";
-import { RedirectWhenConnected } from "./_components/redirect-when-connected";
+
 import { CustomCursor } from "pec/components/custom-cursor";
+import { RedirectOnFirstConnect } from "pec/hooks/use-redirect-on-first-connect";
 
 const Welcome: FC = () => {
   return (
     <>
-      <RedirectWhenConnected />
+      <RedirectOnFirstConnect />
       <CustomCursor />
 
-      <div className="flex h-full w-full flex-col gap-y-8 px-4 sm:gap-y-[72px]">
-        <div className="flex flex-col gap-y-4">
-          <div className="flex w-full flex-col items-center justify-center gap-y-4">
-            <Headline />
+      <div className="flex h-full w-full flex-col gap-y-8 sm:gap-y-[72px]">
+        <div className="flex flex-col gap-y-4 px-4 sm:gap-y-[72px]">
+          <div className="flex flex-col gap-y-4">
+            <div className="flex w-full flex-col items-center justify-center gap-y-4">
+              <Headline />
+            </div>
           </div>
+
+          <Information />
+
+          <EnterSiteButton />
+
+          <Footer />
         </div>
-
-        <Information />
-
-        <EnterSiteButton />
-
-        <Footer />
 
         <EnterAnimation delay={welcomeAnimationDelays.chart}>
           <div className="flex w-full flex-col items-center justify-center">
@@ -39,7 +42,7 @@ const Welcome: FC = () => {
           </div>
         </EnterAnimation>
 
-        <div className="flex w-full flex-col items-center justify-center">
+        <div className="flex w-full flex-col items-center justify-center px-4">
           <div className="flex max-w-[967px] flex-col items-center justify-center gap-y-2">
             <p className="text-center text-sm font-570">DISCLAIMER</p>
             <p className="text-center text-sm font-380">

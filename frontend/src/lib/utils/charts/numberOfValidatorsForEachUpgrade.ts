@@ -16,11 +16,13 @@ export const constructNumberOfValidatorsForEachUpgradeChartData = (
     false,
     "left",
     "count",
+    40,
   );
   const xAxis = buildXAxis(filter);
   const percentageUptake = getPercentageUptake(chartData);
 
   return {
+    type: "area",
     title: "Pectra adoption across all validators",
     chartData,
     yAxis,

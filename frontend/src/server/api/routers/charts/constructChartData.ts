@@ -15,8 +15,13 @@ export const constructChartData = (
     );
   const totalETHStakedForEachUpgradeChartData =
     constructTotalEthStakedChartData(groupedValidators, filter);
+
   const averageETHStakedPerValidatorForEachUpgradeChartData =
-    constructAverageEthStakedChartData(pectraValidators, filter);
+    constructAverageEthStakedChartData(
+      pectraValidators,
+      groupedValidators,
+      filter,
+    );
 
   return [
     numberOfValidatorsForEachUpgradeChartData,

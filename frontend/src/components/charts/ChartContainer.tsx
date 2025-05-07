@@ -7,11 +7,11 @@ import { Card, CardFooter, CardHeader } from "pec/components/ui/card";
 import { AreaChartComponent } from "./AreaChart";
 import { ChevronLeft, ChevronRight, Expand } from "lucide-react";
 import { ChartSkeleton } from "./ChartSkeleton";
-import type { ChartGroup } from "pec/types/chart";
 import { Dialog, DialogContent } from "../ui/dialog";
 import { cn } from "pec/lib/utils";
 import { motion } from "motion/react";
 import { ClingableElement } from "../ui/clingable-element";
+import { BiaxialLineChartComponent } from "./BiaxialLineChart";
 
 const emptyChart = (
   <Card className="w-full rounded-xl bg-white text-black shadow-xl dark:bg-gray-900 dark:text-white">
@@ -67,11 +67,7 @@ export const ChartContainer: FC = () => {
 
   const chartCount = data.length;
 
-  const activeChartGroup = data.find(
-    (chart) => chart.key === "days",
-  ) as ChartGroup;
-
-  const activeChart = activeChartGroup?.data[chartIndex];
+  const activeChart = data[chartIndex];
 
   const handleChartForward = () => {
     if (chartIndex === data.length - 1) setChartIndex(0);
@@ -125,11 +121,15 @@ export const ChartContainer: FC = () => {
 
         <div
           className={cn(
-            "flex h-[400px] w-full items-center justify-center px-8",
+            "flex h-[400px] w-full items-center justify-center px-4 sm:px-8",
             isFullscreen && "h-[calc(100vh-220px)]",
           )}
         >
-          <AreaChartComponent chart={activeChart} />
+          {activeChart.type === "area" ? (
+            <AreaChartComponent chart={activeChart} />
+          ) : (
+            <BiaxialLineChartComponent chart={activeChart} />
+          )}
         </div>
 
         {footer && (

@@ -37,37 +37,14 @@ export const generateChartData = async () => {
   )
     return [];
 
-  const chartData = [
-    {
-      key: "days",
-      data: constructChartData(
-        groupedValidators,
-        groupedPectraValidators,
-        "days",
-      ),
-    },
-    {
-      key: "months",
-      data: constructChartData(
-        groupedValidators,
-        groupedPectraValidators,
-        "months",
-      ),
-    },
-    {
-      key: "years",
-      data: constructChartData(
-        groupedValidators,
-        groupedPectraValidators,
-        "years",
-      ),
-    },
-  ];
+  const chartData = constructChartData(
+    groupedValidators,
+    groupedPectraValidators,
+    "days",
+  );
 
-  if (chartData.length === 0) return [];
-
-  await redis.set("pectra-cache:chart-data", JSON.stringify(chartData), {
-    ex: 60 * 60 * 6, // 6 hours
+  await redis.set("pectra-cache:chart-data-v1.1", JSON.stringify(chartData), {
+    ex: 60 * 60, // 1 hour
   });
 
   return chartData;

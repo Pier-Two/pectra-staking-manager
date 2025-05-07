@@ -16,10 +16,12 @@ export const constructTotalEthStakedChartData = (
     false,
     "left",
     "totalStaked",
+    30,
   );
   const xAxis = buildXAxis(filter);
 
   return {
+    type: "area",
     title: "Total ETH Staked",
     chartData,
     yAxis,
