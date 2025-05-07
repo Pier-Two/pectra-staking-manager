@@ -22,6 +22,10 @@ export const getValidatorDurationString = (from: Date, to: Date): string => {
     return `${days} day${days !== 1 ? "s" : ""}`;
   }
 
+  if (years === 0) {
+    return `${months} month${months !== 1 ? "s" : ""}`;
+  }
+
   // Show years and months for longer durations
   return `${years} year${years !== 1 ? "s" : ""} and ${months} month${months !== 1 ? "s" : ""}`;
 };
