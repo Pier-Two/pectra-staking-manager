@@ -9,7 +9,7 @@ const benefits = [
   {
     title: "Earn More Rewards",
     description:
-      "Put idle ETH to work on your validator by not having to wait for another 32 ETH as well as harness the auto-compounding benefits of Pectra.",
+      "Put idle ETH to work on your validator by not having to wait for another 32 ETH, as well as harness the auto-compounding benefits of Pectra.",
   },
   {
     title: "Gain Control",
