@@ -51,6 +51,17 @@ const helpItems: HelpItem[] = [
         >
           Read more here.
         </a>
+        or use{" "}
+        <a
+          href="https://withdrawals.piertwo.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-indigo-500 dark:text-indigo-300"
+        >
+          this tool
+        </a>
+        to estimate withdrawal times
+        .
       </p>
     ),
   },
