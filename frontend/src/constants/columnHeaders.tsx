@@ -97,8 +97,8 @@ export const DASHBOARD_VALIDATOR_COLUMN_HEADERS: IHeaderConfig<ValidatorDetails>
             </TooltipTrigger>
             <TooltipContent>
               <p>
-                Your current balance including any pending deposits,
-                consolidations, and withdrawals.
+                Your active balance plus pending deposits and consolidations
+                minus pending withdrawals.
               </p>
             </TooltipContent>
           </Tooltip>

@@ -86,21 +86,6 @@ const Withdrawal = () => {
   return (
     <FormProvider {...form}>
       <div className="flex flex-col gap-8">
-        <AnimatePresence initial={false}>
-          {stage.type === "data-capture" && (
-            <motion.div
-              initial={{ opacity: 0, y: 10, height: 0 }}
-              animate={{ opacity: 1, y: 0, height: "auto" }}
-              exit={{ opacity: 0, y: -10, height: 0 }}
-              transition={{ duration: 0.3 }}
-            >
-              <Email
-                cardText="Add your email to receive an email when your withdrawals are complete."
-                cardTitle="Notify me when complete"
-              />
-            </motion.div>
-          )}
-        </AnimatePresence>
         <div className="flex flex-col gap-4">
           <div className="flex flex-row gap-3 pl-4">
             <Image
@@ -130,6 +115,21 @@ const Withdrawal = () => {
           />
         </div>
       </div>
+      <AnimatePresence initial={false}>
+        {stage.type === "data-capture" && (
+          <motion.div
+            initial={{ opacity: 0, y: 10, height: 0 }}
+            animate={{ opacity: 1, y: 0, height: "auto" }}
+            exit={{ opacity: 0, y: -10, height: 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            <Email
+              cardText="Add your email to receive an email when your withdrawals are complete."
+              cardTitle="Notify me when complete"
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <StageAnimationParent
         stage={stage.type}

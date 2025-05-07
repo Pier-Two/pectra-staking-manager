@@ -178,6 +178,13 @@ export const getAndPopulateValidatorDetails = async (
     mutateValidator,
   );
 
+  for (const validator of validatorDetails) {
+    if (validator.status === ValidatorStatus.EXITED) {
+      validator.pendingBalance = 0;
+      validator.balance = 0;
+    }
+  }
+
   return {
     success: true,
     data: validatorDetails,
