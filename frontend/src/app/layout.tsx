@@ -42,7 +42,7 @@ export const metadata: Metadata = {
 export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
-  const region = (await headers()).get("x-vercel-ip-country-region");
+  const region = (await headers()).get("x-vercel-ip-country");
   console.log(`User is from ${region}`);
   console.log(
     euCountryISOCodes.includes(region?.toUpperCase() ?? "")
