@@ -34,9 +34,7 @@ export const CookieConsentBanner = ({ region }: { region: string | null }) => {
   );
 
   useEffect(() => {
-    if (hasMounted.current) {
-      return;
-    }
+    if (hasMounted.current) return;
 
     hasMounted.current = true;
     console.log({ region });
@@ -50,6 +48,8 @@ export const CookieConsentBanner = ({ region }: { region: string | null }) => {
 
     setCookieConsent(true);
   }, [cookieConsent, setCookieConsent, region]);
+
+  console.log({ cookieConsent, hasMounted: hasMounted.current });
 
   // don't render anything if the user has rejected cookies or if the component has not mounted (to avoid SSR)
   if (cookieConsent === false || !hasMounted.current) {
