@@ -147,12 +147,11 @@ export const CustomCursor = () => {
 
   return (
     <motion.div
-      className="pointer-events-none fixed left-0 top-0 z-50 bg-primary mix-blend-screen backdrop-blur-sm dark:bg-primary/60"
+      className="pointer-events-none fixed left-0 top-0 z-50 bg-primary mix-blend-screen blur-md dark:bg-primary/60 dark:blur-xl"
       animate={{
         width,
         height,
         borderRadius,
-        filter: "blur(8px) drop-shadow(0 0 8px rgba(255,255,255,0.5))",
       }}
       transition={{
         type: "spring",
