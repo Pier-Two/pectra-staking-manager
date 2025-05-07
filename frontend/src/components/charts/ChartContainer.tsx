@@ -59,7 +59,9 @@ const ChartNavigation = ({
 export const ChartContainer: FC = () => {
   const [isFullscreen, setIsFullscreen] = useState(false);
 
-  const { data, isFetched } = api.charts.getChartData.useQuery(undefined);
+  const { data, isFetched } = api.charts.getChartData.useQuery(undefined, {
+    refetchInterval: 1000 * 60, // 1 minute
+  });
 
   const [chartIndex, setChartIndex] = useState(0);
 
