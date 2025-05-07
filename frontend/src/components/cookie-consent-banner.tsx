@@ -52,8 +52,6 @@ export const CookieConsentBanner = ({ region }: { region: string | null }) => {
     setCookieConsent(true);
   }, [cookieConsent, setCookieConsent, region]);
 
-  console.log({ cookieConsent, hasMounted: hasMounted.current });
-
   // don't render anything if the user has rejected cookies or if the component has not mounted (to avoid SSR)
   if (cookieConsent === false || !shouldRender) {
     return null;
@@ -100,14 +98,14 @@ export const CookieConsentBanner = ({ region }: { region: string | null }) => {
           className="w-full rounded-full"
           onClick={() => setCookieConsent(true)}
         >
-          Accept
+          Accept All
         </Button>
         <Button
           className="w-full rounded-full"
           variant="outline"
           onClick={() => setCookieConsent(false)}
         >
-          Reject
+          Reject Non-Essential Cookies
         </Button>
       </CardFooter>
     </Card>

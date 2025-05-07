@@ -9,6 +9,8 @@ import { labrysUrl, pierTwoUrl } from "pec/helpers/getExternalLink";
 import { cn } from "pec/lib/utils";
 import { EThemeMode } from "pec/types/theme";
 import type { FC } from "react";
+import { useLocalStorage } from "usehooks-ts";
+import { Button } from "../ui/button";
 
 interface RenderLogoProps {
   grayscale?: boolean;
@@ -65,6 +67,12 @@ export const BottomBar: FC = () => {
     },
   ];
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [_, setCookieConsent] = useLocalStorage<boolean | null>(
+    "cookieConsent",
+    null,
+  );
+
   return (
     <footer className="fixed bottom-0 z-10 flex w-full flex-col items-center justify-center gap-y-4 border-t bg-[rgba(255,255,255,0.98)] p-4 px-6 shadow-sm sm:flex-row sm:justify-between dark:border-gray-800 dark:bg-gray-950">
       <div className="group text-center text-xs leading-[11px] text-zinc-950 sm:text-left dark:text-gray-300">
@@ -86,6 +94,7 @@ export const BottomBar: FC = () => {
         >
           Terms of Service
         </Link>
+        <div onClick={() => setCookieConsent(null)}>Cookie Settings</div>
       </div>
 
       <div className="flex flex-col items-center gap-4 sm:flex-row sm:gap-8">
