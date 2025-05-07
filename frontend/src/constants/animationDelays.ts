@@ -23,6 +23,7 @@ export const welcomeAnimationDelays = (() => {
       labrys: 15 * d,
     },
     chart: 16 * d,
+    faq: 17 * d,
   };
 })();
 

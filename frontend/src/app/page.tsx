@@ -13,6 +13,7 @@ import { welcomeAnimationDelays } from "pec/constants/animationDelays";
 import { BottomBar } from "pec/components/layout/BottomBar";
 import { CustomCursor } from "pec/components/custom-cursor";
 import { TopBar } from "pec/components/layout/TopBar";
+import { ValidatorHelp } from "pec/components/validators/ValidatorHelp";
 
 const Welcome: FC = () => {
   return (
@@ -46,6 +47,15 @@ const Welcome: FC = () => {
                     <ChartPrefetch />
                   </Suspense>
                 </div>
+              </div>
+            </EnterAnimation>
+
+            <EnterAnimation
+              delay={welcomeAnimationDelays.faq}
+              className="flex w-full flex-col items-center justify-center"
+            >
+              <div className="md:w-[55vw]">
+                <ValidatorHelp />
               </div>
             </EnterAnimation>
 
