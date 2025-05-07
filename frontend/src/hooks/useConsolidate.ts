@@ -165,7 +165,7 @@ export const useConsolidate = ({ activeValidators }: UseConsolidate) => {
     });
   };
 
-  const goToSubmit = async () => {
+  const goToSubmit = async (email: string) => {
     if (stage.stage !== "summary") {
       console.error("Invalid state", stage);
 
