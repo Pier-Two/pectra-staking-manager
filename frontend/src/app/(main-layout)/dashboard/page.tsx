@@ -43,7 +43,7 @@ const Dashboard = () => (
               <TotalDailyIncome />
             </div>
 
-            <div className="pt-8">
+            <div className="w-full pt-8">
               <DashboardValidatorTable />
             </div>
           </div>

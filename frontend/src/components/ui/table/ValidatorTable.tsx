@@ -75,48 +75,53 @@ export const ValidatorTable = <T extends TableValidatorDetails>({
         {!disableSearch && (
           <SearchFilter searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
         )}
+
         {children?.({ setCurrentPage })}
-        <table className="table w-full table-auto border-separate border-spacing-y-2">
-          {/* Render the pagination controls from the parent */}
 
-          <TableHeader
-            sortConfig={sortConfig}
-            onSort={setSortConfig}
-            headers={headers}
-            disableSort={disableSort}
-          />
+        <div className="overflow-x-scroll">
+          <table className="table w-full table-auto border-separate border-spacing-y-2">
+            {/* Render the pagination controls from the parent */}
 
-          <tbody className="">
-            {sortedValidators.length > 0 ? (
-              paginatedData.map((validator, index) => (
-                <ValidatorRow
-                  headers={headers}
-                  key={getKey ? getKey(validator) : validator.publicKey}
-                  validator={validator}
-                  endContent={endContent}
-                  wrapperProps={wrapperProps}
-                  selectableRows={
-                    selectableRows
-                      ? {
-                          ...selectableRows,
-                          isSelected:
-                            selectableRows.isSelected(validator) || false,
-                          isPermanentSelected:
-                            selectableRows?.permanentSelectedValidatorIndexes?.[
-                              validator.validatorIndex
-                            ],
-                        }
-                      : undefined
-                  }
-                  renderOverrides={renderOverrides}
-                  index={index}
-                />
-              ))
-            ) : (
-              <TableNoResults />
-            )}
-          </tbody>
-        </table>
+            <TableHeader
+              sortConfig={sortConfig}
+              onSort={setSortConfig}
+              headers={headers}
+              disableSort={disableSort}
+            />
+
+            <tbody className="">
+              {sortedValidators.length > 0 ? (
+                paginatedData.map((validator, index) => (
+                  <ValidatorRow
+                    headers={headers}
+                    key={getKey ? getKey(validator) : validator.publicKey}
+                    validator={validator}
+                    endContent={endContent}
+                    wrapperProps={wrapperProps}
+                    selectableRows={
+                      selectableRows
+                        ? {
+                            ...selectableRows,
+                            isSelected:
+                              selectableRows.isSelected(validator) || false,
+                            isPermanentSelected:
+                              selectableRows
+                                ?.permanentSelectedValidatorIndexes?.[
+                                validator.validatorIndex
+                              ],
+                          }
+                        : undefined
+                    }
+                    renderOverrides={renderOverrides}
+                    index={index}
+                  />
+                ))
+              ) : (
+                <TableNoResults />
+              )}
+            </tbody>
+          </table>
+        </div>
         {!disablePagination && (
           <TablePagination
             currentPage={currentPage}
