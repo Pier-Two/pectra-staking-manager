@@ -65,22 +65,22 @@ export function AppSidebar() {
       <SidebarContent>
         <SidebarGroup>
           <div className="flex items-center">
-            <a
+            <Link
               href="/dashboard"
               className="flex w-full items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700"
             >
               My Validators
               <ValidatorCount />
-            </a>
+            </Link>
           </div>
           {filteredLinks.map((link) => (
-            <a
+            <Link
               key={link.id}
               href={link.href}
               className="block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700"
             >
               {link.name}
-            </a>
+            </Link>
           ))}
 
           {account && (
@@ -92,12 +92,12 @@ export function AppSidebar() {
               <DropdownMenuContent align="end" className="mr-4">
                 {Object.entries(cardPresets).map(([key, preset]) => (
                   <DropdownMenuItem key={key} className="px-4 py-2 text-sm">
-                    <a
+                    <Link
                       href={preset.url}
                       className="w-full text-gray-700 transition-colors duration-200 hover:text-zinc-500 dark:text-gray-200 dark:hover:text-zinc-400"
                     >
                       {preset.title}
-                    </a>
+                    </Link>
                   </DropdownMenuItem>
                 ))}
               </DropdownMenuContent>

@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 const ChartsPage: FC = () => {
   return (
     <div className="flex w-full flex-col items-center dark:text-white">
-      <div className="flex w-full flex-1 flex-col space-y-10 p-10">
+      <div className="flex w-full flex-1 flex-col space-y-10 sm:p-10">
         <div className="flex flex-col items-center gap-4">
           <div className="text-3xl font-medium">
             Ethereum&apos;s Pectra Upgrade

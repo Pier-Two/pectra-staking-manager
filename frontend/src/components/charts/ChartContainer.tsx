@@ -37,7 +37,7 @@ const ChartNavigation = ({
   <div className="flex flex-row items-center gap-2">
     <ClingableElement className="rounded-full">
       <Expand
-        className="h-10 w-10 cursor-pointer rounded-full border-2 p-2 hover:bg-white max-sm:hidden dark:border-gray-800 dark:bg-gray-900 dark:hover:bg-gray-800"
+        className="h-10 w-10 cursor-pointer rounded-full border-2 p-2 hover:bg-white max-sm:h-8 max-sm:w-8 max-sm:p-1.5 dark:border-gray-800 dark:bg-gray-900 dark:hover:bg-gray-800"
         onClick={() => setIsFullscreen(!isFullscreen)}
       />
     </ClingableElement>
@@ -122,7 +122,7 @@ export const ChartContainer: FC = () => {
         <div
           className={cn(
             "flex h-[400px] w-full items-center justify-center px-4 sm:px-8",
-            isFullscreen && "h-[calc(100vh-220px)]",
+            isFullscreen && "h-[calc(100vh-235px)] sm:h-[calc(100vh-220px)]",
           )}
         >
           {activeChart.type === "area" ? (
@@ -156,7 +156,7 @@ export const ChartContainer: FC = () => {
       <ChartStuff isFullscreen={false} />
       <Dialog open={isFullscreen} onOpenChange={setIsFullscreen}>
         <DialogContent
-          className="h-screen w-screen max-w-none rounded-none bg-indigo-50 sm:rounded-none dark:bg-gray-950"
+          className="h-screen w-screen max-w-none rounded-none bg-indigo-50 pt-4 max-sm:p-2 sm:rounded-none sm:p-4 dark:bg-gray-950"
           noClose
         >
           <ChartStuff isFullscreen={true} />
