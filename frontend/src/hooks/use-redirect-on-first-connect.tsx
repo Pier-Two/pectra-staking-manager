@@ -1,10 +1,14 @@
 "use client";
 
-import { useActiveWalletConnectionStatus } from "thirdweb/react";
+import {
+  useActiveWalletConnectionStatus,
+  useActiveAccount,
+} from "thirdweb/react";
 import { useRouter } from "next/navigation";
 import { useLocalStorage } from "usehooks-ts";
 import { useEffect } from "react";
 import { create } from "zustand";
+
 const useRedirectStore = create<{
   hasRedirected: boolean;
   setHasRedirected: (hasRedirected: boolean) => void;
@@ -18,21 +22,23 @@ const useRedirectStore = create<{
  * and to the dashboard page if they have already connected their wallet.
  */
 export const useRedirectOnFirstConnect = () => {
-  const [hasConnected, setHasConnected] = useLocalStorage(
-    "hasConnected",
-    false,
+  const [hasConnectedAddresses, setHasConnectedAddresses] = useLocalStorage(
+    "hasConnectedAddresses",
+    [] as string[],
   );
 
   const { hasRedirected, setHasRedirected } = useRedirectStore();
 
   const connectionStatus = useActiveWalletConnectionStatus();
+  const account = useActiveAccount();
+
   const router = useRouter();
 
   useEffect(() => {
     if (hasRedirected) return;
-    if (connectionStatus === "connected") {
-      if (!hasConnected) {
-        setHasConnected(true);
+    if (connectionStatus === "connected" && account?.address) {
+      if (!hasConnectedAddresses.includes(account.address)) {
+        setHasConnectedAddresses((old) => [...old, account.address]);
         setHasRedirected(true);
         router.push("/validators-found");
       } else {
@@ -41,11 +47,12 @@ export const useRedirectOnFirstConnect = () => {
       }
     }
   }, [
+    account?.address,
     connectionStatus,
-    hasConnected,
+    hasConnectedAddresses,
     hasRedirected,
     router,
-    setHasConnected,
+    setHasConnectedAddresses,
     setHasRedirected,
   ]);
 };
