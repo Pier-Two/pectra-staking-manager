@@ -100,7 +100,7 @@ export const ValidatorHelp: FC = () => {
               : "dark:border-gray-800"
           }
         >
-          <AccordionTrigger className="hover:no-underline">
+          <AccordionTrigger className="text-left hover:no-underline">
             {item.question}
           </AccordionTrigger>
           <CustomAccordionContent text={item.answer} />
