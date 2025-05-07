@@ -1,32 +1,41 @@
 "use client";
 
-import { ChevronDown } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import Image from "next/image";
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarGroup,
+  SidebarGroupContent,
   SidebarHeader,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarMenuSub,
+  SidebarMenuSubButton,
+  SidebarMenuSubItem,
+  useSidebar,
 } from "pec/components/ui/sidebar";
-import {
-  useActiveAccount,
-  useActiveWalletConnectionStatus,
-} from "thirdweb/react";
+import { useActiveWalletConnectionStatus } from "thirdweb/react";
 import DarkMode from "./dark-mode";
 import { cardPresets } from "./dashboard/tools/ToolCard";
 import { ValidatorCount } from "./ui/custom/ValidatorCount";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "./ui/dropdown-menu";
 import { ConnectWalletButton } from "./ui/wallet/ConnectWallet";
 import Link from "next/link";
+import { Collapsible, CollapsibleTrigger } from "./ui/collapsible";
+import { CollapsibleContent } from "@radix-ui/react-collapsible";
+import { useRouter } from "next/navigation";
 
 export function AppSidebar() {
   const connectionStatus = useActiveWalletConnectionStatus();
+  const { setOpenMobile } = useSidebar();
+  const router = useRouter();
+
+  const handleNavigationClick = (path: string) => {
+    setOpenMobile(false);
+    router.push(path);
+  };
 
   return (
     <Sidebar>
@@ -34,6 +43,7 @@ export function AppSidebar() {
         <Link
           href="/"
           className="flex flex-row items-center gap-4 hover:cursor-pointer"
+          onClick={() => handleNavigationClick("/")}
         >
           <Image
             src="/logos/PectraStakingManager.svg"
@@ -53,43 +63,61 @@ export function AppSidebar() {
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
-          {connectionStatus === "connected" && (
-            <Link
-              href="/dashboard"
-              className="flex w-full items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700"
-            >
-              My Validators
-              <ValidatorCount />
-            </Link>
-          )}
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {connectionStatus === "connected" && (
+                <SidebarMenuItem>
+                  <SidebarMenuButton
+                    onClick={() => handleNavigationClick("/dashboard")}
+                  >
+                    My Validators
+                    <ValidatorCount />
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              )}
 
-          <Link
-            href="/charts"
-            className="block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700"
-          >
-            Charts
-          </Link>
+              {connectionStatus !== "connected" && (
+                <SidebarMenuItem>
+                  <SidebarMenuButton onClick={() => handleNavigationClick("/")}>
+                    Welcome
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              )}
 
-          {connectionStatus === "connected" && (
-            <DropdownMenu>
-              <DropdownMenuTrigger className="flex w-full items-center justify-between px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700">
-                <span>Tools</span>
-                <ChevronDown className="h-4 w-4" />
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="mr-4">
-                {Object.entries(cardPresets).map(([key, preset]) => (
-                  <DropdownMenuItem key={key} className="px-4 py-2 text-sm">
-                    <Link
-                      href={preset.url}
-                      className="w-full text-gray-700 transition-colors duration-200 hover:text-zinc-500 dark:text-gray-200 dark:hover:text-zinc-400"
-                    >
-                      {preset.title}
-                    </Link>
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
-          )}
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  onClick={() => handleNavigationClick("/charts")}
+                >
+                  Charts
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+
+              {connectionStatus === "connected" && (
+                <Collapsible className="group/collapsible">
+                  <CollapsibleTrigger>
+                    <SidebarMenuButton>
+                      <span>Tools</span>
+                      <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+                    </SidebarMenuButton>
+                  </CollapsibleTrigger>
+
+                  <CollapsibleContent>
+                    <SidebarMenuSub>
+                      {Object.entries(cardPresets).map(([key, preset]) => (
+                        <SidebarMenuSubItem key={key}>
+                          <SidebarMenuSubButton
+                            onClick={() => handleNavigationClick(preset.url)}
+                          >
+                            {preset.title}
+                          </SidebarMenuSubButton>
+                        </SidebarMenuSubItem>
+                      ))}
+                    </SidebarMenuSub>
+                  </CollapsibleContent>
+                </Collapsible>
+              )}
+            </SidebarMenu>
+          </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter className="w-full flex-row items-center justify-center space-x-2 pb-12">
