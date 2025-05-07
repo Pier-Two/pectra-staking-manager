@@ -58,7 +58,7 @@ export default async function RootLayout({
           type="image/webp"
         />
       </Head>
-      {region && !euCountryISOCodes.includes(region) && (
+      {region && !euCountryISOCodes.includes(region.toUpperCase()) && (
         <GoogleAnalytics gaId="G-34ZMX7ZL6X" />
       )}
       <Analytics />
