@@ -5,25 +5,9 @@ import type {
   IXAxis,
   IYAxis,
 } from "pec/types/chart";
-import { chain, mapValues, sumBy } from "lodash";
-import { format } from "date-fns";
-import _ from "lodash";
 
 const convertGweiToEth = (value: number): number => value / 1e9;
 
-/**
- * Builds chart data from grouped validator statistics.
- * This function processes validator data to create time-series chart data points,
- * grouping validators by their withdrawal credential type (merge, shapella, pectra)
- * and time period (days, months, years). For each time period, it uses the latest
- * value rather than the maximum value.
- *
- * @param groupedValidatorStatistics - Object containing validator statistics grouped by timestamp
- * @param key - The metric to chart ('count', 'totalStaked', or 'avgStaked')
- * @param filter - Time period grouping ('days', 'months', or 'years')
- * @returns Array of chart data points with values for each validator type
- * @throws Error if input data is invalid
- */
 export const buildChartData = (
   groupedValidatorStatistics: IGroupedValidatorStatistics,
   key: keyof Pick<
@@ -32,72 +16,58 @@ export const buildChartData = (
   >,
   filter: "days" | "months" | "years",
 ): IChartData[] => {
-  if (
-    !groupedValidatorStatistics ||
-    typeof groupedValidatorStatistics !== "object"
-  ) {
-    throw new Error("Invalid validator statistics data");
-  }
+  const chartMap = new Map<string, IChartData>();
 
-  // Convert the grouped statistics into an array of entries and sort by timestamp
-  const sortedEntries = _.chain(groupedValidatorStatistics)
-    .entries()
-    .sortBy(([timestamp]) => new Date(timestamp).getTime())
-    .value();
+  Object.entries(groupedValidatorStatistics).forEach(
+    ([timestampKey, group]) => {
+      if (!group || group.length === 0) return;
+      const chartKey = buildChartKey(new Date(timestampKey), filter);
 
-  // Process each timestamp group and create chart data
-  return _.chain(sortedEntries)
-    .map(([timestamp, group]) => {
-      if (!Array.isArray(group) || group.length === 0) return null;
-
-      const date = new Date(timestamp);
-      if (isNaN(date.getTime())) {
-        console.warn(`Invalid timestamp: ${timestamp}`);
-        return null;
+      if (!chartMap.has(chartKey)) {
+        chartMap.set(chartKey, {
+          key: chartKey,
+          merge: 0,
+          shapella: 0,
+          pectra: 0,
+        });
       }
 
-      const chartKey = buildChartKey(date, filter);
+      const chartEntry = chartMap.get(chartKey)!;
 
-      // Process each validator type
-      const typeValues = mapValues(WITHDRAWAL_PREFIXES, (prefix) => {
+      for (const [type, prefix] of Object.entries(WITHDRAWAL_PREFIXES)) {
         const validatorsOfType = group.filter(
-          (validator) => validator?.withdrawalCredentialPrefix === prefix,
+          (validator) => validator.withdrawalCredentialPrefix === prefix,
         );
 
-        if (validatorsOfType.length === 0) return 0;
+        if (validatorsOfType.length === 0) continue;
 
-        return sumBy(validatorsOfType, (validator) => {
-          const value = Number(validator[key] || 0);
-          return key === "count" ? value : convertGweiToEth(value);
-        });
-      });
+        const maxValue = Math.max(
+          ...validatorsOfType
+            .map((validator) => {
+              const value = Number(validator[key] || 0);
+              return key === "count" ? value : convertGweiToEth(value);
+            })
+            .filter((val) => !isNaN(val)),
+        );
 
-      return {
-        key: chartKey,
-        ...typeValues,
-      };
-    })
-    .compact()
-    .value();
+        const typeKey = type as keyof typeof WITHDRAWAL_PREFIXES;
+        const currentValue = chartEntry[typeKey] ?? 0;
+        if (maxValue > currentValue) chartEntry[typeKey] = maxValue;
+      }
+    },
+  );
+
+  return Array.from(chartMap.values());
 };
 
-/**
- * Builds a chart key based on the date and filter type.
- * Uses date-fns for consistent and reliable date formatting.
- *
- * @param date - The date to format
- * @param filter - The time period grouping ('days', 'months', or 'years')
- * @returns Formatted date string based on the filter type
- */
 const buildChartKey = (date: Date, filter: "days" | "months" | "years") => {
-  switch (filter) {
-    case "days":
-      return format(date, "dd/MM/yy");
-    case "years":
-      return format(date, "yy");
-    case "months":
-      return format(date, "MM/yy");
-  }
+  const day = date.getUTCDate().toString().padStart(2, "0");
+  const month = (date.getUTCMonth() + 1).toString().padStart(2, "0");
+  const year = date.getUTCFullYear().toString().slice(-2);
+
+  if (filter === "days") return `${day}/${month}/${year}`;
+  if (filter === "years") return `${year}`;
+  return `${month}/${year}`;
 };
 
 const calculateLinearTicks = (
