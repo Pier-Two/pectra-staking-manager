@@ -234,7 +234,7 @@ export const DepositWorkflow = ({
             {stage.type === "sign-submit" && (
               <StageAnimationStep key="sign-submit">
                 <DistributionInformation
-                  resetBatchDeposit={reset}
+                  resetBatchDeposit={handleResetBatchDeposit}
                   stage={stage}
                   totalAllocated={totalAllocated}
                   totalToDistribute={totalToDistribute}

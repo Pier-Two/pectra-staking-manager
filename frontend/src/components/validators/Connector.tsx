@@ -54,17 +54,21 @@ export const Connector: FC<IConnector> = ({
         address={connectedAddress}
         layoutId={"validators-found-connected-address"}
       />
-      <DetectedValidators
-        cardTitle="validators detected"
-        validators={validators}
-        layoutId={"validators-found-detected-validators"}
-      />
-      <EnterAnimation>
-        <ValidatorInformation validators={validators} />
-      </EnterAnimation>
-      <EnterAnimation>
-        <ValidatorHelp />
-      </EnterAnimation>
+      {validators.length !== 0 && (
+        <>
+          <DetectedValidators
+            cardTitle="validators detected"
+            validators={validators}
+            layoutId={"validators-found-detected-validators"}
+          />
+          <EnterAnimation>
+            <ValidatorInformation validators={validators} />
+          </EnterAnimation>
+          <EnterAnimation>
+            <ValidatorHelp />
+          </EnterAnimation>
+        </>
+      )}
     </>
   );
 };
