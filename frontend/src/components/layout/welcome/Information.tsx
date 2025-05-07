@@ -82,7 +82,13 @@ export const Information = () => {
           );
         })}
       </div>
+    </div>
+  );
+};
 
+export const InformationShield = () => {
+  return (
+    <div className="flex w-full flex-col items-center gap-6 text-black dark:text-white">
       <EnterAnimation
         delay={welcomeAnimationDelays.infoShield}
         className="flex w-full flex-col items-start gap-[10px] rounded-xl bg-black/[2%] px-6 py-3 text-[15px] font-380 sm:max-w-[683px] sm:flex-row sm:items-center"
