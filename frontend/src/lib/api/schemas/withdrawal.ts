@@ -11,7 +11,7 @@ export const FormWithdrawalSchema = z
         validator: ValidatorDataSchema,
         amount: z
           .number()
-          .min(0, { message: "Please enter an acceptable amount" }),
+          .gt(0, { message: "Please enter an amount greater than 0" }),
       }),
     ),
   })

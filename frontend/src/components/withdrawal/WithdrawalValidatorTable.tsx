@@ -79,11 +79,6 @@ export const WithdrawalValidatorTable = ({
                 disabled: true,
                 value: "0",
               }}
-              error={
-                errors.withdrawals?.[withdrawalIndex]?.amount
-                  ? "Please enter an amount less than or equal to your available balance"
-                  : undefined
-              }
             />
             <SecondaryButton
               label="Max Partial"
@@ -152,7 +147,9 @@ export const WithdrawalValidatorTable = ({
                   }}
                   error={
                     errors.withdrawals?.[withdrawalIndex]?.amount
-                      ? "Please enter an amount less than or equal to your available balance"
+                      ? (errors.withdrawals?.[withdrawalIndex]?.amount
+                          .message ??
+                        "Please enter an amount less than or equal to your available balance")
                       : undefined
                   }
                 />

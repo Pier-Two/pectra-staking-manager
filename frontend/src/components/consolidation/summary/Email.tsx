@@ -15,7 +15,7 @@ export interface IConsolidationEmail {
 
 export const emailSchema = z.union([
   z.object({
-    showEmail: z.literal(false),
+    showEmail: z.literal(false).optional(),
     email: z.string().optional().or(z.literal("")),
   }),
   z.object({
