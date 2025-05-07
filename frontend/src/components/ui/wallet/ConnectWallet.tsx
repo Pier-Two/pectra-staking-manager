@@ -5,7 +5,7 @@ import { SUPPORTED_CHAINS } from "pec/constants/chain";
 import { useWalletAddress } from "pec/hooks/useWallet";
 import { client, wallets } from "pec/lib/wallet/client";
 import type { StyleableComponent } from "pec/types/components";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   ConnectButton,
   useEnsAvatar,
@@ -39,11 +39,18 @@ export const ConnectWalletButton = ({
   const isMounted = useIsMounted();
 
   const pathname = usePathname();
+
+  const oldConnectionStatus = useRef(connectionStatus);
   // watch for disconnection and track event
   useEffect(() => {
-    if (connectionStatus === "disconnected") {
+    if (
+      connectionStatus === "disconnected" &&
+      oldConnectionStatus.current === "connected"
+    ) {
       trackEvent("disconnect_wallet");
     }
+
+    oldConnectionStatus.current = connectionStatus;
   }, [connectionStatus]);
 
   if (!isMounted || !isHydrated)
