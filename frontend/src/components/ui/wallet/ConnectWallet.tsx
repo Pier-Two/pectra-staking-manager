@@ -38,7 +38,6 @@ export const ConnectWalletButton = ({
   const router = useRouter();
   const isMounted = useIsMounted();
 
-  const [hasClicked, setHasClicked] = useState(false);
   const pathname = usePathname();
   // watch for disconnection and track event
   useEffect(() => {
@@ -80,7 +79,6 @@ export const ConnectWalletButton = ({
                 variant="ghost"
                 className="h-10 rounded-full border border-primary/30 hover:bg-primary/10 dark:border-gray-700 dark:bg-black dark:text-white dark:hover:bg-gray-900"
                 onClick={() => {
-                  setHasClicked(true);
                   detailsModal.open({
                     client,
                     theme: theme === "dark" ? "dark" : "light",
@@ -117,9 +115,8 @@ export const ConnectWalletButton = ({
         onConnect={(wallet) => {
           trackEvent("connect_wallet");
 
-          // only redirect if the user has explicitly clicked the connect button or is on the welcome page
-          // while the page auto connected, this allows the charts page to load while connected without redirecting
-          const shouldRedirect = hasClicked || pathname === "/welcome";
+          // only redirect if the user is on the welcome page
+          const shouldRedirect = pathname === "/" || pathname === "";
 
           if (shouldRedirect) {
             const address = wallet.getAccount()?.address;
