@@ -5,7 +5,7 @@ import { SUPPORTED_CHAINS } from "pec/constants/chain";
 import { useWalletAddress } from "pec/hooks/useWallet";
 import { client, wallets } from "pec/lib/wallet/client";
 import type { StyleableComponent } from "pec/types/components";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   ConnectButton,
   useEnsAvatar,
@@ -19,8 +19,8 @@ import { trackEvent } from "pec/helpers/trackEvent";
 import { PectraSpinner } from "../custom/pectraSpinner";
 import { cn } from "pec/lib/utils";
 import { ClingableElement } from "../clingable-element";
-import { useRedirectStore } from "pec/hooks/use-redirect-store";
-import { useRouter } from "next/navigation";
+import { useRedirectStoreHydrated } from "pec/hooks/use-redirect-store";
+import { usePathname, useRouter } from "next/navigation";
 import { useIsMounted } from "usehooks-ts";
 
 export const ConnectWalletButton = ({
@@ -33,10 +33,13 @@ export const ConnectWalletButton = ({
   const { data: ensName } = useEnsName({ client, address });
   const { data: ensAvatar } = useEnsAvatar({ client, ensName });
   const connectionStatus = useActiveWalletConnectionStatus();
-  const { hasConnectedAddresses, addConnectedAddress } = useRedirectStore();
+  const { hasConnectedAddresses, addConnectedAddress, isHydrated } =
+    useRedirectStoreHydrated();
   const router = useRouter();
   const isMounted = useIsMounted();
 
+  const [hasClicked, setHasClicked] = useState(false);
+  const pathname = usePathname();
   // watch for disconnection and track event
   useEffect(() => {
     if (connectionStatus === "disconnected") {
@@ -44,7 +47,7 @@ export const ConnectWalletButton = ({
     }
   }, [connectionStatus]);
 
-  if (!isMounted)
+  if (!isMounted || !isHydrated)
     return (
       <Button
         disabled
@@ -77,6 +80,7 @@ export const ConnectWalletButton = ({
                 variant="ghost"
                 className="h-10 rounded-full border border-primary/30 hover:bg-primary/10 dark:border-gray-700 dark:bg-black dark:text-white dark:hover:bg-gray-900"
                 onClick={() => {
+                  setHasClicked(true);
                   detailsModal.open({
                     client,
                     theme: theme === "dark" ? "dark" : "light",
@@ -112,13 +116,20 @@ export const ConnectWalletButton = ({
         }}
         onConnect={(wallet) => {
           trackEvent("connect_wallet");
-          const address = wallet.getAccount()?.address;
 
-          if (address && !hasConnectedAddresses.includes(address)) {
-            addConnectedAddress(address);
-            router.push("/validators-found");
-          } else {
-            router.push("/dashboard");
+          // only redirect if the user has explicitly clicked the connect button or is not on the charts page
+          // this allows the charts page to load while connected without redirecting
+          const shouldRedirect = hasClicked || pathname !== "/charts";
+
+          if (shouldRedirect) {
+            const address = wallet.getAccount()?.address;
+
+            if (address && !hasConnectedAddresses.includes(address)) {
+              addConnectedAddress(address);
+              router.push("/validators-found");
+            } else {
+              router.push("/dashboard");
+            }
           }
         }}
       />
