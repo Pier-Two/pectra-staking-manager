@@ -80,12 +80,14 @@ export const WithdrawalInformation = ({
 
   const isMaxPartialWithdrawal =
     withdrawals.length === numValidators &&
+    withdrawals.length > 0 &&
     withdrawals.every(
       (withdrawal) => withdrawal.amount === withdrawal.validator.balance - 32,
     );
 
   const isMaxFullExit =
     withdrawals.length === numValidators &&
+    withdrawals.length > 0 &&
     withdrawals.every(
       (withdrawal) => withdrawal.amount === withdrawal.validator.balance,
     );
