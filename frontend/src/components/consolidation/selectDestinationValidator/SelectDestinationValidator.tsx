@@ -30,8 +30,8 @@ export const SelectDestinationValidator = ({
       </div>
 
       <div className="text-base">
-        To consolidate a single validator, select it as both the destination and
-        the source validator.
+        To consolidate a single validator, select it as both the target and the
+        source validator.
       </div>
 
       <Tabs
