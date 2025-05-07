@@ -17,7 +17,12 @@ export const useValidators = () => {
       address: walletAddress,
       chainId: chain.id,
     },
-    { enabled: !!walletAddress },
+    {
+      enabled: !!walletAddress,
+      refetchOnWindowFocus: true,
+      refetchOnMount: true,
+      refetchOnReconnect: true,
+    },
   );
 
   const groupedValidators = useMemo(() => {
