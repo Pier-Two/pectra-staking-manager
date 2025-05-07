@@ -36,19 +36,11 @@ const Withdrawal = () => {
 
   const form = useForm<FormWithdrawalType>({
     resolver: zodResolver(FormWithdrawalSchema),
-    defaultValues: { withdrawals: [], email: "" },
+    defaultValues: { withdrawals: [], showEmail: false },
     mode: "onChange",
   });
 
-  const {
-    handleSubmit,
-    setValue,
-    reset,
-    control,
-    watch,
-    register,
-    formState: { errors },
-  } = form;
+  const { handleSubmit, setValue, reset, control, watch } = form;
 
   const { remove, append } = useFieldArray({
     control,
@@ -62,13 +54,14 @@ const Withdrawal = () => {
 
   if (!isSuccess) return <WithdrawalLoading />;
 
-  const handleMaxAllocation = () => {
+  const handleMaxAllocation = (type: "partial" | "full") => {
     setValue(
       "withdrawals",
       activeType2Validators.map(
         (validator) => ({
           validator,
-          amount: validator.balance,
+          amount:
+            type === "partial" ? validator.balance - 32 : validator.balance,
         }),
         {
           // These options are critical to ensure proper updates
@@ -113,7 +106,6 @@ const Withdrawal = () => {
           onSubmit={handleSubmit(onSubmit)}
           resetWithdrawal={handleResetWithdrawal}
           stage={stage}
-          availableValidators={activeType2Validators.length}
           validatorsSelected={withdrawals.length}
           withdrawalTotal={withdrawalTotal}
         />
@@ -122,28 +114,28 @@ const Withdrawal = () => {
       <StageAnimationParent
         stage={stage.type}
         stageOrder={["data-capture", "sign-submit-finalise"]}
-        stepClassName="flex flex-col gap-5 pt-8"
+        stepClassName="flex flex-col gap-5"
       >
         {stage.type !== "sign-submit-finalise" && (
-          <StageAnimationStep key="data-capture">
+          <StageAnimationStep key="data-capture" className="gap-8">
             <Email
               cardText="Add your email to receive an email when your withdrawals are complete."
               cardTitle="Notify me when complete"
             />
-            <ValidatorHeader
-              selectedCount={withdrawals.length}
-              totalCount={activeType2Validators.length}
-              onClear={handleResetWithdrawal}
-            />
+            <div className="flex flex-col gap-y-4">
+              <ValidatorHeader
+                selectedCount={withdrawals.length}
+                totalCount={activeType2Validators.length}
+                onClear={handleResetWithdrawal}
+              />
 
-            <WithdrawalValidatorTable
-              validators={activeType2Validators}
-              withdrawals={withdrawals}
-              addWithdrawal={append}
-              removeWithdrawal={remove}
-              register={register}
-              errors={errors}
-            />
+              <WithdrawalValidatorTable
+                validators={activeType2Validators}
+                withdrawals={withdrawals}
+                addWithdrawal={append}
+                removeWithdrawal={remove}
+              />
+            </div>
           </StageAnimationStep>
         )}
         {stage.type === "sign-submit-finalise" && (

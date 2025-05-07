@@ -37,7 +37,7 @@ export const Tools = () => {
                 >
                   <div className="flex items-center gap-2">
                     <div
-                      className={`scale-150 text-primary-dark dark:text-indigo-200 ${preset.iconHover}`}
+                      className={`text-primary-dark dark:text-indigo-200 ${preset.iconHover}`}
                     >
                       {preset.icon}
                     </div>

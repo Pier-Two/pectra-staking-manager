@@ -1,7 +1,6 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { Check } from "lucide-react";
 import Image from "next/image";
-import { cn } from "pec/lib/utils";
 import { displayedEthAmount } from "pec/lib/utils/validators/balance";
 import type { WithdrawWorkflowStages } from "pec/types/withdraw";
 import { PectraSpinner } from "../ui/custom/pectraSpinner";
@@ -12,11 +11,10 @@ import { Separator } from "../ui/separator";
 export interface IWithdrawalInformation {
   buttonText: string;
   disabled: boolean;
-  handleMaxAllocation: () => void;
+  handleMaxAllocation: (type: "partial" | "full") => void;
   onSubmit: () => void;
   resetWithdrawal: () => void;
   stage: WithdrawWorkflowStages;
-  availableValidators: number;
   validatorsSelected: number;
   withdrawalTotal: number;
 }
@@ -28,7 +26,6 @@ export const WithdrawalInformation = ({
   onSubmit,
   resetWithdrawal,
   stage,
-  availableValidators,
   validatorsSelected,
   withdrawalTotal,
 }: IWithdrawalInformation) => {
@@ -74,43 +71,42 @@ export const WithdrawalInformation = ({
 
   return (
     <div className="flex w-full flex-col gap-4 rounded-2xl border border-border bg-white p-4 dark:border-gray-800 dark:bg-black">
-      <div className="flex w-full flex-col items-center justify-between gap-4 md:flex-row">
-        <div className="flex flex-wrap items-center gap-10">
-          {distributionStats.map((stat, index) => (
-            <div key={stat.label} className="flex items-center">
-              {index > 0 && (
-                <Separator
-                  className="mx-5 h-12 bg-gray-200 dark:bg-gray-800"
-                  orientation="vertical"
-                />
-              )}
+      <div className="flex w-full flex-col gap-4">
+        <div className="flex flex-row items-center justify-between">
+          <div className="flex flex-wrap items-center gap-10">
+            {distributionStats.map((stat, index) => (
+              <div key={stat.label} className="flex items-center">
+                {index > 0 && (
+                  <Separator
+                    className="mx-5 h-12 bg-gray-200 dark:bg-gray-800"
+                    orientation="vertical"
+                  />
+                )}
 
-              <div className="flex flex-col gap-1">
-                <div className="flex items-center gap-2">
-                  {stat.icon}
-                  {stat.imageUrl && (
-                    <Image
-                      src={stat.imageUrl}
-                      alt="Icon"
-                      width={14}
-                      height={14}
-                      className=""
-                    />
-                  )}
-                  <div className="font-inter text-sm font-670">
-                    {stat.value}
+                <div className="flex flex-col gap-1">
+                  <div className="flex items-center gap-2">
+                    {stat.icon}
+                    {stat.imageUrl && (
+                      <Image
+                        src={stat.imageUrl}
+                        alt="Icon"
+                        width={14}
+                        height={14}
+                        className=""
+                      />
+                    )}
+                    <div className="font-inter text-sm font-670">
+                      {stat.value}
+                    </div>
+                  </div>
+
+                  <div className="font-inter text-xs font-380 text-gray-500 dark:text-gray-500">
+                    {stat.label}
                   </div>
                 </div>
-
-                <div className="font-inter text-xs font-380 text-gray-500 dark:text-gray-500">
-                  {stat.label}
-                </div>
               </div>
-            </div>
-          ))}
-        </div>
-
-        <div className="px-6">
+            ))}
+          </div>
           {(isSigning || isSubmitting || isPending) &&
             !allTransactionsFinalised && (
               <div className="flex flex-row items-center gap-2">
@@ -134,100 +130,101 @@ export const WithdrawalInformation = ({
               </div>
             </>
           )}
-          {stage.type === "data-capture" && (
-            <div className="relative flex flex-row items-center gap-2 md:gap-4">
-              <div
-                className={cn(
-                  "transition-all duration-500 ease-in-out",
-                  validatorsSelected !== availableValidators
-                    ? "translate-x-0 opacity-100"
-                    : "pointer-events-none -translate-x-8 opacity-0",
-                )}
-              >
-                <SecondaryButton
-                  className="border-border hover:bg-indigo-100/30 dark:border-gray-800"
-                  label="Max"
-                  disabled={false}
-                  onClick={() => {
-                    handleMaxAllocation();
-                  }}
-                />
-              </div>
+        </div>
 
-              <PrimaryButton
-                className={cn(
-                  "w-60 transition-all duration-500 ease-in-out",
-                  validatorsSelected === availableValidators &&
-                    "mr-16 w-64 md:mr-4",
-                )}
-                label={buttonText}
-                disabled={!disabled}
-                onClick={onSubmit}
+        {stage.type === "data-capture" && (
+          <div className="relative flex flex-col gap-2">
+            <div className="flex flex-row gap-2">
+              <SecondaryButton
+                className="flex-1"
+                label="Max Partial Withdrawal"
+                disabled={false}
+                onClick={() => {
+                  handleMaxAllocation("partial");
+                }}
+              />
+              <SecondaryButton
+                className="flex-1 text-red-500 hover:text-red-500"
+                label="Max Full Exit"
+                disabled={false}
+                onClick={() => {
+                  handleMaxAllocation("full");
+                }}
               />
             </div>
-          )}
-        </div>
+
+            <PrimaryButton
+              label={buttonText}
+              disabled={!disabled}
+              onClick={onSubmit}
+            />
+          </div>
+        )}
       </div>
 
-      {someTransactionsFailed && (
-        <AnimatePresence>
-          <motion.div
-            key="failed-transactions"
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.5 }}
-            className="rounded-xl bg-gray-100 p-2 text-sm text-gray-500 dark:bg-black"
-          >
-            Some transactions failed. Please check your validator statuses and
-            try again.
-          </motion.div>
+      <AnimatePresence>
+        {someTransactionsFailed && (
+          <>
+            <motion.div
+              key="failed-transactions"
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.5 }}
+              className="rounded-xl bg-gray-100 p-2 text-sm text-gray-500 dark:bg-black"
+            >
+              Some transactions failed. Please check your validator statuses and
+              try again.
+            </motion.div>
 
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-          >
-            <PrimaryButton
-              label="Make another withdrawal"
-              onClick={resetWithdrawal}
-              disabled={false}
-            />
-          </motion.div>
-        </AnimatePresence>
-      )}
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+            >
+              <PrimaryButton
+                label="Make another withdrawal"
+                onClick={resetWithdrawal}
+                disabled={false}
+              />
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
 
-      {isSubmitting && (
-        <AnimatePresence>
-          <motion.div
-            key="submitted-transactions"
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.5 }}
-            className="rounded-xl bg-green-100 p-2 text-sm text-green-500 dark:bg-black"
-          >
-            Your transactions have been submitted successfully and will be
-            processed shortly. You can leave this page and check the status of
-            your withdrawals in your dashboard.
-          </motion.div>
+      <AnimatePresence>
+        {isSubmitting && (
+          <>
+            <motion.div
+              key="submitted-transactions"
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.5 }}
+              className="rounded-xl bg-green-100 p-2 text-sm text-green-500 dark:bg-black"
+            >
+              Your transactions have been submitted successfully and will be
+              processed shortly. You can leave this page and check the status of
+              your withdrawals in your dashboard.
+            </motion.div>
 
-          <motion.div
-            key="make-another-withdrawal"
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-            className="w-full"
-          >
-            <PrimaryButton
+            <motion.div
+              key="make-another-withdrawal"
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.1 }}
               className="w-full"
-              label="Make another withdrawal"
-              onClick={resetWithdrawal}
-              disabled={false}
-            />
-          </motion.div>
-        </AnimatePresence>
-      )}
+            >
+              <PrimaryButton
+                className="w-full"
+                label="Make another withdrawal"
+                onClick={resetWithdrawal}
+                disabled={false}
+              />
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
