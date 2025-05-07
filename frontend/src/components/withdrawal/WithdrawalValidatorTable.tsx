@@ -130,7 +130,6 @@ export const WithdrawalValidatorTable = ({
           <div className="flex flex-row items-center gap-2">
             <AmountInput
               inputProps={{
-                // disabled: true,
                 value: "0",
                 onClick: () => {
                   handleValidatorSelect(validator);
