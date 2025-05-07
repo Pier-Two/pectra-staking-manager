@@ -7,13 +7,14 @@ import { EnterSiteButton } from "./_components/enter-site-button";
 import { Headline } from "./_components/headline";
 import { EnterAnimation } from "./_components/enter-animation";
 import { welcomeAnimationDelays } from "pec/constants/animationDelays";
-import { RedirectWhenConnected } from "./_components/redirect-when-connected";
+
 import { CustomCursor } from "pec/components/custom-cursor";
+import { RedirectOnFirstConnect } from "pec/hooks/use-redirect-on-first-connect";
 
 const Welcome: FC = () => {
   return (
     <>
-      <RedirectWhenConnected />
+      <RedirectOnFirstConnect />
       <CustomCursor />
 
       <div className="flex h-full w-full flex-col gap-y-8 sm:gap-y-[72px]">

@@ -6,7 +6,8 @@ import { useLocalStorage } from "usehooks-ts";
 import { useEffect } from "react";
 
 /**
- * Redirects to the validators-found page when the user first connects their wallet.
+ * Redirects to the validators-found page when the user first connects their wallet,
+ * and to the dashboard page if they have already connected their wallet.
  */
 export const useRedirectOnFirstConnect = () => {
   const [hasConnected, setHasConnected] = useLocalStorage(
@@ -18,9 +19,13 @@ export const useRedirectOnFirstConnect = () => {
   const router = useRouter();
 
   useEffect(() => {
-    if (connectionStatus === "connected" && !hasConnected) {
-      setHasConnected(true);
-      router.push("/validators-found");
+    if (connectionStatus === "connected") {
+      if (!hasConnected) {
+        setHasConnected(true);
+        router.push("/validators-found");
+      } else {
+        router.push("/dashboard");
+      }
     }
   }, [connectionStatus, hasConnected, router, setHasConnected]);
 };
