@@ -17,7 +17,7 @@ const Dashboard = () => (
     <RedirectWhenDisconnected />
     <div className="flex w-full flex-col items-center">
       <div className="relative -mt-8 flex w-screen items-center justify-center bg-primary py-4">
-        <div className="flex max-w-[80rem] flex-col items-center gap-1 px-2 py-8 md:px-8 xl:px-2">
+        <div className="flex max-w-[80rem] flex-col items-center gap-1 px-2 md:px-8 xl:px-2">
           <div className="flex gap-2">
             <TriangleAlert className="text-indigo-50" />
             <div className="text-base font-medium text-white">
