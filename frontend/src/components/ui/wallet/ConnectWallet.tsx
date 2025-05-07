@@ -105,6 +105,7 @@ export const ConnectWalletButton = ({
         chains={SUPPORTED_CHAINS}
         client={client}
         wallets={wallets}
+        showAllWallets={false}
         connectModal={{
           size: "wide",
           title: "Connect Wallet",
