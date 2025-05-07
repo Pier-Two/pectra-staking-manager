@@ -21,7 +21,7 @@ export const TopBar = () => {
       return;
     }
 
-    router.push("/welcome");
+    router.push("/");
   };
 
   const handleChartsNavigation = () => {
@@ -84,13 +84,13 @@ export const TopBar = () => {
           <div
             className="flex items-center space-x-2 hover:cursor-pointer"
             onClick={() => {
-              router.push("/welcome");
+              router.push("/");
             }}
           >
             <div
               className={cn(
                 "hidden font-inter transition-colors duration-200 hover:cursor-pointer hover:text-zinc-500 lg:block dark:text-zinc-50 dark:hover:text-zinc-400",
-                pathname === "/welcome" && "text-zinc-500 dark:text-zinc-400",
+                pathname === "/" && "text-zinc-500 dark:text-zinc-400",
               )}
             >
               Welcome

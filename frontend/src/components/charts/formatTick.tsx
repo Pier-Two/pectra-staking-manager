@@ -10,6 +10,6 @@ export const formatTick = (value: number): string => {
   if (abs >= 1e3) return format(value / 1e3, "k");
   if (abs === 0) return "0";
 
-  if (abs < 100 && abs > 0.1) return value.toFixed(4);
+  if (abs < 100 && abs > 0.1) return value.toFixed(2);
   return value.toFixed(2);
 };

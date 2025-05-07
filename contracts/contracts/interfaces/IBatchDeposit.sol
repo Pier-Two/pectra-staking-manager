@@ -51,6 +51,12 @@ interface IBatchDeposit {
     /// @notice Thrown when msg.value does not equal the total of all deposit amounts
     error MsgValueNotEqualToTotalDepositAmount();
 
+    /// @notice Thrown when ETH is sent to the contract directly
+    error ETHNotAccepted();
+
+    /// @notice Thrown when a fallback method is called
+    error FallbackMethodNotAccepted();
+
     /// @notice Executes a batch deposit to Ethereum's deposit contract
     /// @dev Validates input data lengths and ensures deposit values comply with Ethereum's validator requirements
     /// @param _deposits An array of Deposit structs representing each validator's deposit data

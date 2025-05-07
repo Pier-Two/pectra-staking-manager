@@ -1,7 +1,7 @@
 "use client";
 
 import { GradientShield } from "./gradient-shield";
-import { EnterAnimation } from "pec/app/(login-layout)/welcome/_components/enter-animation";
+import { EnterAnimation } from "pec/app/_components/enter-animation";
 import { welcomeAnimationDelays } from "pec/constants/animationDelays";
 import { ClingableElement } from "pec/components/ui/clingable-element";
 
@@ -82,7 +82,13 @@ export const Information = () => {
           );
         })}
       </div>
+    </div>
+  );
+};
 
+export const InformationShield = () => {
+  return (
+    <div className="flex w-full flex-col items-center gap-6 text-black dark:text-white">
       <EnterAnimation
         delay={welcomeAnimationDelays.infoShield}
         className="flex w-full flex-col items-start gap-[10px] rounded-xl bg-black/[2%] px-6 py-3 text-[15px] font-380 sm:max-w-[683px] sm:flex-row sm:items-center"

@@ -12,7 +12,6 @@ import { routeHandler } from "pec/server/helpers/route-errors";
 import { type IResponse } from "pec/types/response";
 import { getValidatorsForWithdrawAddress } from "pec/server/helpers/requests/beaconchain/getValidatorForWithdrawAddress";
 import { getAndPopulateValidatorDetails } from "pec/server/helpers/validators/getAndPopulateValidatorDetails";
-import { redisCacheMiddleware } from "../middleware/redis-cache-middleware";
 import { getAndPopulateExternalValidator } from "pec/server/helpers/validators/getAndPopulateExternalValidator";
 
 export const validatorRouter = createTRPCRouter({
@@ -25,7 +24,6 @@ export const validatorRouter = createTRPCRouter({
     ),
 
   getValidatorsPerformanceInWei: publicProcedure
-    .use(redisCacheMiddleware())
     .input(
       z.object({
         address: z.string(),
@@ -42,6 +40,10 @@ export const validatorRouter = createTRPCRouter({
 
         if (!withdrawAddressValidators.success)
           return withdrawAddressValidators;
+
+        if (withdrawAddressValidators.data.length === 0) {
+          return { success: true, data: 0 };
+        }
 
         const validatorIndexes = withdrawAddressValidators.data.map(
           (validator) => validator.validatorindex,

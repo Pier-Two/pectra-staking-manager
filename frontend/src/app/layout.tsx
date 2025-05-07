@@ -8,12 +8,12 @@ import { NetworkContextProvider } from "pec/contexts/NetworkContext";
 import { cn } from "pec/lib/utils";
 import "pec/styles/globals.css";
 import { TRPCReactProvider } from "pec/trpc/react";
-import { GoogleAnalytics } from "@next/third-parties/google";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { ThemeProvider } from "pec/components/theme-provider";
 import Head from "next/head";
-import { RedirectOnFirstConnect } from "pec/hooks/use-redirect-on-first-connect";
+import { headers } from "next/headers";
+import { CookieConsentBanner } from "pec/components/cookie-consent-banner";
 
 const sans = localFont({
   src: "../fonts/Saans-TRIAL-VF.woff2",
@@ -38,9 +38,11 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  const region = (await headers()).get("x-vercel-ip-country");
+
   return (
     <html
       lang="en"
@@ -55,9 +57,12 @@ export default function RootLayout({
           type="image/webp"
         />
       </Head>
-      <GoogleAnalytics gaId="G-34ZMX7ZL6X" />
-      <Analytics />
-      <SpeedInsights />
+      {process.env.NODE_ENV === "production" && (
+        <>
+          <Analytics />
+          <SpeedInsights />
+        </>
+      )}
       <NetworkContextProvider>
         <TRPCReactProvider>
           <ThemeProvider
@@ -68,13 +73,13 @@ export default function RootLayout({
           >
             <body className="bg-indigo-50 dark:bg-gray-950">
               <SidebarProvider>
-                <RedirectOnFirstConnect />
                 <div className="md:hidden">
                   <AppSidebar />
                 </div>
                 <main>{children}</main>
               </SidebarProvider>
               <Toaster />
+              <CookieConsentBanner region={region} />
             </body>
           </ThemeProvider>
         </TRPCReactProvider>

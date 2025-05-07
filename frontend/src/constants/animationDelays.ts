@@ -16,8 +16,8 @@ export const welcomeAnimationDelays = (() => {
     },
     infoParagraph: 8 * d,
     infoCards: [9 * d, 10 * d, 11 * d],
-    infoShield: 12 * d,
-    enterSiteButton: 13 * d,
+    enterSiteButton: 12 * d,
+    infoShield: 13 * d,
     footer: {
       pierTwo: 14 * d,
       labrys: 15 * d,

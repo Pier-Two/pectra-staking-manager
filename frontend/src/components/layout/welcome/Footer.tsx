@@ -1,6 +1,6 @@
 "use client";
 
-import { EnterAnimation } from "pec/app/(login-layout)/welcome/_components/enter-animation";
+import { EnterAnimation } from "pec/app/_components/enter-animation";
 import { welcomeAnimationDelays } from "pec/constants/animationDelays";
 import type { FC } from "react";
 import { RenderLogo } from "../BottomBar";
