@@ -2,12 +2,10 @@
 
 import { QueryClientProvider, type QueryClient } from "@tanstack/react-query";
 import { loggerLink, httpBatchLink } from "@trpc/client";
-import type { TRPCClientError } from "@trpc/client";
 import { createTRPCReact } from "@trpc/react-query";
 import { type inferRouterInputs, type inferRouterOutputs } from "@trpc/server";
 import { useState } from "react";
 import SuperJSON from "superjson";
-import { toast } from "sonner";
 
 import { type AppRouter } from "pec/server/api/root";
 import { createQueryClient } from "./query-client";
