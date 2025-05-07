@@ -6,7 +6,7 @@ import { useContracts } from "pec/hooks/useContracts";
 
 export const BatchContractLink = () => {
   const contracts = useContracts();
-  const address = contracts.consolidation.address; // the address
+  const address = contracts.batchDeposit.address;
 
   const chain = useActiveChainWithDefault();
 
