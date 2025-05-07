@@ -35,7 +35,7 @@ export const AmountInput = ({
     <div className="item-center flex w-full flex-col">
       <div
         className={cn(
-          "flex w-full items-center rounded-full border px-4 py-1",
+          "flex h-12 w-full items-center rounded-full border px-4",
           invalidAmount
             ? "border-red-500 dark:border-red-500"
             : "border-border dark:border-gray-800",

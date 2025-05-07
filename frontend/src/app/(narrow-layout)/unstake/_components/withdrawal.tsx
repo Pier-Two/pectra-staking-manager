@@ -40,15 +40,7 @@ const Withdrawal = () => {
     mode: "onChange",
   });
 
-  const {
-    handleSubmit,
-    setValue,
-    reset,
-    control,
-    watch,
-    register,
-    formState: { errors },
-  } = form;
+  const { handleSubmit, setValue, reset, control, watch } = form;
 
   const { remove, append } = useFieldArray({
     control,
@@ -142,8 +134,6 @@ const Withdrawal = () => {
                 withdrawals={withdrawals}
                 addWithdrawal={append}
                 removeWithdrawal={remove}
-                register={register}
-                errors={errors}
               />
             </div>
           </StageAnimationStep>
