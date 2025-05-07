@@ -33,7 +33,7 @@ export const RenderLogo = ({
   const logoSrc = currentLogo[mode] ?? "";
 
   return (
-    <div className="group relative">
+    <div className="relative">
       <Image
         src={logoSrc}
         alt={logo}
@@ -101,12 +101,12 @@ export const BottomBar: FC = () => {
         </div>
       </div>
 
-      <div className="flex flex-col items-center gap-4 sm:flex-row sm:gap-8">
+      <div className="flex flex-row items-center gap-8">
         {items.map((item) => (
           <Link
             href={item.redirectUrl}
             target="_blank"
-            className="flex flex-wrap items-center justify-center gap-x-3 hover:cursor-pointer"
+            className="group flex flex-wrap items-center justify-center gap-x-3 hover:cursor-pointer"
             key={item.logo}
           >
             <p className="text-xs leading-[11px] text-zinc-950 dark:text-gray-300">
