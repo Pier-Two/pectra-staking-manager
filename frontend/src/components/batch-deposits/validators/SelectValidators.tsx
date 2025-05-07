@@ -100,11 +100,10 @@ export const SelectValidators = ({
             ...register(`deposits.${depositIndex}.amount`, {
               setValueAs: (value: string) => setValueHandler(value),
             }),
-            onClick: (e: React.MouseEvent<HTMLInputElement>) => {
+            onClick: () => {
               if (!isSelected) {
                 handleValidatorSelect(validator);
               }
-              e.stopPropagation();
             },
             value,
           }}
