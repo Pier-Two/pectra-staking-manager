@@ -10,7 +10,7 @@ import { EnterSiteButton } from "./_components/enter-site-button";
 import { Headline } from "./_components/headline";
 import { EnterAnimation } from "./_components/enter-animation";
 import { welcomeAnimationDelays } from "pec/constants/animationDelays";
-
+import { BottomBar } from "pec/components/layout/BottomBar";
 import { CustomCursor } from "pec/components/custom-cursor";
 import { RedirectOnFirstConnect } from "pec/hooks/use-redirect-on-first-connect";
 import { TopBar } from "pec/components/layout/TopBar";
@@ -19,7 +19,7 @@ const Welcome: FC = () => {
   return (
     <div className="flex min-h-screen w-screen flex-col overflow-x-hidden pt-16 sm:pt-20">
       <TopBar />
-      <div className="flex flex-1 justify-center">
+      <div className="flex flex-1 justify-center pb-16">
         <div className="m-4 w-full py-8">
           <RedirectOnFirstConnect />
           <CustomCursor />
@@ -75,6 +75,7 @@ const Welcome: FC = () => {
           </div>
         </div>
       </div>
+      <BottomBar />
     </div>
   );
 };
