@@ -9,6 +9,7 @@ import { Controller, useFormContext } from "react-hook-form";
 import { ValidatorTable } from "../ui/table/ValidatorTable";
 import { AmountInput } from "../ui/custom/AmountInput";
 import { SecondaryButton } from "../ui/custom/SecondaryButton";
+import { cn } from "pec/lib/utils";
 
 interface WithdrawalValidatorTable {
   validators: ValidatorDetails[];
@@ -46,6 +47,7 @@ export const WithdrawalValidatorTable = ({
     setValue,
     control,
     formState: { errors },
+    watch,
   } = useFormContext<FormWithdrawalType>();
 
   const selectedValidatorIndexes: Record<number, number> = withdrawals.reduce(
@@ -82,53 +84,63 @@ export const WithdrawalValidatorTable = ({
   }: {
     validator: ValidatorDetails;
     withdrawalIndex: number;
-  }) => (
-    <>
-      <SecondaryButton
-        label="Max Partial"
-        className="h-12 text-nowrap"
-        onClick={(e) => {
-          e.stopPropagation();
-          e.preventDefault();
+  }) => {
+    const withdrawalAmount = watch(`withdrawals.${withdrawalIndex}.amount`);
 
-          if (withdrawalIndex === -1) {
-            addWithdrawal({
-              validator,
-              amount: validator.balance - 32,
-            });
-          }
+    return (
+      <>
+        <SecondaryButton
+          label="Max Partial"
+          className={cn("h-12 text-nowrap", {
+            "bg-indigo-500 text-white hover:bg-indigo-500 hover:text-white":
+              withdrawalAmount === validator.balance - 32,
+          })}
+          onClick={(e) => {
+            e.stopPropagation();
+            e.preventDefault();
 
-          setValue(
-            `withdrawals.${withdrawalIndex}.amount`,
-            setValueHandler(
-              validator.balance.toString(),
-              validator.balance - 32,
-            ),
-          );
-        }}
-      />
-      <SecondaryButton
-        label="Full Exit"
-        className="h-12 text-nowrap text-red-500 hover:text-red-500"
-        onClick={(e) => {
-          e.stopPropagation();
-          e.preventDefault();
+            if (withdrawalIndex === -1) {
+              addWithdrawal({
+                validator,
+                amount: validator.balance - 32,
+              });
+            }
 
-          if (withdrawalIndex === -1) {
-            addWithdrawal({
-              validator,
-              amount: validator.balance,
-            });
-          }
+            setValue(
+              `withdrawals.${withdrawalIndex}.amount`,
+              setValueHandler(
+                validator.balance.toString(),
+                validator.balance - 32,
+              ),
+            );
+          }}
+        />
+        <SecondaryButton
+          label="Full Exit"
+          className={cn("h-12 text-nowrap text-red-500 hover:text-red-500", {
+            "bg-red-500 text-white hover:bg-red-500 hover:text-white":
+              withdrawalAmount === validator.balance,
+          })}
+          onClick={(e) => {
+            e.stopPropagation();
+            e.preventDefault();
 
-          setValue(
-            `withdrawals.${withdrawalIndex}.amount`,
-            setValueHandler(validator.balance.toString(), validator.balance),
-          );
-        }}
-      />
-    </>
-  );
+            if (withdrawalIndex === -1) {
+              addWithdrawal({
+                validator,
+                amount: validator.balance,
+              });
+            }
+
+            setValue(
+              `withdrawals.${withdrawalIndex}.amount`,
+              setValueHandler(validator.balance.toString(), validator.balance),
+            );
+          }}
+        />
+      </>
+    );
+  };
 
   const withdrawalAmountRowRender = useCallback(
     (validator: ValidatorDetails) => {
