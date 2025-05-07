@@ -19,13 +19,13 @@ const BatchDeposit = () => (
 
         <div className="text-base">
           Top up your existing validators in one transaction using{" "}
-          <BatchContractLink /> Send any amount of ETH, up to a total of 2016,
-          to validators that are connected to your withdrawal address.
+          <BatchContractLink />, adding enough ETH to bring each balance between
+          32 ETH and 2048 ETH.
         </div>
         <div className="text-base">
-          In order to see the full benefits of Pectra’s auto-compounding, it is
-          recommended to top up validators to slightly less than the 2048 amount
-          (e.g. 2000).
+          Consensus layer rewards then auto‐compound into each validator until
+          it reaches 2048 ETH; any excess rewards are sent to your withdrawal
+          address automatically by the Ethereum network.
         </div>
       </div>
       <DepositWorkflowWrapper />

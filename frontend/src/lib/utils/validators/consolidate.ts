@@ -36,16 +36,6 @@ export const getRequiredConsolidationTransactions = (
       continue;
     }
 
-    if (needsUpgradeTx(sourceValidator)) {
-      transactions.push({
-        ...sourceValidator,
-        consolidationType: "upgrade",
-        transactionStatus: { status: "pending" },
-      });
-
-      upgradeTransactions++;
-    }
-
     transactions.push({
       ...sourceValidator,
       consolidationType: "consolidate",

@@ -51,7 +51,9 @@ export const ActiveValidators = () => {
           <div>{activeValidators.length}</div>
         </div>
       }
-      subtext={inactiveValidators ? `+${inactiveValidators} inactive` : ""}
+      subtext={
+        inactiveValidators ? `+${inactiveValidators} exited or pending` : ""
+      }
     />
   );
 };

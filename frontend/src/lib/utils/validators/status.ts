@@ -20,6 +20,7 @@ export const getValidatorStatus = (
     case "active_online":
     case "active_slashed":
     case "withdrawal_possible":
+    case "active_offline":
     case "withdrawal_done":
       return ValidatorStatus.ACTIVE;
 
@@ -30,11 +31,8 @@ export const getValidatorStatus = (
     case "exited":
       return ValidatorStatus.EXITED;
 
-    case "active_offline":
-      return ValidatorStatus.INACTIVE;
-
     default:
-      return ValidatorStatus.INACTIVE;
+      return ValidatorStatus.ACTIVE;
   }
 };
 
@@ -42,10 +40,6 @@ export const validatorIsActive = (validator: ValidatorDetails): boolean => {
   return (
     validator.status === ValidatorStatus.ACTIVE && !validator.pendingUpgrade
   );
-};
-
-export const validatorIsInactive = (validator: ValidatorDetails): boolean => {
-  return validator.status === ValidatorStatus.INACTIVE;
 };
 
 export const validatorIsExited = (validator: ValidatorDetails): boolean => {

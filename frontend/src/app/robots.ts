@@ -16,7 +16,7 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: "*",
       // disallow: "/",
-      allow: ["/", "/sitemap.xml", "/charts"],
+      allow: ["/", "/sitemap.xml", "/charts", "/icon.svg"],
     },
     sitemap: `${siteConfig.baseUrl}/sitemap.xml`,
   };

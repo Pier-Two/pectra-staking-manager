@@ -7,6 +7,7 @@ import type {
 } from "pec/types/chart";
 import { chain, mapValues, sumBy } from "lodash";
 import { format } from "date-fns";
+import _ from "lodash";
 
 const convertGweiToEth = (value: number): number => value / 1e9;
 
@@ -39,13 +40,13 @@ export const buildChartData = (
   }
 
   // Convert the grouped statistics into an array of entries and sort by timestamp
-  const sortedEntries = chain(groupedValidatorStatistics)
+  const sortedEntries = _.chain(groupedValidatorStatistics)
     .entries()
     .sortBy(([timestamp]) => new Date(timestamp).getTime())
     .value();
 
   // Process each timestamp group and create chart data
-  return chain(sortedEntries)
+  return _.chain(sortedEntries)
     .map(([timestamp, group]) => {
       if (!Array.isArray(group) || group.length === 0) return null;
 

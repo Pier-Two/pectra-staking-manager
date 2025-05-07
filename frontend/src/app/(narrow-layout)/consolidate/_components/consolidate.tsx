@@ -30,13 +30,13 @@ export const Consolidate = () => {
         description={
           <div className="flex flex-col gap-2">
             <p className="w-full text-base">
-              Combine multiple validator balances into a single validator up to
-              a total of 2048 ETH.
+              Multiple validator balances can be combined into a single 0x02
+              Pectra validator up to a maximum of 2048 ETH.
             </p>
             <p className="w-full text-base">
-              In order to experience the full benefits of Pectra’s
-              auto-compounding, it is recommended to leave some capacity on your
-              validators (e.g only consolidate up to 2016 ETH).
+              Consensus-layer rewards will auto-compound into that validator
+              until it reaches the 2048 ETH limit, after which any additional
+              rewards are automatically returned to your withdrawal address.
             </p>
           </div>
         }

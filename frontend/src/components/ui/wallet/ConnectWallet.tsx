@@ -5,7 +5,7 @@ import { SUPPORTED_CHAINS } from "pec/constants/chain";
 import { useWalletAddress } from "pec/hooks/useWallet";
 import { client, wallets } from "pec/lib/wallet/client";
 import type { StyleableComponent } from "pec/types/components";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   ConnectButton,
   useEnsAvatar,
@@ -38,13 +38,19 @@ export const ConnectWalletButton = ({
   const router = useRouter();
   const isMounted = useIsMounted();
 
-  const [hasClicked, setHasClicked] = useState(false);
   const pathname = usePathname();
+
+  const oldConnectionStatus = useRef(connectionStatus);
   // watch for disconnection and track event
   useEffect(() => {
-    if (connectionStatus === "disconnected") {
+    if (
+      connectionStatus === "disconnected" &&
+      oldConnectionStatus.current === "connected"
+    ) {
       trackEvent("disconnect_wallet");
     }
+
+    oldConnectionStatus.current = connectionStatus;
   }, [connectionStatus]);
 
   if (!isMounted || !isHydrated)
@@ -80,7 +86,6 @@ export const ConnectWalletButton = ({
                 variant="ghost"
                 className="h-10 rounded-full border border-primary/30 hover:bg-primary/10 dark:border-gray-700 dark:bg-black dark:text-white dark:hover:bg-gray-900"
                 onClick={() => {
-                  setHasClicked(true);
                   detailsModal.open({
                     client,
                     theme: theme === "dark" ? "dark" : "light",
@@ -117,9 +122,8 @@ export const ConnectWalletButton = ({
         onConnect={(wallet) => {
           trackEvent("connect_wallet");
 
-          // only redirect if the user has explicitly clicked the connect button or is on the welcome page
-          // while the page auto connected, this allows the charts page to load while connected without redirecting
-          const shouldRedirect = hasClicked || pathname === "/welcome";
+          // only redirect if the user is on the welcome page
+          const shouldRedirect = pathname === "/" || pathname === "";
 
           if (shouldRedirect) {
             const address = wallet.getAccount()?.address;

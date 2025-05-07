@@ -115,21 +115,6 @@ const Withdrawal = () => {
           />
         </div>
       </div>
-      <AnimatePresence initial={false}>
-        {stage.type === "data-capture" && (
-          <motion.div
-            initial={{ opacity: 0, y: 10, height: 0 }}
-            animate={{ opacity: 1, y: 0, height: "auto" }}
-            exit={{ opacity: 0, y: -10, height: 0 }}
-            transition={{ duration: 0.3 }}
-          >
-            <Email
-              cardText="Add your email to receive an email when your withdrawals are complete."
-              cardTitle="Notify me when complete"
-            />
-          </motion.div>
-        )}
-      </AnimatePresence>
 
       <StageAnimationParent
         stage={stage.type}
@@ -139,6 +124,11 @@ const Withdrawal = () => {
         {stage.type !== "sign-submit-finalise" && (
           <StageAnimationStep key="data-capture" className="gap-8">
             <div className="flex flex-col gap-y-4">
+              <Email
+                cardText="Add your email to receive an email when your withdrawals are complete."
+                cardTitle="Notify me when complete"
+              />
+
               <ValidatorHeader
                 selectedCount={withdrawals.length}
                 totalCount={activeType2Validators.length}
