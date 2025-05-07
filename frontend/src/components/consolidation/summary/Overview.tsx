@@ -129,7 +129,7 @@ export const Overview = ({
             Estimated completion time
           </div>
           {/*TODO: Populate with real estimate*/}
-          <div className="text-sm font-medium">12-24 hours</div>
+          <div className="text-sm font-medium">27 hours + queue delay</div>
         </div>
 
         <div className="flex flex-row justify-between">
