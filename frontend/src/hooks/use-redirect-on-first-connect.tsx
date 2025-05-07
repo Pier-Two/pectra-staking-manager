@@ -4,6 +4,14 @@ import { useActiveWalletConnectionStatus } from "thirdweb/react";
 import { useRouter } from "next/navigation";
 import { useLocalStorage } from "usehooks-ts";
 import { useEffect } from "react";
+import { create } from "zustand";
+const useRedirectStore = create<{
+  hasRedirected: boolean;
+  setHasRedirected: (hasRedirected: boolean) => void;
+}>((set) => ({
+  hasRedirected: false,
+  setHasRedirected: (hasRedirected) => set({ hasRedirected }),
+}));
 
 /**
  * Redirects to the validators-found page when the user first connects their wallet,
@@ -15,19 +23,31 @@ export const useRedirectOnFirstConnect = () => {
     false,
   );
 
+  const { hasRedirected, setHasRedirected } = useRedirectStore();
+
   const connectionStatus = useActiveWalletConnectionStatus();
   const router = useRouter();
 
   useEffect(() => {
+    if (hasRedirected) return;
     if (connectionStatus === "connected") {
       if (!hasConnected) {
         setHasConnected(true);
+        setHasRedirected(true);
         router.push("/validators-found");
       } else {
+        setHasRedirected(true);
         router.push("/dashboard");
       }
     }
-  }, [connectionStatus, hasConnected, router, setHasConnected]);
+  }, [
+    connectionStatus,
+    hasConnected,
+    hasRedirected,
+    router,
+    setHasConnected,
+    setHasRedirected,
+  ]);
 };
 
 /**
