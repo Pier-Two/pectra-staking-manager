@@ -6,7 +6,6 @@ import { useTheme } from "next-themes";
 import { DropdownMenuTrigger } from "./ui/dropdown-menu";
 import { DropdownMenuContent, DropdownMenuItem } from "./ui/dropdown-menu";
 import { DropdownMenu } from "./ui/dropdown-menu";
-import { ClingableElement } from "./ui/clingable-element";
 
 const DarkMode = () => {
   const { setTheme } = useTheme();
