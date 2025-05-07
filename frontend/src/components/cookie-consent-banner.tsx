@@ -90,7 +90,13 @@ export const CookieConsentBanner = ({ region }: { region: string | null }) => {
         </p>
         <p>
           Data collected via cookies will be handled in accordance with our{" "}
-          <Link href="/privacy-policy">Privacy Policy</Link>.
+          <Link
+            href="/privacy-policy"
+            className="text-indigo-500 dark:text-indigo-300"
+          >
+            Privacy Policy
+          </Link>
+          .
         </p>
       </CardContent>
       <CardFooter className="flex flex-row gap-4">
