@@ -13,6 +13,8 @@ import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { ThemeProvider } from "pec/components/theme-provider";
 import Head from "next/head";
+import { headers } from "next/headers";
+import { euCountryISOCodes } from "pec/constants/eu-countries";
 
 const sans = localFont({
   src: "../fonts/Saans-TRIAL-VF.woff2",
@@ -37,9 +39,11 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  const region = (await headers()).get("x-vercel-ip-country-region");
+
   return (
     <html
       lang="en"
@@ -54,7 +58,9 @@ export default function RootLayout({
           type="image/webp"
         />
       </Head>
-      <GoogleAnalytics gaId="G-34ZMX7ZL6X" />
+      {region && !euCountryISOCodes.includes(region) && (
+        <GoogleAnalytics gaId="G-34ZMX7ZL6X" />
+      )}
       <Analytics />
       <SpeedInsights />
       <NetworkContextProvider>
