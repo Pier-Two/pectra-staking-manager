@@ -90,7 +90,8 @@ export const TopBar = () => {
             <div
               className={cn(
                 "hidden font-inter transition-colors duration-200 hover:cursor-pointer hover:text-zinc-500 lg:block dark:text-zinc-50 dark:hover:text-zinc-400",
-                pathname === "/" && "text-zinc-500 dark:text-zinc-400",
+                (pathname === "/" || pathname === "") &&
+                  "text-zinc-500 dark:text-zinc-400",
               )}
             >
               Welcome

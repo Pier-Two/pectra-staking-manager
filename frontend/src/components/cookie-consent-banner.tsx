@@ -73,7 +73,7 @@ export const CookieConsentBanner = ({ region }: { region: string | null }) => {
     <Card
       className={cn(
         "fixed bottom-16 left-[50%] z-50 w-full max-w-2xl -translate-x-1/2 shadow",
-        pathname === "/" && "bottom-4",
+        (pathname === "/" || pathname === "") && "bottom-4",
       )}
     >
       <CardHeader>

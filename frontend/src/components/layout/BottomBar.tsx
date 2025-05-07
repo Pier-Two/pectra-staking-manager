@@ -10,7 +10,6 @@ import { cn } from "pec/lib/utils";
 import { EThemeMode } from "pec/types/theme";
 import type { FC } from "react";
 import { useLocalStorage } from "usehooks-ts";
-import { Button } from "../ui/button";
 
 interface RenderLogoProps {
   grayscale?: boolean;
