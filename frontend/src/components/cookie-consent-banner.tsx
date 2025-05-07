@@ -12,7 +12,7 @@ import { Button } from "./ui/button";
 import { usePathname } from "next/navigation";
 import { cn } from "pec/lib/utils";
 import { useLocalStorage } from "usehooks-ts";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { euCountryISOCodes } from "pec/constants/eu-countries";
 import dynamic from "next/dynamic";
 
@@ -27,6 +27,7 @@ import dynamic from "next/dynamic";
 export const CookieConsentBanner = ({ region }: { region: string | null }) => {
   const pathname = usePathname();
   const hasMounted = useRef(false);
+  const [shouldRender, setShouldRender] = useState(false);
 
   const [cookieConsent, setCookieConsent] = useLocalStorage<boolean | null>(
     "cookieConsent",
@@ -35,6 +36,8 @@ export const CookieConsentBanner = ({ region }: { region: string | null }) => {
 
   useEffect(() => {
     if (hasMounted.current) return;
+
+    setShouldRender(true);
 
     hasMounted.current = true;
     console.log({ region });
@@ -52,7 +55,7 @@ export const CookieConsentBanner = ({ region }: { region: string | null }) => {
   console.log({ cookieConsent, hasMounted: hasMounted.current });
 
   // don't render anything if the user has rejected cookies or if the component has not mounted (to avoid SSR)
-  if (cookieConsent === false || !hasMounted.current) {
+  if (cookieConsent === false || shouldRender) {
     return null;
   }
 
