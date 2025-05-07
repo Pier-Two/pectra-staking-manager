@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { ChartPrefetch } from "pec/components/charts/ChartPrefetch";
 import { ChartSkeleton } from "pec/components/charts/ChartSkeleton";
 import { title } from "pec/constants/metadata";
-import { RedirectOnFirstConnect } from "pec/hooks/use-redirect-on-first-connect";
+
 import { Suspense, type FC } from "react";
 
 export const metadata: Metadata = {
@@ -12,26 +12,23 @@ export const metadata: Metadata = {
 
 const ChartsPage: FC = () => {
   return (
-    <>
-      <RedirectOnFirstConnect />
-      <div className="flex w-full flex-col items-center dark:text-white">
-        <div className="flex w-full flex-1 flex-col space-y-10 p-10">
-          <div className="flex flex-col items-center gap-4">
-            <div className="text-3xl font-medium">
-              Ethereum&apos;s Pectra Upgrade
-            </div>
-
-            <div className="text-base">
-              Visualise Ethereum&apos;s greatest ever validator upgrade.
-            </div>
+    <div className="flex w-full flex-col items-center dark:text-white">
+      <div className="flex w-full flex-1 flex-col space-y-10 p-10">
+        <div className="flex flex-col items-center gap-4">
+          <div className="text-3xl font-medium">
+            Ethereum&apos;s Pectra Upgrade
           </div>
 
-          <Suspense fallback={<ChartSkeleton />}>
-            <ChartPrefetch />
-          </Suspense>
+          <div className="text-base">
+            Visualise Ethereum&apos;s greatest ever validator upgrade.
+          </div>
         </div>
+
+        <Suspense fallback={<ChartSkeleton />}>
+          <ChartPrefetch />
+        </Suspense>
       </div>
-    </>
+    </div>
   );
 };
 

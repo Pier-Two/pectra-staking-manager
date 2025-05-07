@@ -12,7 +12,6 @@ import { EnterAnimation } from "./_components/enter-animation";
 import { welcomeAnimationDelays } from "pec/constants/animationDelays";
 import { BottomBar } from "pec/components/layout/BottomBar";
 import { CustomCursor } from "pec/components/custom-cursor";
-import { RedirectOnFirstConnect } from "pec/hooks/use-redirect-on-first-connect";
 import { TopBar } from "pec/components/layout/TopBar";
 
 const Welcome: FC = () => {
@@ -21,7 +20,6 @@ const Welcome: FC = () => {
       <TopBar />
       <div className="flex flex-1 justify-center pb-16">
         <div className="m-4 w-full py-8">
-          <RedirectOnFirstConnect />
           <CustomCursor />
 
           <div className="flex h-full w-full flex-col gap-y-8 sm:gap-y-[72px]">

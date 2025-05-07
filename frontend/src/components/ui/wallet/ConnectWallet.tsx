@@ -5,7 +5,7 @@ import { SUPPORTED_CHAINS } from "pec/constants/chain";
 import { useWalletAddress } from "pec/hooks/useWallet";
 import { client, wallets } from "pec/lib/wallet/client";
 import type { StyleableComponent } from "pec/types/components";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import {
   ConnectButton,
   useEnsAvatar,
@@ -19,6 +19,9 @@ import { trackEvent } from "pec/helpers/trackEvent";
 import { PectraSpinner } from "../custom/pectraSpinner";
 import { cn } from "pec/lib/utils";
 import { ClingableElement } from "../clingable-element";
+import { useRedirectStore } from "pec/hooks/use-redirect-store";
+import { useRouter } from "next/navigation";
+import { useIsMounted } from "usehooks-ts";
 
 export const ConnectWalletButton = ({
   className,
@@ -27,10 +30,12 @@ export const ConnectWalletButton = ({
   const { resolvedTheme: theme } = useTheme();
   const address = useWalletAddress();
   const detailsModal = useWalletDetailsModal();
-  const [isMounted, setIsMounted] = useState(false);
   const { data: ensName } = useEnsName({ client, address });
   const { data: ensAvatar } = useEnsAvatar({ client, ensName });
   const connectionStatus = useActiveWalletConnectionStatus();
+  const { hasConnectedAddresses, addConnectedAddress } = useRedirectStore();
+  const router = useRouter();
+  const isMounted = useIsMounted();
 
   // watch for disconnection and track event
   useEffect(() => {
@@ -38,11 +43,6 @@ export const ConnectWalletButton = ({
       trackEvent("disconnect_wallet");
     }
   }, [connectionStatus]);
-
-  // This is to prevent the component from rendering on the server causing hydration errors from the dynamic theme styling
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
 
   if (!isMounted)
     return (
@@ -110,8 +110,16 @@ export const ConnectWalletButton = ({
           size: "wide",
           title: "Connect Wallet",
         }}
-        onConnect={() => {
+        onConnect={(wallet) => {
           trackEvent("connect_wallet");
+          const address = wallet.getAccount()?.address;
+          console.log("address", address);
+          if (address) {
+            addConnectedAddress(address);
+            router.push("/validators-found");
+          } else {
+            router.push("/dashboard");
+          }
         }}
       />
     </ClingableElement>
