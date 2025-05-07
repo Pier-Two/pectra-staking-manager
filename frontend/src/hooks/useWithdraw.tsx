@@ -95,7 +95,11 @@ export const useSubmitWithdraw = () => {
           ["bytes", "uint64"],
           [
             withdrawal.validator.publicKey as `0x${string}`,
-            parseGwei(withdrawal.amount.toString()),
+            parseGwei(
+              withdrawal.amount === withdrawal.validator.balance
+                ? "0"
+                : withdrawal.amount.toString(),
+            ),
           ],
         );
 
