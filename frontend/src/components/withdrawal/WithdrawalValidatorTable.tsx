@@ -19,11 +19,21 @@ interface WithdrawalValidatorTable {
 
 const setValueHandler = (value: string, validatorBalance: number) => {
   const numValue = parseFloat(value);
+
+  // if NaN, return 0
   if (isNaN(numValue)) return 0;
 
+  // allow full exit through
+  if (numValue === validatorBalance) return validatorBalance;
+
+  // if greater than balance, return balance
   if (numValue > validatorBalance) return validatorBalance;
 
-  return numValue;
+  // if between 0 and balance - 32, return numValue
+  if (numValue > 0 && numValue < validatorBalance - 32) return numValue;
+
+  // if between balance - 32 and balance, return balance - 32
+  return validatorBalance - 32;
 };
 
 export const WithdrawalValidatorTable = ({
@@ -47,7 +57,7 @@ export const WithdrawalValidatorTable = ({
   );
 
   const handleValidatorSelect = useCallback(
-    (validator: ValidatorDetails, withBalance = true) => {
+    (validator: ValidatorDetails) => {
       // Find if this validator is already in the array
       const existingIndex =
         selectedValidatorIndexes[validator.validatorIndex] ?? -1;
@@ -56,7 +66,7 @@ export const WithdrawalValidatorTable = ({
         // Add if not found
         addWithdrawal({
           validator,
-          amount: withBalance ? validator.balance : 0,
+          amount: validator.balance,
         });
       } else {
         // Remove if found
