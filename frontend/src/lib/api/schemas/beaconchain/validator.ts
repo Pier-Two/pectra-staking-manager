@@ -30,7 +30,6 @@ export type BCValidatorsResponse = z.infer<typeof BCValidatorsResponseSchema>;
 export const BCValidatorsForWithdrawAddressSchema = z.array(
   z.object({
     publickey: z.string(),
-    valid_signature: z.boolean(),
     validatorindex: z.number(),
   }),
 );
