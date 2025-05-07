@@ -66,6 +66,60 @@ export const WithdrawalValidatorTable = ({
     [addWithdrawal, removeWithdrawal, selectedValidatorIndexes],
   );
 
+  const WithdrawButtons = ({
+    validator,
+    withdrawalIndex,
+  }: {
+    validator: ValidatorDetails;
+    withdrawalIndex: number;
+  }) => (
+    <>
+      <SecondaryButton
+        label="Max Partial"
+        className="h-12 text-nowrap"
+        onClick={(e) => {
+          e.stopPropagation();
+          e.preventDefault();
+
+          if (withdrawalIndex === -1) {
+            addWithdrawal({
+              validator,
+              amount: validator.balance - 32,
+            });
+          }
+
+          setValue(
+            `withdrawals.${withdrawalIndex}.amount`,
+            setValueHandler(
+              validator.balance.toString(),
+              validator.balance - 32,
+            ),
+          );
+        }}
+      />
+      <SecondaryButton
+        label="Full Exit"
+        className="h-12 text-nowrap text-red-500 hover:text-red-500"
+        onClick={(e) => {
+          e.stopPropagation();
+          e.preventDefault();
+
+          if (withdrawalIndex === -1) {
+            addWithdrawal({
+              validator,
+              amount: validator.balance,
+            });
+          }
+
+          setValue(
+            `withdrawals.${withdrawalIndex}.amount`,
+            setValueHandler(validator.balance.toString(), validator.balance),
+          );
+        }}
+      />
+    </>
+  );
+
   const withdrawalAmountRowRender = useCallback(
     (validator: ValidatorDetails) => {
       const withdrawalIndex =
@@ -76,45 +130,16 @@ export const WithdrawalValidatorTable = ({
           <div className="flex flex-row items-center gap-2">
             <AmountInput
               inputProps={{
-                disabled: true,
+                // disabled: true,
                 value: "0",
+                onClick: () => {
+                  handleValidatorSelect(validator);
+                },
               }}
             />
-            <SecondaryButton
-              label="Max Partial"
-              className="h-12 text-nowrap"
-              onClick={(e) => {
-                e.stopPropagation();
-                e.preventDefault();
-                if (withdrawalIndex === -1) {
-                  handleValidatorSelect(validator, false);
-                }
-                setValue(
-                  `withdrawals.${withdrawalIndex}.amount`,
-                  setValueHandler(
-                    validator.balance.toString(),
-                    validator.balance - 32,
-                  ),
-                );
-              }}
-            />
-            <SecondaryButton
-              label="Full Exit"
-              className="h-12 text-nowrap text-red-500 hover:text-red-500"
-              onClick={(e) => {
-                e.stopPropagation();
-                e.preventDefault();
-                if (withdrawalIndex === -1) {
-                  handleValidatorSelect(validator, false);
-                }
-                setValue(
-                  `withdrawals.${withdrawalIndex}.amount`,
-                  setValueHandler(
-                    validator.balance.toString(),
-                    validator.balance,
-                  ),
-                );
-              }}
+            <WithdrawButtons
+              validator={validator}
+              withdrawalIndex={withdrawalIndex}
             />
           </div>
         );
@@ -129,19 +154,11 @@ export const WithdrawalValidatorTable = ({
               <>
                 <AmountInput
                   inputProps={{
-                    disabled: withdrawalIndex === -1,
                     value: `${value}`,
                     onChange: (e) => {
                       onChange(
                         setValueHandler(e.target.value, validator.balance),
                       );
-                    },
-                    onClick: (e) => {
-                      if (withdrawalIndex === -1) {
-                        handleValidatorSelect(validator);
-                      }
-
-                      e.stopPropagation();
                     },
                     ...rest,
                   }}
@@ -153,37 +170,9 @@ export const WithdrawalValidatorTable = ({
                       : undefined
                   }
                 />
-                <SecondaryButton
-                  label="Max Partial"
-                  className="h-12 text-nowrap"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    if (withdrawalIndex === -1) {
-                      handleValidatorSelect(validator);
-                    }
-                    onChange(
-                      setValueHandler(
-                        validator.balance.toString(),
-                        validator.balance - 32,
-                      ),
-                    );
-                  }}
-                />
-                <SecondaryButton
-                  label="Full Exit"
-                  className="h-12 text-nowrap text-red-500 hover:text-red-500"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    if (withdrawalIndex === -1) {
-                      handleValidatorSelect(validator);
-                    }
-                    onChange(
-                      setValueHandler(
-                        validator.balance.toString(),
-                        validator.balance,
-                      ),
-                    );
-                  }}
+                <WithdrawButtons
+                  validator={validator}
+                  withdrawalIndex={withdrawalIndex}
                 />
               </>
             )}

@@ -2,7 +2,7 @@ import { cn } from "pec/lib/utils";
 import { Input, type InputProps } from "../input";
 
 interface TableInputFieldProps {
-  inputProps: InputProps;
+  inputProps: Omit<InputProps, "onClick"> & { onClick?: () => void };
   useMockInput?: boolean;
   prefix?: string;
   error?: string;
@@ -10,7 +10,7 @@ interface TableInputFieldProps {
 }
 
 export const AmountInput = ({
-  inputProps,
+  inputProps: { onClick, ...rest },
   useMockInput = false,
   error,
   prefix = "Ξ",
@@ -40,13 +40,23 @@ export const AmountInput = ({
             ? "border-red-500 dark:border-red-500"
             : "border-border dark:border-gray-800",
         )}
+        onClick={(e) => {
+          if (onClick) {
+            e.stopPropagation();
+            e.preventDefault();
+            onClick();
+          }
+        }}
       >
         {prefix}
         <Input
-          className="border-none p-2 text-sm text-gray-700 dark:text-gray-300"
+          className={cn(
+            "border-none p-2 text-sm text-gray-700 dark:text-gray-300",
+            onClick && "cursor-pointer text-gray-400",
+          )}
           type="number"
           step="any"
-          {...inputProps}
+          {...rest}
         />
       </div>
 
