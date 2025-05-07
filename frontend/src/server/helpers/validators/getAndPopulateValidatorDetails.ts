@@ -35,6 +35,13 @@ export const getAndPopulateValidatorDetails = async (
   if (!bcValidatorsForWithdrawAddress.success)
     return bcValidatorsForWithdrawAddress;
 
+  if (bcValidatorsForWithdrawAddress.data.length === 0) {
+    return {
+      success: true,
+      data: [],
+    };
+  }
+
   const bcValidatorDetails = await getValidators(
     bcValidatorsForWithdrawAddress.data.map(
       (validator) => validator.validatorindex,

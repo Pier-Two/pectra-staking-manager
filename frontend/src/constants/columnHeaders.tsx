@@ -97,7 +97,7 @@ export const DASHBOARD_VALIDATOR_COLUMN_HEADERS: IHeaderConfig<ValidatorDetails>
             </TooltipTrigger>
             <TooltipContent>
               <p>
-                Includes all transactions currently in progress: deposits,
+                Your current balance including any pending deposits,
                 consolidations, and withdrawals.
               </p>
             </TooltipContent>

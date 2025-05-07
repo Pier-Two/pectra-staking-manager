@@ -16,15 +16,15 @@ const Dashboard = () => (
   <>
     <RedirectWhenDisconnected />
     <div className="flex w-full flex-col items-center">
-      <div className="relative -mt-8 flex h-20 w-screen items-center bg-orange-100 dark:bg-orange-900">
-        <div className="flex max-w-[80rem] flex-col gap-1 px-2 py-8 md:px-8 xl:px-2">
+      <div className="relative -mt-8 flex h-20 w-screen items-center bg-primary py-2">
+        <div className="flex max-w-[80rem] flex-col items-center gap-1 px-2 py-8 md:px-8 xl:px-2">
           <div className="flex gap-2">
-            <TriangleAlert fill="orange" />
-            <div className="text-base">
+            <TriangleAlert />
+            <div className="text-base font-bold">
               Notice: Validator Data May Be Inaccurate
             </div>
           </div>
-          <div className="text-sm">
+          <div className="text-center text-sm">
             Due to the ongoing Ethereum Pectra upgrade and updates being applied
             to third-party services like beaconcha.in, some validator
             information may not display correctly or be temporarily out of sync.
