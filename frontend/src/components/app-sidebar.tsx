@@ -20,6 +20,7 @@ import {
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import { ConnectWalletButton } from "./ui/wallet/ConnectWallet";
+import Link from "next/link";
 
 const links = [
   {
@@ -41,7 +42,7 @@ export function AppSidebar() {
   return (
     <Sidebar>
       <SidebarHeader>
-        <a
+        <Link
           href="/"
           className="flex flex-row items-center gap-4 hover:cursor-pointer"
         >
@@ -59,7 +60,7 @@ export function AppSidebar() {
             </h1>
             <h1 className="text-lg font-semibold dark:text-white">Manager</h1>
           </div>
-        </a>
+        </Link>
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
