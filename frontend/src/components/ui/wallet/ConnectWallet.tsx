@@ -117,9 +117,9 @@ export const ConnectWalletButton = ({
         onConnect={(wallet) => {
           trackEvent("connect_wallet");
 
-          // only redirect if the user has explicitly clicked the connect button or is not on the charts page
-          // this allows the charts page to load while connected without redirecting
-          const shouldRedirect = hasClicked || pathname !== "/charts";
+          // only redirect if the user has explicitly clicked the connect button or is on the welcome page
+          // while the page auto connected, this allows the charts page to load while connected without redirecting
+          const shouldRedirect = hasClicked || pathname === "/welcome";
 
           if (shouldRedirect) {
             const address = wallet.getAccount()?.address;
