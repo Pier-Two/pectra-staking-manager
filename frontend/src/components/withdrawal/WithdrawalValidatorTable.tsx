@@ -131,6 +131,7 @@ export const WithdrawalValidatorTable = ({
             <AmountInput
               inputProps={{
                 value: "0",
+                className: "text-gray-400",
                 onClick: () => {
                   handleValidatorSelect(validator);
                 },
@@ -158,6 +159,11 @@ export const WithdrawalValidatorTable = ({
                       onChange(
                         setValueHandler(e.target.value, validator.balance),
                       );
+                    },
+                    onClick: () => {
+                      if (withdrawalIndex === -1) {
+                        handleValidatorSelect(validator);
+                      }
                     },
                     ...rest,
                   }}

@@ -10,7 +10,7 @@ interface TableInputFieldProps {
 }
 
 export const AmountInput = ({
-  inputProps: { onClick, ...rest },
+  inputProps: { onClick, className, ...rest },
   useMockInput = false,
   error,
   prefix = "Ξ",
@@ -52,10 +52,18 @@ export const AmountInput = ({
         <Input
           className={cn(
             "border-none p-2 text-sm text-gray-700 dark:text-gray-300",
-            onClick && "cursor-pointer text-gray-400",
+            onClick && "cursor-pointer",
+            className,
           )}
           type="number"
           step="any"
+          onClick={(e) => {
+            if (onClick) {
+              e.stopPropagation();
+              e.preventDefault();
+              onClick();
+            }
+          }}
           {...rest}
         />
       </div>
