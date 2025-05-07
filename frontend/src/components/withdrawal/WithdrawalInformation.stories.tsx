@@ -29,5 +29,6 @@ export const Primary: Story = {
     validatorsSelected: 8,
     withdrawalTotal: 100,
     stage: { type: "data-capture" },
+    numValidators: 8,
   },
 };

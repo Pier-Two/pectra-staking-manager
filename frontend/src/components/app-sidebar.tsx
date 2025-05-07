@@ -9,7 +9,10 @@ import {
   SidebarGroup,
   SidebarHeader,
 } from "pec/components/ui/sidebar";
-import { useActiveAccount } from "thirdweb/react";
+import {
+  useActiveAccount,
+  useActiveWalletConnectionStatus,
+} from "thirdweb/react";
 import DarkMode from "./dark-mode";
 import { cardPresets } from "./dashboard/tools/ToolCard";
 import { ValidatorCount } from "./ui/custom/ValidatorCount";
@@ -22,22 +25,8 @@ import {
 import { ConnectWalletButton } from "./ui/wallet/ConnectWallet";
 import Link from "next/link";
 
-const links = [
-  {
-    id: "charts",
-    name: "Charts",
-    href: "/charts",
-    requireAuth: false,
-  },
-];
-
 export function AppSidebar() {
-  const account = useActiveAccount();
-
-  // Filter links based on authentication status
-  const filteredLinks = links.filter(
-    (link) => !link.requireAuth || (link.requireAuth && account),
-  );
+  const connectionStatus = useActiveWalletConnectionStatus();
 
   return (
     <Sidebar>
@@ -64,7 +53,7 @@ export function AppSidebar() {
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
-          <div className="flex items-center">
+          {connectionStatus === "connected" && (
             <Link
               href="/dashboard"
               className="flex w-full items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700"
@@ -72,18 +61,16 @@ export function AppSidebar() {
               My Validators
               <ValidatorCount />
             </Link>
-          </div>
-          {filteredLinks.map((link) => (
-            <Link
-              key={link.id}
-              href={link.href}
-              className="block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700"
-            >
-              {link.name}
-            </Link>
-          ))}
+          )}
 
-          {account && (
+          <Link
+            href="/charts"
+            className="block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700"
+          >
+            Charts
+          </Link>
+
+          {connectionStatus === "connected" && (
             <DropdownMenu>
               <DropdownMenuTrigger className="flex w-full items-center justify-between px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700">
                 <span>Tools</span>
