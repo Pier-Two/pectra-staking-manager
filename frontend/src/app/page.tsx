@@ -19,7 +19,7 @@ const Welcome: FC = () => {
   return (
     <div className="flex min-h-screen w-screen flex-col overflow-x-hidden pt-16 sm:pt-20">
       <TopBar />
-      <div className="flex flex-1 justify-center pb-16">
+      <div className="flex flex-1 justify-center pb-20">
         <div className="m-4 w-full py-8">
           <CustomCursor />
 
