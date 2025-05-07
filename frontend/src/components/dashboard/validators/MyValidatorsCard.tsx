@@ -34,7 +34,7 @@ export const MyValidatorsCard = ({
         {isLoading && !title ? (
           <Skeleton className="h-4 w-24 bg-slate-50" />
         ) : (
-          <p className="text-sm font-medium text-piertwo-text">{title}</p>
+          <div className="text-sm font-medium text-piertwo-text">{title}</div>
         )}
 
         <div className="flex flex-grow flex-col justify-end gap-y-1">
@@ -49,7 +49,7 @@ export const MyValidatorsCard = ({
           {isLoading && !subtext ? (
             <Skeleton className="mt-1 h-3 w-20 bg-slate-50" />
           ) : (
-            <p className="text-xs text-piertwo-text">{subtext}</p>
+            <div className="text-xs text-piertwo-text">{subtext}</div>
           )}
         </div>
       </div>
