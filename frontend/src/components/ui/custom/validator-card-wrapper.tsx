@@ -10,7 +10,11 @@ export type ValidatorCardWrapperProps = (
   | ({
       as: "tr";
     } & ComponentProps<typeof motion.tr>)
-) & { clearBackground?: boolean; isSelected?: boolean };
+) & {
+  clearBackground?: boolean;
+  isSelected?: boolean;
+  isPermanentSelected?: boolean;
+};
 
 interface ValidatorCardBorderStylesProps
   extends Pick<
@@ -18,7 +22,7 @@ interface ValidatorCardBorderStylesProps
     "clearBackground" | "onClick" | "isSelected"
   > {
   isHoveringOverride?: boolean;
-  forceHoverBorder?: boolean;
+  isPermanentSelected?: boolean;
 }
 
 export const ValidatorCardBorderStyles = ({
@@ -26,19 +30,20 @@ export const ValidatorCardBorderStyles = ({
   onClick,
   isSelected,
   isHoveringOverride,
-  forceHoverBorder,
+  isPermanentSelected,
 }: ValidatorCardBorderStylesProps) => ({
   "border bg-transparent border-indigo-200 dark:border-indigo-900":
     clearBackground,
   "border border-transparent hover:border cursor-pointer": onClick,
   "hover:!border-primary dark:hover:!border-indigo-900":
     onClick && !clearBackground,
-  "hover:!border-primary dark:hover:!bg-gray-900": onClick && clearBackground,
+  "hover:!border-primary dark:hover:!bg-gray-900":
+    onClick && clearBackground && !isPermanentSelected,
   "border border-primary dark:border-indigo-900":
     isSelected && !clearBackground,
   // This is only used by the Validator Table row which doesn't support the tailwind hover:
   "border-primary dark:border-indigo-900":
-    (isHoveringOverride && !clearBackground) || forceHoverBorder,
+    (isHoveringOverride && !clearBackground) || isPermanentSelected,
 });
 
 export const ValidatorCardWrapper = ({
@@ -48,6 +53,7 @@ export const ValidatorCardWrapper = ({
   className,
   clearBackground,
   isSelected,
+  isPermanentSelected,
   ...props
 }: ValidatorCardWrapperProps) => {
   const MotionComponent = motion[as];
@@ -60,6 +66,7 @@ export const ValidatorCardWrapper = ({
             clearBackground,
             onClick,
             isSelected,
+            isPermanentSelected,
           }),
         },
         className,

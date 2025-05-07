@@ -34,6 +34,10 @@ export const BCValidatorsForWithdrawAddressSchema = z.array(
   }),
 );
 
+export type BCValidatorsForWithdrawAddressType = z.infer<
+  typeof BCValidatorsForWithdrawAddressSchema
+>[0];
+
 export const BCValidatorsForWithdrawAddressResponseSchema =
   buildBeaconchainResponseSchema(BCValidatorsForWithdrawAddressSchema);
 
