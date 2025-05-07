@@ -37,25 +37,24 @@ const helpItems: HelpItem[] = [
     id: "withdrawal-speed",
     question: "Will it be faster to withdraw when I upgrade?",
     answer:
-      "You will certainly be able to partially withdraw your ETH faster. For example, if you have a 2048 ETH validator, withdrawing 2000 ETH from that will only take around 27 hours for the ETH to be back in your account if the queue is empty. Full exits will not change in time from the Pectra upgrade as they still have to be processed by the validator sweep clock. Read more here (Pier Two article).",
+      (<span>You will be able to partially withdraw your ETH faster after upgrading. For example, if you have a 2048 ETH validator, withdrawing 2000 ETH will take approximately 27 hours for the ETH to be back in your account if the queue is empty. Full exit processing times will not change as a result of the Pectra upgrade since they are subject to validator sweep clock.<a href="https://piertwo.com/insights/pectra-withdrawals-explained" target="_blank">{' '}Read more here.</a></span>),
   },
   {
     id: "single-validator-consolidation",
     question: "Can I consolidate a single validator to upgrade to Pectra?",
     answer:
-      "Yes you can consolidate a single validator into itself in order to upgrade it from 01 credential to an 0x02 credential. You will retain the same index and validator public key.",
+      "Yes you can consolidate a single validator into itself in order to upgrade it from 0x01 credential to an 0x02 credential. You will retain the same index and validator public key.",
   },
   {
     id: "consolidated-index",
     question: "What will my consolidated index be?",
     answer: (
       <p className="text-sm text-zinc-950 dark:text-zinc-50">
-        If you have an early index number that you&apos;re looking to preserve.
-        Users will be able to preserve the validator index of their favourite
+        Users are able to preserve the validator index of their favourite
         validator during consolidations, provided they have selected the public
         key or index value of the <span className="font-bold">target</span>{" "}
         validator as their favourite. Only the{" "}
-        <span className="font-bold">source</span> validator (if it is different
+        <span className="font-bold">source</span> validator(s) (if it is different
         from <span className="font-bold">target</span>) will be exited from the
         Beacon chain. Have no fear, your OG index will be preserved.
       </p>
@@ -66,14 +65,14 @@ const helpItems: HelpItem[] = [
     question:
       "Can I consolidate to a validator that is not connected to my withdrawal address?",
     answer:
-      "Yes you can. This will be made clear in the following consolidation flow. Please ensure that you are consolidating to the right validator, as if you input the index or validator key incorrectly that you wish to be your target validator you will not get that ETH back.",
+      "Yes you can. This will be made clear in the following consolidation flow. Please ensure that you are consolidating to the correct validator, as if you input the index or validator key incorrectly that you wish to be your target validator you will not get that ETH back.",
   },
   {
     id: "consolidate-pectra-validators",
     question:
       "Can I consolidate validators that have already been upgraded to Pectra validators?",
     answer:
-      "Yes you can. For example if you have a validator with 100 ETH, you can consolidate it to a validator with 900 ETH for a new validator of 1000 ETH.",
+      "Yes you can. For example if you have a validator with 100 ETH, you can consolidate it to a validator with 900 ETH for a combined staked balance of 1000 ETH.",
   },
   {
     id: "security-and-cost",
