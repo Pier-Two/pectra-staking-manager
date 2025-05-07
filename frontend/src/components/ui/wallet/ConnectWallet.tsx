@@ -113,8 +113,8 @@ export const ConnectWalletButton = ({
         onConnect={(wallet) => {
           trackEvent("connect_wallet");
           const address = wallet.getAccount()?.address;
-          console.log("address", address);
-          if (address) {
+
+          if (address && !hasConnectedAddresses.includes(address)) {
             addConnectedAddress(address);
             router.push("/validators-found");
           } else {
