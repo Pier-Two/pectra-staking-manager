@@ -36,8 +36,25 @@ const helpItems: HelpItem[] = [
   {
     id: "withdrawal-speed",
     question: "Will it be faster to withdraw when I upgrade?",
-    answer:
-      "You will certainly be able to partially withdraw your ETH faster. For example, if you have a 2048 ETH validator, withdrawing 2000 ETH from that will only take around 27 hours for the ETH to be back in your account if the queue is empty. Full exits will not change in time from the Pectra upgrade as they still have to be processed by the validator sweep clock. Read more here (Pier Two article).",
+    answer: (
+      <p className="text-sm text-zinc-950 dark:text-zinc-50">
+        You will certainly be able to partially withdraw your ETH faster. For
+        example, if you have a 2048 ETH validator, withdrawing 2000 ETH from
+        that will only take around 27 hours for the ETH to be back in your
+        account if the queue is empty. Full exits will not change in time from
+        the Pectra upgrade as they still have to be processed by the validator
+        sweep clock.{" "}
+        <a
+          href="https://piertwo.com/insights/pectra-withdrawals-explained"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-indigo-500 dark:text-indigo-300"
+        >
+          Read more here
+        </a>
+        .
+      </p>
+    ),
   },
   {
     id: "single-validator-consolidation",
