@@ -17,6 +17,7 @@ const config: NextConfig = {
 
 const withMDX = createMDX({
   extension: /\.(md|mdx)$/,
+  options: {},
 });
 
 export default withSentryConfig(withMDX(config), {

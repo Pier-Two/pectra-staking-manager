@@ -88,10 +88,10 @@ export const BottomBar: FC = () => {
           Privacy Policy
         </Link>
         <Link
-          href="/terms-of-service"
+          href="/terms-of-use"
           className="text-xs leading-[11px] text-zinc-950 dark:text-gray-300"
         >
-          Terms of Service
+          Terms of Use
         </Link>
         <div
           onClick={() => setCookieConsent(null)}
