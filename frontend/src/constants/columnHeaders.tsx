@@ -1,3 +1,10 @@
+import { Info } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "pec/components/ui/tooltip";
 import type { ValidatorDetails } from "pec/types/validator";
 import type {
   IHeaderConfig,
@@ -59,8 +66,47 @@ export const DASHBOARD_VALIDATOR_COLUMN_HEADERS: IHeaderConfig<ValidatorDetails>
     { label: "Active since", sortKey: "activeSince" },
     { label: "Credentials", sortKey: "withdrawalAddress", mobile: true },
     { label: "Status", sortKey: "status" },
-    { label: "Active balance", sortKey: "balance", mobile: true },
-    { label: "Pending balance", sortKey: "pendingBalance", mobile: true },
+    {
+      label: (
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger>
+              <div className="flex items-center gap-1">
+                Active balance
+                <Info className="h-4 w-4" />
+              </div>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Your current balance plus any pending withdrawals.</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      ),
+      sortKey: "balance",
+      mobile: true,
+    },
+    {
+      label: (
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger>
+              <div className="flex items-center gap-1">
+                Pending balance
+                <Info className="h-4 w-4" />
+              </div>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>
+                Your current balance including any pending deposits,
+                consolidations, and withdrawals.
+              </p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      ),
+      sortKey: "pendingBalance",
+      mobile: true,
+    },
   ];
 
 export const SIGN_DEPOSIT_COLUMN_HEADERS = [

@@ -57,8 +57,12 @@ export default async function RootLayout({
           type="image/webp"
         />
       </Head>
-      <Analytics />
-      <SpeedInsights />
+      {process.env.NODE_ENV === "production" && (
+        <>
+          <Analytics />
+          <SpeedInsights />
+        </>
+      )}
       <NetworkContextProvider>
         <TRPCReactProvider>
           <ThemeProvider
