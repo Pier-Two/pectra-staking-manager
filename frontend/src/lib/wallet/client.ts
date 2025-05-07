@@ -12,7 +12,4 @@ export const wallets = [
   createWallet("io.metamask"),
   createWallet("walletConnect"),
   createWallet("com.coinbase.wallet"),
-  createWallet("me.rainbow"),
-  createWallet("io.rabby"),
-  createWallet("io.zerion.wallet"),
 ];
