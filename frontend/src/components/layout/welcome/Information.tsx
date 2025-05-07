@@ -1,7 +1,7 @@
 "use client";
 
 import { GradientShield } from "./gradient-shield";
-import { EnterAnimation } from "pec/app/(login-layout)/welcome/_components/enter-animation";
+import { EnterAnimation } from "pec/app/_components/enter-animation";
 import { welcomeAnimationDelays } from "pec/constants/animationDelays";
 import { ClingableElement } from "pec/components/ui/clingable-element";
 

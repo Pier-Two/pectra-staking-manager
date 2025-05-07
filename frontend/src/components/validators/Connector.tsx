@@ -5,7 +5,7 @@ import { ConnectedAddress } from "./ConnectedAddress";
 import { DetectedValidators } from "./DetectedValidators";
 import { ValidatorHelp } from "./ValidatorHelp";
 import { ValidatorInformation } from "./ValidatorInformation";
-import { EnterAnimation } from "pec/app/(login-layout)/welcome/_components/enter-animation";
+import { EnterAnimation } from "pec/app/_components/enter-animation";
 
 export interface IConnector {
   title?: JSX.Element | string;

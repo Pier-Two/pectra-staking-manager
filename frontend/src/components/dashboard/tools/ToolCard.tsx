@@ -8,7 +8,7 @@ import { cn } from "pec/lib/utils";
 import { PrimaryButton } from "pec/components/ui/custom/PrimaryButton";
 import { EIconPosition } from "pec/types/components";
 import Link from "next/link";
-import { EnterAnimation } from "pec/app/(login-layout)/welcome/_components/enter-animation";
+import { EnterAnimation } from "pec/app/_components/enter-animation";
 import { dashboardAnimationDelays } from "pec/constants/animationDelays";
 type ToolCardProps = {
   preset: keyof typeof cardPresets;

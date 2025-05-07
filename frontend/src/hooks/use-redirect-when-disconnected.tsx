@@ -12,7 +12,7 @@ export const useRedirectWhenDisconnected = () => {
   // watch for disconnection and redirect to welcome page
   useEffect(() => {
     if (connectionStatus === "disconnected") {
-      router.push("/welcome");
+      router.push("/");
     }
   }, [connectionStatus, router]);
 };

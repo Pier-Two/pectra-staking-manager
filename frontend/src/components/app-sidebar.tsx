@@ -42,7 +42,7 @@ export function AppSidebar() {
     <Sidebar>
       <SidebarHeader>
         <a
-          href="/welcome"
+          href="/"
           className="flex flex-row items-center gap-4 hover:cursor-pointer"
         >
           <Image

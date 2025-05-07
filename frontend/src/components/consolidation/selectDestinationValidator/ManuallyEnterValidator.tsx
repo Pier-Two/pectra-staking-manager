@@ -17,7 +17,7 @@ import { api } from "pec/trpc/react";
 import { displayedEthAmount } from "pec/lib/utils/validators/balance";
 import { PrimaryButton } from "pec/components/ui/custom/PrimaryButton";
 import { type ValidatorDetails } from "pec/types/validator";
-import { EnterAnimation } from "pec/app/(login-layout)/welcome/_components/enter-animation";
+import { EnterAnimation } from "pec/app/_components/enter-animation";
 
 interface ManuallyEnterValidatorProps {
   goToSelectSourceValidators: (validator: ValidatorDetails) => void;
