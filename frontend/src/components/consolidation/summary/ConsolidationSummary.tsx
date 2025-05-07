@@ -12,14 +12,14 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 interface ConsolidationSummaryProps {
   goBack: () => void;
-  goToSubmit: () => void;
+  goToSubmit: (email: string) => void;
   reset: () => void;
+  setEmail: (email: string) => void;
   destinationValidator: ValidatorDetails;
   sourceValidators: ValidatorDetails[];
   upgradeTransactions: number;
   consolidationTransactions: number;
   email: string;
-  setEmail: (email: string) => void;
 }
 
 export const ConsolidationSummary = ({
@@ -30,8 +30,8 @@ export const ConsolidationSummary = ({
   goBack,
   goToSubmit,
   reset,
-  email,
   setEmail,
+  email,
 }: ConsolidationSummaryProps) => {
   const form = useForm<EmailFormData>({
     defaultValues: {
@@ -43,7 +43,7 @@ export const ConsolidationSummary = ({
 
   const onSubmit = form.handleSubmit((data) => {
     setEmail(data.email ?? "");
-    goToSubmit();
+    goToSubmit(data.email ?? "");
   });
 
   return (
