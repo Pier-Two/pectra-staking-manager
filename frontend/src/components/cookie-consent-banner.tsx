@@ -55,7 +55,7 @@ export const CookieConsentBanner = ({ region }: { region: string | null }) => {
   console.log({ cookieConsent, hasMounted: hasMounted.current });
 
   // don't render anything if the user has rejected cookies or if the component has not mounted (to avoid SSR)
-  if (cookieConsent === false || shouldRender) {
+  if (cookieConsent === false || !shouldRender) {
     return null;
   }
 
