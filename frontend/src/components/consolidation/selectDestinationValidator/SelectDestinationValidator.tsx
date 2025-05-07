@@ -23,7 +23,7 @@ export const SelectDestinationValidator = ({
 
   return (
     <div className="space-y-6">
-      <div className="text-2xl font-medium">Taget Validator</div>
+      <div className="text-2xl font-medium">Target Validator</div>
       <div className="text-base">
         Your target validator will receive all staked ETH from source validators
         and be updated to the new Pectra standard (0x02).
