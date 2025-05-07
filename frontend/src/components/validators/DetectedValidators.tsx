@@ -63,7 +63,7 @@ export const DetectedValidators: FC<IDetectedValidators> = (props) => {
 
           <div className="flex items-center gap-x-4">
             <div className="flex items-center gap-1">
-              <p className="text-[14px] font-570 leading-[14px] text-zinc-950 dark:text-zinc-50">
+              <p className="whitespace-nowrap text-[14px] font-570 leading-[14px] text-zinc-950 dark:text-zinc-50">
                 Ξ {displayedEthAmount(totalBalance)}
               </p>
             </div>
