@@ -2,7 +2,10 @@ import { type SupportedNetworkIds } from "pec/constants/chain";
 import { type BCValidatorDetails } from "pec/lib/api/schemas/beaconchain/validator";
 import { getValidatorActiveInfo } from "pec/lib/utils/validators/activity";
 import { getValidatorStatus } from "pec/lib/utils/validators/status";
-import { type ValidatorDetails } from "pec/types/validator";
+import {
+  ValidatorLifecycleStatus,
+  type ValidatorDetails,
+} from "pec/types/validator";
 
 export const prePopulateBeaconchainValidatorResponse = (
   rawValidatorDetails: BCValidatorDetails,
@@ -20,7 +23,9 @@ export const prePopulateBeaconchainValidatorResponse = (
     balance: rawValidatorDetails.balance / 10 ** 9,
     pendingBalance: rawValidatorDetails.balance / 10 ** 9,
     effectiveBalance: rawValidatorDetails.effectivebalance / 10 ** 9,
-    status: getValidatorStatus(rawValidatorDetails.status),
+    status: getValidatorStatus(
+      rawValidatorDetails.status as ValidatorLifecycleStatus,
+    ),
     numberOfWithdrawals: rawValidatorDetails.total_withdrawals,
     activeSince,
     activeDuration,
