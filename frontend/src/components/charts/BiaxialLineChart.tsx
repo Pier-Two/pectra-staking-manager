@@ -108,16 +108,7 @@ export const BiaxialLineChartComponent = ({ chart }: IBiaxialLineChart) => {
           dot={false}
         />
 
-        <ChartTooltip
-          cursor={false}
-          content={
-            <ChartTooltipContent
-              className="rounded-xl border border-gray-200 bg-white p-4 text-black dark:border-gray-800 dark:bg-gray-900 dark:text-white"
-              labelFormatter={(value: string) => value}
-              indicator="dot"
-            />
-          }
-        />
+        <ChartTooltip content={<ChartTooltipContent />} />
 
         <ChartLegend
           className={cn(showXLabel ? "mt-4" : "", "ml-8")}

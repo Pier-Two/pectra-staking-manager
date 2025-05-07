@@ -90,16 +90,7 @@ export const AreaChartComponent: FC<IAreaChart> = ({ chart }) => {
           )}
         </YAxis>
 
-        <ChartTooltip
-          cursor={false}
-          content={
-            <ChartTooltipContent
-              className="rounded-xl border border-gray-200 bg-white p-4 text-black dark:border-gray-800 dark:bg-gray-900 dark:text-white"
-              labelFormatter={(value: string) => value}
-              indicator="dot"
-            />
-          }
-        />
+        <ChartTooltip content={<ChartTooltipContent />} />
 
         <Area
           dataKey="merge"
