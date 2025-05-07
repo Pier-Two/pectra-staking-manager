@@ -46,8 +46,8 @@ export default async function RootLayout({
   console.log(`User is from ${region}`);
   console.log(
     euCountryISOCodes.includes(region?.toUpperCase() ?? "")
-      ? "Enabling Google Analytics"
-      : "Not enabling Google Analytics",
+      ? "Not enabling Google Analytics"
+      : "Enabling Google Analytics",
   );
 
   return (
