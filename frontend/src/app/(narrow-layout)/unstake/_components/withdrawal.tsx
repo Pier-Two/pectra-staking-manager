@@ -125,6 +125,7 @@ const Withdrawal = () => {
             resetWithdrawal={handleResetWithdrawal}
             stage={stage}
             validatorsSelected={withdrawals.length}
+            numValidators={activeType2Validators.length}
             withdrawalTotal={withdrawalTotal}
           />
         </div>

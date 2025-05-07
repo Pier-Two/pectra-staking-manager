@@ -7,6 +7,9 @@ import { PectraSpinner } from "../ui/custom/pectraSpinner";
 import { PrimaryButton } from "../ui/custom/PrimaryButton";
 import { SecondaryButton } from "../ui/custom/SecondaryButton";
 import { Separator } from "../ui/separator";
+import { cn } from "pec/lib/utils";
+import { useFormContext } from "react-hook-form";
+import { FormWithdrawalType } from "pec/lib/api/schemas/withdrawal";
 
 export interface IWithdrawalInformation {
   buttonText: string;
@@ -17,6 +20,7 @@ export interface IWithdrawalInformation {
   stage: WithdrawWorkflowStages;
   validatorsSelected: number;
   withdrawalTotal: number;
+  numValidators: number;
 }
 
 export const WithdrawalInformation = ({
@@ -28,6 +32,7 @@ export const WithdrawalInformation = ({
   stage,
   validatorsSelected,
   withdrawalTotal,
+  numValidators,
 }: IWithdrawalInformation) => {
   const distributionStats = [
     {
@@ -67,6 +72,22 @@ export const WithdrawalInformation = ({
     stage.type === "sign-submit-finalise" &&
     Object.values(stage.txHashes).every(
       (tx) => tx.status === "finalised" || tx.status === "failed",
+    );
+
+  const { watch, resetField } = useFormContext<FormWithdrawalType>();
+
+  const withdrawals = watch("withdrawals");
+
+  const isMaxPartialWithdrawal =
+    withdrawals.length === numValidators &&
+    withdrawals.every(
+      (withdrawal) => withdrawal.amount === withdrawal.validator.balance - 32,
+    );
+
+  const isMaxFullExit =
+    withdrawals.length === numValidators &&
+    withdrawals.every(
+      (withdrawal) => withdrawal.amount === withdrawal.validator.balance,
     );
 
   return (
@@ -136,18 +157,32 @@ export const WithdrawalInformation = ({
           <div className="relative flex flex-col gap-2">
             <div className="flex flex-row gap-2">
               <SecondaryButton
-                className="flex-1"
+                className={cn("flex-1", {
+                  "bg-indigo-500 text-white hover:bg-indigo-500 hover:text-white":
+                    isMaxPartialWithdrawal,
+                })}
                 label="Max Partial Withdrawal"
                 disabled={false}
                 onClick={() => {
+                  if (isMaxPartialWithdrawal) {
+                    resetField("withdrawals");
+                    return;
+                  }
                   handleMaxAllocation("partial");
                 }}
               />
               <SecondaryButton
-                className="flex-1 text-red-500 hover:text-red-500"
+                className={cn("flex-1 text-red-500 hover:text-red-500", {
+                  "bg-red-500 text-white hover:bg-red-500 hover:text-white":
+                    isMaxFullExit,
+                })}
                 label="Max Full Exit"
                 disabled={false}
                 onClick={() => {
+                  if (isMaxFullExit) {
+                    resetField("withdrawals");
+                    return;
+                  }
                   handleMaxAllocation("full");
                 }}
               />
