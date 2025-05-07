@@ -152,7 +152,7 @@ export const CustomCursor = () => {
         width,
         height,
         borderRadius,
-        filter: "blur(16px)",
+        filter: "blur(8px) drop-shadow(0 0 8px rgba(255,255,255,0.5))",
       }}
       transition={{
         type: "spring",
