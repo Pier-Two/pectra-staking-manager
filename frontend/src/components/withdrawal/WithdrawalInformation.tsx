@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { Check } from "lucide-react";
+import { AlertTriangle, Check } from "lucide-react";
 import Image from "next/image";
 import { displayedEthAmount } from "pec/lib/utils/validators/balance";
 import type { WithdrawWorkflowStages } from "pec/types/withdraw";
@@ -90,6 +90,10 @@ export const WithdrawalInformation = ({
       (withdrawal) => withdrawal.amount === withdrawal.validator.balance,
     );
 
+  const numFullExiting = withdrawals.filter(
+    (withdrawal) => withdrawal.amount === withdrawal.validator.balance,
+  ).length;
+
   return (
     <div className="flex w-full flex-col gap-4 rounded-2xl border border-border bg-white p-4 dark:border-gray-800 dark:bg-black">
       <div className="flex w-full flex-col gap-4">
@@ -127,6 +131,12 @@ export const WithdrawalInformation = ({
                 </div>
               </div>
             ))}
+            {numFullExiting > 0 && (
+              <div className="flex flex-row items-center gap-2 text-sm text-orange-500">
+                <AlertTriangle className="h-5 w-5" />
+                Exiting {numFullExiting} validators
+              </div>
+            )}
           </div>
           {(isSigning || isSubmitting || isPending) &&
             !allTransactionsFinalised && (
