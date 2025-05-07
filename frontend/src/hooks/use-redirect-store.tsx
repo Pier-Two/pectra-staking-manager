@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import { persist, createJSONStorage } from "zustand/middleware";
 
 export const useRedirectStore = create<{
   hasConnectedAddresses: string[];
@@ -15,6 +15,7 @@ export const useRedirectStore = create<{
     }),
     {
       name: "redirect",
+      storage: createJSONStorage(() => localStorage),
     },
   ),
 );
