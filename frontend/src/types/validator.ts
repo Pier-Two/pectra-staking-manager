@@ -27,7 +27,6 @@ export interface ISourceValidatorCard {
 export enum ValidatorStatus {
   ACTIVE = "Active",
   PENDING = "Pending",
-  INACTIVE = "Inactive",
   EXITED = "Exited",
 }
 
