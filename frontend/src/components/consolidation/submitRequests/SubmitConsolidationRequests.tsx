@@ -1,30 +1,40 @@
-"use client";
-
 import { useRouter } from "next/navigation";
-import { TransactionValidatorCard } from "pec/components/validators/cards/TransactionValidatorCard";
-import { TransactionStatus } from "pec/types/validator";
-import { ArrowRightIcon } from "lucide-react";
+import { type ValidatorDetails } from "pec/types/validator";
+import { ArrowRightIcon, CircleCheck, OctagonMinus } from "lucide-react";
 import { PrimaryButton } from "pec/components/ui/custom/PrimaryButton";
 import { EIconPosition } from "pec/types/components";
-import { useConsolidationStore } from "pec/hooks/use-consolidation-store";
+import { ValidatorTable } from "pec/components/ui/table/ValidatorTable";
+import {
+  SUBMITTING_CONSOLIDATION_TABLE_HEADERS,
+  type SubmittingConsolidationValidatorDetails,
+} from "pec/constants/columnHeaders";
+import { ValidatorCardWrapper } from "pec/components/ui/custom/validator-card-wrapper";
+import { ValidatorIndex } from "pec/components/ui/table/TableComponents";
+import { PectraSpinner } from "pec/components/ui/custom/pectraSpinner";
+import { Separator } from "@radix-ui/react-separator";
 
-export const SubmitConsolidationRequests = () => {
-  const {
-    consolidationTarget,
-    validatorsToConsolidate,
-    reset,
-  } = useConsolidationStore();
+interface SubmitConsolidationRequestsProps {
+  destination: ValidatorDetails;
+  transactions: SubmittingConsolidationValidatorDetails[];
+  upgradeTransactions: number;
+  consolidationTransactions: number;
+}
 
+export const SubmitConsolidationRequests = ({
+  destination,
+  transactions,
+  upgradeTransactions,
+  consolidationTransactions,
+}: SubmitConsolidationRequestsProps) => {
   const router = useRouter();
 
-  const everyTransactionSubmitted = validatorsToConsolidate.every(
+  const everyTransactionSubmitted = transactions.every(
     (validator) =>
-      validator.consolidationTransaction?.status ===
-      TransactionStatus.SUBMITTED,
+      validator.transactionStatus.status !== "pending" &&
+      validator.transactionStatus.status !== "signing",
   );
 
   const handleDashboardNavigation = () => {
-    reset();
     router.push("/dashboard");
   };
 
@@ -37,7 +47,7 @@ export const SubmitConsolidationRequests = () => {
             : "Submit Consolidation Requests"}
         </div>
 
-        <div className="text-sm text-gray-700 dark:text-gray-300">
+        <div className="text-base">
           {everyTransactionSubmitted
             ? "Your requests have all been submitted onchain. Please allow up to 24h for your request to be processed."
             : "Sign each transaction to process your request."}
@@ -54,24 +64,56 @@ export const SubmitConsolidationRequests = () => {
           />
         )}
 
-        <div className="flex flex-col gap-2">
-          <div className="text-d font-medium">Destination validator</div>
-          <TransactionValidatorCard
-            validator={consolidationTarget!}
-            isTarget={true}
-          />
-        </div>
-
-        <div className="flex flex-col gap-2">
-          <div className="text-md font-medium">Source validators</div>
-
-          {validatorsToConsolidate.map((validator) => (
-            <TransactionValidatorCard
-              key={validator.validatorIndex}
-              validator={validator}
+        <ValidatorCardWrapper isSelected>
+          <div className="flex items-center gap-1">
+            <ValidatorIndex validator={destination} />
+            <Separator
+              className="mx-5 h-12 w-[2px] bg-gray-200 dark:bg-gray-800"
+              orientation="vertical"
             />
-          ))}
-        </div>
+            <div className="flex flex-col gap-1">
+              {upgradeTransactions > 0 && (
+                <span>
+                  <b>{upgradeTransactions}</b> Upgrade(s)
+                </span>
+              )}
+              <span>
+                <b>{consolidationTransactions}</b> Consolidation(s)
+              </span>
+            </div>
+          </div>
+          {!everyTransactionSubmitted && <PectraSpinner />}
+        </ValidatorCardWrapper>
+
+        <ValidatorTable
+          headers={SUBMITTING_CONSOLIDATION_TABLE_HEADERS}
+          data={transactions}
+          wrapperProps={{ clearBackground: true }}
+          getKey={(validator) =>
+            `${validator.publicKey}-${validator.consolidationType}`
+          }
+          disableSort
+          disablePagination
+          renderOverrides={{
+            consolidationType: (data) => {
+              if (data.consolidationType === "upgrade") {
+                return (
+                  <div className="flex items-center gap-1 text-xs">
+                    <OctagonMinus className="h-4 w-4" />
+                    Upgrade
+                  </div>
+                );
+              }
+
+              return (
+                <div className="flex items-center gap-1 text-xs">
+                  <CircleCheck className="h-4 w-4 fill-green-500 text-white dark:text-black" />
+                  Consolidation
+                </div>
+              );
+            },
+          }}
+        />
       </div>
     </div>
   );

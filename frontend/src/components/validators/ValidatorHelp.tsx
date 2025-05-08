@@ -1,86 +1,136 @@
 "use client";
 
-import { HiOutlineChevronDown, HiOutlineChevronUp } from "react-icons/hi";
-import { type FC, useState } from "react";
-import { Button } from "../ui/button";
-import { Separator } from "../ui/separator";
+import { type FC } from "react";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "../ui/accordion";
+
+const CustomAccordionContent = ({ text }: { text: string | JSX.Element }) => {
+  return (
+    <AccordionContent>
+      {typeof text === "string" ? (
+        <p className="text-sm text-zinc-950 dark:text-zinc-50">{text}</p>
+      ) : (
+        text
+      )}
+    </AccordionContent>
+  );
+};
+
+type HelpItem = {
+  id: string;
+  question: string;
+  answer: string | JSX.Element;
+};
+
+const helpItems: HelpItem[] = [
+  {
+    id: "auto-compounding-strategy",
+    question: "How do I achieve an auto-compounding strategy?",
+    answer:
+      "In order to auto-compound your validator staking rewards, you need to upgrade your validator to a Pectra validator. Stake less than the 2048 ETH limit so that consensus layer rewards will auto-compound to your Pectra (0x02) validator. Any rewards above 2048 ETH will be automatically sent back to your withdrawal address.",
+  },
+  {
+    id: "withdrawal-speed",
+    question: "Will it be faster to withdraw when I upgrade?",
+    answer: (
+      <p className="text-sm text-zinc-950 dark:text-zinc-50">
+        You will be able to partially withdraw your ETH faster after upgrading.
+        For example, if you have a 2048 ETH validator, withdrawing 2000 ETH will
+        take approximately 27 hours for the ETH to be back in your account if
+        the queue is empty. Full exit processing times will not change as a
+        result of the Pectra upgrade since they are subject to validator sweep
+        clock.{" "}
+        <a
+          href="https://piertwo.com/insights/pectra-withdrawals-explained"
+          target="_blank"
+          className="text-indigo-500 dark:text-indigo-300"
+        >
+          Read more here.
+        </a>
+        or use{" "}
+        <a
+          href="https://withdrawals.piertwo.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-indigo-500 dark:text-indigo-300"
+        >
+          this tool
+        </a>
+        to estimate withdrawal times
+        .
+      </p>
+    ),
+  },
+  {
+    id: "single-validator-consolidation",
+    question: "Can I consolidate a single validator to upgrade to Pectra?",
+    answer:
+      "Yes you can consolidate a single validator into itself in order to upgrade it from 0x01 credential to an 0x02 credential. You will retain the same index and validator public key.",
+  },
+  {
+    id: "consolidated-index",
+    question: "What will my consolidated index be?",
+    answer: (
+      <p className="text-sm text-zinc-950 dark:text-zinc-50">
+        Users are able to preserve the validator index of their favourite
+        validator during consolidations, provided they have selected the public
+        key or index value of the <span className="font-bold">target</span>{" "}
+        validator as their favourite. Only the{" "}
+        <span className="font-bold">source</span> validator(s) (if it is
+        different from <span className="font-bold">target</span>) will be exited
+        from the Beacon chain. Have no fear, your OG index will be preserved.
+      </p>
+    ),
+  },
+  {
+    id: "different-withdrawal-address",
+    question:
+      "Can I consolidate to a validator that is not connected to my withdrawal address?",
+    answer:
+      "Yes you can. This will be made clear in the following consolidation flow. Please ensure that you are consolidating to the correct validator, as if you input the index or validator key incorrectly that you wish to be your target validator you will not get that ETH back.",
+  },
+  {
+    id: "consolidate-pectra-validators",
+    question:
+      "Can I consolidate validators that have already been upgraded to Pectra validators?",
+    answer:
+      "Yes you can. For example if you have a validator with 100 ETH, you can consolidate it to a validator with 900 ETH for a combined staked balance of 1000 ETH.",
+  },
+  {
+    id: "security-and-cost",
+    question: "Is this free to use and secure?",
+    answer:
+      "Yes! This app is purely to serve the Ethereum ecosystem and there are no beneficiaries of your actions other than you and the Ethereum Network. The app does not connect with your validator keys, only your withdrawal address and web3 wallet. The batch deposit contract for top-ups has been audited by Hashlock as well.",
+  },
+];
 
 export const ValidatorHelp: FC = () => {
-  const [openWhatIs, setOpenWhatIs] = useState(false);
-  const [openWhyConsolidate, setOpenWhyConsolidate] = useState(false);
-  const [openNewFeatures, setOpenNewFeatures] = useState(false);
-
   return (
-    <div className="flex w-full flex-col rounded-lg border border-border bg-white px-4 text-sm dark:border-gray-800 dark:bg-black">
-      <div
-        className="flex h-[52px] items-center justify-between hover:cursor-pointer"
-        onClick={() => setOpenWhatIs(!openWhatIs)}
-      >
-        <p className="font-570 text-[13px] text-zinc-950 dark:text-zinc-50">
-          What is validator consolidation?
-        </p>
-        <Button variant="ghost" size="icon">
-          {openWhatIs ? <HiOutlineChevronUp /> : <HiOutlineChevronDown />}
-        </Button>
-      </div>
-
-      {openWhatIs && (
-        <p className="pb-4 text-[12px] leading-[14px] text-zinc-950 dark:text-zinc-50">
-          Validator consolidation is the process of combining multiple
-          validators into a single validator.
-        </p>
-      )}
-
-      <Separator className="bg-border dark:bg-gray-800" />
-
-      <div
-        className="flex h-[52px] items-center justify-between hover:cursor-pointer"
-        onClick={() => setOpenWhyConsolidate(!openWhyConsolidate)}
-      >
-        <p className="font-570 text-[13px] text-zinc-950 dark:text-zinc-50">
-          Why should I consolidate?
-        </p>
-        <Button variant="ghost" size="icon">
-          {openWhyConsolidate ? (
-            <HiOutlineChevronUp />
-          ) : (
-            <HiOutlineChevronDown />
-          )}
-        </Button>
-      </div>
-
-      {openWhyConsolidate && (
-        <p className="pb-4 text-[12px] leading-[14px] text-zinc-950 dark:text-zinc-50">
-          Consolidating your validators allows you to take advantage of enhanced
-          staking features.
-        </p>
-      )}
-
-      <Separator className="bg-border dark:bg-gray-800" />
-
-      <div
-        className="flex h-[52px] items-center justify-between hover:cursor-pointer"
-        onClick={() => setOpenNewFeatures(!openNewFeatures)}
-      >
-        <p className="font-570 text-[13px] text-zinc-950 dark:text-zinc-50">
-          What new staking features does consolidating enable?
-        </p>
-
-        <Button variant="ghost" size="icon">
-          {openNewFeatures ? <HiOutlineChevronUp /> : <HiOutlineChevronDown />}
-        </Button>
-      </div>
-
-      {openNewFeatures && (
-        <p className="break-words pb-4 text-[12px] leading-[14px] text-zinc-950 dark:text-zinc-50">
-          Allows Ethereum validators to increase their maximum effective balance
-          from 32 ETH to 2,048 ETH. This enhancement enables validators to
-          combine multiple smaller stakes into a single larger one, simplifying
-          management and reducing operational overhead. Additionally, it
-          facilitates reward compounding, as higher balances accrue staking
-          rewards more efficiently.
-        </p>
-      )}
-    </div>
+    <Accordion
+      type="single"
+      collapsible
+      className="flex w-full flex-col rounded-xl border border-zinc-200 bg-white px-4 text-left text-sm dark:border-gray-800 dark:bg-black"
+    >
+      {helpItems.map((item) => (
+        <AccordionItem
+          key={item.id}
+          value={item.id}
+          className={
+            item.id === helpItems[helpItems.length - 1]?.id
+              ? "border-none"
+              : "dark:border-gray-800"
+          }
+        >
+          <AccordionTrigger className="text-left hover:no-underline">
+            {item.question}
+          </AccordionTrigger>
+          <CustomAccordionContent text={item.answer} />
+        </AccordionItem>
+      ))}
+    </Accordion>
   );
 };

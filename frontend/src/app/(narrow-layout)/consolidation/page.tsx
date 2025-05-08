@@ -1,63 +1,11 @@
-"use client";
+import type { Metadata } from "next";
+import ConsolidationWorkflow from "./_components/consolidation-workflow";
+import { title } from "pec/constants/metadata";
 
-import { ProgressBar } from "pec/components/consolidation/ProgressBar";
-import { SelectDestinationValidator } from "pec/components/consolidation/selectDestinationValidator/SelectDestinationValidator";
-import { SelectSourceValidators } from "pec/components/consolidation/selectSourceValidators/SelectSourceValidators";
-import { SubmitConsolidationRequests } from "pec/components/consolidation/submitRequests/SubmitConsolidationRequests";
-import { ConsolidationSummary } from "pec/components/consolidation/summary/ConsolidationSummary";
-import { useConsolidationStore } from "pec/hooks/use-consolidation-store";
-import { useValidators } from "pec/hooks/useValidators";
-import { useWalletAddress } from "pec/hooks/useWallet";
-import ConsolidationLoading from "../consolidate/loading";
-import { useEffect } from "react";
-
-const ConsolidationWorkflow = () => {
-  const walletAddress = useWalletAddress();
-
-  const { data, isFetched } = useValidators();
-
-  const {
-    validatorsToConsolidate,
-    consolidationTarget,
-    progress,
-    setProgress,
-    reset,
-  } = useConsolidationStore();
-
-  useEffect(() => {
-    return () => reset();
-  }, [reset]);
-
-  if (!walletAddress || !data || !isFetched) {
-    return (
-      <div className="flex flex-col gap-4">
-        <ProgressBar progress={progress} setProgress={setProgress} />
-        <ConsolidationLoading />
-      </div>
-    );
-  }
-
-  return (
-    <div className="flex w-[90vw] flex-col gap-4 md:w-[42vw]">
-      <ProgressBar progress={progress} setProgress={setProgress} />
-
-      {progress === 1 && <SelectDestinationValidator />}
-
-      {consolidationTarget && (
-        <>
-          {progress === 2 && <SelectSourceValidators />}
-
-          {validatorsToConsolidate.length > 0 && progress === 3 && (
-            <ConsolidationSummary />
-          )}
-
-          {validatorsToConsolidate.length > 0 && progress === 4 && (
-            <SubmitConsolidationRequests />
-          )}
-        </>
-      )}
-    </div>
-  );
+export const metadata: Metadata = {
+  title: title("Consolidation"),
 };
 
-export default ConsolidationWorkflow;
+export default function ConsolidationPage() {
+  return <ConsolidationWorkflow />;
+}

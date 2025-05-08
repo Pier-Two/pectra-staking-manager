@@ -1,59 +1,60 @@
 "use client";
 
-import { useValidatorTable } from "pec/hooks/useValidatorTable";
-import type { IGenericValidators } from "pec/types/validator";
-import type { FC } from "react";
-import { TableContent } from "./TableContent";
+import { ValidatorTable } from "pec/components/ui/table/ValidatorTable";
+import { DASHBOARD_VALIDATOR_COLUMN_HEADERS } from "pec/constants/columnHeaders";
+import { useDashboardValidatorTable } from "pec/hooks/useDashboardValidatorTable";
+import { ValidatorRowEndContent } from "./TableComponents";
 import { TableFilters } from "./TableFilters";
-import { TablePagination } from "./TablePagination";
+import { DisplayAmount } from "pec/components/ui/table/TableComponents";
 
-export const ValidatorTable: FC<IGenericValidators> = (props) => {
-  const { validators } = props;
+export const DashboardValidatorTable = () => {
   const {
     searchTerm,
     statusFilter,
-    filterTableOptions,
-    currentPage,
-    sortConfig,
     filteredData,
-    paginatedData,
-    totalPages,
-    handleSort,
     handleStatusFilterChange,
     handleSearchChange,
-    handlePageChange,
-    handleFilterTableOptionsChange,
     getValidatorCount,
-  } = useValidatorTable(validators);
-
-  const itemsPerPage = 10;
+    isLoading,
+  } = useDashboardValidatorTable();
 
   return (
-    <div className="space-y-6">
-      <TableFilters
-        searchTerm={searchTerm}
-        onSearchChange={handleSearchChange}
-        statusFilter={statusFilter}
-        onStatusFilterChange={handleStatusFilterChange}
-        filterTableOptions={filterTableOptions}
-        onFilterTableOptionsChange={handleFilterTableOptionsChange}
-        getValidatorCount={getValidatorCount}
-      />
-
-      <TableContent
-        paginatedData={paginatedData}
-        sortConfig={sortConfig}
-        onSort={handleSort}
-        filterTableOptions={filterTableOptions}
-      />
-
-      <TablePagination
-        currentPage={currentPage}
-        totalPages={totalPages}
-        totalItems={filteredData.length}
-        itemsPerPage={itemsPerPage}
-        onPageChange={handlePageChange}
-      />
-    </div>
+    <ValidatorTable
+      data={filteredData}
+      headers={DASHBOARD_VALIDATOR_COLUMN_HEADERS}
+      endContent={(validator) => (
+        <ValidatorRowEndContent validator={validator} />
+      )}
+      wrapperProps={{
+        clearBackground: true,
+      }}
+      // We disable search here because we have a custom search component here
+      disableSearch
+      isLoading={isLoading}
+      renderOverrides={{
+        pendingBalance: (v) => (
+          <DisplayAmount
+            amount={v.pendingBalance}
+            className="text-gray-500 dark:text-gray-500"
+          />
+        ),
+      }}
+    >
+      {({ setCurrentPage }) => (
+        <TableFilters
+          searchTerm={searchTerm}
+          onSearchChange={(term) => {
+            handleSearchChange(term);
+            setCurrentPage(1);
+          }}
+          statusFilter={statusFilter}
+          onStatusFilterChange={(status) => {
+            handleStatusFilterChange(status);
+            setCurrentPage(1);
+          }}
+          getValidatorCount={getValidatorCount}
+        />
+      )}
+    </ValidatorTable>
   );
 };

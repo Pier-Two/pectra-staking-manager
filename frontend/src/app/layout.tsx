@@ -1,42 +1,82 @@
 import { type Metadata } from "next";
+import { Inter } from "next/font/google";
+import localFont from "next/font/local";
 import { AppSidebar } from "pec/components/app-sidebar";
 import { SidebarProvider } from "pec/components/ui/sidebar";
 import { Toaster } from "pec/components/ui/sonner";
 import { NetworkContextProvider } from "pec/contexts/NetworkContext";
-import { ThemeProvider } from "pec/contexts/ThemeContext";
 import { cn } from "pec/lib/utils";
 import "pec/styles/globals.css";
 import { TRPCReactProvider } from "pec/trpc/react";
-import { Inter } from "next/font/google";
-import localFont from "next/font/local";
+import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/next";
+import { ThemeProvider } from "pec/components/theme-provider";
+import { headers } from "next/headers";
+import { CookieConsentBanner } from "pec/components/cookie-consent-banner";
 
-export const saans = localFont({
+const sans = localFont({
   src: "../fonts/Saans-TRIAL-VF.woff2",
-  variable: "--font-saans",
+  variable: "--font-sans",
   display: "swap",
 });
 
-export const inter = Inter({
+const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
   display: "swap",
 });
 
 export const metadata: Metadata = {
-  title: "Pectra Staking Management",
-  description: "Pectra Staking Management",
-  icons: [{ rel: "icon", url: "/favicon.svg" }],
+  title: "Pectra Staking Manager: This is the Future of Ethereum Staking",
+  description:
+    "Take control of your validators with the Pectra upgrade! Upgrade to Pextra (0x02), and consolidate multiple validators for easier management, perform batch top-ups to the new max value from 32ETH to 2048ETH, perform withdraws, and monitor the adoption of Pectra via our charts.",
+  keywords: ["Pectra", "Staking", "Manager", "Ethereum", "Validator"],
+  openGraph: {
+    siteName: "Pectra Staking Manager",
+  },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  const region = (await headers()).get("x-vercel-ip-country");
+
   return (
-    <html lang="en" className={cn(saans.variable, inter.variable)}>
-      <NetworkContextProvider>
-        <TRPCReactProvider>
-          <ThemeProvider>
-            <body>
+    <NetworkContextProvider>
+      <TRPCReactProvider>
+        <html
+          lang="en"
+          className={cn(sans.variable, inter.variable)}
+          suppressHydrationWarning
+        >
+          <head>
+            <link
+              rel="preload"
+              href="/cards/backgrounds/WorkflowOption.webp"
+              as="image"
+              type="image/webp"
+            />
+            {process.env.NODE_ENV === "production" && (
+              <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{
+                  __html: JSON.stringify({
+                    "@context": "https://schema.org",
+                    "@type": "WebSite",
+                    name: "Pectra Staking Manager",
+                    url: "https://pectrastaking.com/",
+                  }),
+                }}
+              />
+            )}
+          </head>
+          <body className="bg-indigo-50 dark:bg-gray-950">
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="system"
+              enableSystem
+              disableTransitionOnChange
+            >
               <SidebarProvider>
                 <div className="md:hidden">
                   <AppSidebar />
@@ -44,10 +84,17 @@ export default function RootLayout({
                 <main>{children}</main>
               </SidebarProvider>
               <Toaster />
-            </body>
-          </ThemeProvider>
-        </TRPCReactProvider>
-      </NetworkContextProvider>
-    </html>
+              <CookieConsentBanner region={region} />
+              {process.env.NODE_ENV === "production" && (
+                <>
+                  <Analytics />
+                  <SpeedInsights />
+                </>
+              )}
+            </ThemeProvider>
+          </body>
+        </html>
+      </TRPCReactProvider>
+    </NetworkContextProvider>
   );
 }

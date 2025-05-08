@@ -7,15 +7,17 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "pec/components/ui/chart";
-import { useTheme } from "pec/hooks/useTheme";
+import { useIsMobile } from "pec/hooks/use-mobile";
+
 import { cn } from "pec/lib/utils";
 import type { IAreaChart } from "pec/types/chart";
 import type { FC } from "react";
 import { Area, AreaChart, CartesianGrid, Label, XAxis, YAxis } from "recharts";
+import { formatTick } from "./formatTick";
 
 const chartConfig = {
   pectra: {
-    label: "0x02 (Pectra)",
+    label: "Type 2 (Pectra)",
     color: "hsl(var(--chart-3))",
   },
   shapella: {
@@ -28,15 +30,13 @@ const chartConfig = {
   },
 };
 
-export const AreaChartComponent: FC<IAreaChart> = ({ chart, isFullscreen }) => {
+export const AreaChartComponent: FC<IAreaChart> = ({ chart }) => {
   const { chartData, yAxis, legend, xAxis } = chart;
   const {
-    lowerRange,
-    upperRange,
-    ticks,
     label: yLabel,
     showLabel: showYLabel,
     orientation: yOrientation,
+    width: yWidth,
   } = yAxis;
 
   const {
@@ -45,91 +45,12 @@ export const AreaChartComponent: FC<IAreaChart> = ({ chart, isFullscreen }) => {
     orientation: xOrientation,
   } = xAxis;
 
-  const { darkMode } = useTheme();
-
-  const axisTextStyle = {
-    stroke: darkMode ? "#e3e3e3" : "#a1a1a1",
-    fontSize: "11px",
-    fontWeight: 180,
-  };
-
-  const formatTick = (value: number): string => {
-    const abs = Math.abs(value);
-    const format = (val: number, suffix: string) =>
-      parseFloat(val.toFixed(2)).toString() + suffix;
-
-    if (abs >= 1e12) return format(value / 1e12, "t");
-    if (abs >= 1e9) return format(value / 1e9, "bn");
-    if (abs >= 1e6) return format(value / 1e6, "m");
-    if (abs >= 1e3) return format(value / 1e3, "k");
-    if (abs === 0) return "0";
-
-    if (abs < 100 && abs > 0.1) return value.toFixed(4);
-    return value.toFixed(2);
-  };
-
   return (
     <ChartContainer
-      className={cn(
-        "mx-auto w-full max-w-[800px]",
-        isFullscreen && "max-w-none",
-      )}
+      className="aspect-auto h-full w-full flex-1"
       config={chartConfig}
     >
-      <AreaChart
-        data={chartData}
-        margin={{ top: 10, right: 50, left: 10, bottom: isFullscreen ? 200 : 10 }}
-        width={
-          typeof window !== "undefined"
-            ? isFullscreen
-              ? window.innerWidth - 40
-              : Math.min(window.innerWidth - 40, 800)
-            : 800
-        }
-        height={isFullscreen ? 400 : 300}
-        className="w-full"
-      >
-        <defs>
-          <linearGradient id="fillPectra" x1="0" y1="0" x2="0" y2="1">
-            <stop
-              offset="5%"
-              stopColor={chartConfig.pectra.color}
-              stopOpacity={0.8}
-            />
-            <stop
-              offset="95%"
-              stopColor={chartConfig.pectra.color}
-              stopOpacity={0.1}
-            />
-          </linearGradient>
-
-          <linearGradient id="fillShapella" x1="0" y1="0" x2="0" y2="1">
-            <stop
-              offset="5%"
-              stopColor={chartConfig.shapella.color}
-              stopOpacity={0.8}
-            />
-            <stop
-              offset="95%"
-              stopColor={chartConfig.shapella.color}
-              stopOpacity={0.1}
-            />
-          </linearGradient>
-
-          <linearGradient id="fillMerge" x1="0" y1="0" x2="0" y2="1">
-            <stop
-              offset="5%"
-              stopColor={chartConfig.merge.color}
-              stopOpacity={0.8}
-            />
-            <stop
-              offset="95%"
-              stopColor={chartConfig.merge.color}
-              stopOpacity={0.1}
-            />
-          </linearGradient>
-        </defs>
-
+      <AreaChart data={chartData} className="h-full w-full">
         <CartesianGrid vertical={false} horizontal={true} />
 
         <XAxis
@@ -148,22 +69,16 @@ export const AreaChartComponent: FC<IAreaChart> = ({ chart, isFullscreen }) => {
               : undefined
           }
           minTickGap={32}
-          tick={axisTextStyle}
           orientation={xOrientation}
           className="max-sm:minTickGap-48"
         />
 
         <YAxis
-          allowDataOverflow={true}
           tickLine={false}
           axisLine={false}
-          domain={[lowerRange, upperRange]}
-          ticks={ticks}
-          tick={axisTextStyle}
           tickFormatter={(value) => formatTick(+value)}
           orientation={yOrientation}
-          interval={0}
-          className="max-sm:width-40"
+          width={yWidth}
         >
           {showYLabel && (
             <Label
@@ -175,44 +90,35 @@ export const AreaChartComponent: FC<IAreaChart> = ({ chart, isFullscreen }) => {
           )}
         </YAxis>
 
-        <ChartTooltip
-          cursor={false}
-          content={
-            <ChartTooltipContent
-              className="rounded-xl border border-gray-200 bg-white p-4 text-black dark:border-gray-800 dark:bg-gray-900 dark:text-white"
-              labelFormatter={(value: string) => value}
-              indicator="dot"
-            />
-          }
-        />
+        <ChartTooltip content={<ChartTooltipContent />} />
 
         <Area
-          dataKey="pectra"
-          type="natural"
-          fill="url(#fillPectra)"
-          stroke={chartConfig.pectra.color}
-          stackId="a"
+          dataKey="merge"
+          type="monotone"
+          fill={chartConfig.merge.color}
+          stroke={chartConfig.merge.color}
+          stackId="1"
         />
 
         <Area
           dataKey="shapella"
-          type="natural"
-          fill="url(#fillShapella)"
+          type="monotone"
+          fill={chartConfig.shapella.color}
           stroke={chartConfig.shapella.color}
-          stackId="b"
+          stackId="1"
         />
 
         <Area
-          dataKey="merge"
-          type="natural"
-          fill="url(#fillMerge)"
-          stroke={chartConfig.merge.color}
-          stackId="c"
+          dataKey="pectra"
+          type="monotone"
+          fill={chartConfig.pectra.color}
+          stroke={chartConfig.pectra.color}
+          stackId="1"
         />
 
         {legend && (
           <ChartLegend
-            className={`${showXLabel ? "mt-4" : ""}`}
+            className={cn(showXLabel ? "mt-4" : "", "ml-8")}
             content={<ChartLegendContent />}
           />
         )}

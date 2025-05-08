@@ -1,12 +1,17 @@
-import { CircleCheck, CircleMinus, CirclePlus } from "lucide-react";
+import { CirclePlus } from "lucide-react";
+import { FaCircleCheck, FaCircleMinus, FaCirclePlus } from "react-icons/fa6";
+
 import Image from "next/image";
+import { ValidatorCardWrapper } from "pec/components/ui/custom/validator-card-wrapper";
 import { Input } from "pec/components/ui/input";
-import type { DepositType } from "pec/lib/api/schemas/deposit";
-import { cn } from "pec/lib/utils";
+import type { FormDepositType } from "pec/lib/api/schemas/deposit";
+import { DECIMAL_PLACES } from "pec/lib/constants";
 import { displayedEthAmount } from "pec/lib/utils/validators/balance";
 import { EDistributionMethod } from "pec/types/batch-deposits";
 import type { ValidatorDetails } from "pec/types/validator";
 import type { FieldErrors, UseFormRegister } from "react-hook-form";
+import { cn } from "pec/lib/utils";
+import { MAX_VALIDATOR_BALANCE } from "pec/constants/deposit";
 
 export interface IDepositSelectionValidatorCard {
   distributionMethod: EDistributionMethod;
@@ -17,8 +22,8 @@ export interface IDepositSelectionValidatorCard {
   totalAllocated: number;
   totalToDistribute: number;
   validator: ValidatorDetails;
-  errors: FieldErrors<DepositType>;
-  register: UseFormRegister<DepositType>;
+  errors: FieldErrors<FormDepositType>;
+  register: UseFormRegister<FormDepositType>;
 }
 
 export const DepositSelectionValidatorCard = ({
@@ -32,42 +37,39 @@ export const DepositSelectionValidatorCard = ({
   totalToDistribute,
   validator,
 }: IDepositSelectionValidatorCard) => {
-  // TODO: Check handling
-  // if (isNaN(numValue)) return 0;
-  // if (numValue === 0) return 0;
-  // if (numValue > totalToDistribute) return undefined;
-  // if (totalAllocated > totalToDistribute) return undefined;
-  // if (BigInt(numValue) + totalAllocated > totalToDistribute) return undefined;
-
   const setValueHandler = (value: string) => {
     const numValue = parseFloat(value);
     if (isNaN(numValue)) return 0;
 
-    if (numValue > totalToDistribute) return totalToDistribute;
+    // only enforce max in SPLIT mode
+    if (
+      distributionMethod === EDistributionMethod.SPLIT &&
+      numValue > totalToDistribute
+    )
+      return totalToDistribute;
 
     return numValue;
   };
 
   return (
-    <div
-      className={cn(
-        "group flex w-full cursor-pointer items-center justify-between gap-x-4 rounded-xl border bg-white p-4 hover:border-indigo-500 dark:border-gray-800 dark:bg-black dark:hover:border-gray-600",
-        {
-          "border-indigo-500 dark:border-2 dark:border-indigo-900": selected,
-        },
-      )}
+    <ValidatorCardWrapper
+      isSelected={selected}
+      onClick={(e) => {
+        e.stopPropagation();
+        handleSelect();
+      }}
     >
-      <div
-        className="flex flex-[1.2] items-center gap-x-4"
-        onClick={handleSelect}
-      >
+      <div className="flex flex-[1.2] items-center gap-x-4 transition-colors duration-200">
         {selected ? (
           <>
-            <CircleCheck className="h-4 min-h-4 w-4 min-w-4 text-green-500 group-hover:hidden" />
-            <CircleMinus className="hidden h-4 min-h-4 w-4 min-w-4 text-red-500 group-hover:block" />
+            <FaCircleCheck className="h-5 min-h-5 w-5 min-w-5 text-green-500 group-hover:hidden" />
+            <FaCircleMinus className="hidden h-5 min-h-5 w-5 min-w-5 text-red-500 group-hover:block" />
           </>
         ) : (
-          <CirclePlus className="h-4 min-h-4 w-4 min-w-4 text-indigo-500 group-hover:fill-indigo-500 group-hover:text-white" />
+          <>
+            <CirclePlus className="h-5 min-h-5 w-5 min-w-5 text-primary group-hover:hidden" />
+            <FaCirclePlus className="hidden h-5 min-h-5 w-5 min-w-5 text-primary group-hover:block" />
+          </>
         )}
 
         <Image
@@ -78,48 +80,65 @@ export const DepositSelectionValidatorCard = ({
         />
 
         <div className="flex flex-col">
-          <div className="text-md">{validator.validatorIndex}</div>
-          <div className="text-sm text-gray-700 dark:text-gray-300">
+          <div className="text-sm font-570">{validator.validatorIndex}</div>
+          <div className="text-sm text-piertwo-text">
             {validator.publicKey.slice(0, 5)}...{validator.publicKey.slice(-4)}
           </div>
         </div>
       </div>
 
-      <div
-        className="flex flex-1 items-center gap-1 p-2"
-        onClick={handleSelect}
-      >
-        <div className="font-semibold">
+      <div className="flex-1 flex-col items-center">
+        <div className="flex flex-1 items-center font-inter">
           Ξ {displayedEthAmount(validator.balance)}
+        </div>
+        <div className="flex flex-1 items-center font-inter text-xs text-piertwo-text">
+          Ξ
+          {(
+            MAX_VALIDATOR_BALANCE -
+            Number(displayedEthAmount(validator.balance))
+          ).toFixed(DECIMAL_PLACES)}{" "}
+          remaining
         </div>
       </div>
 
       <div className="flex flex-1 flex-col items-center p-2">
         <div
-          className={`flex w-full items-center ${selected && distributionMethod === EDistributionMethod.MANUAL ? "gap-2" : "gap-1"}`}
+          className={cn("flex w-full items-center", {
+            "gap-2":
+              selected && distributionMethod === EDistributionMethod.MANUAL,
+            "gap-1": !(
+              selected && distributionMethod === EDistributionMethod.MANUAL
+            ),
+          })}
         >
-          Ξ{" "}
-          <Input
-            className={`w-full rounded-xl border border-indigo-800 p-1 dark:border-gray-600 ${
-              !selected ? "border-none bg-white dark:bg-black" : ""
-            }`}
-            disabled={
-              !selected || distributionMethod === EDistributionMethod.SPLIT
-            }
-            type="number"
-            step="any"
-            value={depositAmount.toString()}
-            // Registers the deposit amount input field with React Hook Form
-            // - Converts empty input to 0
-            // - Ensures valid numeric input
-            // - Blocks deposits that would exceed the total to distribute
-            // - Blocks deposits that would take the total allocated above the total to distribute
-            // - Returns undefined for invalid values, preventing form submission and showing errors
-            {...(depositIndex !== -1 &&
-              register(`deposits.${depositIndex}.amount`, {
-                setValueAs: setValueHandler,
-              }))}
-          />
+          <div className="relative w-full">
+            <div className="pointer-events-none absolute left-2 top-1/2 -translate-y-1/2 text-sm text-piertwo-text">
+              Ξ
+            </div>
+            <Input
+              className={cn(
+                "font-400 h-12 w-full rounded-md border border-border p-1 pl-6 font-inter dark:border-gray-600",
+                !selected && "border-none bg-white dark:bg-black",
+              )}
+              disabled={
+                !selected || distributionMethod === EDistributionMethod.SPLIT
+              }
+              onClick={(e) => e.stopPropagation()}
+              type="number"
+              step="any"
+              value={depositAmount.toString()}
+              // Registers the deposit amount input field with React Hook Form
+              // - Converts empty input to 0
+              // - Ensures valid numeric input
+              // - Blocks deposits that would exceed the total to distribute
+              // - Blocks deposits that would take the total allocated above the total to distribute
+              // - Returns undefined for invalid values, preventing form submission and showing errors
+              {...(depositIndex !== -1 &&
+                register(`deposits.${depositIndex}.amount`, {
+                  setValueAs: setValueHandler,
+                }))}
+            />
+          </div>
         </div>
 
         {errors.deposits?.[depositIndex]?.amount && (
@@ -128,6 +147,6 @@ export const DepositSelectionValidatorCard = ({
           </div>
         )}
       </div>
-    </div>
+    </ValidatorCardWrapper>
   );
 };

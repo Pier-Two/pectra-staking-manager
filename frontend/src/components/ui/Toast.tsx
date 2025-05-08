@@ -6,7 +6,6 @@ import { isValidElement } from "react";
 import { type Action, type ExternalToast, toast as sonnerToast } from "sonner";
 import { v4 } from "uuid";
 
-
 import { Button } from "./button";
 import { PectraSpinner } from "./custom/pectraSpinner";
 
@@ -24,7 +23,7 @@ const toastVariants = cva(
     defaultVariants: {
       variant: "default",
     },
-  }
+  },
 );
 
 export function toast({
@@ -53,7 +52,7 @@ export function toast({
       ...props,
       id: toastId,
       duration,
-    }
+    },
   );
 }
 
@@ -61,22 +60,13 @@ export const dismissToast = (id: string) => sonnerToast.dismiss(id);
 
 /** A fully custom toast that still maintains the animations and interactions. */
 const Toast = (
-  props: ToastProps & { id: string | number; duration?: number }
+  props: ToastProps & { id: string | number; duration?: number },
 ) => {
-  const {
-    title,
-    description,
-    action,
-    variant,
-    onDismiss,
-    id,
-  } = props;
+  const { title, description, action, variant, onDismiss, id } = props;
 
   return (
-    <div
-      className={toastVariants({ variant })}
-    >
-      <div className="flex flex-row items-center space-x-3 flex-1">
+    <div className={toastVariants({ variant })}>
+      <div className="flex flex-1 flex-row items-center space-x-3">
         {variant === "loading" && <PectraSpinner />}
         <div className="flex flex-1 items-center justify-between">
           <div className="flex flex-col">
@@ -84,7 +74,7 @@ const Toast = (
             {typeof description === "function" ? (
               description()
             ) : (
-              <p className="text-xs opacity-90 dark:text-gray-500 break-words line-clamp-3">
+              <p className="line-clamp-3 break-words text-xs opacity-90 dark:text-gray-500">
                 {description}
               </p>
             )}
@@ -94,7 +84,7 @@ const Toast = (
               action
             ) : (
               <Button
-                className="inline-flex h-auto px-3 py-1.5 shrink-0 items-center justify-center rounded-md border bg-transparent text-xs font-medium transition-colors hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none disabled:pointer-events-none disabled:opacity-50"
+                className="inline-flex h-auto shrink-0 items-center justify-center rounded-md border bg-transparent px-3 py-1.5 text-xs font-medium transition-colors hover:bg-gray-100 focus:outline-none disabled:pointer-events-none disabled:opacity-50 dark:hover:bg-gray-700"
                 variant="ghost"
                 onClick={(e) => {
                   (action as Action).onClick(e);
@@ -111,7 +101,7 @@ const Toast = (
           onDismiss?.(props);
         }}
         variant="ghost"
-        className="absolute dark:text-gray-400 h-auto right-1 top-0 rounded-md border-none bg-transparent p-1 text-foreground/50 opacity-0 transition-opacity hover:text-foreground focus:opacity-100 focus:outline-none group-hover:opacity-100 "
+        className="absolute right-1 top-0 h-auto rounded-md border-none bg-transparent p-1 text-foreground/50 opacity-0 transition-opacity hover:text-foreground focus:opacity-100 focus:outline-none group-hover:opacity-100 dark:text-gray-400"
       >
         <X className="h-4 w-4" />
       </Button>

@@ -6,10 +6,12 @@
  * TL;DR - This is where all the tRPC server stuff is created and plugged in. The pieces you will
  * need to use are documented accordingly near the end.
  */
-import { initTRPC } from "@trpc/server";
-import { connect } from "pec/lib/database/models";
+import { initTRPC, TRPCError } from "@trpc/server";
+import { connect } from "pec/server/database/models";
 import superjson from "superjson";
 import { ZodError } from "zod";
+import { Ratelimit } from "@upstash/ratelimit";
+import { redis } from "pec/lib/utils/redis";
 
 /**
  * 1. CONTEXT
@@ -38,19 +40,27 @@ export const createTRPCContext = async (opts: { headers: Headers }) => {
  * ZodErrors so that you get typesafety on the frontend if your procedure fails due to validation
  * errors on the backend.
  */
-const t = initTRPC.context<typeof createTRPCContext>().create({
-  transformer: superjson,
-  errorFormatter({ shape, error }) {
-    return {
-      ...shape,
-      data: {
-        ...shape.data,
-        zodError:
-          error.cause instanceof ZodError ? error.cause.flatten() : null,
-      },
-    };
-  },
-});
+const t = initTRPC
+  .context<typeof createTRPCContext>()
+  .meta<{
+    /**
+     * If true, the procedure will not be rate limited
+     */
+    noRateLimit?: boolean;
+  }>()
+  .create({
+    transformer: superjson,
+    errorFormatter({ shape, error }) {
+      return {
+        ...shape,
+        data: {
+          ...shape.data,
+          zodError:
+            error.cause instanceof ZodError ? error.cause.flatten() : null,
+        },
+      };
+    },
+  });
 
 /**
  * Create a server-side caller.
@@ -99,10 +109,50 @@ const timingMiddleware = t.middleware(async ({ next, path }) => {
 });
 
 /**
+ * Rate limiter middleware for tRPC procedures
+ *
+ * @param limiter - The rate limiter to use
+ * @returns The rate limiter middleware
+ */
+export const createRedisRateLimiterMiddleware = (
+  limiter = Ratelimit.slidingWindow(10, "10 s"), // default rate limit of 10 requests per 10 seconds
+) =>
+  createTRPCMiddleware(async ({ ctx, path, next, meta }) => {
+    if (meta?.noRateLimit) return next();
+
+    const ratelimit = new Ratelimit({
+      redis: redis,
+      limiter,
+      analytics: true,
+    });
+
+    const ip =
+      ctx.headers.get("x-forwarded-for") ?? ctx.headers.get("x-real-ip");
+
+    // if we don't have an ip address, we can't rate limit
+    if (!ip) return next();
+
+    // check if the identifier is already in the ratelimit
+    const { success } = await ratelimit.limit(`${ip}:${path}`);
+
+    // if the request is not successful, we throw an error
+    if (!success) {
+      throw new TRPCError({
+        code: "TOO_MANY_REQUESTS",
+        message: "Too many requests",
+      });
+    }
+
+    return next();
+  });
+
+/**
  * Public (unauthenticated) procedure
  *
  * This is the base piece you use to build new queries and mutations on your tRPC API. It does not
  * guarantee that a user querying is authorized, but you can still access user session data if they
  * are logged in.
  */
-export const publicProcedure = t.procedure.use(timingMiddleware);
+export const publicProcedure = t.procedure
+  .use(timingMiddleware)
+  .use(createRedisRateLimiterMiddleware());

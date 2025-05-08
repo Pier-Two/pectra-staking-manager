@@ -1,18 +1,26 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@plugin "@tailwindcss/typography";
 
 .hover\:bg-activeCard:hover {
-  background-image: url("/cards/backgrounds/WorkflowOption.png") !important;
+  background-image:
+    url("/cards/backgrounds/WorkflowOption.webp"),
+    url("data:image/jpeg;base64,/9j/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAgACADASIAAhEBAxEB/8QAGgAAAgIDAAAAAAAAAAAAAAAAAwYBBAIFB//EAB8QAAICAgMBAQEAAAAAAAAAAAECAAMEBRESMSETFP/EABkBAAIDAQAAAAAAAAAAAAAAAAIFAQMGB//EABsRAAMAAwEBAAAAAAAAAAAAAAABAgMEIRES/9oADAMBAAIRAxEAPwBRqf7C2WDrA/i6+gwVvPE101w5o470zosH9AjVrbQEEV8HGZnDH2M+DjMFEjH430c6uOogqPUpEo30qG54EmrL7Svn5BVPnsCEyjIpa+jYa8L3HkbNfUpQTnGuz2GQFJj7qMntWIDbTGuo1cH/2Q==") !important;
   background-size: cover !important;
   background-position: center !important;
 }
 
 @layer base {
   :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 47.4% 11.2%;
     --primary: 232 67% 59%;
     --primary-dark: 232 46% 36%;
+    --primary-foreground: 210 40% 98%;
     --border: 231 67% 84%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 47.4% 11.2%;
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;
     --sidebar-primary: 240 5.9% 10%;
@@ -24,13 +32,32 @@
     --chart-1: 233 63% 59%; /* #5164DC */
     --chart-2: 24 96% 71%; /* #FDBA74 */
     --chart-3: 138 76% 79%; /* #86EFAC */
+
+    /* New variables */
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 47.4% 11.2%;
+    --input: 214.3 31.8% 91.4%;
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+    --destructive: 0 100% 50%;
+    --destructive-foreground: 210 40% 98%;
+    --ring: 215 20.2% 65.1%;
+    --radius: 0.5rem;
   }
 
   .dark {
+    --background: 224 71% 4%;
+    --foreground: 213 31% 91%;
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
     --sidebar-primary: 224.3 76.3% 48%;
     --sidebar-primary-foreground: 0 0% 100%;
+    --card: 224 71% 4%;
+    --card-foreground: 213 31% 91%;
     --sidebar-accent: 240 3.7% 15.9%;
     --sidebar-accent-foreground: 240 4.8% 95.9%;
     --sidebar-border: 240 3.7% 15.9%;
@@ -38,7 +65,35 @@
     --chart-1: 233 63% 59%; /* #5164DC */
     --chart-2: 24 96% 71%; /* #FDBA74 */
     --chart-3: 138 76% 79%; /* #86EFAC */
+
+    /* New dark mode variables */
+    --muted: 223 47% 11%;
+    --muted-foreground: 215.4 16.3% 56.9%;
+    --popover: 224 71% 4%;
+    --popover-foreground: 215 20.2% 65.1%;
+    --border: 216 34% 17%;
+    --input: 216 34% 17%;
+    --secondary: 222.2 47.4% 11.2%;
+    --secondary-foreground: 210 40% 98%;
+    --accent: 216 34% 17%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 63% 31%;
+    --destructive-foreground: 210 40% 98%;
+    --ring: 216 34% 17%;
+    --radius: 0.5rem;
   }
+}
+
+:root {
+  --color-text: theme("colors.zinc.950"); /* Light mode default */
+  --piertwo-text: theme("colors.gray.600"); /* gray-600 */
+  --piertwoDark-text: theme("colors.primary-dark.DEFAULT"); /* indigo-800 */
+}
+
+.dark {
+  --color-text: theme("colors.zinc.50"); /* Dark mode default */
+  --piertwo-text: theme("colors.gray.200"); /* gray-200 */
+  --piertwoDark-text: theme("colors.indigo.300"); /* indigo-800 */
 }
 
 @layer base {
@@ -47,9 +102,9 @@
   }
   body {
     @apply bg-background text-foreground;
+    color: var(--color-text);
   }
 }
-
 
 /* Remove the default arrows for number inputs */
 input::-webkit-inner-spin-button {

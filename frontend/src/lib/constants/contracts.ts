@@ -1,3 +1,3 @@
-import { HOODI_CHAIN_DETAILS } from "pec/constants/chain";
+import { mainnet } from "thirdweb/chains";
 
-export const MAIN_CHAIN = HOODI_CHAIN_DETAILS;
+export const MAIN_CHAIN = mainnet;

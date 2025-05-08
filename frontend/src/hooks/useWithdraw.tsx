@@ -1,7 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { toast } from "pec/components/ui/Toast";
-import { type WithdrawalFormType } from "pec/lib/api/schemas/withdrawal";
-import { parseError } from "pec/lib/utils/parseError";
+import { type FormWithdrawalType } from "pec/lib/api/schemas/withdrawal";
 import { client } from "pec/lib/wallet/client";
 import { api } from "pec/trpc/react";
 import type { TxHashRecord, WithdrawWorkflowStages } from "pec/types/withdraw";
@@ -12,6 +11,9 @@ import { encodePacked, fromHex, parseGwei } from "viem";
 import { useActiveChainWithDefault } from "./useChain";
 import { useContracts } from "./useContracts";
 import { useRpcClient } from "./useRpcClient";
+import { trackEvent } from "pec/helpers/trackEvent";
+import { useEffect } from "react";
+import * as Sentry from "@sentry/nextjs";
 
 export const useWithdraw = () => {
   const rpcClient = useRpcClient();
@@ -40,16 +42,24 @@ export const useSubmitWithdraw = () => {
   const [stage, setStage] = useImmer<WithdrawWorkflowStages>({
     type: "data-capture",
   });
+
+  // track stage
+  useEffect(() => {
+    trackEvent(`withdraw_stage_changed`, {
+      stage: stage.type,
+    });
+  }, [stage]);
+
   const contracts = useContracts();
   const rpcClient = useRpcClient();
   const account = useActiveAccount();
   const chain = useActiveChainWithDefault();
 
   const { mutateAsync: saveWithdrawalToDatabase } =
-    api.storeEmailRequest.storeWithdrawalRequest.useMutation();
+    api.storeFlowCompletion.storeWithdrawalRequest.useMutation();
 
   const submitWithdrawals = async (
-    withdrawals: WithdrawalFormType["withdrawals"],
+    withdrawals: FormWithdrawalType["withdrawals"],
     email: string,
   ) => {
     if (!contracts || !rpcClient || !account || !withdrawalFee) {
@@ -74,18 +84,22 @@ export const useSubmitWithdraw = () => {
     // We jump to this state because there is multiple signings
     setStage({ type: "sign-submit-finalise", txHashes });
 
+    // TODO: Integrate exits here, reemove this check
     const filteredWithdrawals = withdrawals.filter(
       (withdrawal) => withdrawal.amount > 0,
     );
-    
+
     for (const withdrawal of filteredWithdrawals) {
       try {
-        
         const callData = encodePacked(
           ["bytes", "uint64"],
           [
             withdrawal.validator.publicKey as `0x${string}`,
-            parseGwei(withdrawal.amount.toString()),
+            parseGwei(
+              withdrawal.amount === withdrawal.validator.balance
+                ? "0"
+                : withdrawal.amount.toString(),
+            ),
           ],
         );
 
@@ -115,24 +129,25 @@ export const useSubmitWithdraw = () => {
           txHashes,
         });
 
-        const result = await saveWithdrawalToDatabase({
-          requestData: {
+        // Emails get their own try-catch, because they are non-critical errors that we are kinda ignoring so the flow doesn't break for the user
+        try {
+          await saveWithdrawalToDatabase({
             validatorIndex: withdrawal.validator.validatorIndex,
+            balance: withdrawal.validator.balance,
             amount: withdrawal.amount,
             txHash: txHash.transactionHash,
             email,
-          },
-          network: chain.id,
-        });
-
-        if (!result.success) {
+            network: chain.id,
+            withdrawalAddress: account.address,
+          });
+        } catch (e) {
+          console.error("Error saving withdrawal to database", e);
           toast({
-            title: "Error withdrawing",
-            description: result.error,
+            title:
+              "Error saving withdrawal to database, emails may not be sent",
             variant: "error",
           });
-
-          
+          Sentry.captureException(e);
           continue;
         }
 
@@ -141,23 +156,28 @@ export const useSubmitWithdraw = () => {
           description: "Withdrawal request submitted successfully",
           variant: "success",
         });
+
+        // track event
+        trackEvent("withdrawal_submitted", {
+          validatorIndex: withdrawal.validator.validatorIndex,
+          amount: withdrawal.amount,
+        });
+
+        if (email) {
+          trackEvent("withdrawal_email_submitted");
+        }
       } catch (error) {
         toast({
-          title: "Error withdrawing",
-          description: parseError(error),
+          title: "User cancelled",
+          description: "Please update selections and continue",
           variant: "error",
         });
 
-        
-        txHashes[withdrawal.validator.validatorIndex] = {
-          status: "failedToSubmit",
-           error: parseError(error)
-        };
-
         setStage({
-          type: "sign-submit-finalise",
-          txHashes,
+          type: "data-capture",
         });
+
+        return;
       }
     }
 
@@ -169,30 +189,30 @@ export const useSubmitWithdraw = () => {
         continue;
       }
 
-        const receipt = await waitForReceipt({
-          transactionHash: tx.txHash,
-          chain,
-          client,
-        });
+      const receipt = await waitForReceipt({
+        transactionHash: tx.txHash,
+        chain,
+        client,
+      });
 
-        if (receipt.status === "success") {
-          // If the transaction was successful
-          txHashes[Number(validatorIndex)] = {
-            status: "finalised",
-            txHash: receipt.transactionHash,
-          };
-        } else {
-          // If the transaction failed
-          txHashes[Number(validatorIndex)] = {
-            status: "failed",
-            txHash: tx.txHash,
-          };
-        }
+      if (receipt.status === "success") {
+        // If the transaction was successful
+        txHashes[Number(validatorIndex)] = {
+          status: "finalised",
+          txHash: receipt.transactionHash,
+        };
+      } else {
+        // If the transaction failed
+        txHashes[Number(validatorIndex)] = {
+          status: "failed",
+          txHash: tx.txHash,
+        };
+      }
 
-        setStage({
-          type: "sign-submit-finalise",
-          txHashes,
-        });
+      setStage({
+        type: "sign-submit-finalise",
+        txHashes,
+      });
     }
   };
 

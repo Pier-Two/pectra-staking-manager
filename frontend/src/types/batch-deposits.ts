@@ -1,8 +1,8 @@
+import { type TransactionStatus } from "./withdraw";
+
 export type DepositWorkflowStage =
   | { type: "data-capture" }
-  | { type: "sign-data" }
-  | { type: "transactions-submitted"; txHash: string }
-  | { type: "transactions-finalised"; txHash: string };
+  | { type: "sign-submit"; transactionStatus: TransactionStatus };
 
 export interface IDistributionOptionProps {
   option: IDistributionOption;

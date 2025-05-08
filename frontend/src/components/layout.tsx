@@ -1,6 +1,5 @@
 import { BottomBar } from "pec/components/layout/BottomBar";
 import { TopBar } from "pec/components/layout/TopBar";
-import { ThemeProvider } from "pec/contexts/ThemeContext";
 import { cn } from "pec/lib/utils";
 import { type FC } from "react";
 
@@ -14,12 +13,12 @@ export const SharedLayout: FC<LayoutProps> = (props) => {
   const { children, className, type } = props;
 
   return (
-    <ThemeProvider>
-      <div className="flex min-h-screen w-screen flex-col items-center bg-indigo-50 dark:bg-gray-950 dark:text-white">
-        <TopBar type="profile" />
+    <>
+      <div className="flex min-h-screen w-screen flex-col items-center pb-28 pt-20">
+        <TopBar />
         <div
           className={cn(
-            "flex w-full flex-1 justify-center px-2 py-8 md:px-8 lg:px-0",
+            "flex w-full flex-1 justify-center px-2 py-6 md:px-8 xl:px-2",
             {
               "max-w-[80rem]": type === "full",
               "max-w-[30rem]": type === "narrow",
@@ -31,6 +30,6 @@ export const SharedLayout: FC<LayoutProps> = (props) => {
         </div>
       </div>
       <BottomBar />
-    </ThemeProvider>
+    </>
   );
 };

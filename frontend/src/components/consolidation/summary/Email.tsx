@@ -1,51 +1,102 @@
 "use client";
 
-import { Mail } from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion";
+import { HiMail } from "react-icons/hi";
 import { Input } from "pec/components/ui/input";
 import { Switch } from "pec/components/ui/switch";
-import type { IConsolidationEmail } from "pec/types/consolidation";
 import { type FC } from "react";
+import { Controller, useFormContext } from "react-hook-form";
+import { z } from "zod";
 
-export const Email: FC<IConsolidationEmail> = (props) => {
-  const { cardText, cardTitle, summaryEmail, setSummaryEmail, errors, showEmail, setShowEmail } = props;
+export interface IConsolidationEmail {
+  cardText: string;
+  cardTitle: string;
+}
+
+export const emailSchema = z.union([
+  z.object({
+    showEmail: z.literal(false).optional(),
+    email: z.string().optional().or(z.literal("")),
+  }),
+  z.object({
+    showEmail: z.literal(true),
+    email: z.string().email("Please enter a valid email address"),
+  }),
+]);
+
+export type EmailFormData = z.infer<typeof emailSchema>;
+
+/**
+ * This component inherits the form from the form context.
+ * The parent form's schema should have `.and(emailSchema)` so that
+ * the types and the validation are correct and should use the FormProvider
+ * component to share the form context.
+ */
+export const Email: FC<IConsolidationEmail> = ({ cardText, cardTitle }) => {
+  const {
+    register,
+    formState: { errors },
+    watch,
+    control,
+  } = useFormContext<EmailFormData>();
+
+  const showEmail = watch("showEmail");
 
   return (
-    <div className="flex w-full flex-col justify-between rounded-xl border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-black">
-      <div className="flex-col-2 flex w-full items-center justify-between py-1">
+    <motion.div
+      className="flex w-full flex-col items-center justify-between rounded-2xl bg-white p-4 dark:border-gray-800 dark:bg-black"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3 }}
+    >
+      <div className="flex-col-2 flex w-full items-center justify-between gap-x-4">
         <div className="flex items-center gap-x-4">
-          <Mail className="h-5 w-5 fill-indigo-500 text-gray-200 dark:text-black" />
+          <HiMail className="h-5 w-5 fill-primary text-white dark:text-black" />
           <div className="flex-col items-center">
-            <div className="text-md">{cardTitle}</div>
+            <div className="text-md font-570">{cardTitle}</div>
 
-            <div className="text-sm text-gray-700 dark:text-gray-300">
-              {cardText}
-            </div>
+            <div className="text-sm text-piertwo-text">{cardText}</div>
           </div>
         </div>
 
-        <Switch
-          checked={showEmail}
-          onCheckedChange={() => {
-            setShowEmail(!showEmail);
-          }}
-          className="relative items-center rounded-full transition-colors before:absolute before:h-5 before:w-5 before:rounded-full before:bg-white before:transition-transform before:duration-300 data-[state=checked]:bg-indigo-500 data-[state=unchecked]:bg-indigo-200 data-[state=unchecked]:dark:bg-gray-600 data-[state=checked]:before:translate-x-5 data-[state=unchecked]:before:translate-x-0"
+        <Controller
+          control={control}
+          name="showEmail"
+          render={({ field: { onChange, value } }) => (
+            <Switch checked={value} onCheckedChange={onChange} />
+          )}
         />
       </div>
 
-      {showEmail && (
-        <div className="flex flex-col gap-y-2 pt-4">
-          <Input
-            className="w-full rounded-xl border border-indigo-200 bg-white p-4 dark:border-gray-800 dark:bg-black"
-            placeholder="Email"
-            value={summaryEmail}
-            onChange={(e) => setSummaryEmail(e.target.value)}
-          />
+      <AnimatePresence>
+        {showEmail && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.3, ease: "easeInOut" }}
+            className="w-full overflow-hidden"
+          >
+            <div className="flex flex-col gap-y-2 pt-4">
+              <Input
+                className="mt-2 rounded-xl border border-indigo-200 bg-white p-4 dark:border-gray-800 dark:bg-black"
+                placeholder="Email"
+                {...register("email")}
+                autoFocusOn={showEmail}
+              />
 
-          <div className="mt-1 text-xs text-red-500">
-            {errors?.email && "Invalid email address"}
-          </div>
-        </div>
-      )}
-    </div>
+              <motion.div
+                className="mt-1 text-xs text-red-500"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: errors?.email ? 1 : 0 }}
+                transition={{ duration: 0.2 }}
+              >
+                {errors?.email?.message}
+              </motion.div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.div>
   );
 };

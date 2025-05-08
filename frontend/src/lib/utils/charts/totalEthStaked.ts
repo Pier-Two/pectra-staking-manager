@@ -10,10 +10,18 @@ export const constructTotalEthStakedChartData = (
     "totalStaked",
     filter,
   );
-  const yAxis = buildYAxis(chartData, "Total ETH Staked", false, "left", "totalStaked");
+  const yAxis = buildYAxis(
+    chartData,
+    "Total ETH Staked",
+    false,
+    "left",
+    "totalStaked",
+    30,
+  );
   const xAxis = buildXAxis(filter);
 
   return {
+    type: "area",
     title: "Total ETH Staked",
     chartData,
     yAxis,

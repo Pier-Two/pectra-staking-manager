@@ -16,8 +16,8 @@ export const HOODI_CHAIN_DETAILS: Readonly<
 } as const;
 
 export const SUPPORTED_CHAINS: Readonly<ChainOptions & { rpc: string }>[] = [
-  HOODI_CHAIN_DETAILS,
   mainnet,
+  HOODI_CHAIN_DETAILS,
 ] as const;
 
 export const SUPPORTED_NETWORKS_IDS = [

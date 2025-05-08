@@ -1,6 +1,5 @@
 import { TransactionStatus, ValidatorStatus } from "pec/types/validator";
 import { z } from "zod";
-import { DatabaseWithdrawalSchema } from "./database/withdrawal";
 
 const InProgressSchema = z.object({
   status: z.literal(TransactionStatus.IN_PROGRESS),
@@ -26,19 +25,32 @@ export const TransactionSchema = z.discriminatedUnion("status", [
   SubmittedSchema,
 ]);
 
+const PendingRequestsSchema = z.union([
+  z.object({
+    type: z.literal("consolidation"),
+    amount: z.number(),
+  }),
+  z.object({
+    type: z.literal("deposits"),
+    amount: z.number(),
+  }),
+  z.object({
+    type: z.literal("withdrawals"),
+    amount: z.number(),
+  }),
+]);
+
 export const ValidatorDataSchema = z.object({
   activeDuration: z.string(),
   activeSince: z.string(),
-  balance: z.bigint(),
-  consolidationTransaction: TransactionSchema.optional(),
-  depositTransaction: TransactionSchema.optional(),
-  effectiveBalance: z.bigint(),
-  hasPendingDeposit: z.boolean().default(false),
+  balance: z.number(),
+  pendingBalance: z.number(),
+  pendingRequests: z.array(PendingRequestsSchema),
+  effectiveBalance: z.number(),
   numberOfWithdrawals: z.number(),
   publicKey: z.string(),
   status: z.nativeEnum(ValidatorStatus),
-  upgradeSubmitted: z.boolean().default(false),
   validatorIndex: z.number(),
   withdrawalAddress: z.string(),
-  withdrawalTransactions: z.array(DatabaseWithdrawalSchema),
+  pendingUpgrade: z.boolean().default(false),
 });

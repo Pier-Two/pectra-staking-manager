@@ -26,6 +26,13 @@ const config: HardhatUserConfig = {
         blockNumber: 22062918,
       },
     },
+    mainnet: {
+      chainId: 1,
+      url: "https://0xrpc.io/eth",
+      accounts: {
+        mnemonic: process.env.MNEMONIC || "",
+      },
+    },
     hoodi: {
       chainId: 560048,
       url: "https://0xrpc.io/hoodi",
@@ -33,6 +40,19 @@ const config: HardhatUserConfig = {
         mnemonic: process.env.MNEMONIC || "",
       },
     },
+  },
+  etherscan: {
+    apiKey: process.env.ETHERSCAN_API_KEY || "",
+    customChains: [
+      {
+        network: "hoodi",
+        chainId: 560048,
+        urls: {
+          apiURL: "https://api-hoodi.etherscan.io/api",
+          browserURL: "https://hoodi.etherscan.io",
+        },
+      },
+    ],
   },
 };
 

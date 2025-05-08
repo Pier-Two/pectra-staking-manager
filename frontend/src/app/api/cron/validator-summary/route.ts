@@ -1,5 +1,9 @@
 import axios from "axios";
-import { ValidatorSummaryModel } from "pec/lib/database/models";
+import { headers } from "next/headers";
+import { env } from "pec/env";
+import { generateChartData } from "pec/server/api/routers/charts/generateChartData";
+import { connect, ValidatorSummaryModel } from "pec/server/database/models";
+
 import {
   type ValidatorsResponseData,
   type ValidatorUpgradeSummaryObject,
@@ -11,6 +15,16 @@ export const maxDuration = 60;
  * Generates summaries of the validators currently marked as active. In particular, it records the total staked, average staked and number of validators
  */
 export const POST = async () => {
+  // Check the headers for a secret key
+  const secret = (await headers()).get("x-trigger-secret");
+
+  if (secret !== env.MONGO_TRIGGER_SECRET) {
+    return Response.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  // connect to the database
+  await connect();
+
   // Fetch the validator data (return ALL active validators - ~1 million entries)
   const { data } = await axios.get<ValidatorsResponseData>(
     `https://${process.env.QUICKNODE_ENDPOINT_NAME}.quiknode.pro/${process.env.QUICKNODE_ENDPOINT_SECRET}/eth/v1/beacon/states/head/validators?status=active`,
@@ -86,6 +100,8 @@ export const POST = async () => {
 
   // Commit updates to database
   await ValidatorSummaryModel.bulkWrite(bulkWriteQuery);
+
+  await generateChartData();
 
   return Response.json({}, { status: 200 });
 };

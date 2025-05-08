@@ -1,48 +1,74 @@
-import clsx from "clsx";
-import type { IConnector } from "pec/types/validator";
+import { cn } from "pec/lib/utils";
+import type { ValidatorDetails } from "pec/types/validator";
 import type { FC } from "react";
 import { ConnectedAddress } from "./ConnectedAddress";
 import { DetectedValidators } from "./DetectedValidators";
 import { ValidatorHelp } from "./ValidatorHelp";
 import { ValidatorInformation } from "./ValidatorInformation";
+import { EnterAnimation } from "pec/app/_components/enter-animation";
+
+export interface IConnector {
+  title?: JSX.Element | string;
+  description?: JSX.Element | string;
+  connectedAddress: string;
+  validators: ValidatorDetails[];
+  className?: string;
+  titleClassName?: string;
+}
 
 export const Connector: FC<IConnector> = ({
   title,
   description,
   connectedAddress,
   validators,
-  textAlignment,
+  className,
+  titleClassName,
 }) => {
   return (
-    <div className="flex w-full flex-col gap-y-9">
-      <div className="flex flex-col gap-y-4">
-        <div className="font-570 text-center text-[26px] leading-[26px]">
-          {!!title && title}
-        </div>
-
-        {!!description && (
-          <p className="w-full text-gray-700 text-center">{description}</p>
+    <>
+      <div className="flex flex-col gap-3">
+        {title && (
+          <div
+            className={cn("text-2xl font-570 leading-relaxed", titleClassName)}
+          >
+            {title}
+          </div>
         )}
 
-        <p
-          className={clsx(
-            "w-full px-[2%] text-[15px] font-380 leading-[15px] text-zinc-950 dark:text-zinc-50",
-            textAlignment === "center" ? "text-center" : "text-left",
-          )}
-        >
-          You have {validators.length} total validators using this withdrawal
+        {!!description &&
+          (typeof description === "string" ? (
+            <p className="w-full text-base">{description}</p>
+          ) : (
+            description
+          ))}
+        <div className={cn("text-left text-base", className)}>
+          {validators.length > 0
+            ? `You have ${validators.length} total validators using this withdrawal
           address, consolidate them to Pectra standard now to get the most out
-          of Ethereum staking.
-        </p>
+          of Ethereum staking.`
+            : `There are no validators associated to this withdrawal address.`}
+        </div>
       </div>
 
-      <ConnectedAddress address={connectedAddress} />
-      <DetectedValidators
-        cardTitle="validators detected"
-        validators={validators}
+      <ConnectedAddress
+        address={connectedAddress}
+        layoutId={"validators-found-connected-address"}
       />
-      <ValidatorInformation validators={validators} />
-      <ValidatorHelp />
-    </div>
+      {validators.length !== 0 && (
+        <>
+          <DetectedValidators
+            cardTitle="validators detected"
+            validators={validators}
+            layoutId={"validators-found-detected-validators"}
+          />
+          <EnterAnimation>
+            <ValidatorInformation validators={validators} />
+          </EnterAnimation>
+          <EnterAnimation>
+            <ValidatorHelp />
+          </EnterAnimation>
+        </>
+      )}
+    </>
   );
 };

@@ -2,6 +2,9 @@ import {
   defaultShouldDehydrateQuery,
   QueryClient,
 } from "@tanstack/react-query";
+import type { TRPCClientError } from "@trpc/client";
+import type { AppRouter } from "pec/server/api/root";
+import { toast } from "pec/components/ui/Toast";
 import SuperJSON from "superjson";
 
 export const createQueryClient = () =>
@@ -20,6 +23,20 @@ export const createQueryClient = () =>
       },
       hydrate: {
         deserializeData: SuperJSON.deserialize,
+      },
+      mutations: {
+        onError: (error: unknown) => {
+          if (error instanceof Error && "data" in error) {
+            const trpcError = error as TRPCClientError<AppRouter>;
+            if (trpcError.data?.code === "TOO_MANY_REQUESTS") {
+              toast({
+                title: "Rate limit exceeded",
+                description: "Please try again later.",
+                variant: "error",
+              });
+            }
+          }
+        },
       },
     },
   });
