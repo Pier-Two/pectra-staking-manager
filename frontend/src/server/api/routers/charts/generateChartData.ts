@@ -1,7 +1,6 @@
 import { ValidatorSummaryModel } from "pec/server/database/models";
 import type { ValidatorStatistics } from "pec/types/chart";
 import { constructChartData } from "./constructChartData";
-import { getValidatorGroups } from "./getValidatorGroups";
 import { redis } from "pec/lib/utils/redis";
 import { groupBy } from "lodash";
 
