@@ -3,41 +3,46 @@ import type {
   IChartData,
   IGroupedValidatorStatistics,
 } from "pec/types/chart";
-import { buildChartData, buildXAxis, buildYAxis } from ".";
+import { buildChartKey, buildXAxis, buildYAxis, convertGweiToEth } from ".";
 import _ from "lodash";
 
+const buildAverageChartData = (
+  groupedValidatorStatistics: IGroupedValidatorStatistics,
+  filter: "days" | "months" | "years",
+): IChartData[] => {
+  console.log("groupedValidatorStatistics", groupedValidatorStatistics);
+  const averageChartData: IChartData[] = [];
+
+  Object.entries(groupedValidatorStatistics).forEach(
+    ([timestampKey, group]) => {
+      const chartKey = buildChartKey(new Date(timestampKey), filter);
+
+      let totalValidators = 0;
+      let totalAvgStaked = 0;
+      for (const validatorStatus of group) {
+        const validatorCount = Number(validatorStatus.count || 0);
+        const validatorAvgStaked = Number(validatorStatus.avgStaked || 0);
+
+        totalValidators += validatorCount;
+        totalAvgStaked += validatorAvgStaked * validatorCount;
+      }
+
+      averageChartData.push({
+        key: chartKey,
+        avgEthStaked: convertGweiToEth(totalAvgStaked / totalValidators),
+        totalValidatorCount: totalValidators,
+      });
+    },
+  );
+
+  return averageChartData;
+};
+
 export const constructAverageEthStakedChartData = (
-  groupedPectraValidators: IGroupedValidatorStatistics,
   groupedValidators: IGroupedValidatorStatistics,
   filter: "days" | "months" | "years",
 ): IChart => {
-  const chartData = buildChartData(
-    groupedPectraValidators,
-    "avgStaked",
-    filter,
-  );
-
-  const totalValidatorCountData = buildChartData(
-    groupedValidators,
-    "count",
-    filter,
-  );
-
-  const filteredChartData = filterChartDataForAverageStake(chartData);
-
-  const filteredTotalValidatorCountData = filterChartDataForTotalValidatorCount(
-    totalValidatorCountData,
-  );
-
-  // Combine both arrays
-  const allData = [...filteredChartData, ...filteredTotalValidatorCountData];
-
-  // Group by key and merge
-  const combinedArray = _.chain(allData)
-    .groupBy("key")
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-    .map((group) => _.mergeWith({}, ...group))
-    .value() as IChartData[];
+  const combinedArray = buildAverageChartData(groupedValidators, filter);
 
   const yAxis = buildYAxis(
     combinedArray,
@@ -59,19 +64,4 @@ export const constructAverageEthStakedChartData = (
     legend: true,
     footer: `An overview of how much ETH is staked on average per Pectra validator and the total number of validators.`,
   };
-};
-
-const filterChartDataForAverageStake = (chartData: IChartData[]) => {
-  return chartData.map((data) => ({
-    key: data.key,
-    avgEthStaked: data.pectra,
-  }));
-};
-
-const filterChartDataForTotalValidatorCount = (chartData: IChartData[]) => {
-  return chartData.map((data) => ({
-    key: data.key,
-    totalValidatorCount:
-      (data.pectra ?? 0) + (data.merge ?? 0) + (data.shapella ?? 0),
-  }));
 };

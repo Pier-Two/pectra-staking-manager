@@ -5,7 +5,6 @@ import type { IGroupedValidatorStatistics, IChart } from "pec/types/chart";
 
 export const constructChartData = (
   groupedValidators: IGroupedValidatorStatistics,
-  pectraValidators: IGroupedValidatorStatistics,
   filter: "days" | "months" | "years",
 ): IChart[] => {
   const numberOfValidatorsForEachUpgradeChartData =
@@ -17,11 +16,7 @@ export const constructChartData = (
     constructTotalEthStakedChartData(groupedValidators, filter);
 
   const averageETHStakedPerValidatorForEachUpgradeChartData =
-    constructAverageEthStakedChartData(
-      pectraValidators,
-      groupedValidators,
-      filter,
-    );
+    constructAverageEthStakedChartData(groupedValidators, filter);
 
   return [
     averageETHStakedPerValidatorForEachUpgradeChartData,

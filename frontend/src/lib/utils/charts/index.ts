@@ -6,7 +6,7 @@ import type {
   IYAxis,
 } from "pec/types/chart";
 
-const convertGweiToEth = (value: number): number => value / 1e9;
+export const convertGweiToEth = (value: number): number => value / 1e9;
 
 export const buildChartData = (
   groupedValidatorStatistics: IGroupedValidatorStatistics,
@@ -60,7 +60,10 @@ export const buildChartData = (
   return Array.from(chartMap.values());
 };
 
-const buildChartKey = (date: Date, filter: "days" | "months" | "years") => {
+export const buildChartKey = (
+  date: Date,
+  filter: "days" | "months" | "years",
+) => {
   const day = date.getUTCDate().toString().padStart(2, "0");
   const month = (date.getUTCMonth() + 1).toString().padStart(2, "0");
   const year = date.getUTCFullYear().toString().slice(-2);
