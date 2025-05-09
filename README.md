@@ -1,6 +1,8 @@
-# Pier Two Monorepo
+# Pier Two + Labrys Pectra Staking Manager
 
-This repository is a **monorepo** that combines a **Next.js frontend** with **smart contracts**. It uses **pnpm workspaces** for package management, which helps keep both sides of the project in sync.
+This repository contains the source code for the Pectra Staking Manager co-developed by Pier Two and Labrys.
+
+This is a **monorepo** that combines a **Next.js frontend** with **smart contracts**. It uses **pnpm workspaces** for package management, which helps keep both sides of the project in sync.
 
 ## Project Structure
 
@@ -14,6 +16,8 @@ The project is divided into two main parts:
 - **Contracts**: The smart contracts written in **Solidity** (or any other contract framework you're using, like Hardhat or Foundry).
   - Located in the `contracts/` folder.
   - Contains all contract-related code, tests, and deployment scripts.
+
+- **Docs**: The documentation for the application using docusaurus
 
 ## Getting Started
 

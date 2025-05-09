@@ -21,6 +21,8 @@ export const welcomeAnimationDelays = (() => {
     footer: {
       pierTwo: 14 * d,
       labrys: 15 * d,
+      esp: 16 * d,
+      ethFoundation: 17 * d,
     },
     chart: 16 * d,
     faq: 17 * d,
