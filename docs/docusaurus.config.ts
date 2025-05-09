@@ -6,7 +6,8 @@ import type * as Preset from "@docusaurus/preset-classic";
 
 const config: Config = {
   title: "Pier Two - Pectra Staking Management",
-  tagline: "This is a tool used to leverage the Pectra upgrade on the Ethereum network.",
+  tagline:
+    "This is a tool used to leverage the Pectra upgrade on the Ethereum network.",
   favicon: "img/favicon.ico",
 
   // Set the production url of your site here
@@ -38,9 +39,10 @@ const config: Config = {
 
   presets: [
     [
-      "classic",
+      "@docusaurus/preset-classic",
       {
         docs: {
+          routeBasePath: "/",
           sidebarPath: "./sidebars.ts",
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
@@ -50,6 +52,8 @@ const config: Config = {
         theme: {
           customCss: "./src/css/custom.css",
         },
+        blog: false,
+        pages: false,
       } satisfies Preset.Options,
     ],
   ],
@@ -58,19 +62,7 @@ const config: Config = {
     // Replace with your project's social card
     image: "img/docusaurus-social-card.jpg",
     navbar: {
-      title: "Pectra Upgrade PierTwo + Labrys",
-      logo: {
-        alt: "My Site Logo",
-        src: "img/logo.svg",
-      },
-      items: [
-        {
-          type: "docSidebar",
-          sidebarId: "tutorialSidebar",
-          position: "left",
-          label: "Tutorial",
-        },
-      ],
+      title: "PierTwo + Labrys - Pectra",
     },
     prism: {
       theme: prismThemes.github,
