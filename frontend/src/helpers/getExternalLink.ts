@@ -1,4 +1,7 @@
-import { HOODI_CHAIN_DETAILS, type SupportedNetworkIds } from "pec/constants/chain";
+import {
+  HOODI_CHAIN_DETAILS,
+  type SupportedNetworkIds,
+} from "pec/constants/chain";
 
 /**
  * Get the block explorer transaction URL
@@ -16,6 +19,10 @@ export const getBlockExplorerTxUrl = (
 export const labrysUrl = `https://labrys.io/`;
 
 export const pierTwoUrl = `https://piertwo.com/`;
+
+export const espUrl = "https://esp.ethereum.foundation/";
+
+export const ethFoundationUrl = "https://ethereum.foundation/";
 
 /**
  * Open a new tab

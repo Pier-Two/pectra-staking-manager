@@ -3,6 +3,7 @@ import type { ValidatorStatistics } from "pec/types/chart";
 import { constructChartData } from "./constructChartData";
 import { getValidatorGroups } from "./getValidatorGroups";
 import { redis } from "pec/lib/utils/redis";
+import { groupBy } from "lodash";
 
 /**
  * Generates the chart data for the validators.
@@ -26,24 +27,14 @@ export const generateChartData = async () => {
 
   if (!validatorStatistics || validatorStatistics.length === 0) return [];
 
-  const { groupedValidators, groupedPectraValidators } =
-    getValidatorGroups(validatorStatistics);
+  const groupedValidators = groupBy(validatorStatistics, "timestamp");
 
-  if (
-    !groupedValidators ||
-    Object.keys(groupedValidators).length === 0 ||
-    !groupedPectraValidators ||
-    Object.keys(groupedPectraValidators).length === 0
-  )
+  if (!groupedValidators || Object.keys(groupedValidators).length === 0)
     return [];
 
-  const chartData = constructChartData(
-    groupedValidators,
-    groupedPectraValidators,
-    "days",
-  );
+  const chartData = constructChartData(groupedValidators, "days");
 
-  await redis.set("pectra-cache:chart-data-v1.4", JSON.stringify(chartData), {
+  await redis.set("pectra-cache:chart-data-v1.5", JSON.stringify(chartData), {
     ex: 60 * 60, // 1 hour
   });
 

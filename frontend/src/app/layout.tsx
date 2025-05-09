@@ -81,7 +81,7 @@ export default async function RootLayout({
                 <div className="md:hidden">
                   <AppSidebar />
                 </div>
-                <main>{children}</main>
+                <main className="w-full">{children}</main>
               </SidebarProvider>
               <Toaster />
               <CookieConsentBanner region={region} />

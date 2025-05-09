@@ -3,8 +3,13 @@
 import { useTheme } from "next-themes";
 import Image from "next/image";
 import Link from "next/link";
-import { logoPaths } from "pec/constants/logo";
-import { labrysUrl, pierTwoUrl } from "pec/helpers/getExternalLink";
+import { logoPaths, LogoType } from "pec/constants/logo";
+import {
+  espUrl,
+  ethFoundationUrl,
+  labrysUrl,
+  pierTwoUrl,
+} from "pec/helpers/getExternalLink";
 
 import { cn } from "pec/lib/utils";
 import { EThemeMode } from "pec/types/theme";
@@ -13,7 +18,7 @@ import { useLocalStorage } from "usehooks-ts";
 
 interface RenderLogoProps {
   grayscale?: boolean;
-  logo: "PierTwo" | "Labrys";
+  logo: LogoType;
   width: number;
   height: number;
 }
@@ -50,7 +55,7 @@ export const RenderLogo = ({
 
 export const BottomBar: FC = () => {
   const items: {
-    logo: "PierTwo" | "Labrys";
+    logo: LogoType;
     text: string;
     redirectUrl: string;
   }[] = [
@@ -63,6 +68,16 @@ export const BottomBar: FC = () => {
       logo: "Labrys",
       text: "Produced by",
       redirectUrl: labrysUrl,
+    },
+    {
+      logo: "ETHFoundation",
+      text: "Grant Support from",
+      redirectUrl: ethFoundationUrl,
+    },
+    {
+      logo: "ESP",
+      text: "Grant Support from",
+      redirectUrl: espUrl,
     },
   ];
 
@@ -96,14 +111,14 @@ export const BottomBar: FC = () => {
   );
 
   return (
-    <footer className="fixed bottom-0 z-10 flex w-full flex-col items-center justify-center gap-y-4 border-t bg-[rgba(255,255,255,0.98)] p-4 px-6 shadow-sm sm:flex-row sm:justify-between dark:border-gray-800 dark:bg-gray-950">
-      <div className="group text-center text-xs leading-[11px] text-zinc-950 sm:text-left dark:text-gray-300">
+    <footer className="fixed bottom-0 z-10 flex w-full flex-col items-center justify-center gap-y-4 border-t bg-[rgba(255,255,255,0.98)] p-4 px-6 shadow-sm lg:flex-row lg:justify-between dark:border-gray-800 dark:bg-gray-950">
+      <div className="group pr-4 text-center text-xs leading-[11px] text-zinc-950 lg:text-left dark:text-gray-300">
         Built with <span className="group-hover:hidden">🩶</span>
         <span className="hidden group-hover:inline">❤️</span> by and for the
         Ethereum community
       </div>
 
-      <div className="hidden flex-row gap-x-4 sm:flex">
+      <div className="hidden flex-row items-center gap-x-4 lg:flex">
         <Policies />
       </div>
 
@@ -128,7 +143,7 @@ export const BottomBar: FC = () => {
         ))}
       </div>
 
-      <div className="flex flex-row gap-x-4 sm:hidden">
+      <div className="flex flex-row gap-x-4 lg:hidden">
         <Policies />
       </div>
     </footer>
