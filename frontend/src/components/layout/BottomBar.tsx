@@ -71,12 +71,12 @@ export const BottomBar: FC = () => {
     },
     {
       logo: "ETHFoundation",
-      text: "Sponsored by",
+      text: "Grant Support from",
       redirectUrl: ethFoundationUrl,
     },
     {
       logo: "ESP",
-      text: "Sponsored by",
+      text: "Grant Support from",
       redirectUrl: espUrl,
     },
   ];

@@ -34,13 +34,13 @@ export const Footer: FC = () => {
         />
         <FooterItem
           logo="ESP"
-          aboveText="Sponored by"
+          aboveText="Grant Support from"
           redirectUrl={espUrl}
           delay={welcomeAnimationDelays.footer.esp}
         />
         <FooterItem
           logo="ETHFoundation"
-          aboveText="Sponored by"
+          aboveText="Grant Support from"
           redirectUrl={ethFoundationUrl}
           delay={welcomeAnimationDelays.footer.ethFoundation}
         />

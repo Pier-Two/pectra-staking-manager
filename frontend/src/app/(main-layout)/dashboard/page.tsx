@@ -30,7 +30,7 @@ const Dashboard = () => (
       </div>
       <div className="relative flex h-full w-screen justify-center bg-white dark:bg-gray-900">
         <div className={"w-full max-w-[80rem]"}>
-          <div className="w-full space-y-8 px-2 py-8 md:px-8 xl:px-2">
+          <div className="w-full space-y-8 px-4 py-8 md:px-8 xl:px-2">
             <h2 className="text-[26px] font-570 leading-[26px] text-primary-dark dark:text-indigo-200">
               My Validators
             </h2>

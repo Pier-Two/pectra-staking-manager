@@ -14,7 +14,7 @@ export const SharedLayout: FC<LayoutProps> = (props) => {
 
   return (
     <>
-      <div className="flex min-h-screen w-screen flex-col items-center pb-28 pt-20">
+      <div className="flex min-h-screen w-full flex-col items-center pb-36 pt-20">
         <TopBar />
         <div
           className={cn(

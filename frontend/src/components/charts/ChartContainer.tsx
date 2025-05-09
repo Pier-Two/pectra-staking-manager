@@ -158,7 +158,7 @@ export const ChartContainer: FC = () => {
       <ChartStuff isFullscreen={false} />
       <Dialog open={isFullscreen} onOpenChange={setIsFullscreen}>
         <DialogContent
-          className="h-screen w-screen max-w-none rounded-none bg-indigo-50 pt-4 max-sm:p-2 sm:rounded-none sm:p-4 dark:bg-gray-950"
+          className="h-screen max-w-none rounded-none bg-indigo-50 pt-4 max-sm:p-2 sm:rounded-none sm:p-4 dark:bg-gray-950"
           noClose
         >
           <ChartStuff isFullscreen={true} />
