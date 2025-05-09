@@ -10,7 +10,6 @@ const buildAverageChartData = (
   groupedValidatorStatistics: IGroupedValidatorStatistics,
   filter: "days" | "months" | "years",
 ): IChartData[] => {
-  console.log("groupedValidatorStatistics", groupedValidatorStatistics);
   const averageChartData: IChartData[] = [];
 
   Object.entries(groupedValidatorStatistics).forEach(
